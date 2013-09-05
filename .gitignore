@@ -1,0 +1,18 @@
+.DS_Store
+
+/gen
+/bin
+
+*.class
+*.metadata
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Tests
+local.properties
+WatchMeTest/local.properties
+WatchMeTest/bin
+WatchMeTest/gen
