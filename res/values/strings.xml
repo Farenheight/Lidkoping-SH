@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">LidkopingSH</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Alexander har mina badbyxor</string>
+    <string name="title_stone_detail">Stone Detail</string>
 
 </resources>
