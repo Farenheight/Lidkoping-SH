@@ -2,12 +2,13 @@ package com.example.lidkopingsh;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.lidkopingsh.dummy.DummyContent;
+import com.example.lidkopingsh.dummy.StoneDummyContent;
 
 /**
  * A fragment representing a single Stone detail screen. This fragment is either
@@ -24,7 +25,7 @@ public class StoneDetailFragment extends Fragment {
 	/**
 	 * The dummy content this fragment is presenting.
 	 */
-	private DummyContent.DummyItem mItem;
+	private StoneDummyContent.DummyItem mItem;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -41,7 +42,7 @@ public class StoneDetailFragment extends Fragment {
 			// Load the dummy content specified by the fragment
 			// arguments. In a real-world scenario, use a Loader
 			// to load content from a content provider.
-			mItem = DummyContent.ITEM_MAP.get(getArguments().getString(
+			mItem = StoneDummyContent.ITEM_MAP.get(getArguments().getString(
 					ARG_ITEM_ID));
 		}
 	}
