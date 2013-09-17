@@ -1,8 +1,13 @@
-package com.example.model;
+package com.example.lidkopingsh.model;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
+
+import com.example.lidkopingsh.model.Listener;
+import com.example.lidkopingsh.model.Product;
+import com.example.lidkopingsh.model.Status;
+import com.example.lidkopingsh.model.Task;
 
 public class ProductTest extends TestCase implements Listener<Product> {
 	@Test

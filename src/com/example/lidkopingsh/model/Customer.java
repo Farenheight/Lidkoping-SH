@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.lidkopingsh.model;
 
 /**
  * A class representing a customer.

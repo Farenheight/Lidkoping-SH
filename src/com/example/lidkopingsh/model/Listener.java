@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.lidkopingsh.model;
 
 /**
  * Something that should listen to another object of type {@link T}. 
