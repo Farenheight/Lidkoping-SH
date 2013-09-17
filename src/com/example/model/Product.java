@@ -117,23 +117,37 @@ public class Product implements Listener<Task> {
 		} else
 			return false;
 	}
+
+	
 	/**
-	 * Adds an {@link ProductListener }to this {@link Product}s listeners.
+	 * Add a {@link Listener} to this Product
 	 * 
 	 * @param listener
-	 *            the interested listener for this object
+	 *            The {@link Listener} that should listen to this
+	 *            {@link Product}
+	 * @return true if listeners was modified, false otherwise.
 	 */
-	public void addProductListener(Listener<Product> listener) {
-		listeners.add(listener);
+	public boolean addProductListener(Listener<Product> listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+			return true;
+		}
+		return false;
 	}
 
 	/**
-	 * Removes an {@link ProductListener }to this {@link Product}s listeners.
+	 * Removes a {@link Listener} from this Product
 	 * 
 	 * @param listener
-	 *            the uninterested listener
+	 *            The {@link Listener} that should listen to this
+	 *            {@link Product}
+	 * @return true if listeners was modified, false otherwise.
 	 */
-	public void removeProductListener(Listener<Product> listener) {
-		listeners.remove(listener);
+	public boolean removeTaskListener(Listener<Product> listener) {
+		if (listeners.contains(listener)) {
+			listeners.remove(listener);
+			return true;
+		}
+		return false;
 	}
 }
