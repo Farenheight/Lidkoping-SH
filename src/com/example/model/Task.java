@@ -17,14 +17,14 @@ public class Task {
 	/**
 	 * The status of the task
 	 */
-	private boolean status;
+	private Status status;
 
 	/**
 	 * Get whenever this Task is finished
 	 * 
 	 * @return true if Task is finished, false otherwise.
 	 */
-	public boolean getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
@@ -34,7 +34,7 @@ public class Task {
 	 * @param status
 	 *            true if finished, false otherwise
 	 */
-	public void setStatus(boolean status) {
+	public void setStatus(Status status) {
 		this.status = status;
 		notifyTaskListeners();
 	}
@@ -56,7 +56,7 @@ public class Task {
 	 * @param status
 	 *            The status of the task. true if done. false otherwise.
 	 */
-	public Task(String name, boolean status) {
+	public Task(String name, Status status) {
 		this.name = name;
 		this.status = status;
 	}
@@ -108,7 +108,15 @@ public class Task {
 	 */
 	private void notifyTaskListeners() {
 		for (TaskListener l : listeners) {
-			l.taskChanged(this);
+			l.changed(this);
+		}
+	}
+	@Override
+	public boolean equals(Object o) {
+		if(o == this){
+			return true;
+		}else if (o == null || o.getClass() != getClass()){
+			//TODO:
 		}
 	}
 }
