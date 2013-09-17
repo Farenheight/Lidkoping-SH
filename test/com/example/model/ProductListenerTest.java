@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class ProductListenerTest implements ProductListener{
+public class ProductListenerTest implements Listener<Product>{
 	boolean hasBeenNotified = false;
 	@Test
 	private void test() {
@@ -18,7 +18,7 @@ public class ProductListenerTest implements ProductListener{
 	}
 
 	@Override
-	public void productChanged(Product product) {
+	public void changed(Product product) {
 		hasBeenNotified = true;
 	}
 	

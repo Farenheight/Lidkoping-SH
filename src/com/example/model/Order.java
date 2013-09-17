@@ -8,7 +8,7 @@ import java.util.List;
  * @author Kim
  * 
  */
-public class Order implements ProductListener {
+public class Order implements Listener<Product> {
 
 	private int id;
 	private final long timeCreated = System.currentTimeMillis();
@@ -17,7 +17,7 @@ public class Order implements ProductListener {
 	private long orderDate;
 	private String orderNumber;
 	private Customer customer;
-	private List<OrderListener> orderListeners;
+	private List<Listener<Order>> orderListeners;
 	private List<Product> products;
 
 	public int getId() {
@@ -58,7 +58,7 @@ public class Order implements ProductListener {
 	 * @param listener
 	 *            the interested listener for this object
 	 */
-	public void addOrderListener(OrderListener listener) {
+	public void addOrderListener(Listener<Order> listener) {
 		orderListeners.add(listener);
 	}
 
@@ -68,7 +68,7 @@ public class Order implements ProductListener {
 	 * @param listener
 	 *            the uninterested listener
 	 */
-	public void removeOrderListener(OrderListener listener) {
+	public void removeOrderListener(Listener<Order> listener) {
 		orderListeners.remove(listener);
 	}
 
@@ -77,13 +77,13 @@ public class Order implements ProductListener {
 	 */
 	public void notifyOrderListeners() {
 		lastTimeUpdate = System.currentTimeMillis();
-		for (OrderListener listener : orderListeners) {
-			listener.orderChanged(this);
+		for (Listener<Order> listener : orderListeners) {
+			listener.changed(this);
 		}
 	}
 
 	@Override
-	public void productChanged(Product product) {
+	public void changed(Product product) {
 		notifyOrderListeners();
 	}
 

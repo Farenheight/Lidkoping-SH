@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Stone extends Product{
 
-	public Stone(List<ProductListener> listeners, List<Task> tasks) {
+	public Stone(List<Listener<Product>> listeners, List<Task> tasks) {
 		super(tasks);
 	}
 	private String stoneModel;

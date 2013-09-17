@@ -1,0 +1,12 @@
+# Misc
+.DS_Store
+local.properties
+# Directories
+/gen
+/bin
+*.class
+*.metadata
+# Tests
+#WatchMeTest/local.properties
+#WatchMeTest/bin
+#WatchMeTest/gen

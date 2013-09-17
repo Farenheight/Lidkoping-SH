@@ -10,7 +10,7 @@ import java.util.List;
  * 
  */
 public class Task {
-	private List<TaskListener> listeners;
+	private List<Listener<Task>> listeners;
 	/**
 	 * The name of the task
 	 */
@@ -60,7 +60,7 @@ public class Task {
 	public Task(String name, Status status) {
 		this.name = name;
 		this.status = status;
-		this.listeners = new ArrayList<TaskListener>();
+		this.listeners = new ArrayList<Listener<Task>>();
 	}
 	/**
 	 * Create a new unfinished task.
@@ -80,7 +80,7 @@ public class Task {
 	 *            {@link Task}
 	 * @return true if listeners was modified, false otherwise.
 	 */
-	public boolean addTaskListener(TaskListener listener) {
+	public boolean addTaskListener(Listener<Task> listener) {
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 			return true;
@@ -96,7 +96,7 @@ public class Task {
 	 *            {@link Task} anymore
 	 * @return true if listeners was modified, false otherwise.
 	 */
-	public boolean removeTaskListener(TaskListener listener) {
+	public boolean removeTaskListener(Listener<Task> listener) {
 		if (listeners.contains(listener)) {
 			listeners.remove(listener);
 			return true;
@@ -109,8 +109,8 @@ public class Task {
 	 * Notify listeners that this task have been changed
 	 */
 	private void notifyTaskListeners() {
-		for (TaskListener l : listeners) {
-			l.taskChanged(this);
+		for (Listener<Task> l : listeners) {
+			l.changed(this);
 		}
 	}
 	@Override

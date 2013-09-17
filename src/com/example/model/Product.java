@@ -9,7 +9,7 @@ import java.util.List;
  * @author Robin Gronberg
  * 
  */
-public class Product implements TaskListener { 
+public class Product implements Listener<Task> { 
 	/**
 	 * Create a new product with tasks
 	 * 
@@ -17,7 +17,7 @@ public class Product implements TaskListener {
 	 *            The tasks which is needed to complete this product.
 	 */
 	public Product(List<Task> tasks) {
-		this.listeners = new ArrayList<ProductListener>();
+		this.listeners = new ArrayList<Listener<Product>>();
 		this.tasks = new ArrayList<Task>(tasks);
 	}
 
@@ -48,14 +48,14 @@ public class Product implements TaskListener {
 	 * The {@link ProductListener}s that should listen when a task is changed on
 	 * this product.
 	 */
-	private List<ProductListener> listeners;
+	private List<Listener<Product>> listeners;
 	/**
 	 * The {@link Task}s that this product has.
 	 */
 	private List<Task> tasks;
 
 	@Override
-	public void taskChanged(Task task) {
+	public void changed(Task task) {
 		notifyProductListeners();
 	}
 
@@ -63,8 +63,8 @@ public class Product implements TaskListener {
 	 * Notify listeners that tasks have been changed
 	 */
 	private void notifyProductListeners() {
-		for (ProductListener l : listeners) {
-			l.productChanged(this);
+		for (Listener<Product> l : listeners) {
+			l.changed(this);
 		}
 	}
 
@@ -123,7 +123,7 @@ public class Product implements TaskListener {
 	 * @param listener
 	 *            the interested listener for this object
 	 */
-	public void addProductListener(ProductListener listener) {
+	public void addProductListener(Listener<Product> listener) {
 		listeners.add(listener);
 	}
 
@@ -133,7 +133,7 @@ public class Product implements TaskListener {
 	 * @param listener
 	 *            the uninterested listener
 	 */
-	public void removeProductListener(ProductListener listener) {
+	public void removeProductListener(Listener<Product> listener) {
 		listeners.remove(listener);
 	}
 }
