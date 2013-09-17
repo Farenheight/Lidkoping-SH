@@ -25,7 +25,7 @@ public class StoneDetailFragment extends Fragment {
 	/**
 	 * The dummy content this fragment is presenting.
 	 */
-	private StoneDummyContent.DummyItem mItem;
+	private StoneDummyContent.DummyStone mItem;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the

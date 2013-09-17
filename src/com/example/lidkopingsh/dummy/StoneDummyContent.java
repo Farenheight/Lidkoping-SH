@@ -16,21 +16,21 @@ public class StoneDummyContent {
 	/**
 	 * An array of sample (dummy) items.
 	 */
-	public static List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+	public static List<DummyStone> ITEMS = new ArrayList<DummyStone>();
 
 	/**
 	 * A map of sample (dummy) items, by ID.
 	 */
-	public static Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
+	public static Map<String, DummyStone> ITEM_MAP = new HashMap<String, DummyStone>();
 
 	static {
 		for (int i = 0; i < 20; i++) {
-			addItem(new DummyItem("" + i, "O.R (" + i + ")", "Beskrivning ("
+			addItem(new DummyStone("" + i, "O.R (" + i + ")", "Beskrivning ("
 					+ i + ")"));
 		}
 	}
 
-	private static void addItem(DummyItem item) {
+	private static void addItem(DummyStone item) {
 		ITEMS.add(item);
 		ITEM_MAP.put(item.id, item);
 	}
@@ -38,12 +38,12 @@ public class StoneDummyContent {
 	/**
 	 * A dummy item representing a piece of content.
 	 */
-	public static class DummyItem {
+	public static class DummyStone {
 		public String id;
 		public String name;
 		public String desc;
 
-		public DummyItem(String id, String name, String desc) {
+		public DummyStone(String id, String name, String desc) {
 			this.id = id;
 			this.name = name;
 			this.desc = desc;
