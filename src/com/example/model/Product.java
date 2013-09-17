@@ -117,4 +117,23 @@ public class Product implements TaskListener {
 		} else
 			return false;
 	}
+	/**
+	 * Adds an {@link ProductListener }to this {@link Product}s listeners.
+	 * 
+	 * @param listener
+	 *            the interested listener for this object
+	 */
+	public void addProductListener(ProductListener listener) {
+		listeners.add(listener);
+	}
+
+	/**
+	 * Removes an {@link ProductListener }to this {@link Product}s listeners.
+	 * 
+	 * @param listener
+	 *            the uninterested listener
+	 */
+	public void removeProductListener(ProductListener listener) {
+		listeners.remove(listener);
+	}
 }
