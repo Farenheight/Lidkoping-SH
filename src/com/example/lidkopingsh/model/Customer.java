@@ -8,7 +8,7 @@ package com.example.lidkopingsh.model;
  */
 public class Customer {
 	
-	private String title;
+	private String title = "";
 	private String name;
 	private String address;
 	private String eMail;
@@ -29,5 +29,21 @@ public class Customer {
 		this.name = name;
 		this.address = address;
 		this.eMail = eMail;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public String geteMail() {
+		return eMail;
 	}
 }
