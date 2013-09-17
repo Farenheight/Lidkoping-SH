@@ -10,7 +10,7 @@ import com.example.lidkopingsh.database.DataContract.Stone;
 import com.example.lidkopingsh.database.DataContract.Task;
 import com.example.lidkopingsh.database.DataContract.TaskToProduct;
 
-public class OrderDBHelper extends SQLiteOpenHelper {
+public class OrderDbHelper extends SQLiteOpenHelper {
 
 	private static final int DATABASE_VERSION = 1;
 	private static final String DATABASE_NAME = "Orders.db";
@@ -56,7 +56,7 @@ public class OrderDBHelper extends SQLiteOpenHelper {
 			+ TaskToProduct.COLUMN_NAME_TASK_COMPLETED + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 			+ TaskToProduct.COLUMN_NAME_SORT_ORDER + INTEGER_TYPE + NOT_NULL + " )";
 
-	public OrderDBHelper(Context context) {
+	public OrderDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 	
