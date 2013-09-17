@@ -55,8 +55,10 @@ public class StoneDetailFragment extends Fragment {
 
 		// Show the dummy content as text in a TextView.
 		if (mItem != null) {
-			((TextView) rootView.findViewById(R.id.stone_detail))
-					.setText(mItem.content);
+			((TextView) rootView.findViewById(R.id.stone_name))
+					.setText(mItem.name);
+			((TextView) rootView.findViewById(R.id.stone_desc))
+			.setText(mItem.desc);
 		}
 
 		return rootView;

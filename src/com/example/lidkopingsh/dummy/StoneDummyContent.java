@@ -25,7 +25,8 @@ public class StoneDummyContent {
 
 	static {
 		for (int i = 0; i < 20; i++) {
-			addItem(new DummyItem("" + i, "Stone " + i));
+			addItem(new DummyItem("" + i, "O.R (" + i + ")", "Beskrivning ("
+					+ i + ")"));
 		}
 	}
 
@@ -39,18 +40,18 @@ public class StoneDummyContent {
 	 */
 	public static class DummyItem {
 		public String id;
-		public String content;
-		private String desc;
+		public String name;
+		public String desc;
 
-		public DummyItem(String id, String content) {
+		public DummyItem(String id, String name, String desc) {
 			this.id = id;
-			this.content = content;
-			this.desc = "Jag gillar häst!";
+			this.name = name;
+			this.desc = desc;
 		}
 
 		@Override
 		public String toString() {
-			return content;
+			return name;
 		}
 	}
 }
