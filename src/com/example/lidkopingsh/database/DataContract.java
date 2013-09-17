@@ -23,8 +23,8 @@ public class DataContract {
         public static final String COLUMN_NAME_FRONT_WORK = "front_work";
 	}
 	
-	public static abstract class StoneDetails implements BaseColumns {
-        public static final String TABLE_NAME = "stone_details";
+	public static abstract class Stone implements BaseColumns {
+        public static final String TABLE_NAME = "stone";
         public static final String COLUMN_NAME_STONE_ID = "stone_id";
         public static final String COLUMN_NAME_PRODUCT_ID = "product_id";
         public static final String COLUMN_NAME_STONE_MODEL = "stone_model";
@@ -32,11 +32,13 @@ public class DataContract {
         public static final String COLUMN_NAME_TEXTSTYLE = "textstyle";
         public static final String COLUMN_NAME_ORNAMENT = "ornament";
 	}
-	public static abstract class ProductTask implements BaseColumns {
-        public static final String TABLE_NAME = "product_task";
+	
+	public static abstract class Task implements BaseColumns {
+        public static final String TABLE_NAME = "task";
         public static final String COLUMN_NAME_TASK_ID = "task_id";
         public static final String COLUMN_NAME_TASK = "name";
 	}
+	
 	public static abstract class TaskToProduct implements BaseColumns {
         public static final String TABLE_NAME = "task_to_product";
         public static final String COLUMN_NAME_TASK_ID = "task_id";
