@@ -11,11 +11,8 @@ import java.util.List;
  */
 public class Product implements TaskListener {
 	/**
-	 * Create a new product with listeners and tasks
+	 * Create a new product with tasks
 	 * 
-	 * @param listeners
-	 *            The listeners that listens when a task is changed on this
-	 *            product.
 	 * @param tasks
 	 *            The tasks which is needed to complete this product.
 	 */
@@ -25,13 +22,16 @@ public class Product implements TaskListener {
 	}
 
 	/**
+	 * Create a new product no tasks
+	 */
+	public Product() {
+		this(new ArrayList<Task>());
+	}
+
+	/**
 	 * The id of this Product
 	 */
 	private int id;
-	/**
-	 * The last time this Product was changed
-	 */
-	private long lastTimeUpdate;
 	/**
 	 * What material and color this product should have
 	 */
@@ -53,20 +53,19 @@ public class Product implements TaskListener {
 	 * The {@link Task}s that this product has.
 	 */
 	private List<Task> tasks;
-	
+
 	@Override
-	public void taskChanged(Task task) {
+	public void changed(Task task) {
 		notifyProductListeners();
 	}
+
 	/**
 	 * Notify listeners that tasks have been changed
 	 */
 	private void notifyProductListeners() {
 		for (ProductListener l : listeners) {
-			l.tasksChanged(this);
+			l.changed(this);
 		}
-		// TODO: Update time when this Product was last changed
-		lastTimeUpdate = 111111;
 	}
 
 	/**
@@ -88,12 +87,11 @@ public class Product implements TaskListener {
 	 *            -1 or index >= tasks.length adds the task last in the list.
 	 * @return true if Tasks was modified. false otherwise
 	 */
-	public boolean addTask(Task task, int index){
-		if(!tasks.contains(task)){
-			if(index == -1 || index >= tasks.size()){
-				tasks.add(task);				
-			}
-			else{
+	public boolean addTask(Task task, int index) {
+		if (!tasks.contains(task)) {
+			if (index == -1 || index >= tasks.size()) {
+				tasks.add(task);
+			} else {
 				tasks.add(index, task);
 			}
 			task.addTaskListener(this);
