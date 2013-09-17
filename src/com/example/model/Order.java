@@ -8,6 +8,5 @@ import java.util.List;
  *
  */
 public class Order {
-	private OrderDetails orderDetails;
 	private List<Product> products;
 }
