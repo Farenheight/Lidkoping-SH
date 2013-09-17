@@ -83,7 +83,7 @@ public class Order implements ProductListener {
 	}
 
 	@Override
-	public void changed(Product product) {
+	public void productChanged(Product product) {
 		notifyOrderListeners();
 	}
 

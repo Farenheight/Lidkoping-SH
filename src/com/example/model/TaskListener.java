@@ -9,5 +9,5 @@ public interface TaskListener {
 	 * When a task is changed notify listeners.
 	 * @param task
 	 */
-	public void changed(Task task);
+	public void taskChanged(Task task);
 }

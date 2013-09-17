@@ -1,5 +1,6 @@
 package com.example.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,6 +60,16 @@ public class Task {
 	public Task(String name, Status status) {
 		this.name = name;
 		this.status = status;
+		this.listeners = new ArrayList<TaskListener>();
+	}
+	/**
+	 * Create a new unfinished task.
+	 * 
+	 * @param name
+	 *            The name of the task
+	 */
+	public Task(String name) {
+		this(name,Status.NOT_DONE);
 	}
 
 	/**
@@ -93,22 +104,13 @@ public class Task {
 		return false;
 	}
 
-	/**
-	 * Create a new unfinished task.
-	 * 
-	 * @param name
-	 *            The name of the task
-	 */
-	public Task(String name) {
-		this.name = name;
-	}
 
 	/**
 	 * Notify listeners that this task have been changed
 	 */
 	private void notifyTaskListeners() {
 		for (TaskListener l : listeners) {
-			l.changed(this);
+			l.taskChanged(this);
 		}
 	}
 	@Override
@@ -116,7 +118,10 @@ public class Task {
 		if(o == this){
 			return true;
 		}else if (o == null || o.getClass() != getClass()){
-			//TODO:
+			return false;
+		}else{
+			return ((Task)o).getStatus().equals(getStatus()) &&
+					((Task)o).getName().equals(getName());
 		}
 	}
 }

@@ -9,5 +9,5 @@ public interface ProductListener {
 	 * Whenever tasks are changed and needs to be synched with a local database, notify that something has changed
 	 * @param product
 	 */
-	public void changed(Product product);
+	public void productChanged(Product product);
 }
