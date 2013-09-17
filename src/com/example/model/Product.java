@@ -9,7 +9,7 @@ import java.util.List;
  * @author Robin Gronberg
  * 
  */
-public class Product implements TaskListener {
+public class Product implements TaskListener { 
 	/**
 	 * Create a new product with tasks
 	 * 
@@ -55,7 +55,7 @@ public class Product implements TaskListener {
 	private List<Task> tasks;
 
 	@Override
-	public void changed(Task task) {
+	public void taskChanged(Task task) {
 		notifyProductListeners();
 	}
 
@@ -64,7 +64,7 @@ public class Product implements TaskListener {
 	 */
 	private void notifyProductListeners() {
 		for (ProductListener l : listeners) {
-			l.changed(this);
+			l.productChanged(this);
 		}
 	}
 

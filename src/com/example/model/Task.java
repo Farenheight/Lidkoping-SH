@@ -110,7 +110,7 @@ public class Task {
 	 */
 	private void notifyTaskListeners() {
 		for (TaskListener l : listeners) {
-			l.changed(this);
+			l.taskChanged(this);
 		}
 	}
 	@Override
