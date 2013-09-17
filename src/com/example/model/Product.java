@@ -2,21 +2,28 @@ package com.example.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * A product have different tasks that is needed to complete the product
+ * 
  * @author Robin Gronberg
- *
+ * 
  */
-public class Product {
+public class Product implements TaskListener {
 	/**
 	 * Create a new product with listeners and tasks
-	 * @param listeners The listeners that listens when a task is changed on this product. 
-	 * @param tasks The tasks which is needed to complete this product.
+	 * 
+	 * @param listeners
+	 *            The listeners that listens when a task is changed on this
+	 *            product.
+	 * @param tasks
+	 *            The tasks which is needed to complete this product.
 	 */
-	public Product(List<ProductListener> listeners,List<Task> tasks){
-		this.listeners =  new ArrayList<ProductListener>(listeners);
+	public Product(List<Task> tasks) {
+		this.listeners = new ArrayList<ProductListener>();
 		this.tasks = new ArrayList<Task>(tasks);
 	}
+
 	/**
 	 * The id of this Product
 	 */
@@ -24,44 +31,61 @@ public class Product {
 	/**
 	 * The last time this Product was changed
 	 */
-	private int lastTimeUpdate;
+	private long lastTimeUpdate;
 	/**
-	 * The {@link ProductListener}s that should listen when a task is changed on this product.
+	 * What material and color this product should have
+	 */
+	private String materialColor;
+	/**
+	 * A description about this product
+	 */
+	private String description;
+	/**
+	 * What kind of frontwork this Product should have
+	 */
+	private String frontWork;
+	/**
+	 * The {@link ProductListener}s that should listen when a task is changed on
+	 * this product.
 	 */
 	private List<ProductListener> listeners;
 	/**
 	 * The {@link Task}s that this product has.
 	 */
 	private List<Task> tasks;
-	/**
-	 * Notify listeners that tasks have been changed
-	 */
-	private void notifyProductListeners(){
-		for(ProductListener l : listeners){
-			l.taskChanged(this);
-		}
-		//TODO: Update time when this Product was last changed
-		lastTimeUpdate = 111111;
-	}
-	/**
-	 * Set the status of a Task. If that task is not a part of this product tasks,
-	 * IllegalArgumentException is called. 
-	 * @param task The {@link Task} to set status on.
-	 * @param status The status this {@link Task} should have.
-	 */
-	public void setTaskStatus(Task task, boolean status){
-		if(tasks.contains(task)){
-			task.setStatus(status);
-		}else{
-			throw new IllegalArgumentException("This product doesn't have that kind of task");
-		}
+	
+	@Override
+	public void taskChanged(Task task) {
 		notifyProductListeners();
 	}
 	/**
+	 * Notify listeners that tasks have been changed
+	 */
+	private void notifyProductListeners() {
+		for (ProductListener l : listeners) {
+			l.tasksChanged(this);
+		}
+		// TODO: Update time when this Product was last changed
+		lastTimeUpdate = 111111;
+	}
+
+	/**
+	 * Get all the tasks this product has
+	 * 
+	 * @return All the tasks this product has.
+	 */
+	public List<Task> getTasks() {
+		return new ArrayList<Task>(tasks);
+	}
+
+	/**
 	 * Add a task to this product task list.
-	 * @param task The {@link Task} to add.
-	 * @param index The index this task should get in the list of tasks. 
-	 * index = -1 or index >= tasks.length adds the task last in the list.
+	 * 
+	 * @param task
+	 *            The {@link Task} to add.
+	 * @param index
+	 *            The index this task should get in the list of tasks. index =
+	 *            -1 or index >= tasks.length adds the task last in the list.
 	 * @return true if Tasks was modified. false otherwise
 	 */
 	public boolean addTask(Task task, int index){
@@ -72,22 +96,27 @@ public class Product {
 			else{
 				tasks.add(index, task);
 			}
+			task.addTaskListener(this);
 			notifyProductListeners();
 			return true;
 		}
 		return false;
 	}
+
 	/**
 	 * remove Task from this product task list.
-	 * @param task The {@link Task} to remove
+	 * 
+	 * @param task
+	 *            The {@link Task} to remove
 	 * @return true if Tasks was modified. false otherwise.
 	 */
-	public boolean removeTask(Task task){
-		if(tasks.contains(task)){
+	public boolean removeTask(Task task) {
+		if (tasks.contains(task)) {
 			notifyProductListeners();
 			tasks.remove(task);
+			task.removeTaskListener(this);
 			return true;
-		}
-		else return false;
+		} else
+			return false;
 	}
 }

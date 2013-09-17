@@ -10,14 +10,11 @@ import java.util.List;
 public class Stone extends Product{
 
 	public Stone(List<ProductListener> listeners, List<Task> tasks) {
-		super(listeners, tasks);
+		super(tasks);
 	}
 	private String stoneModel;
-	private String 	materialColor;
-	private String 	frontWork;
 	private String 	sideBackWork;
 	private String 	textStyle;
 	private String 	ornament;
-	private String 	description;
 
 }
