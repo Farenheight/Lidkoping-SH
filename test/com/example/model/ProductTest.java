@@ -1,12 +1,10 @@
 package com.example.model;
 
-import java.util.List;
-
 import junit.framework.TestCase;
 
 import org.junit.Test;
 
-public class ProductTest extends TestCase {
+public class ProductTest extends TestCase implements Listener<Product> {
 	@Test
 	public void testAddTask() {
 		// Add task 0 to 9 to product and set status to done if tasknumber is
@@ -63,5 +61,44 @@ public class ProductTest extends TestCase {
 				i++;
 			}			
 		}
+	}
+	
+	boolean hasBeenNotified = false;
+	@Test
+	public void testListener() {
+		hasBeenNotified = false;
+		Product p = new Product();
+		Task t = new Task("Task");
+		p.addTask(t, 0);
+		p.addProductListener(this);
+		t.setStatus(Status.DONE);
+		assertEquals(true, hasBeenNotified);
+		
+		//should be notified when removing task
+		hasBeenNotified = false;
+		p.removeTask(t);
+		assertEquals(true, hasBeenNotified);
+
+		//should not be notified when removing a task
+		//that it doesn't have
+		hasBeenNotified = false;
+		p.removeTask(t);
+		assertEquals(false, hasBeenNotified);
+		
+		//should be notified when adding a task
+		hasBeenNotified = false;
+		p.addTask(t, -1);
+		assertEquals(true, hasBeenNotified);
+		
+		//should not be notified when adding a task
+		//that it does have
+		hasBeenNotified = false;
+		p.addTask(t,-1);
+		assertEquals(false, hasBeenNotified);
+	}
+
+	@Override
+	public void changed(Product product) {
+		hasBeenNotified = true;
 	}
 }
