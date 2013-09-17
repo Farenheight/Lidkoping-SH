@@ -111,4 +111,12 @@ public class Task {
 			l.changed(this);
 		}
 	}
+	@Override
+	public boolean equals(Object o) {
+		if(o == this){
+			return true;
+		}else if (o == null || o.getClass() != getClass()){
+			//TODO:
+		}
+	}
 }
