@@ -26,6 +26,16 @@
         android:padding="16dp"
         android:text="Test desc"
         android:textIsSelectable="true" />
+
+    <LinearLayout
+        android:id="@+id/task_container"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:background="#ccc"
+        android:orientation="horizontal" >
+
+    </LinearLayout>
     
 </RelativeLayout>
 

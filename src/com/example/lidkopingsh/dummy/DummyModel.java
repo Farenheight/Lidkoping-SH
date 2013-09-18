@@ -11,7 +11,7 @@ import java.util.Map;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class StoneDummyContent {
+public class DummyModel {
 
 	/**
 	 * An array of sample (dummy) items.
@@ -42,16 +42,38 @@ public class StoneDummyContent {
 		public String id;
 		public String name;
 		public String desc;
+		public String customerName;
+		public List<DummyTask> taskList = new ArrayList<DummyTask>();
 
 		public DummyStone(String id, String name, String desc) {
 			this.id = id;
 			this.name = name;
 			this.desc = desc;
+			for(int i = 0; i < 5; i++) {
+				taskList.add(new DummyTask("Task " + i + 1, false));
+			}
 		}
 
 		@Override
 		public String toString() {
 			return name;
 		}
+		
+
+	}
+	
+	public static class DummyTask {
+		public String name;
+	    public boolean status;
+	    
+	    DummyTask(String name, boolean status) {
+	    	this.name = name;
+	    	this.status = status;
+	    }
 	}
 }
+
+
+
+
+
