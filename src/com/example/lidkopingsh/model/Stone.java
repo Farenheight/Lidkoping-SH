@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.lidkopingsh.model;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Stone extends Product{
 
-	public Stone(List<ProductListener> listeners, List<Task> tasks) {
+	public Stone(List<Listener<Product>> listeners, List<Task> tasks) {
 		super(tasks);
 	}
 	private String stoneModel;

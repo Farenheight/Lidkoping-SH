@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.lidkopingsh.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
  * @author Robin Gronberg
  * 
  */
-public class Product implements TaskListener { 
+public class Product implements Listener<Task> { 
 	/**
 	 * Create a new product with tasks
 	 * 
@@ -17,7 +17,7 @@ public class Product implements TaskListener {
 	 *            The tasks which is needed to complete this product.
 	 */
 	public Product(List<Task> tasks) {
-		this.listeners = new ArrayList<ProductListener>();
+		this.listeners = new ArrayList<Listener<Product>>();
 		this.tasks = new ArrayList<Task>(tasks);
 	}
 
@@ -48,14 +48,14 @@ public class Product implements TaskListener {
 	 * The {@link ProductListener}s that should listen when a task is changed on
 	 * this product.
 	 */
-	private List<ProductListener> listeners;
+	private List<Listener<Product>> listeners;
 	/**
 	 * The {@link Task}s that this product has.
 	 */
 	private List<Task> tasks;
 
 	@Override
-	public void taskChanged(Task task) {
+	public void changed(Task task) {
 		notifyProductListeners();
 	}
 
@@ -63,8 +63,8 @@ public class Product implements TaskListener {
 	 * Notify listeners that tasks have been changed
 	 */
 	private void notifyProductListeners() {
-		for (ProductListener l : listeners) {
-			l.productChanged(this);
+		for (Listener<Product> l : listeners) {
+			l.changed(this);
 		}
 	}
 
@@ -116,5 +116,38 @@ public class Product implements TaskListener {
 			return true;
 		} else
 			return false;
+	}
+
+	
+	/**
+	 * Add a {@link Listener} to this Product
+	 * 
+	 * @param listener
+	 *            The {@link Listener} that should listen to this
+	 *            {@link Product}
+	 * @return true if listeners was modified, false otherwise.
+	 */
+	public boolean addProductListener(Listener<Product> listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Removes a {@link Listener} from this Product
+	 * 
+	 * @param listener
+	 *            The {@link Listener} that should listen to this
+	 *            {@link Product}
+	 * @return true if listeners was modified, false otherwise.
+	 */
+	public boolean removeTaskListener(Listener<Product> listener) {
+		if (listeners.contains(listener)) {
+			listeners.remove(listener);
+			return true;
+		}
+		return false;
 	}
 }
