@@ -9,7 +9,8 @@ import java.util.List;
  * @author Robin Gronberg
  * 
  */
-public class Task {
+public class Task implements Syncable<Task>{
+	private int id;
 	private List<Listener<Task>> listeners;
 	/**
 	 * The name of the task
@@ -49,6 +50,10 @@ public class Task {
 		return name;
 	}
 
+	public int getId(){
+		return id;
+	}
+	
 	/**
 	 * Create a new task.
 	 * 
@@ -122,6 +127,17 @@ public class Task {
 		}else{
 			return ((Task)o).getStatus().equals(getStatus()) &&
 					((Task)o).getName().equals(getName());
+		}
+	}
+
+	@Override
+	public boolean sync(Task newData) {
+		if(this.id == newData.id){
+			this.setStatus(newData.getStatus());
+			this.name = newData.name;
+			return true;
+		}else{
+			return false;
 		}
 	}
 }
