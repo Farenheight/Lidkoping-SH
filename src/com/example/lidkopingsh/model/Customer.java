@@ -12,6 +12,7 @@ public class Customer {
 	private String name;
 	private String address;
 	private String eMail;
+	private int id;
 	
 	/**
 	 * Creates a Customer object.
@@ -20,15 +21,16 @@ public class Customer {
 	 * @param address the address of the customer
 	 * @param eMail the customers email
 	 */
-	public Customer(String title, String name, String address, String eMail){
-		this(name, address, eMail);
+	public Customer(String title, String name, String address, String eMail, int id){
+		this(name, address, eMail, id);
 		this.title = title;
 	}
 	
-	public Customer(String name, String address, String eMail){
+	public Customer(String name, String address, String eMail,int id){
 		this.name = name;
 		this.address = address;
 		this.eMail = eMail;
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -45,5 +47,9 @@ public class Customer {
 
 	public String geteMail() {
 		return eMail;
+	}
+	
+	public int getId() {
+		return id;
 	}
 }
