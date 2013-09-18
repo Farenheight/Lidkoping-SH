@@ -9,7 +9,7 @@ import java.util.List;
  * @author Robin Gronberg
  * 
  */
-public class Task implements Syncable<Task>{
+public class Task implements Syncable<Task> {
 	private int id;
 	private List<Listener<Task>> listeners;
 	/**
@@ -50,31 +50,37 @@ public class Task implements Syncable<Task>{
 		return name;
 	}
 
-	public int getId(){
+	public int getId() {
 		return id;
 	}
-	
+
 	/**
 	 * Create a new task.
 	 * 
+	 * @param id
+	 *            The id of the Task
 	 * @param name
 	 *            The name of the task
 	 * @param status
 	 *            The status of the task. true if done. false otherwise.
 	 */
-	public Task(String name, Status status) {
+	public Task(int id, String name, Status status) {
 		this.name = name;
 		this.status = status;
 		this.listeners = new ArrayList<Listener<Task>>();
+		this.id = id;
 	}
+
 	/**
 	 * Create a new unfinished task.
 	 * 
+	 * @param id
+	 *            The id of the Task
 	 * @param name
 	 *            The name of the task
 	 */
-	public Task(String name) {
-		this(name,Status.NOT_DONE);
+	public Task(int id, String name) {
+		this(id, name, Status.NOT_DONE);
 	}
 
 	/**
@@ -109,7 +115,6 @@ public class Task implements Syncable<Task>{
 		return false;
 	}
 
-
 	/**
 	 * Notify listeners that this task have been changed
 	 */
@@ -118,25 +123,27 @@ public class Task implements Syncable<Task>{
 			l.changed(this);
 		}
 	}
+
 	@Override
 	public boolean equals(Object o) {
-		if(o == this){
+		if (o == this) {
 			return true;
-		}else if (o == null || o.getClass() != getClass()){
+		} else if (o == null || o.getClass() != getClass()) {
 			return false;
-		}else{
-			return ((Task)o).getStatus().equals(getStatus()) &&
-					((Task)o).getName().equals(getName());
+		} else {
+			return ((Task) o).getStatus().equals(getStatus())
+					&& ((Task) o).getName().equals(getName())
+					&& ((Task) o).id == id;
 		}
 	}
 
 	@Override
 	public boolean sync(Task newData) {
-		if(this.id == newData.id){
+		if (this.id == newData.id) {
 			this.setStatus(newData.getStatus());
 			this.name = newData.name;
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
