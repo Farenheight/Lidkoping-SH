@@ -4,11 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.lidkopingsh.database.DataContract.Order;
-import com.example.lidkopingsh.database.DataContract.Product;
-import com.example.lidkopingsh.database.DataContract.Stone;
-import com.example.lidkopingsh.database.DataContract.Task;
-import com.example.lidkopingsh.database.DataContract.TaskToProduct;
+import com.example.lidkopingsh.database.DataContract.CustomerTable;
+import com.example.lidkopingsh.database.DataContract.OrderTable;
+import com.example.lidkopingsh.database.DataContract.ProductTable;
+import com.example.lidkopingsh.database.DataContract.StoneTable;
+import com.example.lidkopingsh.database.DataContract.TaskTable;
+import com.example.lidkopingsh.database.DataContract.TaskToProductTable;
 
 public class OrderDbHelper extends SQLiteOpenHelper {
 
@@ -21,43 +22,51 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 	private static final String NOT_NULL = " NOT NULL";
 
 	private static final String ORDER_TABLE_CREATE = "CREATE TABLE " 
-			+ Order.TABLE_NAME + " ("
-			+ Order._ID + INTEGER_TYPE + " PRIMARY KEY,"
-			+ Order.COLUMN_NAME_ORDER_DATE + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-			+ Order.COLUMN_NAME_ORDER_NUMBER + INTEGER_TYPE + NOT_NULL + " UNIQUE"
-			+ Order.COLUMN_NAME_CEMETERY + TEXT_TYPE + NOT_NULL + COMMA_SEP
-			+ Order.COLUMN_NAME_CUSTOMER + TEXT_TYPE + NOT_NULL + COMMA_SEP
-			+ Order.COLUMN_NAME_TIME_CREATED + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-			+ Order.COLUMN_NAME_TIME_LAST_UPDATE + INTEGER_TYPE + NOT_NULL + " )";
+			+ OrderTable.TABLE_NAME + " ("
+			+ OrderTable._ID + INTEGER_TYPE + " PRIMARY KEY,"
+			+ OrderTable.COLUMN_NAME_ORDER_DATE + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ OrderTable.COLUMN_NAME_ORDER_NUMBER + TEXT_TYPE + NOT_NULL + " UNIQUE"
+			+ OrderTable.COLUMN_NAME_CEMETERY + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ OrderTable.COLUMN_NAME_CUSTOMER_ID + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ OrderTable.COLUMN_NAME_TIME_CREATED + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ OrderTable.COLUMN_NAME_TIME_LAST_UPDATE + INTEGER_TYPE + NOT_NULL + " )";
 	private static final String PRODUCT_TABLE_CREATE = "CREATE TABLE "
-			+ Product.TABLE_NAME + " (" 
-			+ Product._ID + INTEGER_TYPE + " PRIMARY KEY,"
-			+ Product.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + " UNIQUE,"
-			+ Product.COLUMN_NAME_TITLE + TEXT_TYPE + NOT_NULL + COMMA_SEP
-			+ Product.COLUMN_NAME_ORDER_NUMBER + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-			+ Product.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP
-			+ Product.COLUMN_NAME_FRONT_WORK + TEXT_TYPE + NOT_NULL +COMMA_SEP
-			+ Product.COLUMN_NAME_MATERIAL_COLOR + NOT_NULL + TEXT_TYPE + " )";
+			+ ProductTable.TABLE_NAME + " (" 
+			+ ProductTable._ID + INTEGER_TYPE + " PRIMARY KEY,"
+			+ ProductTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + " UNIQUE,"
+			+ ProductTable.COLUMN_NAME_TITLE + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ ProductTable.COLUMN_NAME_ORDER_NUMBER + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ ProductTable.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP
+			+ ProductTable.COLUMN_NAME_FRONT_WORK + TEXT_TYPE + NOT_NULL +COMMA_SEP
+			+ ProductTable.COLUMN_NAME_MATERIAL_COLOR + NOT_NULL + TEXT_TYPE + " )";
 	private static final String STONE_TABLE_CREATE = "CREATE TABLE " 
-			+ Stone.TABLE_NAME + " ("
-			+ Stone._ID + INTEGER_TYPE + " PRIMARY KEY,"
-			+ Stone.COLUMN_NAME_STONE_ID + INTEGER_TYPE + NOT_NULL + " UNIQUE,"
-			+ Stone.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + " UNIQUE,"
-			+ Stone.COLUMN_NAME_ORNAMENT + TEXT_TYPE + COMMA_SEP
-			+ Stone.COLUMN_NAME_TEXTSTYLE + TEXT_TYPE + COMMA_SEP
-			+ Stone.COLUMN_NAME_SIDE_BACK_WORK + TEXT_TYPE + COMMA_SEP
-			+ Stone.COLUMN_NAME_STONE_MODEL + TEXT_TYPE + NOT_NULL + " )";
+			+ StoneTable.TABLE_NAME + " ("
+			+ StoneTable._ID + INTEGER_TYPE + " PRIMARY KEY,"
+			+ StoneTable.COLUMN_NAME_STONE_ID + INTEGER_TYPE + NOT_NULL + " UNIQUE,"
+			+ StoneTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + " UNIQUE,"
+			+ StoneTable.COLUMN_NAME_ORNAMENT + TEXT_TYPE + COMMA_SEP
+			+ StoneTable.COLUMN_NAME_TEXTSTYLE + TEXT_TYPE + COMMA_SEP
+			+ StoneTable.COLUMN_NAME_SIDE_BACK_WORK + TEXT_TYPE + COMMA_SEP
+			+ StoneTable.COLUMN_NAME_STONE_MODEL + TEXT_TYPE + NOT_NULL + " )";
 	private static final String TASK_TABLE_CREATE = "CREATE TABLE "
-			+ Task.TABLE_NAME + " (" + Task._ID + INTEGER_TYPE + " PRIMARY KEY,"
-			+ Task.COLUMN_NAME_TASK + TEXT_TYPE + NOT_NULL + COMMA_SEP
-			+ Task.COLUMN_NAME_TASK_ID + INTEGER_TYPE + NOT_NULL + " UNIQUE" + " )";
+			+ TaskTable.TABLE_NAME + " (" + TaskTable._ID + INTEGER_TYPE + " PRIMARY KEY,"
+			+ TaskTable.COLUMN_NAME_TASK + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ TaskTable.COLUMN_NAME_TASK_ID + INTEGER_TYPE + NOT_NULL + " UNIQUE" + " )";
 	private static final String TASK_TO_PRODUCT_TABLE_CREATE = "CREATE TABLE "
-			+ TaskToProduct.TABLE_NAME + " ("
-			+ TaskToProduct._ID + INTEGER_TYPE + " PRIMARY KEY,"
-			+ TaskToProduct.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-			+ TaskToProduct.COLUMN_NAME_TASK_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-			+ TaskToProduct.COLUMN_NAME_TASK_COMPLETED + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-			+ TaskToProduct.COLUMN_NAME_SORT_ORDER + INTEGER_TYPE + NOT_NULL + " )";
+			+ TaskToProductTable.TABLE_NAME + " ("
+			+ TaskToProductTable._ID + INTEGER_TYPE + " PRIMARY KEY,"
+			+ TaskToProductTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ TaskToProductTable.COLUMN_NAME_TASK_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ TaskToProductTable.COLUMN_NAME_TASK_COMPLETED + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ TaskToProductTable.COLUMN_NAME_SORT_ORDER + INTEGER_TYPE + NOT_NULL + " )";
+	private static final String CUSTOMER_TABLE_CREATE = "CREATE TABLE "
+			+ CustomerTable.TABLE_NAME + " ("
+			+ CustomerTable._ID + INTEGER_TYPE + " PRIMARY KEY,"
+			+ CustomerTable.COLUMN_NAME_CUSTOMER_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ CustomerTable.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP
+			+ CustomerTable.COLUMN_NAME_NAME + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ CustomerTable.COLUMN_NAME_ADDRESS + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ CustomerTable.COLUMN_NAME_EMAIL + TEXT_TYPE + NOT_NULL + " )";
 
 	public OrderDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -70,15 +79,17 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 		db.execSQL(STONE_TABLE_CREATE);
 		db.execSQL(TASK_TABLE_CREATE);
 		db.execSQL(TASK_TO_PRODUCT_TABLE_CREATE);
+		db.execSQL(CUSTOMER_TABLE_CREATE);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		dropTable(db, Order.TABLE_NAME);
-		dropTable(db, Product.TABLE_NAME);
-		dropTable(db, Stone.TABLE_NAME);
-		dropTable(db, Task.TABLE_NAME);
-		dropTable(db, TaskToProduct.TABLE_NAME);
+		dropTable(db, OrderTable.TABLE_NAME);
+		dropTable(db, ProductTable.TABLE_NAME);
+		dropTable(db, StoneTable.TABLE_NAME);
+		dropTable(db, TaskTable.TABLE_NAME);
+		dropTable(db, TaskToProductTable.TABLE_NAME);
+		dropTable(db, CustomerTable.TABLE_NAME);
 		onCreate(db);
 	}
 
