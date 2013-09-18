@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="unfinished_task_color">#FF1919</drawable>
+    <drawable name="finished_task_color">#19FF19</drawable>
+    <drawable name="task_pressed">#3366FF</drawable>
+</resources>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".StoneDetailActivity"
     tools:ignore="MergeRootFrame" >
-    
+
     <TextView
         android:id="@+id/stone_name"
         style="?android:attr/textAppearanceLarge"
@@ -32,11 +32,11 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:background="#ccc"
+        android:baselineAligned="true"
         android:orientation="horizontal" >
 
     </LinearLayout>
-    
+
 </RelativeLayout>
-
-

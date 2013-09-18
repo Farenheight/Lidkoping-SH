@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.example.lidkopingsh.dummy.DummyModel;
 
 /**
  * A list fragment representing a list of Stones. This fragment also supports
@@ -116,7 +115,7 @@ public class StoneListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(DummyModel.ITEMS.get(position).id);
+		mCallbacks.onItemSelected("" + DummyModel.ITEMS.get(position).id);
 	}
 
 	@Override

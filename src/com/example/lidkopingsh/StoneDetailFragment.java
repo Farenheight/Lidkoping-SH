@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.example.lidkopingsh.dummy.DummyModel;
+import com.example.lidkopingsh.DummyModel.DummyTask;
 
 /**
  * A fragment representing a single Stone detail screen. This fragment is either
@@ -67,24 +67,25 @@ public class StoneDetailFragment extends Fragment {
 			LinearLayout layout = (LinearLayout) rootView
 					.findViewById(R.id.task_container);
 
-			for (int j = 0; j < 4; j++) {
-				ToggleButton btnStatus = new ToggleButton(getActivity());
-				btnStatus.setActivated(mItem.taskList.get(j).status);
-				btnStatus.setLayoutParams(new LayoutParams(
-						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				btnStatus.setText("Button " + (j + 1));
-				btnStatus.setId(j);
-				btnStatus
-						.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-							@Override
-							public void onCheckedChanged(
-									CompoundButton buttonView, boolean isChecked) {
-								mItem.taskList.get(buttonView.getId()).status = buttonView
-										.isChecked();
-							}
-						});
-				layout.addView(btnStatus);
+			for (int i = 0; i < mItem.taskList.size(); i++) {
+				final DummyTask task = mItem.taskList.get(i);
+				ToggleButton btn = (ToggleButton) inflater.inflate(
+						R.layout.task_toggler, container, false);
+				btn.setChecked(task.status);
+				btn.setText(task.name);
+				btn.setTextOff(task.name);
+				btn.setTextOn(task.name);
+				btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					@Override
+					public void onCheckedChanged(CompoundButton toggleButton,
+							boolean isChecked) {
+						task.status = isChecked;
+					}
+				});
+				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
+						0.5f);
+				layout.addView(btn, params);
 			}
 		}
 
