@@ -197,9 +197,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 
 	@Override
 	public boolean sync(Product newData) {
-		if (newData.id != this.id) {
-			return false;
-		} else {
+		if (newData != null && this.id == newData.id) {
 			this.description = newData.description;
 			this.frontWork = newData.frontWork;
 			this.materialColor = newData.materialColor;
@@ -220,6 +218,19 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			deltaTasks.removeAll(newData.getTasks());
 			removeTasks(deltaTasks);
 			return true;
+		} else {
+			return false;
+		}
+	}
+	@Override
+	public boolean equals(Object o) {
+		if(this == o){
+			return true;
+		}else if(o == null || o.getClass() != getClass()){
+			return false;
+		}else{
+			return this.id == ((Product)o).id;
+			//TODO check more fields.
 		}
 	}
 }

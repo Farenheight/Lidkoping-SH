@@ -37,7 +37,6 @@ public class Stone extends Product {
 
 	@Override
 	public boolean sync(Product data) {
-		// TODO Auto-generated method stub
 		if (super.sync(data)) {
 			Stone newData = (Stone) data;
 			this.stoneModel = newData.stoneModel;

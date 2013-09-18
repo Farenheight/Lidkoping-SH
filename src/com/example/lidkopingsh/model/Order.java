@@ -8,7 +8,7 @@ import java.util.List;
  * @author Kim
  * 
  */
-public class Order implements Listener<Product> {
+public class Order implements Listener<Product>, Syncable<Order>{
 
 	private int id;
 	private final long timeCreated = System.currentTimeMillis();
@@ -85,6 +85,31 @@ public class Order implements Listener<Product> {
 	@Override
 	public void changed(Product product) {
 		notifyOrderListeners();
+	}
+
+	@Override
+	public boolean sync(Order newData) {
+		if(newData != null && this.id == newData.id){
+			this.cementary = newData.cementary;
+			this.customer = newData.customer;
+			this.lastTimeUpdate = newData.lastTimeUpdate;
+			this.orderDate = newData.orderDate;
+			this.orderNumber = newData.orderNumber;
+			//TODO Sync Products
+			return true;
+		}else{
+			return false;
+		}
+	}
+	@Override
+	public boolean equals(Object o) {
+		if(this == o){
+			return true;
+		}else if(o == null || o.getClass() != getClass()){
+			return false;
+		}else{
+			return this.id == ((Order)o).id;
+		}
 	}
 
 }
