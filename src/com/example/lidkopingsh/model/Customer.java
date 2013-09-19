@@ -11,6 +11,7 @@ public class Customer {
 	private String title = "";
 	private String name;
 	private String address;
+	private String postAddress;
 	private String eMail;
 	private int id;
 	
@@ -21,14 +22,14 @@ public class Customer {
 	 * @param address the address of the customer
 	 * @param eMail the customers email
 	 */
-	public Customer(String title, String name, String address, String eMail, int id){
-		this(name, address, eMail, id);
+	public Customer(String title, String name, String address, String postAddress, String eMail, int id){
+		this(name, address, postAddress, eMail, id);
 		this.title = title;
 	}
-	
-	public Customer(String name, String address, String eMail,int id){
+	public Customer(String name, String address, String postAddress, String eMail, int id){
 		this.name = name;
 		this.address = address;
+		this.postAddress = postAddress;
 		this.eMail = eMail;
 		this.id = id;
 	}
@@ -44,8 +45,12 @@ public class Customer {
 	public String getAddress() {
 		return address;
 	}
+	
+	public String getPostAddress(){
+		return postAddress;
+	}
 
-	public String geteMail() {
+	public String getEMail() {
 		return eMail;
 	}
 	

@@ -50,7 +50,9 @@ public class OrderDbStorage {
 			int customerID = getIntColumn(c, OrderTable.COLUMN_NAME_CUSTOMER_ID);
 			int timeCreated = getIntColumn(c, OrderTable.COLUMN_NAME_TIME_CREATED);
 			int timeLastUpdate = getIntColumn(c, OrderTable.COLUMN_NAME_TIME_LAST_UPDATE);
+			
 		}
+		
 		return null;
 
 	}

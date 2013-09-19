@@ -9,17 +9,41 @@ import java.util.List;
  * @author Robin Gronberg
  * 
  */
-public class Task {
+public class Task implements Syncable<Task> {
+	private int id;
 	private List<Listener<Task>> listeners;
-	/**
-	 * The name of the task
-	 */
 	private String name;
-	/**
-	 * The status of the task
-	 */
 	private Status status;
 
+	/**
+	 * Create a new task.
+	 * 
+	 * @param id
+	 *            The id of the Task
+	 * @param name
+	 *            The name of the task
+	 * @param status
+	 *            The status of the task. true if done. false otherwise.
+	 */
+	public Task(int id, String name, Status status) {
+		this.name = name;
+		this.status = status;
+		this.listeners = new ArrayList<Listener<Task>>();
+		this.id = id;
+	}
+
+	/**
+	 * Create a new unfinished task.
+	 * 
+	 * @param id
+	 *            The id of the Task
+	 * @param name
+	 *            The name of the task
+	 */
+	public Task(int id, String name) {
+		this(id, name, Status.NOT_DONE);
+	}
+	
 	/**
 	 * Get whenever this Task is finished
 	 * 
@@ -49,27 +73,8 @@ public class Task {
 		return name;
 	}
 
-	/**
-	 * Create a new task.
-	 * 
-	 * @param name
-	 *            The name of the task
-	 * @param status
-	 *            The status of the task. true if done. false otherwise.
-	 */
-	public Task(String name, Status status) {
-		this.name = name;
-		this.status = status;
-		this.listeners = new ArrayList<Listener<Task>>();
-	}
-	/**
-	 * Create a new unfinished task.
-	 * 
-	 * @param name
-	 *            The name of the task
-	 */
-	public Task(String name) {
-		this(name,Status.NOT_DONE);
+	public int getId() {
+		return id;
 	}
 
 	/**
@@ -104,7 +109,6 @@ public class Task {
 		return false;
 	}
 
-
 	/**
 	 * Notify listeners that this task have been changed
 	 */
@@ -113,15 +117,28 @@ public class Task {
 			l.changed(this);
 		}
 	}
+
 	@Override
 	public boolean equals(Object o) {
-		if(o == this){
+		if (o == this) {
 			return true;
-		}else if (o == null || o.getClass() != getClass()){
+		} else if (o == null || o.getClass() != getClass()) {
 			return false;
-		}else{
-			return ((Task)o).getStatus().equals(getStatus()) &&
-					((Task)o).getName().equals(getName());
+		} else {
+			return ((Task) o).getStatus().equals(getStatus())
+					&& ((Task) o).getName().equals(getName())
+					&& ((Task) o).id == id;
+		}
+	}
+
+	@Override
+	public boolean sync(Task newData) {
+		if (newData != null && this.id == newData.id ) {
+			this.setStatus(newData.getStatus());
+			this.name = newData.name;
+			return true;
+		} else {
+			return false;
 		}
 	}
 }
