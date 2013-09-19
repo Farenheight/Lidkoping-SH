@@ -6,39 +6,21 @@ import java.util.NoSuchElementException;
 
 public class Model {
 	private List<Order> orders;
-	private List<Listener<Model>> listeners;
 
 	public Model() {
 		orders = new ArrayList<Order>();
-		listeners = new ArrayList<Listener<Model>>();
 	}
 
-	private void notifyModelListeners() {
-		for (Listener<Model> l : listeners) {
-			l.changed(this);
-		}
+	public Model(ArrayList<Order> o){
+		orders = new ArrayList<Order>(o);
 	}
-
+	
 	/**
-	 * Adds an modellistener to this Model listeners.
-	 * 
-	 * @param listener
-	 *            the interested listener for this object
+	 * Returns the product with the specified id.
+	 * @param id int
+	 * @return product with specified id
+	 * @throws NoSuchElementException when the id does not exist
 	 */
-	public void addOrderListener(Listener<Model> listener) {
-		listeners.add(listener);
-	}
-
-	/**
-	 * Removes an modellistener from this object.
-	 * 
-	 * @param listener
-	 *            the uninterested listener
-	 */
-	public void removeOrderListener(Listener<Order> listener) {
-		listeners.remove(listener);
-	}
-
 	public Product getProductById(int id) throws NoSuchElementException {
 		for (Order o : orders) {
 			for (Product p : o.getProducts()) {
@@ -50,9 +32,15 @@ public class Model {
 		throw new NoSuchElementException();
 	}
 
-	public Order getOrderByOrderId(int id) throws NoSuchElementException {
+	/**
+	 * Returns the order with the specified id.
+	 * @param id int
+	 * @return product with specified id
+	 * @throws NoSuchElementException when the id does not exist
+	 */
+	public Order getOrderById(int id) throws NoSuchElementException {
 		for (Order o : orders) {
-			if(o.getId() == id){
+			if (o.getId() == id) {
 				return o;
 			}
 		}
@@ -61,17 +49,14 @@ public class Model {
 
 	public void addOrder(Order o) {
 		orders.add(o);
-		notifyModelListeners();
 	}
 
 	public void removeOrder(Order o) {
 		orders.remove(o);
-		notifyModelListeners();
 	}
 
 	public void replaceOrders(ArrayList<Order> list) {
 		orders = list;
-		notifyModelListeners();
 	}
 
 	public List<Order> getOrders() {
