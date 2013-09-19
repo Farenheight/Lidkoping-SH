@@ -1,5 +1,7 @@
 package com.example.lidkopingsh.model;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -8,8 +10,9 @@ import java.util.List;
  * @author Kim
  * 
  */
-public class Order implements Listener<Product>, Syncable<Order>{
-
+public class Order implements Listener<Product>, Syncable<Order> {
+	private static int currentId = 0;
+	private static int currentOrderNumberCount = 0;
 	private int id;
 	private final long timeCreated = System.currentTimeMillis();
 	private long lastTimeUpdate = timeCreated;
@@ -19,6 +22,10 @@ public class Order implements Listener<Product>, Syncable<Order>{
 	private Customer customer;
 	private List<Listener<Order>> orderListeners;
 	private List<Product> products;
+
+	public Order() {
+		id = getNewId();
+	}
 
 	public int getId() {
 		return id;
@@ -50,6 +57,10 @@ public class Order implements Listener<Product>, Syncable<Order>{
 
 	public List<Product> getProducts() {
 		return products;
+	}
+	
+	public void addProduct(Product p){
+		products.add(p);
 	}
 
 	/**
@@ -89,27 +100,50 @@ public class Order implements Listener<Product>, Syncable<Order>{
 
 	@Override
 	public boolean sync(Order newData) {
-		if(newData != null && this.id == newData.id){
+		if (newData != null && this.id == newData.id) {
 			this.cementary = newData.cementary;
 			this.customer = newData.customer;
 			this.lastTimeUpdate = newData.lastTimeUpdate;
 			this.orderDate = newData.orderDate;
 			this.orderNumber = newData.orderNumber;
-			//TODO Sync Products
+			// TODO Sync Products
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
+
 	@Override
 	public boolean equals(Object o) {
-		if(this == o){
+		if (this == o) {
 			return true;
-		}else if(o == null || o.getClass() != getClass()){
+		} else if (o == null || o.getClass() != getClass()) {
 			return false;
-		}else{
-			return this.id == ((Order)o).id;
+		} else {
+			return this.id == ((Order) o).id;
 		}
+	}
+
+	private String getNewOrderNumber(){
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+		int yearPart = year%2000;
+		String numPart = "";
+		currentOrderNumberCount++;
+		if(currentOrderNumberCount < 10){
+			numPart = "000" + currentOrderNumberCount;
+		}else if(currentOrderNumberCount < 100){
+			numPart = "00" + currentOrderNumberCount;
+		}else if(currentOrderNumberCount < 1000){
+			numPart = "0" + currentOrderNumberCount;
+		}else {
+			numPart = "" + currentOrderNumberCount;
+		}
+		String complete = "" + yearPart + numPart;
+		return complete;
+	}
+
+	private static int getNewId() {
+		return currentId++;
 	}
 
 }
