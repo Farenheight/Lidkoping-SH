@@ -36,6 +36,13 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		this.tasks = new ArrayList<Task>(tasks);
 		this.id = getNewId();
 	}
+	
+	/**
+	 * Create a new product no tasks
+	 */
+	public Product() {
+		this(new ArrayList<Task>());
+	}
 
 	public int getId() {
 		return id;
@@ -52,15 +59,6 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	public String getFrontWork() {
 		return frontWork;
 	}
-
-	/**
-	 * Create a new product no tasks
-	 */
-	public Product() {
-		this(new ArrayList<Task>());
-	}
-
-
 
 	@Override
 	public void changed(Task task) {
@@ -243,6 +241,6 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	}
 	
 	private static int getNewId(){
-		return currentId++;
+		return ++currentId;
 	}
 }

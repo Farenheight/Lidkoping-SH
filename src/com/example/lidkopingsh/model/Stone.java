@@ -1,5 +1,6 @@
 package com.example.lidkopingsh.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,15 +10,18 @@ import java.util.List;
  * 
  */
 public class Stone extends Product {
-
-	public Stone(List<Listener<Product>> listeners, List<Task> tasks) {
-		super(tasks);
-	}
-
 	private String stoneModel;
 	private String sideBackWork;
 	private String textStyle;
 	private String ornament;
+	
+	public Stone(List<Listener<Product>> listeners, List<Task> tasks) {
+		super(tasks);
+	}
+	
+	public Stone(){
+		this(new ArrayList<Listener<Product>>(), new ArrayList<Task>());
+	}
 
 	public String getStoneModel() {
 		return stoneModel;

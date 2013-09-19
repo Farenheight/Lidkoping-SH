@@ -7,44 +7,18 @@ import java.util.NoSuchElementException;
 public class Model {
 	private List<Order> orders;
 	private List<Listener<Model>> listeners;
-	
-	public Model(){
+
+	public Model() {
 		orders = new ArrayList<Order>();
 		listeners = new ArrayList<Listener<Model>>();
 	}
-	
-	public void addOrder(Order o){
-		orders.add(o);
-		notifyModelListeners();
-	}
-	
-	public void removeOrder(Order o){
-		orders.remove(o);
-		notifyModelListeners();
-	}
-	
-	public void replaceOrders(ArrayList<Order> list){
-		orders = list;
-		notifyModelListeners();
-	}
-	
-	public Product getProductById(int id) throws NoSuchElementException{
-		for(Order o : orders){
-			for(Product p : o.getProducts()){
-				if(p.getId() == id){
-					return p;
-				}
-			}
-		}
-		throw new NoSuchElementException();
-	}
-	
+
 	private void notifyModelListeners() {
 		for (Listener<Model> l : listeners) {
 			l.changed(this);
 		}
 	}
-	
+
 	/**
 	 * Adds an modellistener to this Model listeners.
 	 * 
@@ -65,7 +39,42 @@ public class Model {
 		listeners.remove(listener);
 	}
 
-	public List<Order> getOrders(){
+	public Product getProductById(int id) throws NoSuchElementException {
+		for (Order o : orders) {
+			for (Product p : o.getProducts()) {
+				if (p.getId() == id) {
+					return p;
+				}
+			}
+		}
+		throw new NoSuchElementException();
+	}
+
+	public Order getOrderByOrderId(int id) throws NoSuchElementException {
+		for (Order o : orders) {
+			if(o.getId() == id){
+				return o;
+			}
+		}
+		throw new NoSuchElementException();
+	}
+
+	public void addOrder(Order o) {
+		orders.add(o);
+		notifyModelListeners();
+	}
+
+	public void removeOrder(Order o) {
+		orders.remove(o);
+		notifyModelListeners();
+	}
+
+	public void replaceOrders(ArrayList<Order> list) {
+		orders = list;
+		notifyModelListeners();
+	}
+
+	public List<Order> getOrders() {
 		return orders;
 	}
 }

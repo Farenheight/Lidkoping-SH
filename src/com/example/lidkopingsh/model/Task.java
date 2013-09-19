@@ -12,15 +12,38 @@ import java.util.List;
 public class Task implements Syncable<Task> {
 	private int id;
 	private List<Listener<Task>> listeners;
-	/**
-	 * The name of the task
-	 */
 	private String name;
-	/**
-	 * The status of the task
-	 */
 	private Status status;
 
+	/**
+	 * Create a new task.
+	 * 
+	 * @param id
+	 *            The id of the Task
+	 * @param name
+	 *            The name of the task
+	 * @param status
+	 *            The status of the task. true if done. false otherwise.
+	 */
+	public Task(int id, String name, Status status) {
+		this.name = name;
+		this.status = status;
+		this.listeners = new ArrayList<Listener<Task>>();
+		this.id = id;
+	}
+
+	/**
+	 * Create a new unfinished task.
+	 * 
+	 * @param id
+	 *            The id of the Task
+	 * @param name
+	 *            The name of the task
+	 */
+	public Task(int id, String name) {
+		this(id, name, Status.NOT_DONE);
+	}
+	
 	/**
 	 * Get whenever this Task is finished
 	 * 
@@ -52,35 +75,6 @@ public class Task implements Syncable<Task> {
 
 	public int getId() {
 		return id;
-	}
-
-	/**
-	 * Create a new task.
-	 * 
-	 * @param id
-	 *            The id of the Task
-	 * @param name
-	 *            The name of the task
-	 * @param status
-	 *            The status of the task. true if done. false otherwise.
-	 */
-	public Task(int id, String name, Status status) {
-		this.name = name;
-		this.status = status;
-		this.listeners = new ArrayList<Listener<Task>>();
-		this.id = id;
-	}
-
-	/**
-	 * Create a new unfinished task.
-	 * 
-	 * @param id
-	 *            The id of the Task
-	 * @param name
-	 *            The name of the task
-	 */
-	public Task(int id, String name) {
-		this(id, name, Status.NOT_DONE);
 	}
 
 	/**
