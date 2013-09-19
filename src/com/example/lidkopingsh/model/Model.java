@@ -11,6 +11,16 @@ public class Model {
 		orders = new ArrayList<Order>();
 	}
 
+	public Model(ArrayList<Order> o){
+		orders = new ArrayList<Order>(o);
+	}
+	
+	/**
+	 * Returns the product with the specified id.
+	 * @param id int
+	 * @return product with specified id
+	 * @throws NoSuchElementException when the id does not exist
+	 */
 	public Product getProductById(int id) throws NoSuchElementException {
 		for (Order o : orders) {
 			for (Product p : o.getProducts()) {
@@ -22,7 +32,13 @@ public class Model {
 		throw new NoSuchElementException();
 	}
 
-	public Order getOrderByOrderId(int id) throws NoSuchElementException {
+	/**
+	 * Returns the order with the specified id.
+	 * @param id int
+	 * @return product with specified id
+	 * @throws NoSuchElementException when the id does not exist
+	 */
+	public Order getOrderById(int id) throws NoSuchElementException {
 		for (Order o : orders) {
 			if (o.getId() == id) {
 				return o;
