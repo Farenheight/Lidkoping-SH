@@ -10,11 +10,12 @@ import com.example.lidkopingsh.model.Status;
 import com.example.lidkopingsh.model.Task;
 
 public class ProductTest extends TestCase implements Listener<Product> {
+	/**
+	 * Tests if id's increases by 1.
+	 */
 	@Test
 	public void testGetNewId() {
-		assertTrue(new Product().getId() == 0);
-		assertTrue(new Product().getId() == 1);
-		assertTrue(new Product().getId() < new Product().getId());
+		assertTrue(new Product().getId()+1 == new Product().getId());
 	}
 
 	@Test
