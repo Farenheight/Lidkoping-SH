@@ -56,7 +56,6 @@ public class DummyModel {
 				if(i%2 == 0) {
 					status = false;
 				}
-				Log.i("FDEB", "" + status);
 				taskList.add(new DummyTask("Task " + (i + 1), status));
 			} 
 		}
