@@ -13,7 +13,7 @@ public class ModelHandler {
 	
 	public static ILayer getLayer(){
 		if(layer == null){
-			//layer = new Layer
+			layer = new ExampleLayer();
 		}
 		return layer;
 	}

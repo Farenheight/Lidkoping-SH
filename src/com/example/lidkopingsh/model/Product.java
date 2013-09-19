@@ -9,7 +9,7 @@ import java.util.List;
  * @author Robin Gronberg
  * 
  */
-public class Product implements Listener<Task> {
+public class Product implements Listener<Task>, Syncable<Product> {
 	private static int currentId = 0;
 	private int id;
 	private String materialColor;
@@ -34,6 +34,14 @@ public class Product implements Listener<Task> {
 	public Product(List<Task> tasks) {
 		this.listeners = new ArrayList<Listener<Product>>();
 		this.tasks = new ArrayList<Task>(tasks);
+		this.id = getNewId();
+	}
+	
+	/**
+	 * Create a new product no tasks
+	 */
+	public Product() {
+		this(new ArrayList<Task>());
 	}
 
 	public int getId() {
@@ -50,13 +58,6 @@ public class Product implements Listener<Task> {
 
 	public String getFrontWork() {
 		return frontWork;
-	}
-
-	/**
-	 * Create a new product no tasks
-	 */
-	public Product() {
-		this(new ArrayList<Task>());
 	}
 
 	@Override
@@ -107,6 +108,34 @@ public class Product implements Listener<Task> {
 	}
 
 	/**
+	 * Add a task at the end of this product task list.
+	 * 
+	 * @param task
+	 *            The {@link Task} to add.
+	 */
+	public boolean addTask(Task task) {
+		return addTask(task, -1);
+	}
+
+	/**
+	 * Add tasks at the end of this product task list.
+	 * 
+	 * @param tasks
+	 *            The {@link Task}s to add.
+	 * @return true if Tasks was modified. false otherwise
+	 */
+	public boolean addTasks(List<Task> tasks) {
+		boolean modified = false;
+		for (Task task : tasks) {
+			// add last in the list
+			if (addTask(task, -1)) {
+				modified = true;
+			}
+		}
+		return modified;
+	}
+
+	/**
 	 * remove Task from this product task list.
 	 * 
 	 * @param task
@@ -121,6 +150,23 @@ public class Product implements Listener<Task> {
 			return true;
 		} else
 			return false;
+	}
+
+	/**
+	 * remove Tasks from this product task list.
+	 * 
+	 * @param tasks
+	 *            The {@link Task}s to remove
+	 * @return true if Tasks was modified. false otherwise.
+	 */
+	public boolean removeTasks(List<Task> tasks) {
+		boolean modified = false;
+		for (Task task : tasks) {
+			if (removeTask(task)) {
+				modified = true;
+			}
+		}
+		return modified;
 	}
 
 	/**
@@ -154,8 +200,47 @@ public class Product implements Listener<Task> {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean sync(Product newData) {
+		if (newData != null && this.id == newData.id) {
+			this.description = newData.description;
+			this.frontWork = newData.frontWork;
+			this.materialColor = newData.materialColor;
+			for (Task newTask : newData.tasks) {
+				// Updates all tasks that exists in both Products
+				boolean synced = false;
+				for (Task oldTask : this.tasks) {
+					if (synced = oldTask.sync(newTask))
+						break;
+				}
+				// Adds task if it doesn't exist on this Product
+				if (!synced) {
+					this.addTask(newTask, -1);
+				}
+			}
+			// Removes all old tasks that new product don't have
+			List<Task> deltaTasks = this.getTasks();
+			deltaTasks.removeAll(newData.getTasks());
+			removeTasks(deltaTasks);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	@Override
+	public boolean equals(Object o) {
+		if(this == o){
+			return true;
+		}else if(o == null || o.getClass() != getClass()){
+			return false;
+		}else{
+			return this.id == ((Product)o).id;
+			//TODO check more fields.
+		}
+	}
 	
-	public static int getNewId(){
-		return currentId++;
+	private static int getNewId(){
+		return ++currentId;
 	}
 }
