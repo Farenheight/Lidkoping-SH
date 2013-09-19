@@ -16,7 +16,7 @@ public class ExampleLayer implements ILayer {
 		Task t = new Task(1, "Test");
 		List<Task> tList = new ArrayList<Task>();
 		tList.add(t);
-		Product p = new Stone(null, tList);
+		Product p = new Stone();
 		Order o = new Order();
 		o.addProduct(p);
 		Model m = new Model();

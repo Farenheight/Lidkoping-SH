@@ -31,16 +31,13 @@ public class Model {
 		throw new NoSuchElementException();
 	}
 
-	// TODO should the Andriod app be able to add and remove Orders?
-	// public void addOrder(Order o) {
-	// orders.add(o);
-	// notifyModelListeners();
-	// }
-	//
-	// public void removeOrder(Order o) {
-	// orders.remove(o);
-	// notifyModelListeners();
-	// }
+	public void addOrder(Order o) {
+		orders.add(o);
+	}
+
+	public void removeOrder(Order o) {
+		orders.remove(o);
+	}
 
 	public void replaceOrders(ArrayList<Order> list) {
 		orders = list;
