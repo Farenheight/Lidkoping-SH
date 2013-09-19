@@ -2,6 +2,14 @@ package com.example.lidkopingsh.database;
 
 import android.provider.BaseColumns;
 
+/**
+ * A contract that defines how the database tables are structured.
+ * Each table contract contains its table name and its columns.
+ * 
+ * @author Anton Jansson
+ * @author Olliver Mattsson
+ *
+ */
 public class DataContract {
 
 	private DataContract() {}
