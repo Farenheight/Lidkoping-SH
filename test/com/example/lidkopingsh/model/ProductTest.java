@@ -106,4 +106,11 @@ public class ProductTest extends TestCase implements Listener<Product> {
 	public void changed(Product product) {
 		hasBeenNotified = true;
 	}
+	
+	@Test
+	public void testGetNewId(){
+		assertTrue(Product.getNewId() == 1);
+		assertTrue(Product.getNewId() == 2);
+		assertTrue(Product.getNewId() < Product.getNewId());
+	}
 }
