@@ -1,5 +1,6 @@
 package com.example.lidkopingsh.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,8 +53,9 @@ public class Stone extends Product {
 	 * Create a new Stone with Dummy data
 	 */
 	public Stone() {
-		//TODO: Add DUMMY DATA
-		//this(new ArrayList<Listener<Product>>(), new ArrayList<Task>());
+		this(1, "Hallandia-granit", "Gravvård 80x65 cm\nPolerande blomlister 90x40 cm",
+				"Framsidan & sockelns ovansida polerad ,matt fas", new ArrayList<Task>(),
+				"NB 46", "Polerade", "Sx358-nedhuggen i guld", "Kors & sol i guld\nFåglar & blommor vita");
 	}
 
 	public String getStoneModel() {
