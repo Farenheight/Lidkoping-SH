@@ -8,12 +8,12 @@ public class CustomerTest {
 
 	@Test
 	public void testGetters() {
-		Customer c = new Customer("Mr", "Olle Bengtsson", "Testvägen 52",
-				"416 72 Göteborg", "olle.bengtsson@testuser.com");
+		Customer c = new Customer("Mr", "Olle Bengtsson", "Testvagen 52",
+				"416 72 Goteborg", "olle.bengtsson@testuser.com", 0);
 		assertTrue(c.getTitle().equals("Mr"));
 		assertTrue(c.getName().equals("Olle Bengtsson"));
-		assertTrue(c.getAddress().equals("Testvägen 52"));
-		assertTrue(c.getPostAddress().equals("416 72 Göteborg"));
+		assertTrue(c.getAddress().equals("Testvagen 52"));
+		assertTrue(c.getPostAddress().equals("416 72 Goteborg"));
 		assertTrue(c.getEMail().equals("olle.bengtsson@testuser.com"));
 	}
 

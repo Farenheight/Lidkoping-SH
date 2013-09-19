@@ -30,8 +30,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this(getNewId(), getNewOrderNumber(), System.currentTimeMillis(),
 				System.currentTimeMillis(), "",
 				Long.parseLong("1371679200000"), new Customer("Mr",
-						"Olle Bengtsson", "Testvägen 52", "416 72 Göteborg",
-						"olle.bengtsson@testuser.com"));
+						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
+						"olle.bengtsson@testuser.com", (int)System.currentTimeMillis()));
 	}
 
 	public Order(int id, String orderNumber, long timeCreated,

@@ -7,7 +7,7 @@ public class DataContract {
 	private DataContract() {}
 	
 	public static abstract class OrderTable implements BaseColumns {
-		public static final String TABLE_NAME = "order";
+		public static final String TABLE_NAME = "ordertable";
 		public static final String COLUMN_NAME_ORDER_NUMBER = "order_number";
 		public static final String COLUMN_NAME_ORDER_DATE = "order_date";
 		public static final String COLUMN_NAME_CEMETERY = "cemetery";

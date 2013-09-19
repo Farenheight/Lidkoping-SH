@@ -1,5 +1,6 @@
 package com.example.lidkopingsh.database;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import android.content.ContentValues;
@@ -9,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.lidkopingsh.database.DataContract.CustomerTable;
 import com.example.lidkopingsh.database.DataContract.OrderTable;
+import com.example.lidkopingsh.model.Customer;
 import com.example.lidkopingsh.model.Order;
 
 public class OrderDbStorage {
@@ -36,12 +38,24 @@ public class OrderDbStorage {
 		values.put(OrderTable.COLUMN_NAME_TIME_CREATED, order.getTimeCreated());
 		values.put(OrderTable.COLUMN_NAME_TIME_LAST_UPDATE,
 				order.getLastTimeUpdate());
+		insert(order.getCustomer());
 		db.insert(OrderTable.TABLE_NAME, null, values);
+	}
+	private void insert(Customer customer){
+		ContentValues values = new ContentValues();
+		values.put(CustomerTable.COLUMN_NAME_CUSTOMER_ID, customer.getId());
+		values.put(CustomerTable.COLUMN_NAME_ADDRESS, customer.getAddress());
+		values.put(CustomerTable.COLUMN_NAME_POSTAL_ADDRESS, customer.getPostAddress());
+		values.put(CustomerTable.COLUMN_NAME_EMAIL, customer.getEMail());
+		values.put(CustomerTable.COLUMN_NAME_NAME, customer.getName());
+		values.put(CustomerTable.COLUMN_NAME_TITLE, customer.getTitle());
+		db.insert(CustomerTable.TABLE_NAME, null, values);
+		
 	}
 
 	public Collection<Order> query(String sqlSelection,
 			String[] sqlSelectionArgs, String sqlOrderBy) {
-		String sqlQuery = "SELECT * FROM " + OrderTable.TABLE_NAME + " o " 
+		String sqlQuery = "SELECT * FROM " + OrderTable.TABLE_NAME + " o "
 				+ " JOIN " + CustomerTable.TABLE_NAME + " c ON c." 
 				+ CustomerTable.COLUMN_NAME_CUSTOMER_ID + " = o." + OrderTable.COLUMN_NAME_CUSTOMER_ID;
 		if(sqlSelection != null){
@@ -53,6 +67,7 @@ public class OrderDbStorage {
 		Cursor c = db.rawQuery(sqlQuery, sqlSelectionArgs);
 		//Cursor c = db.rawQuery(OrderTable.TABLE_NAME, ORDER_PROJECTION,
 			//	sqlSelection, sqlSelectionArgs, null, null, sqlOrderBy);
+		Collection<Order> orders = new ArrayList<Order>();
 		while (c.moveToNext()) {
 			int orderID = getIntColumn(c, OrderTable._ID);
 			String orderNumber = getStringColumn(c, OrderTable.COLUMN_NAME_ORDER_NUMBER);
@@ -66,11 +81,12 @@ public class OrderDbStorage {
 			String eMail = getStringColumn(c, CustomerTable.COLUMN_NAME_EMAIL);
 			String title = getStringColumn(c, CustomerTable.COLUMN_NAME_TITLE);
 			String name = getStringColumn(c, CustomerTable.COLUMN_NAME_NAME);
-			
+			orders.add(new Order(orderID, orderNumber, timeCreated, timeLastUpdate, cemetery, orderDate, 
+					new Customer(title, name, address, postalAddress, eMail, customerID)));
 			
 		}
 		
-		return null;
+		return orders;
 
 	}
 	
