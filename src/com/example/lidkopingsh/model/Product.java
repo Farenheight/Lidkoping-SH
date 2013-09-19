@@ -10,6 +10,21 @@ import java.util.List;
  * 
  */
 public class Product implements Listener<Task>, Syncable<Product> {
+	private static int currentId = 0;
+	private int id;
+	private String materialColor;
+	private String description;
+	private String frontWork;
+	/**
+	 * The {@link ProductListener}s that should listen when a task is changed on
+	 * this product.
+	 */
+	private List<Listener<Product>> listeners;
+	/**
+	 * The {@link Task}s that this product has.
+	 */
+	private List<Task> tasks;
+	
 	/**
 	 * Create a new product with tasks
 	 * 
@@ -21,6 +36,22 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		this.tasks = new ArrayList<Task>(tasks);
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public String getMaterialColor() {
+		return materialColor;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getFrontWork() {
+		return frontWork;
+	}
+
 	/**
 	 * Create a new product no tasks
 	 */
@@ -28,31 +59,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		this(new ArrayList<Task>());
 	}
 
-	/**
-	 * The id of this Product
-	 */
-	private int id;
-	/**
-	 * What material and color this product should have
-	 */
-	private String materialColor;
-	/**
-	 * A description about this product
-	 */
-	private String description;
-	/**
-	 * What kind of frontwork this Product should have
-	 */
-	private String frontWork;
-	/**
-	 * The {@link ProductListener}s that should listen when a task is changed on
-	 * this product.
-	 */
-	private List<Listener<Product>> listeners;
-	/**
-	 * The {@link Task}s that this product has.
-	 */
-	private List<Task> tasks;
+
 
 	@Override
 	public void changed(Task task) {
@@ -232,5 +239,9 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			return this.id == ((Product)o).id;
 			//TODO check more fields.
 		}
+	}
+	
+	public static int getNewId(){
+		return currentId++;
 	}
 }

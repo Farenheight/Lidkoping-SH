@@ -20,7 +20,7 @@ public class Stone extends Product {
 	private String ornament;
 
 	public String getStoneModel() {
-		return stoneModel;
+		return stoneModel; 
 	}
 
 	public String getSideBackWork() {

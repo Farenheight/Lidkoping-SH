@@ -4,6 +4,7 @@ local.properties
 # Directories
 /gen
 /bin
+*.log
 *.class
 *.metadata
 # Tests
