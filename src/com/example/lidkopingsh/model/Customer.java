@@ -56,6 +56,6 @@ public class Customer {
 	}
 	
 	public Customer clone(){
-		return new Customer(title, name, address, postAddress, eMail);
+		return new Customer(title, name, address, postAddress, eMail, id);
 	}
 }
