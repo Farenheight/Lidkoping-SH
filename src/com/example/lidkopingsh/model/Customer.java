@@ -35,7 +35,7 @@ public class Customer {
 	 * Only for testing purposes.
 	 */
 	public Customer(){
-		this("Mr", "Olle Bengtsson", "Anonymgatan 1", "416 00 Göteborg", "anonym@mail.com");
+		this("Mr", "Olle Bengtsson", "Anonymgatan 1", "416 00 Göteborg", "anonym@mail.com", 1);
 	}
 
 	public String getTitle() {
