@@ -36,6 +36,13 @@ public class Customer {
 		this.postAddress = postAddress;
 		this.eMail = eMail;
 	}
+	
+	/**
+	 * Only for testing purposes.
+	 */
+	public Customer(){
+		this("Mr", "Olle Bengtsson", "Anonymgatan 1", "416 00 Göteborg", "anonym@mail.com");
+	}
 
 	public String getTitle() {
 		return title;
