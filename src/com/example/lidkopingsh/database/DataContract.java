@@ -57,5 +57,6 @@ public class DataContract {
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_EMAIL = "email";
         public static final String COLUMN_NAME_TITLE = "title";
+        public static final String COLUMN_NAME_POSTAL_ADDRESS = "postal_address";
 	}
 }

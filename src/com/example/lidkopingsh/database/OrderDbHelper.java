@@ -66,7 +66,8 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 			+ CustomerTable.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP
 			+ CustomerTable.COLUMN_NAME_NAME + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ CustomerTable.COLUMN_NAME_ADDRESS + TEXT_TYPE + NOT_NULL + COMMA_SEP
-			+ CustomerTable.COLUMN_NAME_EMAIL + TEXT_TYPE + NOT_NULL + " )";
+			+ CustomerTable.COLUMN_NAME_EMAIL + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ CustomerTable.COLUMN_NAME_POSTAL_ADDRESS + TEXT_TYPE + NOT_NULL +" )";
 
 	public OrderDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);

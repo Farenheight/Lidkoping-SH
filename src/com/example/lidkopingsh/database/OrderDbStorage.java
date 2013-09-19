@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.lidkopingsh.database.DataContract.CustomerTable;
 import com.example.lidkopingsh.database.DataContract.OrderTable;
 import com.example.lidkopingsh.model.Order;
 
@@ -40,16 +41,32 @@ public class OrderDbStorage {
 
 	public Collection<Order> query(String sqlSelection,
 			String[] sqlSelectionArgs, String sqlOrderBy) {
-		Cursor c = db.query(OrderTable.TABLE_NAME, ORDER_PROJECTION,
-				sqlSelection, sqlSelectionArgs, null, null, sqlOrderBy);
+		String sqlQuery = "SELECT * FROM " + OrderTable.TABLE_NAME + " o " 
+				+ " JOIN " + CustomerTable.TABLE_NAME + " c ON c." 
+				+ CustomerTable.COLUMN_NAME_CUSTOMER_ID + " = o." + OrderTable.COLUMN_NAME_CUSTOMER_ID;
+		if(sqlSelection != null){
+			sqlQuery += " WHERE " + sqlSelection;
+		}
+		if(sqlOrderBy != null){
+			sqlQuery += " ORDER BY " + sqlOrderBy;
+		}
+		Cursor c = db.rawQuery(sqlQuery, sqlSelectionArgs);
+		//Cursor c = db.rawQuery(OrderTable.TABLE_NAME, ORDER_PROJECTION,
+			//	sqlSelection, sqlSelectionArgs, null, null, sqlOrderBy);
 		while (c.moveToNext()) {
 			int orderID = getIntColumn(c, OrderTable._ID);
 			String orderNumber = getStringColumn(c, OrderTable.COLUMN_NAME_ORDER_NUMBER);
 			int orderDate = getIntColumn(c, OrderTable.COLUMN_NAME_ORDER_DATE);
 			String cemetery = getStringColumn(c, OrderTable.COLUMN_NAME_CEMETERY);
-			int customerID = getIntColumn(c, OrderTable.COLUMN_NAME_CUSTOMER_ID);
 			int timeCreated = getIntColumn(c, OrderTable.COLUMN_NAME_TIME_CREATED);
 			int timeLastUpdate = getIntColumn(c, OrderTable.COLUMN_NAME_TIME_LAST_UPDATE);
+			int customerID = getIntColumn(c, OrderTable.COLUMN_NAME_CUSTOMER_ID);
+			String address = getStringColumn(c, CustomerTable.COLUMN_NAME_ADDRESS);
+			String postalAddress = getStringColumn(c, CustomerTable.COLUMN_NAME_POSTAL_ADDRESS);
+			String eMail = getStringColumn(c, CustomerTable.COLUMN_NAME_EMAIL);
+			String title = getStringColumn(c, CustomerTable.COLUMN_NAME_TITLE);
+			String name = getStringColumn(c, CustomerTable.COLUMN_NAME_NAME);
+			
 			
 		}
 		

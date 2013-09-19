@@ -1,7 +1,7 @@
 package com.example.lidkopingsh.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,8 +14,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private static int currentId = 0;
 	private static int currentOrderNumberCount = 0;
 	private int id;
-	private final long timeCreated = System.currentTimeMillis();
-	private long lastTimeUpdate = timeCreated;
+	private final long timeCreated;
+	private long lastTimeUpdate;
 	private String cementary;
 	private long orderDate;
 	private String orderNumber;
@@ -23,8 +23,30 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private List<Listener<Order>> orderListeners;
 	private List<Product> products;
 
+	/**
+	 * For testing purposes only.
+	 */
 	public Order() {
-		id = getNewId();
+		this(getNewId(), getNewOrderNumber(), System.currentTimeMillis(),
+				System.currentTimeMillis(), "",
+				Long.parseLong("1371679200000"), new Customer("Mr",
+						"Olle Bengtsson", "Testvägen 52", "416 72 Göteborg",
+						"olle.bengtsson@testuser.com"));
+	}
+
+	public Order(int id, String orderNumber, long timeCreated,
+			long lastTimeUpdated, String cementary, long orderDate,
+			Customer customer) {
+		this.id = id;
+		this.orderNumber = orderNumber;
+		this.timeCreated = timeCreated;
+		this.lastTimeUpdate = lastTimeUpdated;
+		this.cementary = cementary;
+		this.orderDate = orderDate;
+		this.customer = customer.clone();
+		
+		orderListeners = new ArrayList<Listener<Order>>();
+		products = new ArrayList<Product>();
 	}
 
 	public int getId() {
@@ -58,8 +80,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public List<Product> getProducts() {
 		return products;
 	}
-	
-	public void addProduct(Product p){
+
+	public void addProduct(Product p) {
 		products.add(p);
 	}
 
@@ -124,26 +146,27 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		}
 	}
 
-	private String getNewOrderNumber(){
+	private static String getNewOrderNumber() {
 		int year = Calendar.getInstance().get(Calendar.YEAR);
-		int yearPart = year%2000;
+		int yearPart = year % 2000;
+
 		String numPart = "";
 		currentOrderNumberCount++;
-		if(currentOrderNumberCount < 10){
+		if (currentOrderNumberCount < 10) {
 			numPart = "000" + currentOrderNumberCount;
-		}else if(currentOrderNumberCount < 100){
+		} else if (currentOrderNumberCount < 100) {
 			numPart = "00" + currentOrderNumberCount;
-		}else if(currentOrderNumberCount < 1000){
+		} else if (currentOrderNumberCount < 1000) {
 			numPart = "0" + currentOrderNumberCount;
-		}else {
+		} else {
 			numPart = "" + currentOrderNumberCount;
 		}
-		String complete = "" + yearPart + numPart;
-		return complete;
+
+		return "" + yearPart + numPart;
 	}
 
 	private static int getNewId() {
-		return currentId++;
+		return ++currentId;
 	}
 
 }
