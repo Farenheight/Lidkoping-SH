@@ -34,6 +34,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	public Product(List<Task> tasks) {
 		this.listeners = new ArrayList<Listener<Product>>();
 		this.tasks = new ArrayList<Task>(tasks);
+		this.id = getNewId();
 	}
 
 	public int getId() {
@@ -241,7 +242,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		}
 	}
 	
-	public static int getNewId(){
+	private static int getNewId(){
 		return currentId++;
 	}
 }
