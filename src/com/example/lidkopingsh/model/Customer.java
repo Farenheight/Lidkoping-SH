@@ -22,10 +22,14 @@ public class Customer {
 	 * @param eMail the customers email
 	 */
 	public Customer(String title, String name, String address, String postAddress, String eMail){
-		this(name, address, postAddress, eMail);
+		this.name = name;
+		this.address = address;
+		this.postAddress = postAddress;
+		this.eMail = eMail;
 		this.title = title;
 	}
 	
+	@Deprecated
 	public Customer(String name, String address, String postAddress, String eMail){
 		this.name = name;
 		this.address = address;
@@ -51,5 +55,9 @@ public class Customer {
 
 	public String getEMail() {
 		return eMail;
+	}
+	
+	public Customer clone(){
+		return new Customer(title, name, address, postAddress, eMail);
 	}
 }
