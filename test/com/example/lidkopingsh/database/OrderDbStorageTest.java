@@ -2,7 +2,6 @@ package com.example.lidkopingsh.database;
 
 import java.util.Collection;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import android.test.InstrumentationTestCase;
@@ -18,10 +17,12 @@ import com.example.lidkopingsh.model.Order;
 public class OrderDbStorageTest extends InstrumentationTestCase {
 
 	private OrderDbStorage dbStorage;
-
-	@BeforeClass
-	private void setUpBeforeClass() {
+	
+	@Override
+	protected void setUp() throws Exception {
 		dbStorage = new OrderDbStorage(getInstrumentation().getContext());
+		
+		super.setUp();
 	}
 
 	@Test
