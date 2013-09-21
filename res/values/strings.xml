@@ -3,5 +3,10 @@
 
     <string name="app_name">LidkopingSH</string>
     <string name="title_stone_detail">Stone Detail</string>
+    
+    <string-array name="tasks_array">
+        <item>Polering</item>
+        <item>Sågning</item>
+    </string-array>
 
 </resources>
