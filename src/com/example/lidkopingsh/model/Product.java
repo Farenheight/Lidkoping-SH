@@ -55,7 +55,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * @param tasks
 	 *            The tasks which is needed to complete this product.
 	 */
-	private Product(List<Task> tasks) {
+	public Product(List<Task> tasks) {
 		this.listeners = new ArrayList<Listener<Product>>();
 		this.tasks = new ArrayList<Task>(tasks);
 	}

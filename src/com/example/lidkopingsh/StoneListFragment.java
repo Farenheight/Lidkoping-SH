@@ -1,12 +1,18 @@
 package com.example.lidkopingsh;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.lidkopingsh.model.ModelHandler;
+import com.example.lidkopingsh.model.Order;
+import com.example.lidkopingsh.model.Product;
+import com.example.lidkopingsh.model.Task;
 
 /**
  * A list fragment representing a list of Stones. This fragment also supports
@@ -69,10 +75,12 @@ public class StoneListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// TODO: replace with a real list adapter.
-		setListAdapter(new ArrayAdapter<DummyModel.DummyStone>(getActivity(),
+		//Init dummy data
+		List<Order> orders = ModelHandler.getModel().getOrders();
+		
+		setListAdapter(new TasksAdapter(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, DummyModel.ITEMS));
+				android.R.id.text1, orders));
 	}
 
 	@Override
