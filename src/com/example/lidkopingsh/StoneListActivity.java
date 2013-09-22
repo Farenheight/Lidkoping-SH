@@ -63,13 +63,13 @@ public class StoneListActivity extends FragmentActivity implements
 	 * the item with the given ID was selected.
 	 */
 	@Override
-	public void onItemSelected(String id) {
+	public void onItemSelected(int orderPos) {
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
 			// fragment transaction.
 			Bundle arguments = new Bundle();
-			arguments.putString(StoneDetailFragment.ARG_ITEM_ID, id);
+			arguments.putInt(StoneDetailFragment.ARG_ITEM_ID, orderPos);
 			StoneDetailFragment fragment = new StoneDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
@@ -79,7 +79,7 @@ public class StoneListActivity extends FragmentActivity implements
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this, StoneDetailActivity.class);
-			detailIntent.putExtra(StoneDetailFragment.ARG_ITEM_ID, id);
+			detailIntent.putExtra(StoneDetailFragment.ARG_ITEM_ID, orderPos);
 			startActivity(detailIntent);
 		}
 	}
