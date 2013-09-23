@@ -78,7 +78,7 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 			+ TaskToProductTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
 			+ TaskToProductTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 			+ TaskToProductTable.COLUMN_NAME_TASK_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-			+ TaskToProductTable.COLUMN_NAME_TASK_COMPLETED + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ TaskToProductTable.COLUMN_NAME_TASK_STATUS + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 			+ TaskToProductTable.COLUMN_NAME_SORT_ORDER + INTEGER_TYPE + NOT_NULL + " )";
 	
 	private static final String CUSTOMER_TABLE_CREATE = CREATE_TABLE

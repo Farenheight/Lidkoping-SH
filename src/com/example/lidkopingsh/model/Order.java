@@ -2,6 +2,7 @@ package com.example.lidkopingsh.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -82,6 +83,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 
 	public void addProduct(Product p) {
 		products.add(p);
+	}
+	
+	public void addProducts(Collection<Product> products) {
+		this.products.addAll(products);
 	}
 
 	/**

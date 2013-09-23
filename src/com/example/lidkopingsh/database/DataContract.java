@@ -54,7 +54,7 @@ public class DataContract {
         public static final String TABLE_NAME = "task_to_product";
         public static final String COLUMN_NAME_TASK_ID = "task_id";
         public static final String COLUMN_NAME_PRODUCT_ID = "product_id";
-        public static final String COLUMN_NAME_TASK_COMPLETED = "completed";
+        public static final String COLUMN_NAME_TASK_STATUS = "completed";
         public static final String COLUMN_NAME_SORT_ORDER = "sort_order";
 	}
 	
