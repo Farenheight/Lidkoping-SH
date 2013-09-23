@@ -1,6 +1,7 @@
 package com.example.lidkopingsh.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -61,6 +62,11 @@ public class Model {
 
 	public void addOrder(Order o) {
 		orders.add(o);
+		notifyModelListeners();
+	}
+	
+	public void addOrders(Collection<Order> orders) {
+		this.orders.addAll(orders);
 		notifyModelListeners();
 	}
 
