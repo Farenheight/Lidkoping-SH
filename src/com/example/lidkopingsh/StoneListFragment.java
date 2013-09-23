@@ -1,6 +1,7 @@
 package com.example.lidkopingsh;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -78,10 +79,10 @@ public class StoneListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 
 		// Init adapter containing the data list
-		List<Order> orders = ModelHandler.getModel().getOrders();
+		Collection<Order> orders = ModelHandler.getModel().getOrders();
 		setListAdapter(new TasksAdapter(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, orders));
+				android.R.id.text1, new ArrayList<Order>(orders)));
 	}
 
 	@Override
