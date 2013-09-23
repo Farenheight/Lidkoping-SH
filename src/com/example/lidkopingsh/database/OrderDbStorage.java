@@ -33,6 +33,23 @@ import com.example.lidkopingsh.model.Task;
  */
 public class OrderDbStorage {
 
+	private static final String CUSTOMER = "c";
+	private static final String ORDER = "o";
+	private static final String PRODUCT = "p";
+	private static final String STONE = "s";
+	private static final String TASK = "t";
+	private static final String TASK_TO_PRODUCT = "ttp";
+
+	private static final String COMMA_SEP = ", ";
+	private static final String DOT = ".";
+	private static final String EQUALS = " = ";
+	private static final String JOIN = " JOIN ";
+	private static final String ON = " ON ";
+	private static final String ORDER_BY = " ORDER BY ";
+	private static final String SELECT_FROM = "SELECT * FROM ";
+	private static final String SPACE = " ";
+	private static final String WHERE = " WHERE ";
+	
 	private final SQLiteDatabase db;
 
 	/**
@@ -60,12 +77,16 @@ public class OrderDbStorage {
 		values.put(OrderTable.COLUMN_NAME_ORDER_DATE, order.getOrderDate());
 		values.put(OrderTable.COLUMN_NAME_CUSTOMER_ID, order.getCustomer()
 				.getId());
+		values.put(OrderTable.COLUMN_NAME_ID_NAME, order.getIdName());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY, order.getCementary());
 		values.put(OrderTable.COLUMN_NAME_TIME_CREATED, order.getTimeCreated());
 		values.put(OrderTable.COLUMN_NAME_TIME_LAST_UPDATE,
 				order.getLastTimeUpdate());
 
 		insertCustomer(order.getCustomer());
+		for (Product p : order.getProducts()) {
+			insertProduct(p, order.getOrderNumber());
+		}
 
 		db.insert(OrderTable.TABLE_NAME, null, values);
 	}
@@ -91,17 +112,71 @@ public class OrderDbStorage {
 		db.insert(CustomerTable.TABLE_NAME, null, values);
 	}
 
+	private void insertProduct(Product p, String orderNumber) {
+		ContentValues values = new ContentValues();
+
+		values.put(ProductTable.COLUMN_NAME_PRODUCT_ID, p.getId());
+		values.put(ProductTable.COLUMN_NAME_ORDER_NUMBER, orderNumber);
+		values.put(ProductTable.COLUMN_NAME_DESCRIPTION, p.getDescription());
+		values.put(ProductTable.COLUMN_NAME_MATERIAL_COLOR, p.getMaterialColor());
+		values.put(ProductTable.COLUMN_NAME_FRONT_WORK, p.getFrontWork());
+
+		db.insert(ProductTable.TABLE_NAME, null, values);
+		
+		if (p instanceof Stone) {
+			insertStone((Stone) p);
+		}
+		
+		int i = 0;
+		for (Task t : p.getTasks()) {
+			insertTask(t, p.getId(), i);
+			i++;
+		}
+	}
+
+	private void insertStone(Stone s) {
+		ContentValues values = new ContentValues();
+
+		values.put(StoneTable.COLUMN_NAME_PRODUCT_ID, s.getId());
+		values.put(StoneTable.COLUMN_NAME_STONE_MODEL, s.getStoneModel());
+		values.put(StoneTable.COLUMN_NAME_SIDE_BACK_WORK, s.getSideBackWork());
+		values.put(StoneTable.COLUMN_NAME_TEXTSTYLE, s.getTextStyle());
+		values.put(StoneTable.COLUMN_NAME_ORNAMENT, s.getOrnament());
+
+		db.insert(StoneTable.TABLE_NAME, null, values);
+	}
+
+	private void insertTask(Task t, int productId, int sortOrder) {
+		// Task table
+		ContentValues values = new ContentValues();
+
+		values.put(TaskTable.COLUMN_NAME_TASK_ID, t.getId());
+		values.put(TaskTable.COLUMN_NAME_TASK, t.getName());
+		
+		db.insert(TaskTable.TABLE_NAME, null, values);
+		
+		// Task to product table
+		values = new ContentValues();
+		
+		values.put(TaskToProductTable.COLUMN_NAME_PRODUCT_ID, productId);
+		values.put(TaskToProductTable.COLUMN_NAME_TASK_ID, t.getId());
+		values.put(TaskToProductTable.COLUMN_NAME_TASK_STATUS, t.getStatus().ordinal());	// TODO: Change to getId() of ENUM.
+		values.put(TaskToProductTable.COLUMN_NAME_SORT_ORDER, sortOrder);
+		
+		db.insert(TaskToProductTable.TABLE_NAME, null, values);
+	}
+
 	public Collection<Order> query(String sqlSelection,
 			String[] sqlSelectionArgs, String sqlOrderBy) {
-		String sqlQuery = "SELECT * FROM " + OrderTable.TABLE_NAME + " o "
-				+ " JOIN " + CustomerTable.TABLE_NAME + " c ON c."
-				+ CustomerTable.COLUMN_NAME_CUSTOMER_ID + " = o."
+		String sqlQuery = SELECT_FROM + OrderTable.TABLE_NAME + SPACE + ORDER + SPACE
+				+ JOIN + CustomerTable.TABLE_NAME + SPACE + CUSTOMER + ON + CUSTOMER + DOT
+				+ CustomerTable.COLUMN_NAME_CUSTOMER_ID + EQUALS + ORDER + DOT
 				+ OrderTable.COLUMN_NAME_CUSTOMER_ID;
 		if (sqlSelection != null) {
-			sqlQuery += " WHERE " + sqlSelection;
+			sqlQuery += WHERE + sqlSelection;
 		}
 		if (sqlOrderBy != null) {
-			sqlQuery += " ORDER BY " + sqlOrderBy;
+			sqlQuery += ORDER_BY + sqlOrderBy;
 		}
 
 		Cursor c = db.rawQuery(sqlQuery, sqlSelectionArgs);
@@ -132,12 +207,13 @@ public class OrderDbStorage {
 		long orderDate = getIntColumn(c, OrderTable.COLUMN_NAME_ORDER_DATE);
 		String orderNumber = getStringColumn(c,
 				OrderTable.COLUMN_NAME_ORDER_NUMBER);
+		String idName = getStringColumn(c, OrderTable.COLUMN_NAME_ID_NAME);
 		String cemetery = getStringColumn(c, OrderTable.COLUMN_NAME_CEMETERY);
 		int timeCreated = getIntColumn(c, OrderTable.COLUMN_NAME_TIME_CREATED);
 		int timeLastUpdate = getIntColumn(c,
 				OrderTable.COLUMN_NAME_TIME_LAST_UPDATE);
 		
-		Order order = new Order(orderID, orderNumber, timeCreated, timeLastUpdate,
+		Order order = new Order(orderID, orderNumber, idName, timeCreated, timeLastUpdate,
 				cemetery, orderDate, getCustomer(c));
 		order.addProducts(getProducts(orderNumber));
 		
@@ -146,7 +222,6 @@ public class OrderDbStorage {
 	
 	private Product getProduct(Cursor c) {
 		int productId = getIntColumn(c, ProductTable.COLUMN_NAME_PRODUCT_ID);
-		String title = getStringColumn(c, ProductTable.COLUMN_NAME_TITLE);
 		String orderNumber = getStringColumn(c, ProductTable.COLUMN_NAME_ORDER_NUMBER);
 		String description = getStringColumn(c, ProductTable.COLUMN_NAME_DESCRIPTION);
 		String materialColor = getStringColumn(c, ProductTable.COLUMN_NAME_MATERIAL_COLOR);
@@ -154,25 +229,25 @@ public class OrderDbStorage {
 		
 		List<Task> tasks = getTasks(c);
 		
-		boolean isStone = !c.isNull(c.getColumnIndexOrThrow(StoneTable.COLUMN_NAME_STONE_ID));
+		boolean isStone = !c.isNull(c.getColumnIndexOrThrow(STONE + StoneTable.COLUMN_NAME_PRODUCT_ID));
 		if (isStone) {
-			return getStone(c, productId, title, orderNumber, description, materialColor, frontWork, tasks);
+			return getStone(c, productId, orderNumber, description, materialColor, frontWork, tasks);
 		} else {
 			return new Product(productId, materialColor, description, frontWork, tasks);
 		}
 	}
 
 	private Collection<Product> getProducts(String orderNumber) {
-		String sqlProducts = "SELECT * FROM " + TaskTable.TABLE_NAME + " t"
-				+ " JOIN " + TaskToProductTable.TABLE_NAME + " ttp ON t." 
-				+ TaskTable.COLUMN_NAME_TASK_ID + " = ttp." + TaskToProductTable.COLUMN_NAME_TASK_ID
-				+ " JOIN " + ProductTable.TABLE_NAME + " p ON ttp." 
-				+ TaskToProductTable.COLUMN_NAME_PRODUCT_ID	+ " = p." + ProductTable.COLUMN_NAME_PRODUCT_ID
-				+ " JOIN " + StoneTable.TABLE_NAME + " s ON p."
-				+ ProductTable.COLUMN_NAME_PRODUCT_ID + " = s." + StoneTable.COLUMN_NAME_PRODUCT_ID
-				+ " WHERE p." + ProductTable.COLUMN_NAME_ORDER_NUMBER + " = ?"
-				+ " ORDER BY p." + ProductTable.COLUMN_NAME_PRODUCT_ID 
-				+ ", ttp." + TaskToProductTable.COLUMN_NAME_SORT_ORDER;
+		String sqlProducts = SELECT_FROM + TaskTable.TABLE_NAME + SPACE + TASK
+				+ JOIN + TaskToProductTable.TABLE_NAME + SPACE + TASK_TO_PRODUCT + ON + TASK + DOT
+				+ TaskTable.COLUMN_NAME_TASK_ID + EQUALS + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_TASK_ID
+				+ JOIN + ProductTable.TABLE_NAME + SPACE + PRODUCT + ON + TASK_TO_PRODUCT + DOT 
+				+ TaskToProductTable.COLUMN_NAME_PRODUCT_ID	+ EQUALS + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID
+				+ JOIN + StoneTable.TABLE_NAME + SPACE + STONE + ON + PRODUCT + DOT
+				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + STONE + DOT + StoneTable.COLUMN_NAME_PRODUCT_ID
+				+ WHERE + PRODUCT + DOT + ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + "?"
+				+ ORDER_BY + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID 
+				+ COMMA_SEP + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_SORT_ORDER;
 		
 		Cursor c = db.rawQuery(sqlProducts, new String[] { orderNumber });
 		Collection<Product> products = new LinkedList<Product>();
@@ -184,9 +259,9 @@ public class OrderDbStorage {
 		return products;
 	}
 	
-	private Stone getStone(Cursor c, int productId, String title,
-			String orderNumber, String description, String materialColor,
-			String frontWork, List<Task> tasks) {
+	private Stone getStone(Cursor c, int productId, String orderNumber,
+			String description, String materialColor, String frontWork,
+			List<Task> tasks) {
 		String stoneModel = getStringColumn(c,
 				StoneTable.COLUMN_NAME_STONE_MODEL);
 		String sideBackwork = getStringColumn(c,

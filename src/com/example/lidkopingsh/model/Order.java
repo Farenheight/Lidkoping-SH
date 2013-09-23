@@ -19,6 +19,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private String cementary;
 	private long orderDate;
 	private String orderNumber;
+	private String idName;
 	private Customer customer;
 	private List<Listener<Order>> orderListeners;
 	private List<Product> products;
@@ -27,18 +28,19 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * For testing purposes only.
 	 */
 	public Order() {
-		this(5, getNewOrderNumber(), System.currentTimeMillis(),
+		this(5, getNewOrderNumber(), "O.R.", System.currentTimeMillis(),
 				System.currentTimeMillis(), "",
 				Long.parseLong("1371679200000"), new Customer("Mr",
 						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
 						"olle.bengtsson@testuser.com", (int)System.currentTimeMillis()));
 	}
 
-	public Order(int id, String orderNumber, long timeCreated,
+	public Order(int id, String orderNumber, String idName, long timeCreated,
 			long lastTimeUpdated, String cementary, long orderDate,
 			Customer customer) {
 		this.id = id;
 		this.orderNumber = orderNumber;
+		this.idName = idName;
 		this.timeCreated = timeCreated;
 		this.lastTimeUpdate = lastTimeUpdated;
 		this.cementary = cementary;
@@ -75,6 +77,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 
 	public Customer getCustomer() {
 		return customer;
+	}
+	
+	public String getIdName() {
+		return idName;
 	}
 
 	public List<Product> getProducts() {

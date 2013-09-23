@@ -26,7 +26,7 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 	 * Current version of the application's database structure.
 	 * If the structure is changed, this version number must be increased.
 	 */
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	private static final String DATABASE_NAME = "Orders.db";
 	
 	private static final String TEXT_TYPE = " TEXT";
@@ -42,6 +42,7 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 			+ OrderTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_ORDER_DATE + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_ORDER_NUMBER + TEXT_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
+			+ OrderTable.COLUMN_NAME_ID_NAME + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_CEMETERY + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_CUSTOMER_ID + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_TIME_CREATED + INTEGER_TYPE + NOT_NULL + COMMA_SEP
@@ -51,7 +52,6 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 			+ ProductTable.TABLE_NAME + " (" 
 			+ ProductTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
-			+ ProductTable.COLUMN_NAME_TITLE + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_ORDER_NUMBER + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_FRONT_WORK + TEXT_TYPE + NOT_NULL +COMMA_SEP
@@ -60,7 +60,6 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 	private static final String STONE_TABLE_CREATE = CREATE_TABLE 
 			+ StoneTable.TABLE_NAME + " ("
 			+ StoneTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
-			+ StoneTable.COLUMN_NAME_STONE_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
 			+ StoneTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
 			+ StoneTable.COLUMN_NAME_ORNAMENT + TEXT_TYPE + COMMA_SEP
 			+ StoneTable.COLUMN_NAME_TEXTSTYLE + TEXT_TYPE + COMMA_SEP
