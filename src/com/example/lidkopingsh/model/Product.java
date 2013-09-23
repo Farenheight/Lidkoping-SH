@@ -10,7 +10,6 @@ import java.util.List;
  * 
  */
 public class Product implements Listener<Task>, Syncable<Product> {
-	private static int currentId = 0;
 	private int id;
 	private String materialColor;
 	private String description;
@@ -24,6 +23,31 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * The {@link Task}s that this product has.
 	 */
 	private List<Task> tasks;
+
+	/**
+	 * Create a new Product
+	 * 
+	 * @param id
+	 *            The id of the Product (from the database). The id should be
+	 *            unique for each element
+	 * @param materialColor
+	 *            The matierial and color for this Product.
+	 * @param description
+	 *            The description for this Product.
+	 * @param frontWork
+	 *            The frontWork for this product
+	 * @param tasks
+	 *            The tasks this Product should go through for this product to
+	 *            be completed.
+	 */
+	public Product(int id, String materialColor, String description,
+			String frontWork, List<Task> tasks){
+		this(tasks);
+		this.id = id;
+		this.materialColor = materialColor;
+		this.description = description;
+		this.frontWork = frontWork;
+	}
 	
 	/**
 	 * Create a new product with tasks
@@ -34,11 +58,10 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	public Product(List<Task> tasks) {
 		this.listeners = new ArrayList<Listener<Product>>();
 		this.tasks = new ArrayList<Task>(tasks);
-		this.id = getNewId();
 	}
 	
 	/**
-	 * Create a new product no tasks
+	 * Create a new product no tasks and dummy 
 	 */
 	public Product() {
 		this(new ArrayList<Task>());
@@ -238,9 +261,5 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			return this.id == ((Product)o).id;
 			//TODO check more fields.
 		}
-	}
-	
-	private static int getNewId(){
-		return ++currentId;
 	}
 }

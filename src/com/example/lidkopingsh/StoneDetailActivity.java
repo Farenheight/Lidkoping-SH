@@ -37,8 +37,8 @@ public class StoneDetailActivity extends FragmentActivity {
 			// Create the detail fragment and add it to the activity
 			// using a fragment transaction.
 			Bundle arguments = new Bundle();
-			arguments.putString(StoneDetailFragment.ARG_ITEM_ID, getIntent()
-					.getStringExtra(StoneDetailFragment.ARG_ITEM_ID));
+			arguments.putInt(StoneDetailFragment.ARG_ITEM_ID, getIntent()
+					.getIntExtra(StoneDetailFragment.ARG_ITEM_ID, -1));
 			StoneDetailFragment fragment = new StoneDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()

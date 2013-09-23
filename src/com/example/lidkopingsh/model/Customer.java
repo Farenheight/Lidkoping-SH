@@ -30,6 +30,13 @@ public class Customer {
 		this.title = title;
 		this.id = id;
 	}
+	
+	/**
+	 * Only for testing purposes.
+	 */
+	public Customer(){
+		this("Mr", "Olle Bengtsson", "Anonymgatan 1", "416 00 Göteborg", "anonym@mail.com", 1);
+	}
 
 	public String getTitle() {
 		return title;

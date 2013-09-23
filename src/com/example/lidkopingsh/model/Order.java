@@ -11,7 +11,6 @@ import java.util.List;
  * 
  */
 public class Order implements Listener<Product>, Syncable<Order> {
-	private static int currentId = 0;
 	private static int currentOrderNumberCount = 0;
 	private int id;
 	private final long timeCreated;
@@ -27,7 +26,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * For testing purposes only.
 	 */
 	public Order() {
-		this(getNewId(), getNewOrderNumber(), System.currentTimeMillis(),
+		this(5, getNewOrderNumber(), System.currentTimeMillis(),
 				System.currentTimeMillis(), "",
 				Long.parseLong("1371679200000"), new Customer("Mr",
 						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
@@ -163,10 +162,6 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		}
 
 		return "" + yearPart + numPart;
-	}
-
-	private static int getNewId() {
-		return ++currentId;
 	}
 
 }

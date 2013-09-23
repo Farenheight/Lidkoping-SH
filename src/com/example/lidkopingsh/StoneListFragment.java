@@ -1,13 +1,15 @@
 package com.example.lidkopingsh;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.example.lidkopingsh.dummy.DummyContent;
+import com.example.lidkopingsh.model.ModelHandler;
+import com.example.lidkopingsh.model.Order;
 
 /**
  * A list fragment representing a list of Stones. This fragment also supports
@@ -43,10 +45,15 @@ public class StoneListFragment extends ListFragment {
 	 * selections.
 	 */
 	public interface Callbacks {
+
 		/**
-		 * Callback for when an item has been selected.
+		 * Callback for when an order has been selected in the list.
+		 * 
+		 * @param orderPos
+		 *            The selected orders position in the list. TODO: Change to
+		 *            order id
 		 */
-		public void onItemSelected(String id);
+		public void onItemSelected(int orderPos);
 	}
 
 	/**
@@ -55,7 +62,7 @@ public class StoneListFragment extends ListFragment {
 	 */
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
-		public void onItemSelected(String id) {
+		public void onItemSelected(int id) {
 		}
 	};
 
@@ -70,10 +77,11 @@ public class StoneListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// TODO: replace with a real list adapter.
-		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+		// Init adapter containing the data list
+		List<Order> orders = ModelHandler.getModel().getOrders();
+		setListAdapter(new TasksAdapter(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, DummyContent.ITEMS));
+				android.R.id.text1, orders));
 	}
 
 	@Override
@@ -116,7 +124,7 @@ public class StoneListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+		mCallbacks.onItemSelected(position);
 	}
 
 	@Override

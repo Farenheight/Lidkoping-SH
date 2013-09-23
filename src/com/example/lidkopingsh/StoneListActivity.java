@@ -3,6 +3,8 @@ package com.example.lidkopingsh;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 /**
  * An activity representing a list of Stones. This activity has different
@@ -32,6 +34,13 @@ public class StoneListActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_stone_list);
+		
+		//Setup the task spinner
+		Spinner spinnerTasks = (Spinner) findViewById(R.id.spinnerTasks);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+		        R.array.tasks_array, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerTasks.setAdapter(adapter);
 
 		if (findViewById(R.id.stone_detail_container) != null) {
 			// The detail container view will be present only in the
@@ -54,13 +63,13 @@ public class StoneListActivity extends FragmentActivity implements
 	 * the item with the given ID was selected.
 	 */
 	@Override
-	public void onItemSelected(String id) {
+	public void onItemSelected(int orderPos) {
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
 			// fragment transaction.
 			Bundle arguments = new Bundle();
-			arguments.putString(StoneDetailFragment.ARG_ITEM_ID, id);
+			arguments.putInt(StoneDetailFragment.ARG_ITEM_ID, orderPos);
 			StoneDetailFragment fragment = new StoneDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
@@ -70,7 +79,7 @@ public class StoneListActivity extends FragmentActivity implements
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this, StoneDetailActivity.class);
-			detailIntent.putExtra(StoneDetailFragment.ARG_ITEM_ID, id);
+			detailIntent.putExtra(StoneDetailFragment.ARG_ITEM_ID, orderPos);
 			startActivity(detailIntent);
 		}
 	}

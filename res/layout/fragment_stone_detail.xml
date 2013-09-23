@@ -1,10 +1,42 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/stone_detail"
-    style="?android:attr/textAppearanceLarge"
+    android:id="@+id/stone_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:textIsSelectable="true"
-    tools:context=".StoneDetailFragment" />
+    tools:context=".StoneDetailActivity"
+    tools:ignore="MergeRootFrame" >
 
+    <TextView
+        android:id="@+id/stone_name"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Test name"
+        android:textIsSelectable="true" />
+
+    <TextView
+        android:id="@+id/stone_desc"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="38dp"
+        android:padding="16dp"
+        android:text="Test desc"
+        android:textIsSelectable="true" />
+
+    <LinearLayout
+        android:id="@+id/task_container"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="#ccc"
+        android:baselineAligned="true"
+        android:orientation="horizontal" >
+
+    </LinearLayout>
+
+</RelativeLayout>
