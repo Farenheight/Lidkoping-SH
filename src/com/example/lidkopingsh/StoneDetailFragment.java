@@ -115,9 +115,9 @@ public class StoneDetailFragment extends Fragment {
 	 */
 	private void initInfo(View rootView) {
 
-		((TextView) rootView.findViewById(R.id.stone_name))
+		((TextView) rootView.findViewById(R.id.burialName))
 				.setText("Order nummer: " + mOrder.getOrderNumber());
-		((TextView) rootView.findViewById(R.id.stone_desc))
+		((TextView) rootView.findViewById(R.id.materialAndColor))
 				.setText("Kund namn: " + mOrder.getCustomer().getName());
 	}
 }
