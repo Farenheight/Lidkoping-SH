@@ -26,11 +26,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * For testing purposes only.
 	 */
 	public Order() {
-		this(5, getNewOrderNumber(), System.currentTimeMillis(),
-				System.currentTimeMillis(), "",
-				Long.parseLong("1371679200000"), new Customer("Mr",
-						"Olle Bengtsson", "Testvägen 52", "416 72 Göteborg",
-						"olle.bengtsson@testuser.com"));
+		this(5, getNewOrderNumber(), System.currentTimeMillis(), System
+				.currentTimeMillis(), "", Long.parseLong("1371679200000"),
+				new Customer("Mr", "Olle Bengtsson", "Testvägen 52",
+						"416 72 Göteborg", "olle.bengtsson@testuser.com"));
 	}
 
 	public Order(int id, String orderNumber, long timeCreated,
@@ -43,7 +42,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.cementary = cementary;
 		this.orderDate = orderDate;
 		this.customer = customer.clone();
-		
+
 		orderListeners = new ArrayList<Listener<Order>>();
 		products = new ArrayList<Product>();
 	}
