@@ -26,9 +26,9 @@ public class MapModel implements IModel {
 	@Override
 	public Product getProductById(int id) throws NoSuchElementException {
 		Product p = products.get(id);
-		if(p == null){
+		if (p == null) {
 			throw new NoSuchElementException();
-		}else{
+		} else {
 			return p;
 		}
 	}
@@ -41,9 +41,9 @@ public class MapModel implements IModel {
 	@Override
 	public Order getOrderById(int id) throws NoSuchElementException {
 		Order o = orders.get(id);
-		if(o == null){
+		if (o == null) {
 			throw new NoSuchElementException();
-		}else{
+		} else {
 			return o;
 		}
 	}
@@ -57,8 +57,11 @@ public class MapModel implements IModel {
 	 */
 	@Override
 	public void addOrder(Order o) {
+		if (orders.get(o.getId()) != null) {
+			removeOrder(o);
+		}
 		orders.put(o.getId(), o);
-		for(Product p : o.getProducts()){
+		for (Product p : o.getProducts()) {
 			products.put(p.getId(), p);
 		}
 	}
@@ -73,7 +76,7 @@ public class MapModel implements IModel {
 	@Override
 	public void removeOrder(Order o) {
 		orders.remove(o.getId());
-		for(Product p : o.getProducts()){
+		for (Product p : orders.get(o.getId()).getProducts()) {
 			products.remove(p.getId());
 		}
 	}

@@ -7,18 +7,24 @@ public interface IModel {
 
 	/**
 	 * Returns the product with the specified id.
-	 * @param id int
+	 * 
+	 * @param id
+	 *            int
 	 * @return product with specified id
-	 * @throws NoSuchElementException when the id does not exist
+	 * @throws NoSuchElementException
+	 *             when the id does not exist
 	 */
 	public abstract Product getProductById(int id)
 			throws NoSuchElementException;
 
 	/**
 	 * Returns the order with the specified id.
-	 * @param id int
+	 * 
+	 * @param id
+	 *            int
 	 * @return product with specified id
-	 * @throws NoSuchElementException when the id does not exist
+	 * @throws NoSuchElementException
+	 *             when the id does not exist
 	 */
 	public abstract Order getOrderById(int id) throws NoSuchElementException;
 

@@ -30,7 +30,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				System.currentTimeMillis(), "",
 				Long.parseLong("1371679200000"), new Customer("Mr",
 						"Olle Bengtsson", "Testv�gen 52", "416 72 G�teborg",
-						"olle.bengtsson@testuser.com"));
+						"olle.bengtsson@testuser.com")); 
 	}
 
 	public Order(int id, String orderNumber, long timeCreated,
