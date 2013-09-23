@@ -6,8 +6,7 @@ import java.util.List;
 public class ExampleLayer implements ILayer {
 
 	@Override
-	public void changed(Model object) {
-		
+	public void changed(Order object) {
 		
 	}
 

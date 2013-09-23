@@ -54,7 +54,6 @@ public class Model {
 	
 	public void addOrders(Collection<Order> orders) {
 		this.orders.addAll(orders);
-		notifyModelListeners();
 	}
 
 	public void removeOrder(Order o) {
