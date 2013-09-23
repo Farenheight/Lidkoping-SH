@@ -29,7 +29,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 	public void testSelect() {
 		Customer customer = new Customer("Mr", "Namn Efternamn",
 				"Adress gata 5", "123 45 Stad", "email@test.se", 23);
-		Order order = new Order(1, "130942", System.currentTimeMillis(),
+		Order order = new Order(1, "130942", "O.S.", System.currentTimeMillis(),
 				System.currentTimeMillis(), "Kyrkogård",
 				System.currentTimeMillis(), customer);
 

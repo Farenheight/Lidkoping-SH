@@ -6,14 +6,13 @@ import java.util.List;
 public class ExampleLayer implements ILayer {
 
 	@Override
-	public void changed(Model object) {
-		
+	public void changed(Order object) {
 		
 	}
 
 	@Override
-	public Model getModel() {
-		Model m = new Model();
+	public IModel getModel() {
+		IModel m = new Model();
 		for(int i = 0; i<10; i++) {
 			List<Task> tList = new ArrayList<Task>();
 			tList.add(new Task(1, "Sågning"));

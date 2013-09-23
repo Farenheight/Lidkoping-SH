@@ -50,7 +50,7 @@ public class StoneDetailFragment extends Fragment {
 
 		if (getArguments().containsKey(ARG_ITEM_ID)) {
 			int orderPos = getArguments().getInt(ARG_ITEM_ID);
-			mOrder = ModelHandler.getModel().getOrders().get(orderPos);
+			//mOrder = ModelHandler.getModel().getOrderById();		// TODO: Get order id.
 		}
 	}
 
