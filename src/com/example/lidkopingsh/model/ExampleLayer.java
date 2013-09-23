@@ -6,20 +6,20 @@ import java.util.List;
 public class ExampleLayer implements ILayer {
 
 	@Override
-	public void changed(Model object) {
+	public void changed(IModel object) {
 		
 		
 	}
 
 	@Override
-	public Model getModel() {
+	public IModel getModel() {
 		Task t = new Task(1, "Test");
 		List<Task> tList = new ArrayList<Task>();
 		tList.add(t);
 		Product p = new Stone();
 		Order o = new Order();
 		o.addProduct(p);
-		Model m = new Model();
+		IModel m = new Model();
 		m.addOrder(o);
 		return m;
 	}

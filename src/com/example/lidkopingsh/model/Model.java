@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class Model {
+public class Model implements IModel {
 	private List<Order> orders;
 
 	public Model() {
@@ -15,12 +15,10 @@ public class Model {
 		orders = new ArrayList<Order>(o);
 	}
 	
-	/**
-	 * Returns the product with the specified id.
-	 * @param id int
-	 * @return product with specified id
-	 * @throws NoSuchElementException when the id does not exist
+	/* (non-Javadoc)
+	 * @see com.example.lidkopingsh.model.IModel#getProductById(int)
 	 */
+	@Override
 	public Product getProductById(int id) throws NoSuchElementException {
 		for (Order o : orders) {
 			for (Product p : o.getProducts()) {
@@ -32,12 +30,10 @@ public class Model {
 		throw new NoSuchElementException();
 	}
 
-	/**
-	 * Returns the order with the specified id.
-	 * @param id int
-	 * @return product with specified id
-	 * @throws NoSuchElementException when the id does not exist
+	/* (non-Javadoc)
+	 * @see com.example.lidkopingsh.model.IModel#getOrderById(int)
 	 */
+	@Override
 	public Order getOrderById(int id) throws NoSuchElementException {
 		for (Order o : orders) {
 			if (o.getId() == id) {
@@ -47,18 +43,33 @@ public class Model {
 		throw new NoSuchElementException();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.example.lidkopingsh.model.IModel#addOrder(com.example.lidkopingsh.model.Order)
+	 */
+	@Override
 	public void addOrder(Order o) {
 		orders.add(o);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.example.lidkopingsh.model.IModel#removeOrder(com.example.lidkopingsh.model.Order)
+	 */
+	@Override
 	public void removeOrder(Order o) {
 		orders.remove(o);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.example.lidkopingsh.model.IModel#replaceOrders(java.util.ArrayList)
+	 */
 	public void replaceOrders(ArrayList<Order> list) {
 		orders = list;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.example.lidkopingsh.model.IModel#getOrders()
+	 */
+	@Override
 	public List<Order> getOrders() {
 		return orders;
 	}
