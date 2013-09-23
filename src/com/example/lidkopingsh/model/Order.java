@@ -22,7 +22,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private String idName;
 	private Customer customer;
 	private List<Listener<Order>> orderListeners;
-	private List<Product> products;
+	private SyncableList<Product> products;
 
 	/**
 	 * For testing purposes only.
@@ -48,7 +48,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.customer = customer.clone();
 		
 		orderListeners = new ArrayList<Listener<Order>>();
-		products = new ArrayList<Product>();
+		products = new SyncableArrayList<Product>();
 	}
 
 	public int getId() {
@@ -138,7 +138,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			this.lastTimeUpdate = newData.lastTimeUpdate;
 			this.orderDate = newData.orderDate;
 			this.orderNumber = newData.orderNumber;
-			// TODO Sync Products
+			products.sync(newData.getProducts());
 			return true;
 		} else {
 			return false;

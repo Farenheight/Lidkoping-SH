@@ -160,7 +160,7 @@ public class OrderDbStorage {
 		
 		values.put(TaskToProductTable.COLUMN_NAME_PRODUCT_ID, productId);
 		values.put(TaskToProductTable.COLUMN_NAME_TASK_ID, t.getId());
-		values.put(TaskToProductTable.COLUMN_NAME_TASK_STATUS, t.getStatus().ordinal());	// TODO: Change to getId() of ENUM.
+		values.put(TaskToProductTable.COLUMN_NAME_TASK_STATUS, t.getStatus().ordinal());	// TODO: Get id of status
 		values.put(TaskToProductTable.COLUMN_NAME_SORT_ORDER, sortOrder);
 		
 		db.insert(TaskToProductTable.TABLE_NAME, null, values);
@@ -278,7 +278,7 @@ public class OrderDbStorage {
 		String name = getStringColumn(c, TaskTable.COLUMN_NAME_TASK);
 		int status = getIntColumn(c, TaskToProductTable.COLUMN_NAME_TASK_STATUS);
 		
-		return new Task(taskId, name, Status.values()[status]);
+		return new Task(taskId, name, Status.values()[status]);		// TODO: Get status from status id.
 	}
 	
 	private List<Task> getTasks(Cursor c) {
