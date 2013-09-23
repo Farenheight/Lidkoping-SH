@@ -17,4 +17,6 @@ public interface Syncable<T> {
 	 * @return true if this object was modified, false otherwise
 	 */
 	public boolean sync(T newData);
+	
+
 }
