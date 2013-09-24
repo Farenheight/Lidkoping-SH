@@ -2,6 +2,8 @@ package com.example.lidkopingsh;
 
 import java.util.List;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -30,12 +33,15 @@ public class StoneDetailFragment extends Fragment {
 	 * The fragment argument representing the item ID that this fragment
 	 * represents.
 	 */
-	public static final String ARG_ITEM_ID = "item_id";
+	public static final String ORDER_ID = "item_id";
 
 	/**
 	 * The Order that this fragment is presenting.
 	 */
 	private Order mOrder;
+
+	/** Attacher to imageView to zoom lib **/
+	private PhotoViewAttacher mAttacher;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -48,10 +54,11 @@ public class StoneDetailFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (getArguments().containsKey(ARG_ITEM_ID)) {
-			int orderPos = getArguments().getInt(ARG_ITEM_ID);
-			//mOrder = ModelHandler.getModel().getOrderById();		// TODO: Get order id.
+		if (getArguments().containsKey(ORDER_ID)) {
+			int orderID = getArguments().getInt(ORDER_ID);
+			mOrder = ModelHandler.getModel().getOrderById(orderID);
 		}
+
 	}
 
 	@Override
@@ -59,7 +66,9 @@ public class StoneDetailFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_stone_detail,
 				container, false);
+
 		if (mOrder != null) {
+			initOrderDrawing(rootView);
 			initInfo(rootView);
 			initTasks(inflater, container, rootView);
 		}
@@ -68,8 +77,23 @@ public class StoneDetailFragment extends Fragment {
 	}
 
 	/**
-	 * Adds tasks to rootView. TODO: Will need refactoring when products is in
-	 * list instead of orders
+	 * Make image zoomable by attaching PhotoView lib
+	 */
+	private void initOrderDrawing(View rootView) {
+		ImageView orderDrawing = (ImageView) rootView
+				.findViewById(R.id.orderDrawing);
+
+		// Set the Drawable displayed
+		Drawable bitmap = getResources().getDrawable(
+				R.drawable.test_headstone_drawing);
+
+		// Attach a PhotoViewAttacher, which takes care of all of the zooming
+		// functionality.
+		mAttacher = new PhotoViewAttacher(orderDrawing);
+	}
+
+	/**
+	 * Adds tasks to rootView.
 	 * 
 	 * @param inflater
 	 * @param container
@@ -115,27 +139,32 @@ public class StoneDetailFragment extends Fragment {
 	 * @param rootView
 	 */
 	private void initInfo(View rootView) {
-		//General
+		//Header
+		((TextView) rootView.findViewById(R.id.idName))
+		.setText(mOrder.getIdName());
+		((TextView) rootView.findViewById(R.id.orderNumber))
+		.setText(mOrder.getOrderNumber());
+		
+		// General
 		((TextView) rootView.findViewById(R.id.burialName))
 				.setText("<Not yet in model>");
 		((TextView) rootView.findViewById(R.id.cemeteryBoard))
 				.setText("<Not yet in model>");
 		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCementary());
-		
-		//Stone
-		/*
+
+		// Stone
 		Stone stone = ((Stone) mOrder.getProducts().get(0));
-		((TextView) rootView.findViewById(R.id.materialAndColor))
-				.setText(stone.getMaterialColor());
-		((TextView) rootView.findViewById(R.id.ornament))
-		.setText(stone.getOrnament());
-		((TextView) rootView.findViewById(R.id.desc))
-		.setText(stone.getDescription());
-		((TextView) rootView.findViewById(R.id.frontProcessing))
-		.setText(stone.getFrontWork());
+		((TextView) rootView.findViewById(R.id.materialAndColor)).setText(stone
+				.getMaterialColor());
+		((TextView) rootView.findViewById(R.id.ornament)).setText(stone
+				.getOrnament());
+		((TextView) rootView.findViewById(R.id.desc)).setText(stone
+				.getDescription());
+		((TextView) rootView.findViewById(R.id.frontProcessing)).setText(stone
+				.getFrontWork());
 		((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
-		.setText(stone.getTextStyle());
-		*/
+				.setText(stone.getTextStyle());
+
 	}
 }

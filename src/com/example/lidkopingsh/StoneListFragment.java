@@ -2,10 +2,12 @@ package com.example.lidkopingsh;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -39,6 +41,11 @@ public class StoneListFragment extends ListFragment {
 	 * The current activated item position. Only used on tablets.
 	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
+	
+	/**
+	 * List containing all orders shown in gui.
+	 */
+	private List<Order> mOrderList;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -50,11 +57,10 @@ public class StoneListFragment extends ListFragment {
 		/**
 		 * Callback for when an order has been selected in the list.
 		 * 
-		 * @param orderPos
-		 *            The selected orders position in the list. TODO: Change to
-		 *            order id
+		 * @param id
+		 *            Provides an identification value for the selected item.
 		 */
-		public void onItemSelected(int orderPos);
+		public void onItemSelected(int id);
 	}
 
 	/**
@@ -80,9 +86,11 @@ public class StoneListFragment extends ListFragment {
 
 		// Init adapter containing the data list
 		Collection<Order> orders = ModelHandler.getModel().getOrders();
+		mOrderList = new ArrayList<Order>(orders);
 		setListAdapter(new TasksAdapter(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, new ArrayList<Order>(orders)));
+				android.R.id.text1, mOrderList));
+		Log.d("image", "" + (mOrderList.get(0) == mOrderList.get(1)));
 	}
 
 	@Override
@@ -122,10 +130,9 @@ public class StoneListFragment extends ListFragment {
 	public void onListItemClick(ListView listView, View view, int position,
 			long id) {
 		super.onListItemClick(listView, view, position, id);
-
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(position);
+		mCallbacks.onItemSelected(mOrderList.get(position).getId());
 	}
 
 	@Override

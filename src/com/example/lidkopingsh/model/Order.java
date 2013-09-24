@@ -28,11 +28,11 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * For testing purposes only.
 	 */
 	public Order() {
-		this(5, getNewOrderNumber(), "O.R.", System.currentTimeMillis(), System
-				.currentTimeMillis(), "", Long.parseLong("1371679200000"),
-				new Customer("Mr", "Olle Bengtsson", "Testvagen 52",
-						"416 72 Goteborg", "olle.bengtsson@testuser.com",
-						(int) System.currentTimeMillis()));
+	this(currentOrderNumberCount, getNewOrderNumber(), "O.R.", System.currentTimeMillis(),
+				System.currentTimeMillis(), "Örslösa",
+				Long.parseLong("1371679200000"), new Customer("Mr",
+						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
+						"olle.bengtsson@testuser.com", (int) System.currentTimeMillis()));
 	}
 
 	public Order(int id, String orderNumber, String idName, long timeCreated,
