@@ -16,6 +16,7 @@ public class DataContract {
 	
 	public static abstract class OrderTable implements BaseColumns {
 		public static final String TABLE_NAME = "ordertable";
+		public static final String COLUMN_NAME_ORDER_ID = "order_id";
 		public static final String COLUMN_NAME_ORDER_NUMBER = "order_number";
         public static final String COLUMN_NAME_ID_NAME = "identification_name";
 		public static final String COLUMN_NAME_ORDER_DATE = "order_date";
@@ -36,7 +37,7 @@ public class DataContract {
 	
 	public static abstract class StoneTable implements BaseColumns {
         public static final String TABLE_NAME = "stone";
-        public static final String COLUMN_NAME_PRODUCT_ID = "product_id";
+        public static final String COLUMN_NAME_PRODUCT_ID = "stone_product_id";
         public static final String COLUMN_NAME_STONE_MODEL = "stone_model";
         public static final String COLUMN_NAME_SIDE_BACK_WORK = "side_back_work";
         public static final String COLUMN_NAME_TEXTSTYLE = "textstyle";
@@ -52,7 +53,7 @@ public class DataContract {
 	public static abstract class TaskToProductTable implements BaseColumns {
         public static final String TABLE_NAME = "task_to_product";
         public static final String COLUMN_NAME_TASK_ID = "task_id";
-        public static final String COLUMN_NAME_PRODUCT_ID = "product_id";
+        public static final String COLUMN_NAME_PRODUCT_ID = "task_product_id";
         public static final String COLUMN_NAME_TASK_STATUS = "status";
         public static final String COLUMN_NAME_SORT_ORDER = "sort_order";
 	}

@@ -18,6 +18,10 @@ public class OrderDbLayer implements ILayer {
 	
 	private final OrderDbStorage db;
 	
+	/**
+	 * Creates a layer for communication between model and Order database.
+	 * @param context to use to open or create the database
+	 */
 	public OrderDbLayer(Context context) {
 		db = new OrderDbStorage(context);
 	}

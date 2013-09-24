@@ -26,7 +26,7 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 	 * Current version of the application's database structure.
 	 * If the structure is changed, this version number must be increased.
 	 */
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 6;
 	private static final String DATABASE_NAME = "Orders.db";
 	
 	private static final String TEXT_TYPE = " TEXT";
@@ -40,9 +40,10 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 	private static final String ORDER_TABLE_CREATE = CREATE_TABLE 
 			+ OrderTable.TABLE_NAME + " ("
 			+ OrderTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
+			+ OrderTable.COLUMN_NAME_ORDER_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_ORDER_DATE + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_ORDER_NUMBER + TEXT_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
-			+ OrderTable.COLUMN_NAME_ID_NAME + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ OrderTable.COLUMN_NAME_ID_NAME + TEXT_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_CEMETERY + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_CUSTOMER_ID + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_TIME_CREATED + INTEGER_TYPE + NOT_NULL + COMMA_SEP
@@ -62,7 +63,7 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 			+ StoneTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
 			+ StoneTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
 			+ StoneTable.COLUMN_NAME_ORNAMENT + TEXT_TYPE + COMMA_SEP
-			+ StoneTable.COLUMN_NAME_TEXTSTYLE + TEXT_TYPE + COMMA_SEP
+			+ StoneTable.COLUMN_NAME_TEXTSTYLE + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ StoneTable.COLUMN_NAME_SIDE_BACK_WORK + TEXT_TYPE + COMMA_SEP
 			+ StoneTable.COLUMN_NAME_STONE_MODEL + TEXT_TYPE + NOT_NULL + " )";
 	
@@ -83,7 +84,7 @@ public class OrderDbHelper extends SQLiteOpenHelper {
 	private static final String CUSTOMER_TABLE_CREATE = CREATE_TABLE
 			+ CustomerTable.TABLE_NAME + " ("
 			+ CustomerTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
-			+ CustomerTable.COLUMN_NAME_CUSTOMER_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ CustomerTable.COLUMN_NAME_CUSTOMER_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
 			+ CustomerTable.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP
 			+ CustomerTable.COLUMN_NAME_NAME + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ CustomerTable.COLUMN_NAME_ADDRESS + TEXT_TYPE + NOT_NULL + COMMA_SEP

@@ -44,6 +44,7 @@ public class OrderDbStorage {
 	private static final String DOT = ".";
 	private static final String EQUALS = " = ";
 	private static final String JOIN = " JOIN ";
+	private static final String LEFT_JOIN = " LEFT JOIN ";
 	private static final String ON = " ON ";
 	private static final String ORDER_BY = " ORDER BY ";
 	private static final String SELECT_FROM = "SELECT * FROM ";
@@ -63,6 +64,18 @@ public class OrderDbStorage {
 		OrderDbHelper dbHelper = new OrderDbHelper(context);
 		db = dbHelper.getWritableDatabase();
 	}
+	
+	/**
+	 * Clear all rows in the database.
+	 */
+	public void clear() {
+		db.delete(TaskToProductTable.TABLE_NAME, null, null);
+		db.delete(TaskTable.TABLE_NAME, null, null);
+		db.delete(StoneTable.TABLE_NAME, null, null);
+		db.delete(ProductTable.TABLE_NAME, null, null);
+		db.delete(CustomerTable.TABLE_NAME, null, null);
+		db.delete(OrderTable.TABLE_NAME, null, null);
+	}
 
 	/**
 	 * Insert a new order into the database.
@@ -73,6 +86,7 @@ public class OrderDbStorage {
 	public void insert(Order order) {
 		ContentValues values = new ContentValues();
 
+		values.put(OrderTable.COLUMN_NAME_ORDER_ID, order.getId());
 		values.put(OrderTable.COLUMN_NAME_ORDER_NUMBER, order.getOrderNumber());
 		values.put(OrderTable.COLUMN_NAME_ORDER_DATE, order.getOrderDate());
 		values.put(OrderTable.COLUMN_NAME_CUSTOMER_ID, order.getCustomer()
@@ -166,6 +180,23 @@ public class OrderDbStorage {
 		db.insert(TaskToProductTable.TABLE_NAME, null, values);
 	}
 
+	/**
+	 * <p>Select orders from the database.</p>
+	 * <p>Column names are listed in {@link DataContract}.</p>
+	 * <p><strong>Example</strong></p>
+	 * <code>SELECT * FROM Orders WHERE OrderNumber = '130001' ORDER BY OrderDate</code>
+	 * <p>
+	 * <b>sqlSelection</b>: <code>{@link OrderTable#COLUMN_NAME_ORDER_NUMBER} = ?</code><br />
+	 * <b>sqlSelectionArgs</b>: <code>new String[] { "130001" }</code><br />
+	 * <b>sqlOrderBy</b>: <code>{@link OrderTable#COLUMN_NAME_ORDER_DATE} ASC</code>
+	 * </p>
+	 * @param sqlSelection SQL Where command with arguments replaced by '?'.
+	 * @param sqlSelectionArgs Arguments for SQL Where command as a String array.
+	 * 		All '?' are replaced in the array order.
+	 * @param sqlOrderBy A (comma separated list as a string) that defines the SQL
+	 * 		Order By.
+	 * @return A collection of orders.
+	 */
 	public Collection<Order> query(String sqlSelection,
 			String[] sqlSelectionArgs, String sqlOrderBy) {
 		String sqlQuery = SELECT_FROM + OrderTable.TABLE_NAME + SPACE + ORDER + SPACE
@@ -203,14 +234,14 @@ public class OrderDbStorage {
 	}
 
 	private Order getOrder(Cursor c) {
-		int orderID = getIntColumn(c, OrderTable._ID);
-		long orderDate = getIntColumn(c, OrderTable.COLUMN_NAME_ORDER_DATE);
+		int orderID = getIntColumn(c, OrderTable.COLUMN_NAME_ORDER_ID);
+		long orderDate = getLongColumn(c, OrderTable.COLUMN_NAME_ORDER_DATE);
 		String orderNumber = getStringColumn(c,
 				OrderTable.COLUMN_NAME_ORDER_NUMBER);
 		String idName = getStringColumn(c, OrderTable.COLUMN_NAME_ID_NAME);
 		String cemetery = getStringColumn(c, OrderTable.COLUMN_NAME_CEMETERY);
-		int timeCreated = getIntColumn(c, OrderTable.COLUMN_NAME_TIME_CREATED);
-		int timeLastUpdate = getIntColumn(c,
+		long timeCreated = getLongColumn(c, OrderTable.COLUMN_NAME_TIME_CREATED);
+		long timeLastUpdate = getLongColumn(c,
 				OrderTable.COLUMN_NAME_TIME_LAST_UPDATE);
 		
 		Order order = new Order(orderID, orderNumber, idName, timeCreated, timeLastUpdate,
@@ -229,7 +260,7 @@ public class OrderDbStorage {
 		
 		List<Task> tasks = getTasks(c);
 		
-		boolean isStone = !c.isNull(c.getColumnIndexOrThrow(STONE + StoneTable.COLUMN_NAME_PRODUCT_ID));
+		boolean isStone = !c.isNull(c.getColumnIndexOrThrow(StoneTable.COLUMN_NAME_PRODUCT_ID));
 		if (isStone) {
 			return getStone(c, productId, orderNumber, description, materialColor, frontWork, tasks);
 		} else {
@@ -238,13 +269,13 @@ public class OrderDbStorage {
 	}
 
 	private Collection<Product> getProducts(String orderNumber) {
-		String sqlProducts = SELECT_FROM + TaskTable.TABLE_NAME + SPACE + TASK
-				+ JOIN + TaskToProductTable.TABLE_NAME + SPACE + TASK_TO_PRODUCT + ON + TASK + DOT
-				+ TaskTable.COLUMN_NAME_TASK_ID + EQUALS + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_TASK_ID
-				+ JOIN + ProductTable.TABLE_NAME + SPACE + PRODUCT + ON + TASK_TO_PRODUCT + DOT 
-				+ TaskToProductTable.COLUMN_NAME_PRODUCT_ID	+ EQUALS + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID
-				+ JOIN + StoneTable.TABLE_NAME + SPACE + STONE + ON + PRODUCT + DOT
+		String sqlProducts = SELECT_FROM + ProductTable.TABLE_NAME + SPACE + PRODUCT
+				+ LEFT_JOIN + StoneTable.TABLE_NAME + SPACE + STONE + ON + PRODUCT + DOT
 				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + STONE + DOT + StoneTable.COLUMN_NAME_PRODUCT_ID
+				+ LEFT_JOIN + TaskToProductTable.TABLE_NAME + SPACE + TASK_TO_PRODUCT + ON + PRODUCT + DOT
+				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_PRODUCT_ID
+				+ LEFT_JOIN + TaskTable.TABLE_NAME + SPACE + TASK + ON + TASK_TO_PRODUCT + DOT 
+				+ TaskToProductTable.COLUMN_NAME_TASK_ID + EQUALS + TASK + DOT + TaskTable.COLUMN_NAME_TASK_ID
 				+ WHERE + PRODUCT + DOT + ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + "?"
 				+ ORDER_BY + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID 
 				+ COMMA_SEP + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_SORT_ORDER;
@@ -278,7 +309,7 @@ public class OrderDbStorage {
 		String name = getStringColumn(c, TaskTable.COLUMN_NAME_TASK);
 		int status = getIntColumn(c, TaskToProductTable.COLUMN_NAME_TASK_STATUS);
 		
-		return new Task(taskId, name, Status.valueOf(status));
+		return name != null ? new Task(taskId, name, Status.valueOf(status)) : null;
 	}
 	
 	private List<Task> getTasks(Cursor c) {
@@ -287,20 +318,28 @@ public class OrderDbStorage {
 		
 		do {
 			if (productId != getIntColumn(c, ProductTable.COLUMN_NAME_PRODUCT_ID)) {
-				c.moveToPrevious();
 				break;
 			}
-			tasks.add(getTask(c));
+			Task task = getTask(c);
+			if (task != null) {
+				tasks.add(task);
+			}
 		} while (c.moveToNext());
+		
+		c.moveToPrevious();
 		
 		return tasks;
 	}
 
-	private String getStringColumn(Cursor c, String columnName) {
-		return c.getString(c.getColumnIndexOrThrow(columnName));
-	}
-
 	private int getIntColumn(Cursor c, String columnName) {
 		return c.getInt(c.getColumnIndexOrThrow(columnName));
+	}
+
+	private long getLongColumn(Cursor c, String columnName) {
+		return c.getLong(c.getColumnIndexOrThrow(columnName));
+	}
+
+	private String getStringColumn(Cursor c, String columnName) {
+		return c.getString(c.getColumnIndexOrThrow(columnName));
 	}
 }

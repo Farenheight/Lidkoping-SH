@@ -234,7 +234,9 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			Product p = ((Product) o);
 			return this.id == p.id
 					&& this.materialColor.equals(p.getMaterialColor())
-					&& this.description.equals(p.getDescription())
+					&& ((this.description == null && p.getDescription() == null) 
+							|| (this.description != null && this.description
+							.equals(p.getDescription())))
 					&& this.frontWork.equals(p.getFrontWork())
 					&& this.tasks.equals(p.getTasks());
 		}
