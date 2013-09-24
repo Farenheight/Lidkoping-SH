@@ -60,8 +60,10 @@ public class Task implements Syncable<Task> {
 	 *            true if finished, false otherwise
 	 */
 	public void setStatus(Status status) {
+		if(this.status != status){
+			notifyTaskListeners();			
+		}
 		this.status = status;
-		notifyTaskListeners();
 	}
 
 	/**
