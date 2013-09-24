@@ -23,7 +23,7 @@ public class Task implements Syncable<Task> {
 	 * @param name
 	 *            The name of the task
 	 * @param status
-	 *            The status of the task. true if done. false otherwise.
+	 *            The status of the task. DONE if done. NOT_DONE if not done.
 	 */
 	public Task(int id, String name, Status status) {
 		this.name = name;
