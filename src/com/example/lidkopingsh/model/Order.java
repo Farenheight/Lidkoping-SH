@@ -87,12 +87,47 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		return products;
 	}
 
-	public void addProduct(Product p) {
-		products.add(p);
+	public void addProduct(Product product) {
+		for(Product p : products){
+			if(product.getId() == p.getId()){
+				products.remove(p);
+			}
+		}
+		products.add(product);
+		notifyOrderListeners();
 	}
 
 	public void addProducts(Collection<Product> products) {
-		this.products.addAll(products);
+		for(Product p : products){
+			addProduct(p);
+		}
+	}
+	
+	/**
+	 * remove Task from this product task list.
+	 * 
+	 * @param p
+	 *            The {@link Task} to remove
+	 * @return true if Tasks was modified. false otherwise.
+	 */
+	public void removeProduct(Product p) {
+		if (products.contains(p)) {
+			notifyOrderListeners();
+			products.remove(p);
+		}
+	}
+
+	/**
+	 * remove Tasks from this product task list.
+	 * 
+	 * @param tasks
+	 *            The {@link Task}s to remove
+	 * @return true if Tasks was modified. false otherwise.
+	 */
+	public void removeProduct(List<Product> productList) {
+		for (Product p : productList) {
+			removeProduct(p);
+		}
 	}
 
 	/**
