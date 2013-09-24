@@ -63,10 +63,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	}
 
 	/**
-	 * Create a new product no tasks and dummy
+	 * Create a new product no tasks and dummy data
 	 */
 	public Product() {
-		this(new ArrayList<Task>());
+		this(0, "Svart sten", "Den fulaste stenen i vi säljer",
+				"Mycket repor på framsidan", new ArrayList<Task>());
 	}
 
 	public int getId() {
@@ -119,9 +120,9 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 */
 	public void addTask(Task task, int index) {
 		Iterator<Task> iterator = tasks.iterator();
-		while(iterator.hasNext()){
+		while (iterator.hasNext()) {
 			Task t = iterator.next();
-			if(t != task && t.getId() == task.getId()){
+			if (t != task && t.getId() == task.getId()) {
 				iterator.remove();
 			}
 		}
@@ -131,7 +132,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			} else {
 				tasks.add(index, task);
 			}
-			notifyProductListeners();				
+			notifyProductListeners();
 		}
 	}
 
@@ -164,8 +165,8 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The {@link Task} to remove
 	 */
 	public void removeTask(Task task) {
-		if(tasks.remove(task)){
-			notifyProductListeners();			
+		if (tasks.remove(task)) {
+			notifyProductListeners();
 		}
 	}
 
@@ -216,7 +217,8 @@ public class Product implements Listener<Task>, Syncable<Product> {
 
 	@Override
 	public boolean sync(Product newData) {
-		if (newData != null && this.id == newData.id && this.getClass() == getClass()) {
+		if (newData != null && this.id == newData.id
+				&& this.getClass() == getClass()) {
 			this.description = newData.description;
 			this.frontWork = newData.frontWork;
 			this.materialColor = newData.materialColor;
@@ -261,10 +263,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		}
 
 		@Override
-		public void add(int index,Task object) {
+		public void add(int index, Task object) {
 			object.addTaskListener(Product.this);
-			super.add(index,object);
+			super.add(index, object);
 		}
+
 		@Override
 		public boolean add(Task object) {
 			object.addTaskListener(Product.this);
