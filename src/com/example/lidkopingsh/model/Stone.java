@@ -53,9 +53,12 @@ public class Stone extends Product {
 	 * Create a new Stone with Dummy data
 	 */
 	public Stone() {
-		this(1, "Hallandia-granit", "Gravvård 80x65 cm\nPolerande blomlister 90x40 cm",
-				"Framsidan & sockelns ovansida polerad ,matt fas", new ArrayList<Task>(),
-				"NB 46", "Polerade", "Sx358-nedhuggen i guld", "Kors & sol i guld\nFåglar & blommor vita");
+		this(1, "Hallandia-granit",
+				"Gravvård 80x65 cm\nPolerande blomlister 90x40 cm",
+				"Framsidan & sockelns ovansida polerad ,matt fas",
+				new ArrayList<Task>(), "NB 46", "Polerade",
+				"Sx358-nedhuggen i guld",
+				"Kors & sol i guld\nFåglar & blommor vita");
 	}
 
 	public String getStoneModel() {
@@ -87,4 +90,12 @@ public class Stone extends Product {
 		return false;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		Stone s = ((Stone) o);
+		return super.equals(s) && this.stoneModel.equals(s.getStoneModel())
+				&& this.sideBackWork.equals(s.getSideBackWork())
+				&& this.textStyle.equals(s.getTextStyle())
+				&& this.ornament.equals(s.getOrnament());
+	}
 }

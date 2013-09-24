@@ -1,13 +1,11 @@
 package com.example.lidkopingsh.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.junit.Test;
-
-import com.example.lidkopingsh.model.Listener;
-import com.example.lidkopingsh.model.Product;
-import com.example.lidkopingsh.model.Status;
-import com.example.lidkopingsh.model.Task;
 
 public class ProductTest extends TestCase implements Listener<Product> {
 
@@ -97,5 +95,27 @@ public class ProductTest extends TestCase implements Listener<Product> {
 	@Override
 	public void changed(Product product) {
 		hasBeenNotified = true;
+	}
+
+	@Test
+	public void testEquals() {
+		List<Task> tasks1 = new ArrayList<Task>();
+		tasks1.add(new Task(0, "Polering"));
+		tasks1.add(new Task(1, "Rengoring"));
+		Product p1 = new Product(0, "Blue and cool", "Description", "Plain", tasks1);
+		
+		List<Task> tasks2 = new ArrayList<Task>();
+		tasks2.add(new Task(0, "Polering"));
+		tasks2.add(new Task(1, "Rengoring"));
+		Product p2 = new Product(0, "Blue and cool", "Description", "Plain", tasks2);
+		
+		List<Task> tasks3 = new ArrayList<Task>();
+		tasks3.add(new Task(2, "Polering"));
+		tasks3.add(new Task(1, "Rengoring"));
+		Product p3 = new Product(0, "Blue and cool", "Description", "Plain", tasks3);
+		
+		assertTrue(p1.equals(p2));
+		assertTrue(p2.equals(p1));
+		assertFalse(p2.equals(p3));
 	}
 }

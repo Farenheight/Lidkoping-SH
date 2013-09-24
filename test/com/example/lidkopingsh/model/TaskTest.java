@@ -45,5 +45,20 @@ public class TaskTest implements Listener<Task>{
 	public void changed(Task object) {
 		synced = true;
 	}
+	
+	
+	@Test
+	public void testEquals(){
+		Task t1 = new Task(1, "Polering");
+		Task t2 = new Task(1, "Polering");
+		assertTrue(t1.equals(t2));
+		
+		t2.setStatus(Status.DONE);
+		assertFalse(t1.equals(t2));
+	}
 
 }
+
+	
+
+
