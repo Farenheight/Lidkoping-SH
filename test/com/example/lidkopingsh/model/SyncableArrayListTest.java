@@ -75,7 +75,7 @@ public class SyncableArrayListTest implements Listener<Order>{
 		o1.addProduct(p3);
 		Task t5 = new Task(5,"Task5");
 		p3.addTask(t5);
-		o0.sync(o1);
+		o1.sync(o0);
 		t5.setStatus(Status.DONE);
 		assertTrue(synced);
 		synced = false;

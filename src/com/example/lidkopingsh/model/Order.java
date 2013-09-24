@@ -133,13 +133,18 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	@Override
 	public boolean sync(Order newData) {
 		if (newData != null && this.id == newData.id) {
-			this.cementary = newData.cementary;
-			this.customer = newData.customer;
-			this.lastTimeUpdate = newData.lastTimeUpdate;
-			this.orderDate = newData.orderDate;
-			this.orderNumber = newData.orderNumber;
-			products.sync(newData.getProducts());
-			return true;
+			// If this object is newer that newData, switch the sync
+			if(this.lastTimeUpdate > newData.lastTimeUpdate){
+				return newData.sync(this);
+			}else{
+				this.cementary = newData.cementary;
+				this.customer = newData.customer;
+				this.lastTimeUpdate = newData.lastTimeUpdate;
+				this.orderDate = newData.orderDate;
+				this.orderNumber = newData.orderNumber;
+				products.sync(newData.getProducts());
+				return true;
+			}
 		} else {
 			return false;
 		}

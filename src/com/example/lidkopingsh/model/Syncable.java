@@ -10,7 +10,8 @@ package com.example.lidkopingsh.model;
  */
 public interface Syncable<T> {
 	/**
-	 * Sync this object with data
+	 * Sync this object with data. This method should be Reflexive
+	 * <p>o1.sync(o2) <=> o2.sync(o1)</p>
 	 * 
 	 * @param newData
 	 *            The object to sync with this object
