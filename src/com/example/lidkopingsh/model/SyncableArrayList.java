@@ -13,7 +13,7 @@ public class SyncableArrayList<T extends Syncable<? super T>> extends
 	}
 
 	public SyncableArrayList(Collection<? extends T> collection) {
-		super(collection);
+		super(collection != null? collection : new ArrayList<T>());
 	}
 
 	@Override

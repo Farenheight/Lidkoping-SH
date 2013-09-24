@@ -43,7 +43,7 @@ public class Task implements Syncable<Task> {
 	public Task(int id, String name) {
 		this(id, name, Status.NOT_DONE);
 	}
-	
+
 	/**
 	 * Get whenever this Task is finished
 	 * 
@@ -125,15 +125,15 @@ public class Task implements Syncable<Task> {
 		} else if (o == null || o.getClass() != getClass()) {
 			return false;
 		} else {
-			return ((Task) o).getStatus().equals(getStatus())
-					&& ((Task) o).getName().equals(getName())
-					&& ((Task) o).id == id;
+			Task t = (Task) o;
+			return this.id == t.getId() && this.name.equals(t.getName())
+					&& this.status.equals(t.getStatus());
 		}
 	}
 
 	@Override
 	public boolean sync(Task newData) {
-		if (newData != null && this.id == newData.id ) {
+		if (newData != null && this.id == newData.id) {
 			this.setStatus(newData.getStatus());
 			this.name = newData.name;
 			return true;

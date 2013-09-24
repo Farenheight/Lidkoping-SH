@@ -124,7 +124,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			} else {
 				tasks.add(index, task);
 			}
-//			task.addTaskListener(this);
+			// task.addTaskListener(this);
 			notifyProductListeners();
 			return true;
 		}
@@ -170,7 +170,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		if (tasks.contains(task)) {
 			notifyProductListeners();
 			tasks.remove(task);
-//			task.removeTaskListener(this);
+			// task.removeTaskListener(this);
 			return true;
 		} else
 			return false;
@@ -245,10 +245,15 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		} else if (o == null || o.getClass() != getClass()) {
 			return false;
 		} else {
-			return this.id == ((Product) o).id;
-			// TODO check more fields.
+			Product p = ((Product) o);
+			return this.id == p.id
+					&& this.materialColor.equals(p.getMaterialColor())
+					&& this.description.equals(p.getDescription())
+					&& this.frontWork.equals(p.getFrontWork())
+					&& this.tasks.equals(p.getTasks());
 		}
 	}
+
 	/**
 	 * Inner class that makes sure that listeners are added and removed properly
 	 * when an {@link Product} is synced.
@@ -266,6 +271,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			super(collection);
 		}
 
+		@Override
+		public void add(int index,Task object) {
+			object.addTaskListener(Product.this);
+			super.add(index,object);
+		}
 		@Override
 		public boolean add(Task object) {
 			object.addTaskListener(Product.this);
