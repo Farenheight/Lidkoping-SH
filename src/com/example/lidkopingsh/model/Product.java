@@ -227,7 +227,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 
 	@Override
 	public boolean sync(Product newData) {
-		if (newData != null && this.id == newData.id) {
+		if (newData != null && this.id == newData.id && this.getClass() == getClass()) {
 			this.description = newData.description;
 			this.frontWork = newData.frontWork;
 			this.materialColor = newData.materialColor;

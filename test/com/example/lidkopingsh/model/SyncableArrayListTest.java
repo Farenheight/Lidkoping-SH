@@ -85,7 +85,7 @@ public class SyncableArrayListTest implements Listener<Order>{
 		}
 		@Override
 		public boolean sync(SuperClass newData) {
-			if(this.id == newData.id){
+			if(this.id == newData.id && newData.getClass() == getClass()){
 				synced = newData.synced;
 				this.data = newData.data;
 				return true;
