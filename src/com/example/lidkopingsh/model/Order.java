@@ -167,7 +167,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 
 	@Override
 	public boolean sync(Order newData) {
-		if (newData != null && this.id == newData.id) {
+		if (newData != null && this.id == newData.id &&
+				getClass() == newData.getClass()) {
 			// If this object is newer that newData, switch the sync
 			if(this.lastTimeUpdate > newData.lastTimeUpdate){
 				return newData.sync(this);
@@ -177,6 +178,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				this.lastTimeUpdate = newData.lastTimeUpdate;
 				this.orderDate = newData.orderDate;
 				this.orderNumber = newData.orderNumber;
+				this.idName = newData.idName;
 				products.sync(newData.getProducts());
 				return true;
 			}

@@ -129,7 +129,8 @@ public class Task implements Syncable<Task> {
 
 	@Override
 	public boolean sync(Task newData) {
-		if (newData != null && this.id == newData.id) {
+		if (newData != null && this.id == newData.id &&
+				getClass() == newData.getClass()) {
 			this.setStatus(newData.getStatus());
 			this.name = newData.name;
 			return true;

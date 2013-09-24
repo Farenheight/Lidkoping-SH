@@ -23,31 +23,6 @@ public class TaskTest implements Listener<Task>{
 	}
 	
 	@Test
-	public void testEqualsAndSync(){
-		Task t0 = new Task(0,"Task0");
-		Task t1 = new Task(0,"Task0");
-		Task t2 = new Task(0,"Task1");
-		Task t3 = new Task(1,"Task1");
-		assertTrue(t0.equals(t1));
-		t1.setStatus(Status.DONE);
-		assertTrue(!t0.equals(t1));
-		
-		assertTrue(!t0.equals(t2));
-		t0.sync(t2);
-		assertTrue(t0.equals(t2));		
-
-		assertTrue(!t0.equals(t3));
-		t0.sync(t3);
-		assertTrue(!t0.equals(t3));		
-	}
-	
-	@Override
-	public void changed(Task object) {
-		synced = true;
-	}
-	
-	
-	@Test
 	public void testEquals(){
 		Task t1 = new Task(1, "Polering");
 		Task t2 = new Task(1, "Polering");
@@ -56,6 +31,31 @@ public class TaskTest implements Listener<Task>{
 		t2.setStatus(Status.DONE);
 		assertFalse(t1.equals(t2));
 	}
+	@Test
+	public void testSync(){
+		Task t0 = new Task(0,"Task0");
+		Task t1 = new Task(0,"Task0");
+		Task t2 = new Task(0,"Task1");
+		Task t3 = new Task(1,"Task1");
+		assertTrue(t0.equals(t1));
+		t1.setStatus(Status.DONE);
+		assertFalse(t0.equals(t1));
+		
+		assertFalse(t0.equals(t2));
+		t0.sync(t2);
+		assertTrue(t0.equals(t2));		
+
+		assertFalse(t0.equals(t3));
+		t0.sync(t3);
+		assertFalse(t0.equals(t3));		
+	}
+	
+	@Override
+	public void changed(Task object) {
+		synced = true;
+	}
+	
+	
 
 }
 
