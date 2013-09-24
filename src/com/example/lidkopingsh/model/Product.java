@@ -267,6 +267,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		}
 
 		@Override
+		public void add(int index,Task object) {
+			object.addTaskListener(Product.this);
+			super.add(index,object);
+		}
+		@Override
 		public boolean add(Task object) {
 			object.addTaskListener(Product.this);
 			return super.add(object);

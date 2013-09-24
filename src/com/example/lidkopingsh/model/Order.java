@@ -193,9 +193,14 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		}
 
 		@Override
+		public void add(int index, Product object) {
+			object.addProductListener(Order.this);
+			super.add(index, object);
+		}
+		@Override
 		public boolean add(Product object) {
 			object.addProductListener(Order.this);
-			return super.add(object);
+			return super.add( object);
 		}
 
 		@Override
