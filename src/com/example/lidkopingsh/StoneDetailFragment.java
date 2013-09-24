@@ -30,7 +30,7 @@ public class StoneDetailFragment extends Fragment {
 	 * The fragment argument representing the item ID that this fragment
 	 * represents.
 	 */
-	public static final String ARG_ITEM_ID = "item_id";
+	public static final String ORDER_ID = "item_id";
 
 	/**
 	 * The Order that this fragment is presenting.
@@ -48,9 +48,9 @@ public class StoneDetailFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (getArguments().containsKey(ARG_ITEM_ID)) {
-			int orderPos = getArguments().getInt(ARG_ITEM_ID);
-			//mOrder = ModelHandler.getModel().getOrderById();		// TODO: Get order id.
+		if (getArguments().containsKey(ORDER_ID)) {
+			int orderID = getArguments().getInt(ORDER_ID);
+			mOrder = ModelHandler.getModel().getOrderById(orderID);
 		}
 	}
 
@@ -68,8 +68,7 @@ public class StoneDetailFragment extends Fragment {
 	}
 
 	/**
-	 * Adds tasks to rootView. TODO: Will need refactoring when products is in
-	 * list instead of orders
+	 * Adds tasks to rootView.
 	 * 
 	 * @param inflater
 	 * @param container
