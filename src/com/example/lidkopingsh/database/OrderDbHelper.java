@@ -20,7 +20,7 @@ import com.example.lidkopingsh.database.DataContract.TaskToProductTable;
  * @author Olliver Mattsson
  * 
  */
-public class OrderDbHelper extends SQLiteOpenHelper {
+class OrderDbHelper extends SQLiteOpenHelper {
 
 	/**
 	 * Current version of the application's database structure.

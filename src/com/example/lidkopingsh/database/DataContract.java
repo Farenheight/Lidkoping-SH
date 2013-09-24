@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
  * @author Olliver Mattsson
  *
  */
-public class DataContract {
+class DataContract {
 
 	private DataContract() {}
 	
