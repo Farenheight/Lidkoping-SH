@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import android.test.InstrumentationTestCase;
@@ -24,12 +26,18 @@ import com.example.lidkopingsh.model.Task;
 public class OrderDbStorageTest extends InstrumentationTestCase {
 
 	private OrderDbStorage dbStorage;
+	private Collection<Order> originalData;
 	
 	private static int customerId = 500;
 	private static int orderId = 1;
 	private static int orderNumber = 130001;
 	private static int productId = 400;
 	private static int taskId = 600;
+	
+	@BeforeClass
+	private void setUpClass() {
+		originalData = new OrderDbStorage(getInstrumentation().getContext()).query(null, null, null);
+	}
 
 	@Override
 	protected void setUp() throws Exception {
@@ -37,6 +45,16 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 		dbStorage.clear();
 
 		super.setUp();
+	}
+	
+	@AfterClass
+	private void tearDownClass() {
+		dbStorage = new OrderDbStorage(getInstrumentation().getContext());
+		dbStorage.clear();
+		
+		for (Order o : originalData) {
+			dbStorage.insert(o);
+		}
 	}
 
 	@Test
