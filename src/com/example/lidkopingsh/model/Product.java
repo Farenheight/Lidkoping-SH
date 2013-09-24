@@ -124,7 +124,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			} else {
 				tasks.add(index, task);
 			}
-			task.addTaskListener(this);
+//			task.addTaskListener(this);
 			notifyProductListeners();
 			return true;
 		}
@@ -170,7 +170,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		if (tasks.contains(task)) {
 			notifyProductListeners();
 			tasks.remove(task);
-			task.removeTaskListener(this);
+//			task.removeTaskListener(this);
 			return true;
 		} else
 			return false;
