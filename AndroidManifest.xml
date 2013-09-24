@@ -5,8 +5,14 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="18" />
+
+    <instrumentation
+        android:name="android.test.InstrumentationTestRunner"
+        android:label="Test"
+        android:targetPackage="com.example.lidkopingsh" >
+    </instrumentation>
 
     <application
         android:allowBackup="true"
@@ -14,14 +20,17 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
+            android:windowSoftInputMode="adjustNothing"
             android:name="com.example.lidkopingsh.StoneListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:windowSoftInputMode="adjustNothing"
             android:name="com.example.lidkopingsh.StoneDetailActivity"
             android:label="@string/title_stone_detail"
             android:parentActivityName=".StoneListActivity" >
@@ -29,6 +38,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".StoneListActivity" />
         </activity>
+        <uses-library android:name="android.test.runner"/>
     </application>
 
 </manifest>

@@ -13,6 +13,7 @@ public class Customer {
 	private String address;
 	private String postAddress;
 	private String eMail;
+	private int id;
 	
 	/**
 	 * Creates a Customer object.
@@ -21,27 +22,20 @@ public class Customer {
 	 * @param address the address of the customer
 	 * @param eMail the customers email
 	 */
-	public Customer(String title, String name, String address, String postAddress, String eMail){
+	public Customer(String title, String name, String address, String postAddress, String eMail, int id){
 		this.name = name;
 		this.address = address;
 		this.postAddress = postAddress;
 		this.eMail = eMail;
 		this.title = title;
-	}
-	
-	@Deprecated
-	public Customer(String name, String address, String postAddress, String eMail){
-		this.name = name;
-		this.address = address;
-		this.postAddress = postAddress;
-		this.eMail = eMail;
+		this.id = id;
 	}
 	
 	/**
 	 * Only for testing purposes.
 	 */
 	public Customer(){
-		this("Mr", "Olle Bengtsson", "Anonymgatan 1", "416 00 Göteborg", "anonym@mail.com");
+		this("Mr", "Olle Bengtsson", "Anonymgatan 1", "416 00 Göteborg", "anonym@mail.com", 1);
 	}
 
 	public String getTitle() {
@@ -64,7 +58,11 @@ public class Customer {
 		return eMail;
 	}
 	
+	public int getId() {
+		return id;
+	}
+	
 	public Customer clone(){
-		return new Customer(title, name, address, postAddress, eMail);
+		return new Customer(title, name, address, postAddress, eMail, id);
 	}
 }

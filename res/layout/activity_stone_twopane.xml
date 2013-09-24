@@ -2,8 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
@@ -17,17 +15,25 @@
     that replace the single-pane version of the layout with
     this two-pane version.
 
-    For more on layout aliases, see:
-    http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
 
-    <fragment
-        android:id="@+id/stone_list"
-        android:name="com.example.lidkopingsh.StoneListFragment"
+    <LinearLayout
         android:layout_width="0dp"
+        android:layout_marginLeft="16dp"
+        android:orientation="vertical"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:layout="@android:layout/list_content" />
+        android:layout_weight="1" >
+        
+        <include layout="@layout/filter_box" />
+
+        <fragment
+            android:id="@+id/stone_list"
+            android:name="com.example.lidkopingsh.StoneListFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@android:layout/list_content" />
+        
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/stone_detail_container"

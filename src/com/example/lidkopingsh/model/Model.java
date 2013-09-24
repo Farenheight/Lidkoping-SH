@@ -1,6 +1,7 @@
 package com.example.lidkopingsh.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -57,6 +58,10 @@ public class Model implements IModel {
 	@Override
 	public void addOrder(Order o) {
 		orders.add(o);
+	}
+	
+	public void addOrders(Collection<Order> orders) {
+		this.orders.addAll(orders);
 	}
 
 	/*

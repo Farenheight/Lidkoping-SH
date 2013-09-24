@@ -3,5 +3,24 @@
 
     <string name="app_name">LidkopingSH</string>
     <string name="title_stone_detail">Stone Detail</string>
+    
+    <string-array name="tasks_array">
+        <item>Polering</item>
+        <item>Sågning</item>
+    </string-array>
+        <string name="cemetery_board">Kyrkogårdsnämnd</string>
+        <string name="cemetery">Kyrkogård</string>
+        <string name="desc">Beskrivning</string>
+        <string name="model">Modell</string>
+        <string name="material_and_color">Material och färg</string>
+        <string name="front_processing">Bearbetning på framsidan</string>
+        <string name="back_and_side_processing">Bearbetning på bak och framsida</string>
+        <string name="text_style_and_processing">Textstil och bearbetning</string>
+        <string name="ornament">Ornament</string>
+        <string name="burial_name">Gravplatsbeteckning</string>
+        <string name="test">&lt;test string></string>
+        <string name="dynamic">&lt;dynamic string></string>
+        <string name="base">Sockel</string>
+        <string name="long_test_string">This is a longer test string for testing longer strings suitability in lorem ipsum</string>
 
 </resources>

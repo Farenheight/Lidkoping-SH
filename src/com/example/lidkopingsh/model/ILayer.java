@@ -1,5 +1,5 @@
 package com.example.lidkopingsh.model;
 
-public interface ILayer extends Listener<IModel> {
+public interface ILayer extends Listener<Order> {
 	public IModel getModel();
 }
