@@ -2,6 +2,7 @@ package com.example.lidkopingsh.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -117,9 +118,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            -1 or index >= tasks.length adds the task last in the list.
 	 */
 	public void addTask(Task task, int index) {
-		for(Task t : tasks){
-			if(t.getId() == task.getId()){
-				tasks.remove(t);
+		Iterator<Task> iterator = tasks.iterator();
+		while(iterator.hasNext()){
+			Task t = iterator.next();
+			if(t != task && t.getId() == task.getId()){
+				iterator.remove();
 			}
 		}
 		if (!tasks.contains(task)) {
@@ -128,7 +131,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			} else {
 				tasks.add(index, task);
 			}
-			notifyProductListeners();
+			notifyProductListeners();				
 		}
 	}
 
