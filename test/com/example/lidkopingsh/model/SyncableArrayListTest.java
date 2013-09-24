@@ -35,6 +35,13 @@ public class SyncableArrayListTest {
 		assertTrue(list.equals(list2));
 		
 	}
+	public void testSyncListeners(){
+		Order o = new Order();
+		Product p0 = new Product(0, "none", "none", "", null);
+		o.addProduct(p0);
+		
+		
+	}
 	
 	private class SuperClass implements Syncable<SuperClass>{
 		int id;

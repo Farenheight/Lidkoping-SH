@@ -28,7 +28,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * For testing purposes only.
 	 */
 	public Order() {
-		this(5, getNewOrderNumber(), "O.R.", System.currentTimeMillis(),
+	this(5, getNewOrderNumber(), "O.R.", System.currentTimeMillis(),
 				System.currentTimeMillis(), "",
 				Long.parseLong("1371679200000"), new Customer("Mr",
 						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
@@ -46,9 +46,9 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.cementary = cementary;
 		this.orderDate = orderDate;
 		this.customer = customer.clone();
-		
+
 		orderListeners = new ArrayList<Listener<Order>>();
-		products = new SyncableArrayList<Product>();
+		products = new SyncableProductList();
 	}
 
 	public int getId() {
@@ -173,6 +173,38 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		}
 
 		return "" + yearPart + numPart;
+	}
+
+	/**
+	 * Inner class that makes sure that listeners are added and removed properly
+	 * when an {@link Order} is synced
+	 * 
+	 * @author robin
+	 * 
+	 */
+	private class SyncableProductList extends SyncableArrayList<Product> {
+		private static final long serialVersionUID = 2154927418889429341L;
+
+		public SyncableProductList() {
+		}
+
+		public SyncableProductList(Collection<Product> collection) {
+			super(collection);
+		}
+
+		@Override
+		public boolean add(Product object) {
+			object.addProductListener(Order.this);
+			return super.add(object);
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Product) {
+				((Product) object).removeProductListener(Order.this);
+			}
+			return super.remove(object);
+		}
 	}
 
 }
