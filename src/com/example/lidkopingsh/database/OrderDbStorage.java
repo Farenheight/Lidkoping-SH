@@ -63,6 +63,18 @@ public class OrderDbStorage {
 		OrderDbHelper dbHelper = new OrderDbHelper(context);
 		db = dbHelper.getWritableDatabase();
 	}
+	
+	/**
+	 * Clear all rows in the database.
+	 */
+	public void clear() {
+		db.delete(TaskToProductTable.TABLE_NAME, null, null);
+		db.delete(TaskTable.TABLE_NAME, null, null);
+		db.delete(StoneTable.TABLE_NAME, null, null);
+		db.delete(ProductTable.TABLE_NAME, null, null);
+		db.delete(CustomerTable.TABLE_NAME, null, null);
+		db.delete(OrderTable.TABLE_NAME, null, null);
+	}
 
 	/**
 	 * Insert a new order into the database.
@@ -246,7 +258,7 @@ public class OrderDbStorage {
 		
 		List<Task> tasks = getTasks(c);
 		
-		boolean isStone = !c.isNull(c.getColumnIndexOrThrow(STONE + StoneTable.COLUMN_NAME_PRODUCT_ID));
+		boolean isStone = !c.isNull(c.getColumnIndexOrThrow(STONE + DOT + StoneTable.COLUMN_NAME_PRODUCT_ID));
 		if (isStone) {
 			return getStone(c, productId, orderNumber, description, materialColor, frontWork, tasks);
 		} else {
@@ -304,11 +316,12 @@ public class OrderDbStorage {
 		
 		do {
 			if (productId != getIntColumn(c, ProductTable.COLUMN_NAME_PRODUCT_ID)) {
-				c.moveToPrevious();
 				break;
 			}
 			tasks.add(getTask(c));
 		} while (c.moveToNext());
+		
+		c.moveToPrevious();
 		
 		return tasks;
 	}
