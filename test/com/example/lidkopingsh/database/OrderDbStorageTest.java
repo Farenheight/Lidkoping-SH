@@ -67,7 +67,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 		Order order = getOrder("130942", "O.S.", getCustomer());
 
 		Collection<Product> products = new LinkedList<Product>();
-		//products.add(getStone("Beskrivning", getStoneTasks()));
+		products.add(getStone("Beskrivning", getStoneTasks()));
 		products.add(getSocle("Sockel under mark", getSocleTasks()));
 		order.addProducts(products);
 

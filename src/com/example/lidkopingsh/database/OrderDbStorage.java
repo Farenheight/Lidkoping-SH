@@ -8,7 +8,6 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.lidkopingsh.database.DataContract.CustomerTable;
@@ -253,8 +252,7 @@ public class OrderDbStorage {
 	}
 	
 	private Product getProduct(Cursor c) {
-		DatabaseUtils.dumpCurrentRow(c);
-		int productId = getIntColumn(c, PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID);
+		int productId = getIntColumn(c, ProductTable.COLUMN_NAME_PRODUCT_ID);
 		String orderNumber = getStringColumn(c, ProductTable.COLUMN_NAME_ORDER_NUMBER);
 		String description = getStringColumn(c, ProductTable.COLUMN_NAME_DESCRIPTION);
 		String materialColor = getStringColumn(c, ProductTable.COLUMN_NAME_MATERIAL_COLOR);
@@ -262,7 +260,7 @@ public class OrderDbStorage {
 		
 		List<Task> tasks = getTasks(c);
 		
-		boolean isStone = !c.isNull(c.getColumnIndexOrThrow(STONE + DOT + StoneTable.COLUMN_NAME_PRODUCT_ID));
+		boolean isStone = !c.isNull(c.getColumnIndexOrThrow(StoneTable.COLUMN_NAME_PRODUCT_ID));
 		if (isStone) {
 			return getStone(c, productId, orderNumber, description, materialColor, frontWork, tasks);
 		} else {
@@ -271,13 +269,13 @@ public class OrderDbStorage {
 	}
 
 	private Collection<Product> getProducts(String orderNumber) {
-		String sqlProducts = SELECT_FROM + TaskTable.TABLE_NAME + SPACE + TASK
-				+ JOIN + TaskToProductTable.TABLE_NAME + SPACE + TASK_TO_PRODUCT + ON + TASK + DOT
-				+ TaskTable.COLUMN_NAME_TASK_ID + EQUALS + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_TASK_ID
-				+ JOIN + ProductTable.TABLE_NAME + SPACE + PRODUCT + ON + TASK_TO_PRODUCT + DOT 
-				+ TaskToProductTable.COLUMN_NAME_PRODUCT_ID	+ EQUALS + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID
+		String sqlProducts = SELECT_FROM + ProductTable.TABLE_NAME + SPACE + PRODUCT
 				+ LEFT_JOIN + StoneTable.TABLE_NAME + SPACE + STONE + ON + PRODUCT + DOT
 				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + STONE + DOT + StoneTable.COLUMN_NAME_PRODUCT_ID
+				+ LEFT_JOIN + TaskToProductTable.TABLE_NAME + SPACE + TASK_TO_PRODUCT + ON + PRODUCT + DOT
+				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_PRODUCT_ID
+				+ LEFT_JOIN + TaskTable.TABLE_NAME + SPACE + TASK + ON + TASK_TO_PRODUCT + DOT 
+				+ TaskToProductTable.COLUMN_NAME_TASK_ID + EQUALS + TASK + DOT + TaskTable.COLUMN_NAME_TASK_ID
 				+ WHERE + PRODUCT + DOT + ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + "?"
 				+ ORDER_BY + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID 
 				+ COMMA_SEP + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_SORT_ORDER;
@@ -311,7 +309,7 @@ public class OrderDbStorage {
 		String name = getStringColumn(c, TaskTable.COLUMN_NAME_TASK);
 		int status = getIntColumn(c, TaskToProductTable.COLUMN_NAME_TASK_STATUS);
 		
-		return new Task(taskId, name, Status.valueOf(status));
+		return name != null ? new Task(taskId, name, Status.valueOf(status)) : null;
 	}
 	
 	private List<Task> getTasks(Cursor c) {
@@ -322,7 +320,10 @@ public class OrderDbStorage {
 			if (productId != getIntColumn(c, ProductTable.COLUMN_NAME_PRODUCT_ID)) {
 				break;
 			}
-			tasks.add(getTask(c));
+			Task task = getTask(c);
+			if (task != null) {
+				tasks.add(task);
+			}
 		} while (c.moveToNext());
 		
 		c.moveToPrevious();
