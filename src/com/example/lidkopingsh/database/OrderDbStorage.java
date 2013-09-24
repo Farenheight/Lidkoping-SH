@@ -166,6 +166,23 @@ public class OrderDbStorage {
 		db.insert(TaskToProductTable.TABLE_NAME, null, values);
 	}
 
+	/**
+	 * <p>Select orders from the database.</p>
+	 * <p>Column names are listed in {@link DataContract}.</p>
+	 * <p><strong>Example</strong></p>
+	 * <code>SELECT * FROM Orders WHERE OrderNumber = '130001' ORDER BY OrderDate</code>
+	 * <p>
+	 * <b>sqlSelection</b>: <code>{@link OrderTable#COLUMN_NAME_ORDER_NUMBER} = ?</code><br />
+	 * <b>sqlSelectionArgs</b>: <code>new String[] { "130001" }</code><br />
+	 * <b>sqlOrderBy</b>: <code>{@link OrderTable#COLUMN_NAME_ORDER_DATE} ASC</code>
+	 * </p>
+	 * @param sqlSelection SQL Where command with arguments replaced by '?'.
+	 * @param sqlSelectionArgs Arguments for SQL Where command as a String array.
+	 * 		All '?' are replaced in the array order.
+	 * @param sqlOrderBy A (comma separated list as a string) that defines the SQL
+	 * 		Order By.
+	 * @return A collection of orders.
+	 */
 	public Collection<Order> query(String sqlSelection,
 			String[] sqlSelectionArgs, String sqlOrderBy) {
 		String sqlQuery = SELECT_FROM + OrderTable.TABLE_NAME + SPACE + ORDER + SPACE
