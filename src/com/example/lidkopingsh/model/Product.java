@@ -1,6 +1,7 @@
 package com.example.lidkopingsh.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -41,14 +42,14 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            be completed.
 	 */
 	public Product(int id, String materialColor, String description,
-			String frontWork, List<Task> tasks){
+			String frontWork, List<Task> tasks) {
 		this(tasks);
 		this.id = id;
 		this.materialColor = materialColor;
 		this.description = description;
 		this.frontWork = frontWork;
 	}
-	
+
 	/**
 	 * Create a new product with tasks
 	 * 
@@ -57,11 +58,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 */
 	private Product(List<Task> tasks) {
 		this.listeners = new ArrayList<Listener<Product>>();
-		this.tasks = new SyncableArrayList<Task>(tasks);
+		this.tasks = new SyncableTaskList(tasks);
 	}
-	
+
 	/**
-	 * Create a new product no tasks and dummy 
+	 * Create a new product no tasks and dummy
 	 */
 	public Product() {
 		this(new ArrayList<Task>());
@@ -216,7 +217,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            {@link Product}
 	 * @return true if listeners was modified, false otherwise.
 	 */
-	public boolean removeTaskListener(Listener<Product> listener) {
+	public boolean removeProductListener(Listener<Product> listener) {
 		if (listeners.contains(listener)) {
 			listeners.remove(listener);
 			return true;
@@ -236,15 +237,47 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			return false;
 		}
 	}
+
 	@Override
 	public boolean equals(Object o) {
-		if(this == o){
+		if (this == o) {
 			return true;
-		}else if(o == null || o.getClass() != getClass()){
+		} else if (o == null || o.getClass() != getClass()) {
 			return false;
-		}else{
-			return this.id == ((Product)o).id;
-			//TODO check more fields.
+		} else {
+			return this.id == ((Product) o).id;
+			// TODO check more fields.
+		}
+	}
+	/**
+	 * Inner class that makes sure that listeners are added and removed properly
+	 * when an {@link Product} is synced.
+	 * 
+	 * @author robin
+	 * 
+	 */
+	private class SyncableTaskList extends SyncableArrayList<Task> {
+		private static final long serialVersionUID = 4082149811877348098L;
+
+		public SyncableTaskList() {
+		}
+
+		public SyncableTaskList(Collection<Task> collection) {
+			super(collection);
+		}
+
+		@Override
+		public boolean add(Task object) {
+			object.addTaskListener(Product.this);
+			return super.add(object);
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Task) {
+				((Task) object).removeTaskListener(Product.this);
+			}
+			return super.remove(object);
 		}
 	}
 }

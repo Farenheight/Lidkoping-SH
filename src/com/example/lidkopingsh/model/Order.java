@@ -2,6 +2,7 @@ package com.example.lidkopingsh.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,11 +27,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * For testing purposes only.
 	 */
 	public Order() {
-		this(5, getNewOrderNumber(), System.currentTimeMillis(),
-				System.currentTimeMillis(), "",
-				Long.parseLong("1371679200000"), new Customer("Mr",
-						"Olle Bengtsson", "Testv�gen 52", "416 72 G�teborg",
-						"olle.bengtsson@testuser.com")); 
+		this(5, getNewOrderNumber(), System.currentTimeMillis(), System
+				.currentTimeMillis(), "", Long.parseLong("1371679200000"),
+				new Customer("Mr", "Olle Bengtsson", "Testv�gen 52",
+						"416 72 G�teborg", "olle.bengtsson@testuser.com"));
 	}
 
 	public Order(int id, String orderNumber, long timeCreated,
@@ -43,9 +43,9 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.cementary = cementary;
 		this.orderDate = orderDate;
 		this.customer = customer.clone();
-		
+
 		orderListeners = new ArrayList<Listener<Order>>();
-		products = new SyncableArrayList<Product>();
+		products = new SyncableProductList();
 	}
 
 	public int getId() {
@@ -162,6 +162,38 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		}
 
 		return "" + yearPart + numPart;
+	}
+
+	/**
+	 * Inner class that makes sure that listeners are added and removed properly
+	 * when an {@link Order} is synced
+	 * 
+	 * @author robin
+	 * 
+	 */
+	private class SyncableProductList extends SyncableArrayList<Product> {
+		private static final long serialVersionUID = 2154927418889429341L;
+
+		public SyncableProductList() {
+		}
+
+		public SyncableProductList(Collection<Product> collection) {
+			super(collection);
+		}
+
+		@Override
+		public boolean add(Product object) {
+			object.addProductListener(Order.this);
+			return super.add(object);
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Product) {
+				((Product) object).removeProductListener(Order.this);
+			}
+			return super.remove(object);
+		}
 	}
 
 }
