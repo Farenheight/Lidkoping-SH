@@ -36,18 +36,18 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/TextView01"
+                    android:id="@+id/idName"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="O.R"
+                    android:layout_weight="1"
+                    android:text="O.S"
                     android:textSize="60sp" />
 
                 <TextView
-                    android:id="@+id/textView1"
+                    android:id="@+id/orderNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="NB132"
+                    android:text="@string/dynamic"
                     android:textSize="18sp" />
 
             </LinearLayout>
@@ -177,27 +177,6 @@
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/TextView09"
-                    style="?android:attr/textAppearanceLarge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:text="@string/base"
-                    android:textIsSelectable="true"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/base"
-                    style="?android:attr/textAppearanceLarge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:text="@string/dynamic"
-                    android:textIsSelectable="true"
-                    android:textSize="18sp" />
-
-                <TextView
                     android:id="@+id/TextView04"
                     style="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
@@ -214,7 +193,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_columnSpan="2"
-                    android:text="@string/long_test_string"
+                    android:text="@string/dynamic"
                     android:textIsSelectable="true"
                     android:textSize="18sp" />
 

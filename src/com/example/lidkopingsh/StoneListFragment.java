@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -89,6 +90,7 @@ public class StoneListFragment extends ListFragment {
 		setListAdapter(new TasksAdapter(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, mOrderList));
+		Log.d("image", "" + (mOrderList.get(0) == mOrderList.get(1)));
 	}
 
 	@Override
