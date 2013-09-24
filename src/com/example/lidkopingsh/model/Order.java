@@ -28,11 +28,11 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * For testing purposes only.
 	 */
 	public Order() {
-	this(5, getNewOrderNumber(), "O.R.", System.currentTimeMillis(),
-				System.currentTimeMillis(), "",
-				Long.parseLong("1371679200000"), new Customer("Mr",
-						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
-						"olle.bengtsson@testuser.com", (int) System.currentTimeMillis()));
+		this(5, getNewOrderNumber(), "O.R.", System.currentTimeMillis(), System
+				.currentTimeMillis(), "", Long.parseLong("1371679200000"),
+				new Customer("Mr", "Olle Bengtsson", "Testvagen 52",
+						"416 72 Goteborg", "olle.bengtsson@testuser.com",
+						(int) System.currentTimeMillis()));
 	}
 
 	public Order(int id, String orderNumber, String idName, long timeCreated,
@@ -78,7 +78,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Customer getCustomer() {
 		return customer;
 	}
-	
+
 	public String getIdName() {
 		return idName;
 	}
@@ -90,7 +90,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public void addProduct(Product p) {
 		products.add(p);
 	}
-	
+
 	public void addProducts(Collection<Product> products) {
 		this.products.addAll(products);
 	}
@@ -152,7 +152,15 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		} else if (o == null || o.getClass() != getClass()) {
 			return false;
 		} else {
-			return this.id == ((Order) o).id;
+			Order or = (Order) o;			
+			return this.id == or.id && this.timeCreated == or.getTimeCreated()
+					&& this.lastTimeUpdate == or.getLastTimeUpdate()
+					&& this.cementary.equals(or.getCementary())
+					&& this.orderDate == or.getOrderDate()
+					&& this.orderNumber.equals(or.getOrderNumber())
+					&& this.idName.equals(or.getIdName())
+					&& this.customer.equals(or.getCustomer())
+					&& this.products.equals(or.getProducts());
 		}
 	}
 
