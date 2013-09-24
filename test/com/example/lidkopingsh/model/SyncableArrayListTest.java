@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class SyncableArrayListTest {
+public class SyncableArrayListTest implements Listener<Order>{
 	@Test
-	public void testSyncList(){
+	public void testSyncList() {
 		System.out.println("");		
 		//Sync a list of elements, no elements added/removed
 		SyncableList<SuperClass> list = new SyncableArrayList<SuperClass>();
@@ -35,12 +35,55 @@ public class SyncableArrayListTest {
 		assertTrue(list.equals(list2));
 		
 	}
+	
+	private boolean synced = false;
+	@Test
 	public void testSyncListeners(){
-		Order o = new Order();
+		Order o0 = new Order();
+		o0.addOrderListener(this);
 		Product p0 = new Product(0, "none", "none", "", null);
-		o.addProduct(p0);
+		o0.addProduct(p0);
+		Task t0 = new Task(0, "Task0");
+		Task t1 = new Task(1, "Task1");
+		p0.addTask(t0);
+		p0.addTask(t1);
 		
+		Order o1 = new Order(); //clone
+		Product p1 = new Product(0, "new", "new", "new", null); //clone
+		o1.addProduct(p1);
+		Task t2 = new Task(0, "Task0");
+		Task t3 = new Task(1, "Task1");
+		p1.addTask(t2);
+		p1.addTask(t3);
 		
+		//Change status on one task and check if listener works
+		t2.setStatus(Status.DONE);
+		o0.sync(o1);
+		assertTrue(synced);
+		synced = false;
+		
+		//Add new task on new Order and sync, then check if listener works
+		Task t4 = new Task(2, "Task2");
+		p1.addTask(t4);
+		o0.sync(o1);
+		t4.setStatus(Status.DONE);
+		assertTrue(synced);
+		synced = false;
+		
+		//Add new task on new Product and sync, then check if listener works
+		Product p3 = new Product(1,"","","",null);		
+		o1.addProduct(p3);
+		Task t5 = new Task(5,"Task5");
+		p3.addTask(t5);
+		o1.sync(o0);
+		t5.setStatus(Status.DONE);
+		assertTrue(synced);
+		synced = false;
+		
+	}
+	@Override
+	public void changed(Order object) {
+		synced = true;
 	}
 	
 	private class SuperClass implements Syncable<SuperClass>{
@@ -53,7 +96,7 @@ public class SyncableArrayListTest {
 		}
 		@Override
 		public boolean sync(SuperClass newData) {
-			if(this.id == newData.id){
+			if(this.id == newData.id && newData.getClass() == getClass()){
 				synced = newData.synced;
 				this.data = newData.data;
 				return true;

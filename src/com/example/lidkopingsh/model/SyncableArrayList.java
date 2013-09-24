@@ -13,23 +13,28 @@ public class SyncableArrayList<T extends Syncable<? super T>> extends
 	}
 
 	public SyncableArrayList(Collection<? extends T> collection) {
-		super(collection);
+		super(collection != null? collection : new ArrayList<T>());
 	}
 
 	@Override
 	public boolean sync(List<T> newList) {
 		List<T> oldList = new ArrayList<T>(this);
 		clear();
-		boolean listModified = false;
+		boolean listModified = false, objectModified = false;
 		int i = 0;
 
 		for (T newObject : newList) {
+			objectModified = false;
 			for (T oldObject : oldList) {
 				if (oldObject.sync(newObject)) {
-					listModified = true;
+					listModified = objectModified = true;
+					this.add(i++, oldObject);
+					break;
 				}
 			}
-			this.add(i++, newObject);
+			if(!objectModified){
+				this.add(i++, newObject);
+			}
 		}
 
 		// Removes data that doesn't exist in new list

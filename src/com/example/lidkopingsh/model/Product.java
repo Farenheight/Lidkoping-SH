@@ -115,20 +115,21 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * @param index
 	 *            The index this task should get in the list of tasks. index =
 	 *            -1 or index >= tasks.length adds the task last in the list.
-	 * @return true if Tasks was modified. false otherwise
 	 */
-	public boolean addTask(Task task, int index) {
+	public void addTask(Task task, int index) {
+		for(Task t : tasks){
+			if(t.getId() == task.getId()){
+				tasks.remove(t);
+			}
+		}
 		if (!tasks.contains(task)) {
 			if (index == -1 || index >= tasks.size()) {
 				tasks.add(task);
 			} else {
 				tasks.add(index, task);
 			}
-			// task.addTaskListener(this);
 			notifyProductListeners();
-			return true;
 		}
-		return false;
 	}
 
 	/**
@@ -137,8 +138,8 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * @param task
 	 *            The {@link Task} to add.
 	 */
-	public boolean addTask(Task task) {
-		return addTask(task, -1);
+	public void addTask(Task task) {
+		addTask(task, -1);
 	}
 
 	/**
@@ -146,17 +147,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * 
 	 * @param tasks
 	 *            The {@link Task}s to add.
-	 * @return true if Tasks was modified. false otherwise
 	 */
-	public boolean addTasks(List<Task> tasks) {
-		boolean modified = false;
+	public void addTasks(List<Task> tasks) {
 		for (Task task : tasks) {
-			// add last in the list
-			if (addTask(task, -1)) {
-				modified = true;
-			}
+			addTask(task, -1);
 		}
-		return modified;
 	}
 
 	/**
@@ -164,16 +159,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * 
 	 * @param task
 	 *            The {@link Task} to remove
-	 * @return true if Tasks was modified. false otherwise.
 	 */
-	public boolean removeTask(Task task) {
-		if (tasks.contains(task)) {
-			notifyProductListeners();
-			tasks.remove(task);
-			// task.removeTaskListener(this);
-			return true;
-		} else
-			return false;
+	public void removeTask(Task task) {
+		if(tasks.remove(task)){
+			notifyProductListeners();			
+		}
 	}
 
 	/**
@@ -183,14 +173,10 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The {@link Task}s to remove
 	 * @return true if Tasks was modified. false otherwise.
 	 */
-	public boolean removeTasks(List<Task> tasks) {
-		boolean modified = false;
+	public void removeTasks(List<Task> tasks) {
 		for (Task task : tasks) {
-			if (removeTask(task)) {
-				modified = true;
-			}
+			removeTask(task);
 		}
-		return modified;
 	}
 
 	/**
@@ -227,7 +213,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 
 	@Override
 	public boolean sync(Product newData) {
-		if (newData != null && this.id == newData.id) {
+		if (newData != null && this.id == newData.id && this.getClass() == getClass()) {
 			this.description = newData.description;
 			this.frontWork = newData.frontWork;
 			this.materialColor = newData.materialColor;
@@ -271,6 +257,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			super(collection);
 		}
 
+		@Override
+		public void add(int index,Task object) {
+			object.addTaskListener(Product.this);
+			super.add(index,object);
+		}
 		@Override
 		public boolean add(Task object) {
 			object.addTaskListener(Product.this);
