@@ -24,6 +24,12 @@ import com.example.lidkopingsh.model.Task;
 public class OrderDbStorageTest extends InstrumentationTestCase {
 
 	private OrderDbStorage dbStorage;
+	
+	private static int customerId = 500;
+	private static int orderId = 1;
+	private static int orderNumber = 130001;
+	private static int productId = 400;
+	private static int taskId = 600;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -63,8 +69,20 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 		assertTrue(orders.contains(order));
 	}
 
+	@Test
+	public void testInsertSelectMultiple() {
+		Order order1 = getOrderFullyPopulated();
+		Order order2 = getOrderWithoutTasks();
+
+		dbStorage.insert(order1);
+		dbStorage.insert(order2);
+		Collection<Order> orders = dbStorage.query(null, null, null);
+
+		assertTrue(orders.contains(order1) && orders.contains(order2));
+	}
+
 	private Order getOrderFullyPopulated() {
-		Order order = getOrder("130942", "O.S.", getCustomer());
+		Order order = getOrder("O.S.", getCustomer());
 
 		Collection<Product> products = new LinkedList<Product>();
 		products.add(getStone("Beskrivning", getStoneTasks()));
@@ -75,7 +93,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 	}
 
 	private Order getOrderWithNullFields() {
-		Order order = getOrder("130942", "O.S.", getCustomer());
+		Order order = getOrder("O.T.", getCustomer());
 
 		Collection<Product> products = new LinkedList<Product>();
 		products.add(getStone(null, getStoneTasks()));
@@ -86,7 +104,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 	}
 
 	private Order getOrderWithoutTasks() {
-		Order order = getOrder("130942", "O.S.", getCustomer());
+		Order order = getOrder("O.U.", getCustomer());
 
 		Collection<Product> products = new LinkedList<Product>();
 		products.add(getStone(null, null));
@@ -98,38 +116,38 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 
 	private Customer getCustomer() {
 		return new Customer("Mr", "Namn Efternamn", "Adress gata 5",
-				"123 45 Stad", "email@test.se", 501);
+				"123 45 Stad", "email@test.se", customerId++);
 	}
 
-	private Order getOrder(String orderNumber, String idName, Customer customer) {
-		return new Order(100, orderNumber, idName, System.currentTimeMillis(),
-				System.currentTimeMillis(), "Kyrkogård",
-				System.currentTimeMillis(), customer);
+	private Order getOrder(String idName, Customer customer) {
+		return new Order(orderId++, String.valueOf(orderNumber++), idName,
+				System.currentTimeMillis(), System.currentTimeMillis(),
+				"Kyrkogård", System.currentTimeMillis(), customer);
 	}
 
 	private Product getSocle(String description, List<Task> tasks) {
-		return new Product(402, "Hallandia", description, "Polerad", tasks);
+		return new Product(productId++, "Hallandia", description, "Polerad", tasks);
 	}
 
 	private List<Task> getSocleTasks() {
 		List<Task> tasks2 = new ArrayList<Task>();
-		tasks2.add(new Task(601, "Sågning", Status.DONE));
-		tasks2.add(new Task(602, "Slipning"));
+		tasks2.add(new Task(taskId++, "Sågning", Status.DONE));
+		tasks2.add(new Task(taskId++, "Slipning"));
 		return tasks2;
 	}
 
 	private Stone getStone(String description, List<Task> tasks) {
-		return new Stone(401, "Hallandia", description, "Polerad", tasks,
+		return new Stone(productId++, "Hallandia", description, "Polerad", tasks,
 				"NB 49", "Råhugget", "Helvetica nedhuggen i guld",
 				"Blomma nedhuggen i guld");
 	}
 
 	private List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task(611, "Sågning", Status.DONE));
-		tasks.add(new Task(612, "Råhuggning"));
-		tasks.add(new Task(613, "Gravering"));
-		tasks.add(new Task(614, "Målning"));
+		tasks.add(new Task(taskId++, "Sågning", Status.DONE));
+		tasks.add(new Task(taskId++, "Råhuggning"));
+		tasks.add(new Task(taskId++, "Gravering"));
+		tasks.add(new Task(taskId++, "Målning"));
 		return tasks;
 	}
 }
