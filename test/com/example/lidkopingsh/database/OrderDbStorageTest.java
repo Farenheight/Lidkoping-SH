@@ -34,7 +34,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 	}
 
 	@Test
-	public void testInsertSelect() {
+	public void testInsertSelectFullyPopulated() {
 		Order order = getOrderFullyPopulated();
 
 		dbStorage.insert(order);
@@ -65,9 +65,9 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 
 	private Order getOrderFullyPopulated() {
 		Order order = getOrder("130942", "O.S.", getCustomer());
-		
+
 		Collection<Product> products = new LinkedList<Product>();
-		products.add(getStone("Beskrivning", getStoneTasks()));
+		//products.add(getStone("Beskrivning", getStoneTasks()));
 		products.add(getSocle("Sockel under mark", getSocleTasks()));
 		order.addProducts(products);
 
@@ -76,7 +76,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 
 	private Order getOrderWithNullFields() {
 		Order order = getOrder("130942", "O.S.", getCustomer());
-		
+
 		Collection<Product> products = new LinkedList<Product>();
 		products.add(getStone(null, getStoneTasks()));
 		products.add(getSocle(null, getSocleTasks()));
@@ -87,7 +87,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 
 	private Order getOrderWithoutTasks() {
 		Order order = getOrder("130942", "O.S.", getCustomer());
-		
+
 		Collection<Product> products = new LinkedList<Product>();
 		products.add(getStone(null, null));
 		products.add(getSocle(null, null));
@@ -97,42 +97,39 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 	}
 
 	private Customer getCustomer() {
-		return new Customer("Mr", "Namn Efternamn",
-				"Adress gata 5", "123 45 Stad", "email@test.se", (int) System.currentTimeMillis());
+		return new Customer("Mr", "Namn Efternamn", "Adress gata 5",
+				"123 45 Stad", "email@test.se", 501);
 	}
 
 	private Order getOrder(String orderNumber, String idName, Customer customer) {
-		return new Order(1, orderNumber, idName,
-				System.currentTimeMillis(), System.currentTimeMillis(),
-				"Kyrkogård", System.currentTimeMillis(), customer);
+		return new Order(100, orderNumber, idName, System.currentTimeMillis(),
+				System.currentTimeMillis(), "Kyrkogård",
+				System.currentTimeMillis(), customer);
 	}
 
 	private Product getSocle(String description, List<Task> tasks) {
-		return new Product((int) System.currentTimeMillis(), "Hallandia",
-				description, "Polerad", tasks);
+		return new Product(402, "Hallandia", description, "Polerad", tasks);
 	}
 
 	private List<Task> getSocleTasks() {
 		List<Task> tasks2 = new ArrayList<Task>();
-		tasks2.add(new Task((int) System.currentTimeMillis(), "Sågning",
-				Status.DONE));
-		tasks2.add(new Task((int) System.currentTimeMillis(), "Slipning"));
+		tasks2.add(new Task(601, "Sågning", Status.DONE));
+		tasks2.add(new Task(602, "Slipning"));
 		return tasks2;
 	}
 
 	private Stone getStone(String description, List<Task> tasks) {
-		return new Stone((int) System.currentTimeMillis(), "Hallandia",
-				description, "Polerad", tasks, "NB 49", "Råhugget",
-				"Helvetica nedhuggen i guld", "Blomma nedhuggen i guld");
+		return new Stone(401, "Hallandia", description, "Polerad", tasks,
+				"NB 49", "Råhugget", "Helvetica nedhuggen i guld",
+				"Blomma nedhuggen i guld");
 	}
 
 	private List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task((int) System.currentTimeMillis(), "Sågning",
-				Status.DONE));
-		tasks.add(new Task((int) System.currentTimeMillis(), "Råhuggning"));
-		tasks.add(new Task((int) System.currentTimeMillis(), "Gravering"));
-		tasks.add(new Task((int) System.currentTimeMillis(), "Målning"));
+		tasks.add(new Task(611, "Sågning", Status.DONE));
+		tasks.add(new Task(612, "Råhuggning"));
+		tasks.add(new Task(613, "Gravering"));
+		tasks.add(new Task(614, "Målning"));
 		return tasks;
 	}
 }
