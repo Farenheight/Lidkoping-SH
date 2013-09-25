@@ -1,27 +1,13 @@
 package com.example.lidkopingsh;
 
-import java.util.List;
+import com.example.lidkopingsh.model.ModelHandler;
 
-import uk.co.senab.photoview.PhotoViewAttacher;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.ToggleButton;
-
-import com.example.lidkopingsh.model.ModelHandler;
-import com.example.lidkopingsh.model.Order;
-import com.example.lidkopingsh.model.Status;
-import com.example.lidkopingsh.model.Stone;
-import com.example.lidkopingsh.model.Task;
 
 /**
  * A fragment representing a single Stone detail screen. This fragment is either
@@ -42,11 +28,7 @@ public class StoneDetailFragment extends Fragment {
 	public StoneDetailFragment() {
 	}
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

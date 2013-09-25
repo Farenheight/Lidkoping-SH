@@ -35,10 +35,13 @@ public class TabInfoFragment extends Fragment {
 	 * The Order that this fragment is presenting.
 	 */
 	private Order mOrder;
-
+	
+	public TabInfoFragment() {
+	}
+	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		Log.d("DEBUG", "getArgs(): " + getArguments());
 		if (getArguments() != null) {
 			if (getArguments().containsKey(StoneDetailFragment.ORDER_ID)) {
@@ -47,6 +50,11 @@ public class TabInfoFragment extends Fragment {
 				mOrder = ModelHandler.getModel().getOrderById(orderID);
 			}
 		}
+	} 
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		
 		View rootView = (LinearLayout) inflater.inflate(R.layout.tab_info,
 				container, false);

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
+import android.widget.TabHost.TabSpec;
 
 import com.example.lidkopingsh.R;
 
@@ -67,32 +68,36 @@ public class TabsFragmentActivity extends FragmentActivity implements
 
 	private void initialiseTabHost(Bundle args) {
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-		mTabHost.setup();
-		TabInfo tabInfo = null;
-		TabsFragmentActivity
-				.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1")
-						.setIndicator("Tab 1"), (tabInfo = new TabInfo("Tab1",
-						TabDrawingFragment.class, args)));
-		this.mapTabInfo.put(tabInfo.tag, tabInfo);
-		TabsFragmentActivity.addTab(this, this.mTabHost, this.mTabHost
-				.newTabSpec("Tab2").setIndicator("Tab 2"),
-				(tabInfo = new TabInfo("Tab2", TabInfoFragment.class, args)));
-		this.mapTabInfo.put(tabInfo.tag, tabInfo);
-		// Default to first tab
-		this.onTabChanged("Tab1");
-		//
+		mTabHost.setup(); // Necessary if host setup in xml
+		
+		// Add drawing tab
+		TabSpec tabSpec = mTabHost.newTabSpec("Tab1");
+		tabSpec.setIndicator("Ritning");
+		TabInfo tabInfo = new TabInfo("Tab1",
+				TabDrawingFragment.class, args);
+		addTab(this, mTabHost, tabSpec, tabInfo);
+		mapTabInfo.put(tabInfo.tag, tabInfo);
+
+		// Add details tab
+		tabSpec = mTabHost.newTabSpec("Tab2");
+		tabSpec.setIndicator("Detaljer");
+		tabInfo = new TabInfo("Tab2",
+				TabInfoFragment.class, args);
+		addTab(this, mTabHost, tabSpec, tabInfo);
+		mapTabInfo.put(tabInfo.tag, tabInfo);
+
+		onTabChanged("Tab1"); // Default to first tab
 		mTabHost.setOnTabChangedListener(this);
 	}
 
-	private static void addTab(TabsFragmentActivity activity, TabHost tabHost,
+	private void addTab(TabsFragmentActivity activity, TabHost tabHost,
 			TabHost.TabSpec tabSpec, TabInfo tabInfo) {
 		// Attach a Tab view factory to the spec
 		tabSpec.setContent(activity.new TabFactory(activity));
 		String tag = tabSpec.getTag();
 
 		// Check to see if we already have a fragment for this tab, probably
-		// from a previously saved state. If so, deactivate it, because our
-		// initial state is that a tab isn't shown.
+		// from a previously saved state. If so, deactivate it.
 		tabInfo.fragment = activity.getSupportFragmentManager()
 				.findFragmentByTag(tag);
 		if (tabInfo.fragment != null && !tabInfo.fragment.isDetached()) {

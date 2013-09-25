@@ -22,6 +22,10 @@ public class TabDrawingFragment extends Fragment {
 
 	/** Attacher to imageView to zoom lib **/
 	private PhotoViewAttacher mAttacher;
+	
+	public TabDrawingFragment(){
+		
+	}
 
 	/*
 	 * (non-Javadoc)
