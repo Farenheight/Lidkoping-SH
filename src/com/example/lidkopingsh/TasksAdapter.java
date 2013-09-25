@@ -61,7 +61,7 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 					"ArrayAdapter requires the resource ID to be a TextView", e);
 		}
 		Order clickedOrder = (Order) getItem(position);
-		text.setText(clickedOrder.getCustomer().getName());
+		text.setText(clickedOrder.getIdName());
 
 		return view;
 	}

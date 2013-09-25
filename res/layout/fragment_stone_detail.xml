@@ -246,7 +246,7 @@
     <LinearLayout
         android:id="@+id/task_container"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="90dp"
         android:background="#ccc"
         android:baselineAligned="true"
         android:orientation="horizontal" >
