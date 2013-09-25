@@ -140,7 +140,8 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 	private Order getOrder(String idName, Customer customer) {
 		return new Order(orderId++, String.valueOf(orderNumber++), idName,
 				System.currentTimeMillis(), System.currentTimeMillis(),
-				"Kyrkogård", System.currentTimeMillis(), customer);
+				"Kyrkogård", "Kyrkogårdsnämnd", "Notation",
+				System.currentTimeMillis(), customer, null);
 	}
 
 	private Product getSocle(String description, List<Task> tasks) {

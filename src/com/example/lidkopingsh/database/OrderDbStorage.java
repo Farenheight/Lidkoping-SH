@@ -243,11 +243,12 @@ class OrderDbStorage {
 		long timeCreated = getLongColumn(c, OrderTable.COLUMN_NAME_TIME_CREATED);
 		long timeLastUpdate = getLongColumn(c,
 				OrderTable.COLUMN_NAME_TIME_LAST_UPDATE);
-		
-		Order order = new Order(orderID, orderNumber, idName, timeCreated, timeLastUpdate,
-				cemetery, orderDate, getCustomer(c));
-		order.addProducts(getProducts(orderNumber));
-		
+
+		// TODO collect static strings from DB
+		Order order = new Order(orderID, orderNumber, idName, timeCreated,
+				timeLastUpdate, cemetery, "Kyrkonamnd", "Notation", orderDate,
+				getCustomer(c), getProducts(orderNumber));
+
 		return order;
 	}
 	
