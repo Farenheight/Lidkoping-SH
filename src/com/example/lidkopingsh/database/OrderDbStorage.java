@@ -31,7 +31,7 @@ import com.example.lidkopingsh.model.Task;
  * @author Olliver Mattsson
  * 
  */
-public class OrderDbStorage {
+class OrderDbStorage {
 
 	private static final String CUSTOMER = "c";
 	private static final String ORDER = "o";
