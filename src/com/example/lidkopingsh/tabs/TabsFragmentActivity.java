@@ -47,7 +47,6 @@ public class TabsFragmentActivity extends FragmentActivity implements
 			v.setMinimumHeight(0);
 			return v;
 		}
-
 	}
 
 	protected void onCreate(Bundle savedInstanceState) {
