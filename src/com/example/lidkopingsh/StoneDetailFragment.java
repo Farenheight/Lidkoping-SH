@@ -63,33 +63,16 @@ public class StoneDetailFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+			Bundle savedInstanceState) { 
 		View rootView = inflater.inflate(R.layout.fragment_stone_detail,
 				container, false);
 
 		if (mOrder != null) {
-			initOrderDrawing(rootView);
 			initInfo(rootView);
 			initTasks(inflater, container, rootView);
 		}
 
 		return rootView;
-	}
-
-	/**
-	 * Make image zoomable by attaching PhotoView lib
-	 */
-	private void initOrderDrawing(View rootView) {
-		ImageView orderDrawing = (ImageView) rootView
-				.findViewById(R.id.orderDrawing);
-
-		// Set the Drawable displayed
-		Drawable bitmap = getResources().getDrawable(
-				R.drawable.test_headstone_drawing);
-
-		// Attach a PhotoViewAttacher, which takes care of all of the zooming
-		// functionality.
-		mAttacher = new PhotoViewAttacher(orderDrawing);
 	}
 
 	/**

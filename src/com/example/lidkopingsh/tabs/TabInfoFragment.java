@@ -15,7 +15,8 @@ import com.example.lidkopingsh.R;
 /**
  *
  */
-public class Tab1Fragment extends Fragment {
+public class TabInfoFragment extends Fragment {
+
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -32,6 +33,9 @@ public class Tab1Fragment extends Fragment {
             // the view hierarchy; it would just never be used.
             return null;
         }
-		return (LinearLayout)inflater.inflate(R.layout.tab_drawing, container, false);
+		return (LinearLayout)inflater.inflate(R.layout.tab_info, container, false);
 	}
+
+	
+
 }
