@@ -26,7 +26,7 @@ public class Task implements Syncable<Task> {
 	 *            The status of the task. true if done. false otherwise.
 	 */
 	public Task(int id, String name, Status status) {
-		this.name = name;
+		this.name = name != null? name : "";
 		this.status = status;
 		this.listeners = new ArrayList<Listener<Task>>();
 		this.id = id;

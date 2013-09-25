@@ -43,10 +43,10 @@ public class Stone extends Product {
 			String frontWork, List<Task> tasks, String stoneModel,
 			String sideToBackWork, String textStyle, String ornament) {
 		super(id, materialColor, description, frontWork, tasks);
-		this.stoneModel = stoneModel;
-		this.sideBackWork = sideToBackWork;
-		this.textStyle = textStyle;
-		this.ornament = ornament;
+		this.stoneModel = stoneModel != null? stoneModel : "";
+		this.sideBackWork = sideToBackWork != null? sideToBackWork : "";
+		this.textStyle = textStyle != null? textStyle : "";
+		this.ornament = ornament != null? ornament : "";
 	}
 
 	/**
@@ -54,11 +54,11 @@ public class Stone extends Product {
 	 */
 	public Stone() {
 		this(1, "Hallandia-granit",
-				"Gravvård 80x65 cm\nPolerande blomlister 90x40 cm",
+				"Gravvï¿½rd 80x65 cm\nPolerande blomlister 90x40 cm",
 				"Framsidan & sockelns ovansida polerad ,matt fas",
 				new ArrayList<Task>(), "NB 46", "Polerade",
 				"Sx358-nedhuggen i guld",
-				"Kors & sol i guld\nFåglar & blommor vita");
+				"Kors & sol i guld\nFï¿½glar & blommor vita");
 	}
 
 	public String getStoneModel() {

@@ -46,11 +46,27 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			String frontWork, List<Task> tasks) {
 		this(tasks);
 		this.id = id;
-		this.materialColor = materialColor;
-		this.description = description;
-		this.frontWork = frontWork;
+		this.materialColor = materialColor != null? materialColor : "";
+		this.description = description != null? description : "";
+		this.frontWork = frontWork != null? frontWork : "";
 	}
-
+	/**
+	 * Create a new Product
+	 * 
+	 * @param id
+	 *            The id of the Product (from the database). The id should be
+	 *            unique for each element
+	 * @param materialColor
+	 *            The matierial and color for this Product.
+	 * @param description
+	 *            The description for this Product.
+	 * @param frontWork
+	 *            The frontWork for this product
+	 */
+	public Product(int id, String materialColor, String description,
+			String frontWork){
+		this(id,materialColor,description,frontWork,new ArrayList<Task>());
+	}
 	/**
 	 * Create a new product with tasks
 	 * 
