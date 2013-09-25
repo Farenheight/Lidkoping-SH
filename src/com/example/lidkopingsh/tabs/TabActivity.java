@@ -7,24 +7,25 @@ import android.widget.TabHost;
 import com.example.lidkopingsh.R;
 
 public class TabActivity extends Activity {
-	/** Called when the activity is first created. */
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabs_layout);
-		TabHost tabs = (TabHost) findViewById(R.id.orderTabHost);
-		tabs.setup();
-		TabHost.TabSpec spec1 = tabs.newTabSpec("tag1");
 		
-		spec1.setContent(R.id.tabDrawingContainer);
-		spec1.setIndicator("Analog Clock"); 
+		TabHost tabHost = (TabHost) findViewById(R.id.orderTabHost);
+		tabHost.setup();
+		
+		//Add drawing tab
+		TabHost.TabSpec drawingTab = tabHost.newTabSpec("drawingTab");
+		drawingTab.setContent(R.id.tabDrawingContainer);
+		drawingTab.setIndicator("Ritning"); 
+		tabHost.addTab(drawingTab);
 
-		tabs.addTab(spec1);
-
-		TabHost.TabSpec spec2 = tabs.newTabSpec("tag2");
-		spec2.setContent(R.id.tabDetailContainer);
-		spec2.setIndicator("Digital Clock");
-
-		tabs.addTab(spec2);
+		//Add detail tab
+		TabHost.TabSpec detailTab = tabHost.newTabSpec("detailTab");
+		detailTab.setContent(R.id.tabDetailContainer);
+		detailTab.setIndicator("Detaljer");
+		tabHost.addTab(detailTab);
 	}
 }
