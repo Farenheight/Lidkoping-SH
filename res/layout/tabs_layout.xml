@@ -17,21 +17,11 @@
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="65px" >
+            android:layout_height="wrap_content" >
 
-            <AnalogClock
-                android:id="@+id/AnalogClock01"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-            </AnalogClock>
+            <include layout="@layout/tab_drawing" />
 
-            <DigitalClock
-                android:id="@+id/DigitalClock01"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="DigitalClock01" >
-            </DigitalClock>
+            <include layout="@layout/tab_info" />
         </FrameLayout>
     </TabHost>
 
