@@ -12,7 +12,7 @@ public class TabActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabs_layout);
-		TabHost tabs = (TabHost) findViewById(R.id.TabHost01);
+		TabHost tabs = (TabHost) findViewById(R.id.orderTabHost);
 		tabs.setup();
 		TabHost.TabSpec spec1 = tabs.newTabSpec("tag1");
 		
