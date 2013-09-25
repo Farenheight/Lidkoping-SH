@@ -35,12 +35,17 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				Long.parseLong("1371679200000"), new Customer("Mr",
 						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
 						"olle.bengtsson@testuser.com",
-						(int) System.currentTimeMillis()));
+						(int) System.currentTimeMillis()), null);
 	}
 
+	/**
+	 * Creates an Order with the specified properties. For unknown or not
+	 * existing properties, use null.
+	 */
 	public Order(int id, String orderNumber, String idName, long timeCreated,
 			long lastTimeUpdated, String cemetary, String cemetaryBoard,
-			String graveyardNotation, long orderDate, Customer customer) {
+			String graveyardNotation, long orderDate, Customer customer,
+			Collection<Product> products) {
 		this.id = id;
 		this.orderNumber = orderNumber != null ? orderNumber : "";
 		this.idName = idName != null ? idName : "";
@@ -54,7 +59,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.customer = customer.clone();
 
 		orderListeners = new ArrayList<Listener<Order>>();
-		products = new SyncableProductList();
+		this.products = new SyncableProductList(products);
 	}
 
 	public int getId() {
