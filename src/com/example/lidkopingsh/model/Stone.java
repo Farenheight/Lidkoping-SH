@@ -92,10 +92,14 @@ public class Stone extends Product {
 
 	@Override
 	public boolean equals(Object o) {
-		Stone s = ((Stone) o);
-		return super.equals(s) && this.stoneModel.equals(s.getStoneModel())
-				&& this.sideBackWork.equals(s.getSideBackWork())
-				&& this.textStyle.equals(s.getTextStyle())
-				&& this.ornament.equals(s.getOrnament());
+		if(o instanceof Stone){
+			Stone s = ((Stone) o);
+			return super.equals(s) && this.stoneModel.equals(s.getStoneModel())
+					&& this.sideBackWork.equals(s.getSideBackWork())
+					&& this.textStyle.equals(s.getTextStyle())
+					&& this.ornament.equals(s.getOrnament());
+		}else{
+			return false;
+		}
 	}
 }
