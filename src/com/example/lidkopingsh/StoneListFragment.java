@@ -7,9 +7,9 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.lidkopingsh.model.ModelHandler;
 import com.example.lidkopingsh.model.Order;
@@ -79,18 +79,24 @@ public class StoneListFragment extends ListFragment {
 	 */
 	public StoneListFragment() {
 	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof Callbacks)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
+
+		mCallbacks = (Callbacks) activity;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Init adapter containing the data list
-		Collection<Order> orders = ModelHandler.getModel().getOrders();
-		mOrderList = new ArrayList<Order>(orders);
-		setListAdapter(new TasksAdapter(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, mOrderList));
-		Log.d("image", "" + (mOrderList.get(0) == mOrderList.get(1)));
 	}
 
 	@Override
@@ -104,19 +110,22 @@ public class StoneListFragment extends ListFragment {
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
 	}
-
+	
 	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-
-		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof Callbacks)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
-		}
-
-		mCallbacks = (Callbacks) activity;
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		//Trying to add a Header View.
+	    View tv = View.inflate(getActivity(), R.layout.filter_box, null);
+	    getListView().addHeaderView(tv);
+	    
+		// Init adapter containing the data list
+		Collection<Order> orders = ModelHandler.getModel().getOrders();
+		mOrderList = new ArrayList<Order>(orders);
+		setListAdapter(new TasksAdapter(getActivity(),
+				android.R.layout.simple_list_item_activated_1,
+				android.R.id.text1, mOrderList));
 	}
+
 
 	@Override
 	public void onDetach() {
@@ -143,7 +152,7 @@ public class StoneListFragment extends ListFragment {
 			outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
 		}
 	}
-
+	
 	/**
 	 * Turns on activate-on-click mode. When this mode is on, list items will be
 	 * given the 'activated' state when touched.
