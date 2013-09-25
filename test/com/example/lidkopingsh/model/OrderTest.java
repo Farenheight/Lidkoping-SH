@@ -61,8 +61,8 @@ public class OrderTest {
 	public void testListeners() {
 		OrderListener listener = new OrderListener();
 		Order order0 = new Order(0, "13555", "OV", System.currentTimeMillis(),
-				System.currentTimeMillis(), "Kvanum",
-				System.currentTimeMillis(), new Customer());
+				System.currentTimeMillis(), "Kvanum","","",
+				System.currentTimeMillis(), new Customer(),null);
 		
 		order0.addOrderListener(listener);
 		
@@ -84,8 +84,8 @@ public class OrderTest {
 		product1.addTask(task3);
 		
 		Order order1 = new Order(0, "", "", System.currentTimeMillis(),
-				System.currentTimeMillis(), "", System.currentTimeMillis(),
-				new Customer());
+				System.currentTimeMillis(), "","","", System.currentTimeMillis(),
+				new Customer(),null);
 		Product product2 = new Product(0, "", "", "");
 		Task task4 = new Task(0, "Task0");
 		Task task5 = new Task(1, "Task1");
