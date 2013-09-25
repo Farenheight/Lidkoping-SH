@@ -19,7 +19,13 @@ public class OrderTest {
 		Product p = new Product();
 		o2.addProduct(p);
 		assertFalse(o1.equals(o2));
-
+		
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		o2.removeProduct(p);
 		assertFalse(o1.equals(o2));
 	}

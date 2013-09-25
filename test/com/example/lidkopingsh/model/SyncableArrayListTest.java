@@ -69,6 +69,13 @@ public class SyncableArrayListTest implements Listener<Order>{
 		assertTrue(synced);
 		synced = false;
 		
+		try {
+			Thread.sleep(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		//Add new task on new Product and sync, then check if listener works
 		Product p3 = new Product(1,"","","",null);		
 		o1.addProduct(p3);
