@@ -22,5 +22,6 @@
         <string name="dynamic">&lt;dynamic string></string>
         <string name="base">Sockel</string>
         <string name="long_test_string">This is a longer test string for testing longer strings suitability in lorem ipsum</string>
+        <string name="stoneModel">Stenmodell</string>
 
 </resources>

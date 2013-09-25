@@ -157,6 +157,23 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/stoneModelHeader"
+                    style="?android:attr/textAppearanceLarge"
+                    android:text="@string/stoneModel"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/stoneModel"
+                    style="?android:attr/textAppearanceLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="@string/dynamic"
+                    android:textIsSelectable="true"
+                    android:textSize="18sp" />
+
+                <TextView
                     android:id="@+id/TextView10"
                     style="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
@@ -238,6 +255,7 @@
                     android:text="@string/dynamic"
                     android:textIsSelectable="true"
                     android:textSize="18sp" />
+
             </GridLayout>
 
         </LinearLayout>

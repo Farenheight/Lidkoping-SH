@@ -139,12 +139,12 @@ public class StoneDetailFragment extends Fragment {
 	 * @param rootView
 	 */
 	private void initInfo(View rootView) {
-		//Header
-		((TextView) rootView.findViewById(R.id.idName))
-		.setText(mOrder.getIdName());
-		((TextView) rootView.findViewById(R.id.orderNumber))
-		.setText(mOrder.getOrderNumber());
-		
+		// Header
+		((TextView) rootView.findViewById(R.id.idName)).setText(mOrder
+				.getIdName());
+		((TextView) rootView.findViewById(R.id.orderNumber)).setText(mOrder
+				.getOrderNumber());
+
 		// General
 		((TextView) rootView.findViewById(R.id.burialName))
 				.setText("<Not yet in model>");
@@ -155,6 +155,8 @@ public class StoneDetailFragment extends Fragment {
 
 		// Stone
 		Stone stone = ((Stone) mOrder.getProducts().get(0));
+		((TextView) rootView.findViewById(R.id.stoneModel))
+				.setText(stone.getStoneModel());
 		((TextView) rootView.findViewById(R.id.materialAndColor)).setText(stone
 				.getMaterialColor());
 		((TextView) rootView.findViewById(R.id.ornament)).setText(stone

@@ -2,6 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="32dp"
     android:orientation="vertical" >
 
     <include layout="@layout/filter_box" />
@@ -11,8 +13,6 @@
         android:name="com.example.lidkopingsh.StoneListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         tools:layout="@android:layout/list_content" />
 
 </LinearLayout>
