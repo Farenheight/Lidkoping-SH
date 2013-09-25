@@ -8,7 +8,7 @@ package com.example.lidkopingsh.model;
  */
 public class Customer {
 
-	private String title = "";
+	private String title;
 	private String name;
 	private String address;
 	private String postAddress;
@@ -29,11 +29,11 @@ public class Customer {
 	 */
 	public Customer(String title, String name, String address,
 			String postAddress, String eMail, int id) {
-		this.name = name;
-		this.address = address;
-		this.postAddress = postAddress;
-		this.eMail = eMail;
-		this.title = title;
+		this.name = name != null ? name : "";
+		this.address = address != null ? address : "";
+		this.postAddress = postAddress != null ? postAddress : "";
+		this.eMail = eMail != null ? eMail : "";
+		this.title = title != null ? title : "";
 		this.id = id;
 	}
 
