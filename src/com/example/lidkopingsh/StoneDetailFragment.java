@@ -6,6 +6,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -58,14 +60,31 @@ public class StoneDetailFragment extends Fragment {
 			int orderID = getArguments().getInt(ORDER_ID);
 			mOrder = ModelHandler.getModel().getOrderById(orderID);
 		}
-
+		Log.d("DEBUG", "mOrder in onCreate: " + mOrder);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_stone_detail,
-				container, false);
+		View rootView = inflater
+				.inflate(R.layout.tabs_layout, container, false);
+
+		TabHost tabHost = (TabHost) rootView.findViewById(R.id.orderTabHost);
+		tabHost.setup();
+
+		// Add drawing tab
+		TabHost.TabSpec drawingTab = tabHost.newTabSpec("drawingTab");
+		drawingTab.setContent(R.id.tabDrawingContainer);
+		drawingTab.setIndicator("Ritning");
+		tabHost.addTab(drawingTab);
+
+		// Add detail tab
+		TabHost.TabSpec detailTab = tabHost.newTabSpec("detailTab");
+		detailTab.setContent(R.id.tabDetailContainer);
+		detailTab.setIndicator("Detaljer");
+		tabHost.addTab(detailTab);
+
+		Log.d("DEBUG", "mOrder in onCreateView: " + mOrder);
 
 		if (mOrder != null) {
 			initOrderDrawing(rootView);
@@ -101,7 +120,7 @@ public class StoneDetailFragment extends Fragment {
 	 */
 	private void initTasks(LayoutInflater inflater, ViewGroup container,
 			View rootView) {
-		// TODO: Only uses the tasks from the first product...
+		// TODO: Vas, sockel etc tasks.
 		List<Task> tasks = mOrder.getProducts().get(0).getTasks();
 		for (int i = 0; i < mOrder.getProducts().get(0).getTasks().size(); i++) {
 			final Task task = tasks.get(i);
@@ -139,12 +158,12 @@ public class StoneDetailFragment extends Fragment {
 	 * @param rootView
 	 */
 	private void initInfo(View rootView) {
-		//Header
-		((TextView) rootView.findViewById(R.id.idName))
-		.setText(mOrder.getIdName());
-		((TextView) rootView.findViewById(R.id.orderNumber))
-		.setText(mOrder.getOrderNumber());
-		
+		// Header
+		((TextView) rootView.findViewById(R.id.idName)).setText(mOrder
+				.getIdName());
+		((TextView) rootView.findViewById(R.id.orderNumber)).setText(mOrder
+				.getOrderNumber());
+
 		// General
 		((TextView) rootView.findViewById(R.id.burialName))
 				.setText("<Not yet in model>");
@@ -155,6 +174,8 @@ public class StoneDetailFragment extends Fragment {
 
 		// Stone
 		Stone stone = ((Stone) mOrder.getProducts().get(0));
+		((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
+				.getStoneModel());
 		((TextView) rootView.findViewById(R.id.materialAndColor)).setText(stone
 				.getMaterialColor());
 		((TextView) rootView.findViewById(R.id.ornament)).setText(stone
@@ -167,4 +188,5 @@ public class StoneDetailFragment extends Fragment {
 				.setText(stone.getTextStyle());
 
 	}
+
 }
