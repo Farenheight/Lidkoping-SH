@@ -18,7 +18,7 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 	private int mViewResource;
 	/** The Resource id for the text view in each list item */
 	private int mFieldId;
-	private LayoutInflater mInflater;
+	private LayoutInflater mInflater; 
 
 	public TasksAdapter(Context context, int resource, int textViewResourceId,
 			List<Order> orders) {

@@ -7,9 +7,12 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Spinner;
 
 import com.example.lidkopingsh.model.ModelHandler;
 import com.example.lidkopingsh.model.Order;
@@ -41,7 +44,7 @@ public class StoneListFragment extends ListFragment {
 	 * The current activated item position. Only used on tablets.
 	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
-	
+
 	/**
 	 * List containing all orders shown in gui.
 	 */
@@ -79,7 +82,7 @@ public class StoneListFragment extends ListFragment {
 	 */
 	public StoneListFragment() {
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -99,6 +102,18 @@ public class StoneListFragment extends ListFragment {
 
 	}
 
+	View mHeaderView;
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View rootView = inflater.inflate(android.R.layout.list_content,
+				container, false);
+		mHeaderView = inflater.inflate(R.layout.filter_box, container, false);
+		return rootView;
+	}
+
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
@@ -110,14 +125,22 @@ public class StoneListFragment extends ListFragment {
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		//Trying to add a Header View.
-	    View tv = View.inflate(getActivity(), R.layout.filter_box, null);
-	    getListView().addHeaderView(tv);
-	    
+		// Trying to add a Header View.
+		getListView().addHeaderView(mHeaderView);
+
+		// Setup the task spinner TODO: Get real tasks from model
+		Spinner spinnerTasks = (Spinner) mHeaderView
+				.findViewById(R.id.spinnerTasks);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+				getActivity(), R.array.tasks_array,
+				android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerTasks.setAdapter(adapter);
+
 		// Init adapter containing the data list
 		Collection<Order> orders = ModelHandler.getModel().getOrders();
 		mOrderList = new ArrayList<Order>(orders);
@@ -125,7 +148,6 @@ public class StoneListFragment extends ListFragment {
 				android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, mOrderList));
 	}
-
 
 	@Override
 	public void onDetach() {
@@ -152,7 +174,7 @@ public class StoneListFragment extends ListFragment {
 			outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
 		}
 	}
-	
+
 	/**
 	 * Turns on activate-on-click mode. When this mode is on, list items will be
 	 * given the 'activated' state when touched.

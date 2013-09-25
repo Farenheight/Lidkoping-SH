@@ -6,8 +6,6 @@
     android:layout_marginRight="16dp"
     android:orientation="vertical" >
 
-    <include layout="@layout/filter_box" />
-
     <fragment
         android:id="@+id/stone_list"
         android:name="com.example.lidkopingsh.StoneListFragment"
