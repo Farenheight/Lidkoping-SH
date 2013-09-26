@@ -84,6 +84,9 @@ class OrderDbStorage {
 	 *            The order to insert.
 	 */
 	public void insert(Order order) {
+		if (order == null) {
+			throw new IllegalArgumentException("Order can not be null");
+		}
 		ContentValues values = new ContentValues();
 
 		values.put(OrderTable.COLUMN_NAME_ORDER_ID, order.getId());
