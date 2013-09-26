@@ -19,10 +19,11 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 
 	private OrderDbStorage dbStorage;
 	private Collection<Order> originalData;
-	
+
 	@BeforeClass
 	private void setUpClass() {
-		originalData = new OrderDbStorage(getInstrumentation().getContext()).query(null, null, null);
+		originalData = new OrderDbStorage(getInstrumentation().getContext())
+				.query(null, null, null);
 	}
 
 	@Override
@@ -32,12 +33,12 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 
 		super.setUp();
 	}
-	
+
 	@AfterClass
 	private void tearDownClass() {
 		dbStorage = new OrderDbStorage(getInstrumentation().getContext());
 		dbStorage.clear();
-		
+
 		for (Order o : originalData) {
 			dbStorage.insert(o);
 		}
@@ -51,6 +52,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 		Collection<Order> orders = dbStorage.query(null, null, null);
 
 		assertTrue(orders.contains(order));
+		assertTrue(orders.size() == 1);
 	}
 
 	@Test
@@ -61,6 +63,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 		Collection<Order> orders = dbStorage.query(null, null, null);
 
 		assertTrue(orders.contains(order));
+		assertTrue(orders.size() == 1);
 	}
 
 	@Test
@@ -71,6 +74,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 		Collection<Order> orders = dbStorage.query(null, null, null);
 
 		assertTrue(orders.contains(order));
+		assertTrue(orders.size() == 1);
 	}
 
 	@Test
@@ -83,5 +87,16 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 		Collection<Order> orders = dbStorage.query(null, null, null);
 
 		assertTrue(orders.contains(order1) && orders.contains(order2));
+		assertTrue(orders.size() == 2);
+	}
+
+	@Test
+	public void testInsertOrderWithoutProducts() {
+		Order order = OrderDbFiller.getOrderWithoutProducts("O.G.");
+		dbStorage.insert(order);
+		Collection<Order> orders = dbStorage.query(null, null, null);
+
+		assertTrue(orders.contains(order));
+		assertTrue(orders.size() == 1);
 	}
 }

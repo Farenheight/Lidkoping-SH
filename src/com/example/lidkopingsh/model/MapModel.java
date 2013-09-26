@@ -11,15 +11,18 @@ public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
 	private Map<Integer, Product> products;
 	private List<Task> tasks;
-
-	public MapModel() {
-		this(new HashMap<Integer, Order>(), new HashMap<Integer, Product>());
-	}
-
-	public MapModel(Map<Integer, Order> o, Map<Integer, Product> p) {
-		products = new HashMap<Integer, Product>(p);
-		orders = new HashMap<Integer, Order>(o);
-		tasks = new ArrayList<Task>();
+	
+	public MapModel(Collection<Order> o) {
+		this.products = new HashMap<Integer, Product>();
+		this.orders = new HashMap<Integer, Order>();
+		
+		for(Order or : o){
+			this.orders.put(or.getId(), or);
+			for(Product p : or.getProducts()){
+				this.products.put(p.getId(), p);
+			}
+		}
+		this.tasks = new ArrayList<Task>();
 
 		// Store all possible tasks
 		for (Order order : orders.values()) {
