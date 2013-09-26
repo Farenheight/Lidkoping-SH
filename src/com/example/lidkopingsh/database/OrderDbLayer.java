@@ -25,7 +25,7 @@ public class OrderDbLayer implements ILayer {
 	public OrderDbLayer(Context context) {
 		db = new OrderDbStorage(context);
 		if(db.query(null, null, null).isEmpty()){
-			
+			OrderDbFiller.fillDb(db);
 		}
 	}
 

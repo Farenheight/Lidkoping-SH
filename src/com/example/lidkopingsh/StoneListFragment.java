@@ -85,7 +85,7 @@ public class StoneListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 
 		// Init adapter containing the data list
-		Collection<Order> orders = ModelHandler.getModel().getOrders();
+		Collection<Order> orders = ModelHandler.getModel(this.getActivity()).getOrders();
 		mOrderList = new ArrayList<Order>(orders);
 		setListAdapter(new TasksAdapter(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
