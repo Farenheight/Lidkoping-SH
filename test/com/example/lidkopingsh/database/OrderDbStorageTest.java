@@ -99,4 +99,38 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 		assertTrue(orders.contains(order));
 		assertTrue(orders.size() == 1);
 	}
+	
+	@Test
+	public void testDelete(){
+		Order order = OrderDbFiller.getOrderFullyPopulated("O.S.");
+
+		dbStorage.insert(order);
+		Collection<Order> orders = dbStorage.query(null, null, null);
+
+		assertTrue(orders.contains(order));
+		assertTrue(orders.size() == 1);
+		
+		dbStorage.delete(order);
+		orders = dbStorage.query(null, null, null);
+		
+		assertTrue(orders.size() == 0);
+	}
+	
+	@Test
+	public void testUpdate(){
+		Order order = OrderDbFiller.getOrderFullyPopulated("O.S.");
+
+		dbStorage.insert(order);
+		Collection<Order> orders = dbStorage.query(null, null, null);
+
+		assertTrue(orders.contains(order));
+		assertTrue(orders.size() == 1);
+		
+		order.addProduct(OrderDbFiller.getStone("Testbeskrivning", OrderDbFiller.getStoneTasks()));
+		dbStorage.update(order);
+		orders = dbStorage.query(null, null, null);
+		
+		assertTrue(orders.contains(order));
+		assertTrue(orders.size() == 1);
+	}
 }
