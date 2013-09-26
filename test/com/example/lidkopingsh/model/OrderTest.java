@@ -10,6 +10,7 @@ public class OrderTest {
 	public void testEquals() {
 		// TODO filled with null to avoid compilation errors.
 		long time = System.currentTimeMillis();
+
 		Order o1 = new Order(1, "130001", "K.J", time, time, "Goteborg", null,
 				null, null, time, new Customer(), null);
 		Order o2 = new Order(1, "130001", "K.J", time, time, "Goteborg", null,
@@ -23,7 +24,7 @@ public class OrderTest {
 		try {
 			Thread.sleep(10);
 		} catch (InterruptedException e) {
-			
+
 			e.printStackTrace();
 		}
 		o2.removeProduct(p);
@@ -95,6 +96,7 @@ public class OrderTest {
 		Order order1 = new Order(0, "", "", System.currentTimeMillis(),
 				System.currentTimeMillis(), null, "", "", "",
 				System.currentTimeMillis(), new Customer(), null);
+
 		Product product2 = new Product(0, "", "", "");
 		Task task4 = new Task(0, "Task0");
 		Task task5 = new Task(1, "Task1");

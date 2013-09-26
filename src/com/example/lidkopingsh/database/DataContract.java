@@ -20,7 +20,10 @@ class DataContract {
 		public static final String COLUMN_NAME_ORDER_NUMBER = "order_number";
         public static final String COLUMN_NAME_ID_NAME = "identification_name";
 		public static final String COLUMN_NAME_ORDER_DATE = "order_date";
+		public static final String COLUMN_NAME_CEMETERY_BOARD = "cemetery_board";
 		public static final String COLUMN_NAME_CEMETERY = "cemetery";
+		public static final String COLUMN_NAME_CEMETERY_BLOCK = "cemetery_block";
+		public static final String COLUMN_NAME_CEMETERY_NUMBER = "cemetery_number";
 		public static final String COLUMN_NAME_CUSTOMER_ID = "customer_id";
 		public static final String COLUMN_NAME_TIME_CREATED = "time_created";
         public static final String COLUMN_NAME_TIME_LAST_UPDATE = "time_last_update";

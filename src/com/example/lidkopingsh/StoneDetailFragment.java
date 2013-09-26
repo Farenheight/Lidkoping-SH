@@ -58,7 +58,7 @@ public class StoneDetailFragment extends Fragment {
 
 		if (getArguments().containsKey(ORDER_ID)) {
 			int orderID = getArguments().getInt(ORDER_ID);
-			mOrder = ModelHandler.getModel().getOrderById(orderID);
+			mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(orderID);
 		}
 		Log.d("DEBUG", "mOrder in onCreate: " + mOrder);
 	}

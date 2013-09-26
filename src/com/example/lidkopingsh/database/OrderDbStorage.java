@@ -92,7 +92,10 @@ class OrderDbStorage {
 		values.put(OrderTable.COLUMN_NAME_CUSTOMER_ID, order.getCustomer()
 				.getId());
 		values.put(OrderTable.COLUMN_NAME_ID_NAME, order.getIdName());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_BOARD, order.getCemetaryBoard());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY, order.getCemetary());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_BLOCK, order.getCemetaryBlock());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_NUMBER, order.getCemetaryNumber());
 		values.put(OrderTable.COLUMN_NAME_TIME_CREATED, order.getTimeCreated());
 		values.put(OrderTable.COLUMN_NAME_TIME_LAST_UPDATE,
 				order.getLastTimeUpdate());
@@ -239,14 +242,16 @@ class OrderDbStorage {
 		String orderNumber = getStringColumn(c,
 				OrderTable.COLUMN_NAME_ORDER_NUMBER);
 		String idName = getStringColumn(c, OrderTable.COLUMN_NAME_ID_NAME);
+		String cemeteryBoard = getStringColumn(c, OrderTable.COLUMN_NAME_CEMETERY_BOARD);
 		String cemetery = getStringColumn(c, OrderTable.COLUMN_NAME_CEMETERY);
+		String cemeteryBlock = getStringColumn(c, OrderTable.COLUMN_NAME_CEMETERY_BLOCK);
+		String cemeteryNumber = getStringColumn(c, OrderTable.COLUMN_NAME_CEMETERY_NUMBER);
 		long timeCreated = getLongColumn(c, OrderTable.COLUMN_NAME_TIME_CREATED);
 		long timeLastUpdate = getLongColumn(c,
 				OrderTable.COLUMN_NAME_TIME_LAST_UPDATE);
 
-		// TODO collect static strings from DB
 		Order order = new Order(orderID, orderNumber, idName, timeCreated,
-				timeLastUpdate, cemetery, "Kyrkonamnd", "Notation", orderDate,
+				timeLastUpdate, cemetery, cemeteryBoard, cemeteryBlock, cemeteryNumber, orderDate,
 				getCustomer(c), getProducts(orderNumber));
 
 		return order;
