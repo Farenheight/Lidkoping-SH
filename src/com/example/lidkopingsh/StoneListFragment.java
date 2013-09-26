@@ -9,11 +9,13 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Filter.FilterListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -52,7 +54,7 @@ public class StoneListFragment extends ListFragment {
 	/**
 	 * List containing all orders shown in gui.
 	 */
-	private List<Order> mOrderList;
+	public static List<Order> mOrderList;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -164,6 +166,9 @@ public class StoneListFragment extends ListFragment {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
+				tasksAdapter.clear();
+				tasksAdapter.addAll(ModelHandler.getModel(getActivity())
+						.getOrders());
 				tasksAdapter.getFilter().filter(s);
 			}
 

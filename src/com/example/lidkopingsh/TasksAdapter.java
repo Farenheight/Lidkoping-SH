@@ -1,6 +1,7 @@
 package com.example.lidkopingsh;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import android.content.Context;
@@ -76,7 +77,7 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 		return new StoneFilter();
 	}
 
-	private class StoneFilter extends Filter {
+	private class StoneFilter extends Filter { 
 
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint) {
@@ -91,31 +92,28 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 				List<Order> newOrderList = new ArrayList<Order>();
 
 				for (Order order : orders) {
-					if (order.getIdName().toUpperCase()
-							.startsWith(constraint.toString().toUpperCase()))
+					String idName = order.getIdName().toUpperCase();
+					String c = constraint.toString().toUpperCase();
+					Log.d("DEBUG", "ID name: " + idName + " Constraint: " + c);
+					if (idName.startsWith(c))
 						newOrderList.add(order);
 				}
 
 				results.values = newOrderList;
 				results.count = newOrderList.size();
 			}
-			Log.d("DEBUG", "Results size: " + results.count);
-			Log.d("DEBUG", "Results values: " + results.values);
 			return results;
 		}
 
 		@Override
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
-
-			// Now we have to inform the adapter about the new list filtered
-			if (results.count == 0)
-				notifyDataSetInvalidated();
-			else {
-				orders = (List<Order>) results.values;
+			if (results.count == 0){
+			} else {
+				clear();
+				addAll((Collection<Order>) results.values);
 				notifyDataSetChanged();
 			}
-
 		}
 
 	}
