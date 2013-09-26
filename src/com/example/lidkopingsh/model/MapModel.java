@@ -30,7 +30,7 @@ public class MapModel implements IModel {
 				for (Task task : product.getTasks()) {
 					boolean match = false;
 					for (Task taskListItem : tasks) {
-						if (task.getId() == taskListItem.getId()) {
+						if (task.getTaskId() == taskListItem.getTaskId()) {
 							match = true;
 						}
 					}
