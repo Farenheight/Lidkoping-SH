@@ -18,8 +18,13 @@ public class OrderDbFiller {
 	private static int orderNumber = 130001;
 	private static int productId = 400;
 	private static int taskId = 600;
+	private static int charcode = 65;
 	public static void fillDb(OrderDbStorage db){
-
+		for(int i=0;i<20;i++){
+			db.insert(getOrderFullyPopulated("O." + (char)charcode++ + "."));
+			db.insert(getOrderWithNullFields("O." + (char)charcode++ + "."));
+			db.insert(getOrderWithoutTasks("O." + (char)charcode++ + "."));
+		}
 	}
 	public static Order getOrderFullyPopulated(String idName) {
 		Order order = getOrder(idName, getCustomer());
@@ -62,7 +67,7 @@ public class OrderDbFiller {
 	private static Order getOrder(String idName, Customer customer) {
 		return new Order(orderId++, String.valueOf(orderNumber++), idName,
 				System.currentTimeMillis(), System.currentTimeMillis(),
-				"Kyrkogård", "Kyrkogårdsnämnd", "Notation",
+				"Kyrkogård", "Kyrkogårdsnämnd", "Kvarter", "Nummer",
 				System.currentTimeMillis(), customer, null);
 	}
 
@@ -85,7 +90,7 @@ public class OrderDbFiller {
 
 	private static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task(taskId++, "Sågning", Status.DONE));
+		tasks.add(new Task(taskId++, "Sågning"));
 		tasks.add(new Task(taskId++, "Råhuggning"));
 		tasks.add(new Task(taskId++, "Gravering"));
 		tasks.add(new Task(taskId++, "Målning"));

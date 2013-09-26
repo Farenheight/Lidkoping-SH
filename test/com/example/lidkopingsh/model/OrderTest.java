@@ -10,9 +10,9 @@ public class OrderTest {
 	public void testEquals() {
 		//TODO filled with null to avoid compilation errors.
 		long time = System.currentTimeMillis();
-		Order o1 = new Order(1, "130001", "K.J", time, time, "Goteborg", null, null, time,
+		Order o1 = new Order(1, "130001", "K.J", time, time, "Goteborg", null, null, null, time,
 				new Customer(), null);
-		Order o2 = new Order(1, "130001", "K.J", time, time, "Goteborg", null, null, time,
+		Order o2 = new Order(1, "130001", "K.J", time, time, "Goteborg", null, null, null, time,
 				new Customer(), null);
 		assertTrue(o1.equals(o2));
 
@@ -34,11 +34,11 @@ public class OrderTest {
 	public void testSync() {
 		//TODO filled with null to avoid compilation errors
 		Order o0 = new Order(0, "2", "OM", 2837203547257l,
-				System.currentTimeMillis(), "Kvanum", null, null, 0l, new Customer(), null);
+				System.currentTimeMillis(), "Kvanum", null, null, null, 0l, new Customer(), null);
 		Order o1 = new Order(0, "3", "OK", 2837203547257l,
-				System.currentTimeMillis(), "Lish", null, null, 2l, new Customer(), null);
+				System.currentTimeMillis(), "Lish", null, null, null, 2l, new Customer(), null);
 		Order o2 = new Order(0, "3", "OK", 2837203547257l,
-				System.currentTimeMillis(), "Lish", null, null, 2l, new Customer(), null);
+				System.currentTimeMillis(), "Lish", null, null, null, 2l, new Customer(), null);
 		assertFalse(o0.equals(o1));
 		assertTrue(o1.equals(o2));
 		o0.sync(o1);
@@ -68,7 +68,7 @@ public class OrderTest {
 		OrderListener listener = new OrderListener();
 		Order order0 = new Order(0, "13555", "OV", System.currentTimeMillis(),
 				System.currentTimeMillis(), "Kvanum","","",
-				System.currentTimeMillis(), new Customer(),null);
+				null, System.currentTimeMillis(), new Customer(),null);
 		
 		order0.addOrderListener(listener);
 		
@@ -90,7 +90,7 @@ public class OrderTest {
 		product1.addTask(task3);
 		
 		Order order1 = new Order(0, "", "", System.currentTimeMillis(),
-				System.currentTimeMillis(), "","","", System.currentTimeMillis(),
+				System.currentTimeMillis(), "","","", null, System.currentTimeMillis(),
 				new Customer(),null);
 		Product product2 = new Product(0, "", "", "");
 		Task task4 = new Task(0, "Task0");

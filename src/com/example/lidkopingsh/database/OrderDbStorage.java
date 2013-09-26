@@ -92,9 +92,10 @@ class OrderDbStorage {
 		values.put(OrderTable.COLUMN_NAME_CUSTOMER_ID, order.getCustomer()
 				.getId());
 		values.put(OrderTable.COLUMN_NAME_ID_NAME, order.getIdName());
-		values.put(OrderTable.COLUMN_NAME_CEMETERY, order.getCemetaryBoard());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_BOARD, order.getCemetaryBoard());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY, order.getCemetary());
-		values.put(OrderTable.COLUMN_NAME_CEMETERY_BLOCK, order.getCemetary());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_BLOCK, order.getCemetaryBlock());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_NUMBER, order.getCemetaryNumber());
 		values.put(OrderTable.COLUMN_NAME_TIME_CREATED, order.getTimeCreated());
 		values.put(OrderTable.COLUMN_NAME_TIME_LAST_UPDATE,
 				order.getLastTimeUpdate());
@@ -249,9 +250,8 @@ class OrderDbStorage {
 		long timeLastUpdate = getLongColumn(c,
 				OrderTable.COLUMN_NAME_TIME_LAST_UPDATE);
 
-		// TODO collect static strings from DB
 		Order order = new Order(orderID, orderNumber, idName, timeCreated,
-				timeLastUpdate, cemetery, cemeteryBoard, "Notation", orderDate,
+				timeLastUpdate, cemetery, cemeteryBoard, cemeteryBlock, cemeteryNumber, orderDate,
 				getCustomer(c), getProducts(orderNumber));
 
 		return order;
