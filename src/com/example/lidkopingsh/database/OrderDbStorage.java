@@ -32,7 +32,7 @@ import com.example.lidkopingsh.model.Task;
  * 
  */
 class OrderDbStorage {
-
+	
 	private static final String CUSTOMER = "c";
 	private static final String ORDER = "o";
 	private static final String PRODUCT = "p";
@@ -47,6 +47,7 @@ class OrderDbStorage {
 	private static final String LEFT_JOIN = " LEFT JOIN ";
 	private static final String ON = " ON ";
 	private static final String ORDER_BY = " ORDER BY ";
+	private static final String QUESTION_MARK = "?";
 	private static final String SELECT_FROM = "SELECT * FROM ";
 	private static final String SPACE = " ";
 	private static final String WHERE = " WHERE ";
@@ -185,6 +186,25 @@ class OrderDbStorage {
 		
 		db.insert(TaskToProductTable.TABLE_NAME, null, values);
 	}
+	
+	public void delete(Order order){
+		for (Product p : order.getProducts()) {
+			db.delete(TaskToProductTable.TABLE_NAME,
+					TaskToProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + QUESTION_MARK,
+					new String[] { String.valueOf(p.getId()) });
+			db.delete(StoneTable.TABLE_NAME, StoneTable.COLUMN_NAME_PRODUCT_ID + EQUALS + QUESTION_MARK, 
+					new String[] { String.valueOf(p.getId()) });
+		}
+		db.delete(ProductTable.TABLE_NAME, ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + QUESTION_MARK, 
+				new String[] { order.getOrderNumber() });
+		db.delete(OrderTable.TABLE_NAME, OrderTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + QUESTION_MARK,
+				new String[] { order.getOrderNumber() });
+		
+	}
+	public void update(Order order){
+		delete(order);
+		insert(order);
+	}
 
 	/**
 	 * <p>Select orders from the database.</p>
@@ -285,7 +305,7 @@ class OrderDbStorage {
 				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_PRODUCT_ID
 				+ LEFT_JOIN + TaskTable.TABLE_NAME + SPACE + TASK + ON + TASK_TO_PRODUCT + DOT 
 				+ TaskToProductTable.COLUMN_NAME_TASK_ID + EQUALS + TASK + DOT + TaskTable.COLUMN_NAME_TASK_ID
-				+ WHERE + PRODUCT + DOT + ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + "?"
+				+ WHERE + PRODUCT + DOT + ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + QUESTION_MARK
 				+ ORDER_BY + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID 
 				+ COMMA_SEP + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_SORT_ORDER;
 		

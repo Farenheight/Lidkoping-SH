@@ -30,9 +30,8 @@ public class OrderDbLayer implements ILayer {
 	}
 
 	@Override
-	public void changed(Order object) {
-		// TODO Auto-generated method stub
-		
+	public void changed(Order order) {
+		db.update(order);
 	}
 
 	@Override
