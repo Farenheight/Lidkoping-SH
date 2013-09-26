@@ -21,7 +21,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private String orderNumber;
 	private String idName;
 	private String cemetaryBoard;
-	private String graveyardNotation;
+	private String cemetaryBlock;
+	private String cemetaryNumber;
 	private Customer customer;
 	private List<Listener<Order>> orderListeners;
 	private SyncableList<Product> products;
@@ -31,8 +32,9 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 */
 	public Order() {
 		this(5, getNewOrderNumber(), "O.R.", System.currentTimeMillis(), System
-				.currentTimeMillis(), "Kyrkogard", "Kyrkonamnd", "Notation",
-				Long.parseLong("1371679200000"), new Customer("Mr",
+				.currentTimeMillis(), "Kyrkogard", "Kyrkonamnd",
+				"Kyrkogardsblock", "Kyrkogardsnummer", Long
+						.parseLong("1371679200000"), new Customer("Mr",
 						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
 						"olle.bengtsson@testuser.com",
 						(int) System.currentTimeMillis()), null);
@@ -44,8 +46,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 */
 	public Order(int id, String orderNumber, String idName, long timeCreated,
 			long lastTimeUpdated, String cemetary, String cemetaryBoard,
-			String graveyardNotation, long orderDate, Customer customer,
-			Collection<Product> products) {
+			String cemetaryBlock, String cemetaryNumber, long orderDate,
+			Customer customer, Collection<Product> products) {
 		this.id = id;
 		this.orderNumber = orderNumber != null ? orderNumber : "";
 		this.idName = idName != null ? idName : "";
@@ -53,8 +55,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.lastTimeUpdate = lastTimeUpdated;
 		this.cemetary = cemetary != null ? cemetary : "";
 		this.cemetaryBoard = cemetaryBoard != null ? cemetaryBoard : "";
-		this.graveyardNotation = graveyardNotation != null ? graveyardNotation
-				: "";
+		this.cemetaryBlock = cemetaryBlock != null ? cemetaryBlock : "";
+		this.cemetaryNumber = cemetaryNumber != null ? cemetaryNumber : "";
 		this.orderDate = orderDate;
 		this.customer = customer.clone();
 
@@ -74,8 +76,12 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		return cemetaryBoard;
 	}
 
-	public String getGraveyardNotation() {
-		return graveyardNotation;
+	public String getCemetaryBlock() {
+		return cemetaryBlock;
+	}
+
+	public String getCemetaryNumber() {
+		return cemetaryNumber;
 	}
 
 	public long getLastTimeUpdate() {
