@@ -1,5 +1,6 @@
 package com.example.lidkopingsh;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -19,7 +20,8 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 	private int mViewResource;
 	/** The Resource id for the text view in each list item */
 	private int mFieldId;
-	private LayoutInflater mInflater; 
+	private LayoutInflater mInflater;
+	private List<Order> orders;
 
 	public TasksAdapter(Context context, int resource, int textViewResourceId,
 			List<Order> orders) {
@@ -28,11 +30,13 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 		this.mFieldId = textViewResourceId;
 		this.mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.orders = orders;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		return createViewFromResource(position, convertView, parent, mViewResource);
+		return createViewFromResource(position, convertView, parent,
+				mViewResource);
 	}
 
 	private <T> View createViewFromResource(int position, View convertView,
@@ -66,9 +70,54 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 
 		return view;
 	}
-	public Filter getFilter(){
-		return null;
-		
+
+	@Override
+	public Filter getFilter() {
+		return new StoneFilter();
+	}
+
+	private class StoneFilter extends Filter {
+
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+
+			FilterResults results = new FilterResults();
+			if (constraint == null || constraint.length() == 0) {
+				// If no input, everything returned
+				results.values = orders;
+				results.count = orders.size();
+			} else {
+				// Filtering logic
+				List<Order> newOrderList = new ArrayList<Order>();
+
+				for (Order order : orders) {
+					if (order.getIdName().toUpperCase()
+							.startsWith(constraint.toString().toUpperCase()))
+						newOrderList.add(order);
+				}
+
+				results.values = newOrderList;
+				results.count = newOrderList.size();
+			}
+			Log.d("DEBUG", "Results size: " + results.count);
+			Log.d("DEBUG", "Results values: " + results.values);
+			return results;
+		}
+
+		@Override
+		protected void publishResults(CharSequence constraint,
+				FilterResults results) {
+
+			// Now we have to inform the adapter about the new list filtered
+			if (results.count == 0)
+				notifyDataSetInvalidated();
+			else {
+				orders = (List<Order>) results.values;
+				notifyDataSetChanged();
+			}
+
+		}
+
 	}
 
 }
