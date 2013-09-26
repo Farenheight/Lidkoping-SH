@@ -58,7 +58,8 @@ public class StoneDetailFragment extends Fragment {
 
 		if (getArguments().containsKey(ORDER_ID)) {
 			int orderID = getArguments().getInt(ORDER_ID);
-			mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(orderID);
+			mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
+					orderID);
 		}
 		Log.d("DEBUG", "mOrder in onCreate: " + mOrder);
 	}
@@ -120,7 +121,14 @@ public class StoneDetailFragment extends Fragment {
 	 */
 	private void initTasks(LayoutInflater inflater, ViewGroup container,
 			View rootView) {
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f);
+		LinearLayout layout = (LinearLayout) rootView
+				.findViewById(R.id.task_container);
 		// TODO: Vas, sockel etc tasks.
+		TextView header = (TextView) inflater.inflate(R.layout.task_header,
+				container, false);
+		layout.addView(header, params);
 		List<Task> tasks = mOrder.getProducts().get(0).getTasks();
 		for (int i = 0; i < mOrder.getProducts().get(0).getTasks().size(); i++) {
 			final Task task = tasks.get(i);
@@ -141,13 +149,8 @@ public class StoneDetailFragment extends Fragment {
 					}
 				}
 			});
-			LinearLayout layout = (LinearLayout) rootView
-					.findViewById(R.id.task_container);
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f);
 			layout.addView(btn, params);
 		}
-
 	}
 
 	/**
