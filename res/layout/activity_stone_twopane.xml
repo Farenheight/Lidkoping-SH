@@ -24,8 +24,6 @@
         android:layout_height="match_parent"
         android:layout_weight="1" >
         
-        <include layout="@layout/filter_box" />
-
         <fragment
             android:id="@+id/stone_list"
             android:name="com.example.lidkopingsh.StoneListFragment"
