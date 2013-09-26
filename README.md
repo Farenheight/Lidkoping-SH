@@ -12,4 +12,4 @@ Import project into Eclipse.
 Install and run
 ============
 
-Find binary Lidkoping-SH.apk file in the /dist directory. Install on device.
+Find binary Lidkoping-SH.apk file in the /bin directory. Install on device.
