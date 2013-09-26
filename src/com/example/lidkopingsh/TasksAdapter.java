@@ -23,6 +23,7 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 	private int mFieldId;
 	private LayoutInflater mInflater;
 	private List<Order> orders;
+	private Filter mFilter;
 
 	public TasksAdapter(Context context, int resource, int textViewResourceId,
 			List<Order> orders) {
@@ -74,33 +75,37 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 
 	@Override
 	public Filter getFilter() {
-		return new StoneFilter();
+		if (mFilter == null) {
+			mFilter = new StoneFilter();
+		}
+		return mFilter;
 	}
 
-	private class StoneFilter extends Filter { 
+	private class StoneFilter extends Filter {
 
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint) {
 
 			FilterResults results = new FilterResults();
-			if (constraint == null || constraint.length() == 0) {
-				// If no input, everything returned
-				results.values = orders;
-				results.count = orders.size();
-			} else {
+			if (constraint != null && constraint.length() != 0) {
 				// Filtering logic
 				List<Order> newOrderList = new ArrayList<Order>();
 
 				for (Order order : orders) {
 					String idName = order.getIdName().toUpperCase();
 					String c = constraint.toString().toUpperCase();
-					Log.d("DEBUG", "ID name: " + idName + " Constraint: " + c);
 					if (idName.startsWith(c))
 						newOrderList.add(order);
 				}
 
 				results.values = newOrderList;
 				results.count = newOrderList.size();
+			} else {
+				// If no input, everything returned
+				results.values = orders;
+				results.count = orders.size();
+				Log.d("DEBUG", "No input, results size: " + results.count);
+
 			}
 			return results;
 		}
@@ -108,12 +113,10 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 		@Override
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
-			if (results.count == 0){
-			} else {
-				clear();
-				addAll((Collection<Order>) results.values);
-				notifyDataSetChanged();
-			}
+			clear();
+			addAll((Collection<Order>) results.values);
+			Log.d("DEBUG", "Results found, count: " + results.count);
+			notifyDataSetChanged();
 		}
 
 	}

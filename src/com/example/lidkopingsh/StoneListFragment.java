@@ -166,6 +166,7 @@ public class StoneListFragment extends ListFragment {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
+				Log.d("DEBUG", "Text changed, order count: " + tasksAdapter.getCount());
 				tasksAdapter.clear();
 				tasksAdapter.addAll(ModelHandler.getModel(getActivity())
 						.getOrders());
