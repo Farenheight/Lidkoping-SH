@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class Task implements Syncable<Task> {
 	private int id;
+	private int taskId;
 	private List<Listener<Task>> listeners;
 	private String name;
 	private Status status;
@@ -25,11 +26,12 @@ public class Task implements Syncable<Task> {
 	 * @param status
 	 *            The status of the task. DONE if done. NOT_DONE if not done.
 	 */
-	public Task(int id, String name, Status status) {
+	public Task(int id, int taskId, String name, Status status) {
 		this.name = name != null? name : "";
 		this.status = status;
 		this.listeners = new ArrayList<Listener<Task>>();
 		this.id = id;
+		this.taskId = taskId;
 	}
 
 	/**
@@ -40,8 +42,8 @@ public class Task implements Syncable<Task> {
 	 * @param name
 	 *            The name of the task
 	 */
-	public Task(int id, String name) {
-		this(id, name, Status.NOT_DONE);
+	public Task(int id, int taskId, String name) {
+		this(id, taskId, name, Status.NOT_DONE);
 	}
 
 	/**
@@ -77,6 +79,10 @@ public class Task implements Syncable<Task> {
 
 	public int getId() {
 		return id;
+	}
+	
+	public int getTaskId() {
+		return taskId;
 	}
 
 	/**

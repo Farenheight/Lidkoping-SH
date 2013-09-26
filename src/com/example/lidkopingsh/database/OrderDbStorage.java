@@ -171,7 +171,7 @@ class OrderDbStorage {
 		// Task table
 		ContentValues values = new ContentValues();
 
-		values.put(TaskTable.COLUMN_NAME_TASK_ID, t.getId());
+		values.put(TaskTable.COLUMN_NAME_TASK_ID, t.getTaskId());
 		values.put(TaskTable.COLUMN_NAME_TASK, t.getName());
 		
 		db.insert(TaskTable.TABLE_NAME, null, values);
@@ -334,11 +334,12 @@ class OrderDbStorage {
 	}
 	
 	private Task getTask(Cursor c) {
+		int id = getIntColumn(c, TaskToProductTable.COLUMN_NAME_TASK_ID);
 		int taskId = getIntColumn(c, TaskTable.COLUMN_NAME_TASK_ID);
 		String name = getStringColumn(c, TaskTable.COLUMN_NAME_TASK);
 		int status = getIntColumn(c, TaskToProductTable.COLUMN_NAME_TASK_STATUS);
 		
-		return name != null ? new Task(taskId, name, Status.valueOf(status)) : null;
+		return name != null ? new Task(id, taskId, name, Status.valueOf(status)) : null;
 	}
 	
 	private List<Task> getTasks(Cursor c) {
