@@ -75,7 +75,7 @@ public class OrderDbFiller {
 				System.currentTimeMillis(), customer, null);
 	}
 
-	private static Product getSocle(String description, List<Task> tasks) {
+	public static Product getSocle(String description, List<Task> tasks) {
 		return new Product(productId++, "Hallandia", description, "Polerad", tasks);
 	}
 
@@ -86,13 +86,13 @@ public class OrderDbFiller {
 		return tasks2;
 	}
 
-	private static Stone getStone(String description, List<Task> tasks) {
+	public static Stone getStone(String description, List<Task> tasks) {
 		return new Stone(productId++, "Hallandia", description, "Polerad", tasks,
 				"NB 49", "Råhugget", "Helvetica nedhuggen i guld",
 				"Blomma nedhuggen i guld");
 	}
 
-	private static List<Task> getStoneTasks() {
+	public static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		tasks.add(new Task(taskId++, "Sågning"));
 		tasks.add(new Task(taskId++, "Råhuggning"));

@@ -26,7 +26,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	 * Current version of the application's database structure.
 	 * If the structure is changed, this version number must be increased.
 	 */
-	private static final int DATABASE_VERSION = 7;
+	private static final int DATABASE_VERSION = 8;
 	private static final String DATABASE_NAME = "Orders.db";
 	
 	private static final String TEXT_TYPE = " TEXT";
@@ -73,7 +73,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	private static final String TASK_TABLE_CREATE = CREATE_TABLE
 			+ TaskTable.TABLE_NAME + " ("
 			+ TaskTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
-			+ TaskTable.COLUMN_NAME_TASK + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ TaskTable.COLUMN_NAME_TASK + TEXT_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
 			+ TaskTable.COLUMN_NAME_TASK_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + " )";
 	
 	private static final String TASK_TO_PRODUCT_TABLE_CREATE = CREATE_TABLE
