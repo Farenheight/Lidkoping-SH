@@ -93,10 +93,14 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 
 				for (Order order : orders) {
 					String idName = order.getIdName().toUpperCase();
-					String c = constraint.toString().toUpperCase();
-					if (idName.startsWith(c))
+					String constr = constraint.toString().toUpperCase();
+					idName = idName.replaceAll("\\.", ""); //Removes dots
+					constr = constr.replaceAll("\\.", ""); //Removes dots
+					Log.d("DEBUG", "idName: " + idName + " contrs: " + constr);
+					if (idName.startsWith(constr))
 						newOrderList.add(order);
 				}
+				
 
 				results.values = newOrderList;
 				results.count = newOrderList.size();
