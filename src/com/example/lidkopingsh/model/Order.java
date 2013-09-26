@@ -16,10 +16,13 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private int id;
 	private final long timeCreated;
 	private long lastTimeUpdate;
-	private String cementary;
+	private String cemetary;
 	private long orderDate;
 	private String orderNumber;
 	private String idName;
+	private String cemetaryBoard;
+	private String cemetaryBlock;
+	private String cemetaryNumber;
 	private Customer customer;
 	private List<Listener<Order>> orderListeners;
 	private SyncableList<Product> products;
@@ -28,27 +31,37 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * For testing purposes only.
 	 */
 	public Order() {
-	this(currentOrderNumberCount, getNewOrderNumber(), "O.R.", System.currentTimeMillis(),
-				System.currentTimeMillis(), "Örslösa",
-				Long.parseLong("1371679200000"), new Customer("Mr",
+		this(5, getNewOrderNumber(), "O.R.", System.currentTimeMillis(), System
+				.currentTimeMillis(), "Kyrkogard", "Kyrkonamnd",
+				"Kyrkogardsblock", "Kyrkogardsnummer", Long
+						.parseLong("1371679200000"), new Customer("Mr",
 						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
-						"olle.bengtsson@testuser.com", (int) System.currentTimeMillis()));
+						"olle.bengtsson@testuser.com",
+						(int) System.currentTimeMillis()), null);
 	}
 
+	/**
+	 * Creates an Order with the specified properties. For unknown or not
+	 * existing properties, use null.
+	 */
 	public Order(int id, String orderNumber, String idName, long timeCreated,
-			long lastTimeUpdated, String cementary, long orderDate,
-			Customer customer) {
+			long lastTimeUpdated, String cemetary, String cemetaryBoard,
+			String cemetaryBlock, String cemetaryNumber, long orderDate,
+			Customer customer, Collection<Product> products) {
 		this.id = id;
-		this.orderNumber = orderNumber;
-		this.idName = idName;
+		this.orderNumber = orderNumber != null ? orderNumber : "";
+		this.idName = idName != null ? idName : "";
 		this.timeCreated = timeCreated;
 		this.lastTimeUpdate = lastTimeUpdated;
-		this.cementary = cementary;
+		this.cemetary = cemetary != null ? cemetary : "";
+		this.cemetaryBoard = cemetaryBoard != null ? cemetaryBoard : "";
+		this.cemetaryBlock = cemetaryBlock != null ? cemetaryBlock : "";
+		this.cemetaryNumber = cemetaryNumber != null ? cemetaryNumber : "";
 		this.orderDate = orderDate;
 		this.customer = customer.clone();
 
 		orderListeners = new ArrayList<Listener<Order>>();
-		products = new SyncableProductList();
+		this.products = new SyncableProductList(products);
 	}
 
 	public int getId() {
@@ -59,12 +72,24 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		return timeCreated;
 	}
 
+	public String getCemetaryBoard() {
+		return cemetaryBoard;
+	}
+
+	public String getCemetaryBlock() {
+		return cemetaryBlock;
+	}
+
+	public String getCemetaryNumber() {
+		return cemetaryNumber;
+	}
+
 	public long getLastTimeUpdate() {
 		return lastTimeUpdate;
 	}
 
-	public String getCementary() {
-		return cementary;
+	public String getCemetary() {
+		return cemetary;
 	}
 
 	public long getOrderDate() {
@@ -88,8 +113,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	}
 
 	public void addProduct(Product product) {
-		for(Product p : products){
-			if(product.getId() == p.getId()){
+		for (Product p : products) {
+			if (product.getId() == p.getId()) {
 				products.remove(p);
 			}
 		}
@@ -98,11 +123,11 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	}
 
 	public void addProducts(Collection<Product> products) {
-		for(Product p : products){
+		for (Product p : products) {
 			addProduct(p);
 		}
 	}
-	
+
 	/**
 	 * remove Task from this product task list.
 	 * 
@@ -167,16 +192,18 @@ public class Order implements Listener<Product>, Syncable<Order> {
 
 	@Override
 	public boolean sync(Order newData) {
-		if (newData != null && this.id == newData.id) {
+		if (newData != null && this.id == newData.id
+				&& getClass() == newData.getClass()) {
 			// If this object is newer that newData, switch the sync
-			if(this.lastTimeUpdate > newData.lastTimeUpdate){
+			if (this.lastTimeUpdate > newData.lastTimeUpdate) {
 				return newData.sync(this);
-			}else{
-				this.cementary = newData.cementary;
+			} else {
+				this.cemetary = newData.cemetary;
 				this.customer = newData.customer;
 				this.lastTimeUpdate = newData.lastTimeUpdate;
 				this.orderDate = newData.orderDate;
 				this.orderNumber = newData.orderNumber;
+				this.idName = newData.idName;
 				products.sync(newData.getProducts());
 				return true;
 			}
@@ -192,10 +219,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		} else if (o == null || o.getClass() != getClass()) {
 			return false;
 		} else {
-			Order or = (Order) o;			
+			Order or = (Order) o;
 			return this.id == or.id && this.timeCreated == or.getTimeCreated()
 					&& this.lastTimeUpdate == or.getLastTimeUpdate()
-					&& this.cementary.equals(or.getCementary())
+					&& this.cemetary.equals(or.getCemetary())
 					&& this.orderDate == or.getOrderDate()
 					&& this.orderNumber.equals(or.getOrderNumber())
 					&& this.idName.equals(or.getIdName())
@@ -204,7 +231,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		}
 	}
 
-	private static String getNewOrderNumber() {
+	public static String getNewOrderNumber() {
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		int yearPart = year % 2000;
 
@@ -245,10 +272,11 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			object.addProductListener(Order.this);
 			super.add(index, object);
 		}
+
 		@Override
 		public boolean add(Product object) {
 			object.addProductListener(Order.this);
-			return super.add( object);
+			return super.add(object);
 		}
 
 		@Override

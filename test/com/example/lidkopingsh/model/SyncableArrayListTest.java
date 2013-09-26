@@ -9,7 +9,6 @@ import org.junit.Test;
 public class SyncableArrayListTest implements Listener<Order>{
 	@Test
 	public void testSyncList() {
-		System.out.println("");		
 		//Sync a list of elements, no elements added/removed
 		SyncableList<SuperClass> list = new SyncableArrayList<SuperClass>();
 		list.add(new SuperClass(2,0));
@@ -19,7 +18,7 @@ public class SyncableArrayListTest implements Listener<Order>{
 		list.add(new ExtendedClass(3,0));
 		list.add(new ExtendedClass(1,0));
 		list.add(new ExtendedClass(5,0));
-		System.out.println(list);		
+//		System.out.println(list);		
 		
 		SyncableList<SuperClass> list2 = new SyncableArrayList<SuperClass>();
 		list2.add(new SuperClass(0,1));
@@ -28,10 +27,10 @@ public class SyncableArrayListTest implements Listener<Order>{
 		list2.add(new SuperClass(4,1));
 		list2.add(new SuperClass(3,0));
 		list2.add(new ExtendedClass(3,1));
-		System.out.println(list2);
+//		System.out.println(list2);
 		
 		list.sync(list2);
-		System.out.println(list);		
+//		System.out.println(list);		
 		assertTrue(list.equals(list2));
 		
 	}
@@ -69,6 +68,13 @@ public class SyncableArrayListTest implements Listener<Order>{
 		t4.setStatus(Status.DONE);
 		assertTrue(synced);
 		synced = false;
+		
+		try {
+			Thread.sleep(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//Add new task on new Product and sync, then check if listener works
 		Product p3 = new Product(1,"","","",null);		

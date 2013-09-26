@@ -2,6 +2,7 @@ package com.example.lidkopingsh.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -45,11 +46,27 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			String frontWork, List<Task> tasks) {
 		this(tasks);
 		this.id = id;
-		this.materialColor = materialColor;
-		this.description = description;
-		this.frontWork = frontWork;
+		this.materialColor = materialColor != null? materialColor : "";
+		this.description = description != null? description : "";
+		this.frontWork = frontWork != null? frontWork : "";
 	}
-
+	/**
+	 * Create a new Product
+	 * 
+	 * @param id
+	 *            The id of the Product (from the database). The id should be
+	 *            unique for each element
+	 * @param materialColor
+	 *            The matierial and color for this Product.
+	 * @param description
+	 *            The description for this Product.
+	 * @param frontWork
+	 *            The frontWork for this product
+	 */
+	public Product(int id, String materialColor, String description,
+			String frontWork){
+		this(id,materialColor,description,frontWork,new ArrayList<Task>());
+	}
 	/**
 	 * Create a new product with tasks
 	 * 
@@ -62,10 +79,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	}
 
 	/**
-	 * Create a new product no tasks and dummy
+	 * Create a new product no tasks and dummy data
 	 */
 	public Product() {
-		this(new ArrayList<Task>());
+		this(0, "Svart sten", "Den fulaste stenen i vi säljer",
+				"Mycket repor på framsidan", new ArrayList<Task>());
 	}
 
 	public int getId() {
@@ -117,9 +135,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            -1 or index >= tasks.length adds the task last in the list.
 	 */
 	public void addTask(Task task, int index) {
-		for(Task t : tasks){
-			if(t.getId() == task.getId()){
-				tasks.remove(t);
+		Iterator<Task> iterator = tasks.iterator();
+		while (iterator.hasNext()) {
+			Task t = iterator.next();
+			if (t != task && t.getId() == task.getId()) {
+				iterator.remove();
 			}
 		}
 		if (!tasks.contains(task)) {
@@ -161,8 +181,8 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The {@link Task} to remove
 	 */
 	public void removeTask(Task task) {
-		if(tasks.remove(task)){
-			notifyProductListeners();			
+		if (tasks.remove(task)) {
+			notifyProductListeners();
 		}
 	}
 
@@ -213,7 +233,8 @@ public class Product implements Listener<Task>, Syncable<Product> {
 
 	@Override
 	public boolean sync(Product newData) {
-		if (newData != null && this.id == newData.id && this.getClass() == getClass()) {
+		if (newData != null && this.id == newData.id
+				&& this.getClass() == getClass()) {
 			this.description = newData.description;
 			this.frontWork = newData.frontWork;
 			this.materialColor = newData.materialColor;
@@ -260,10 +281,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		}
 
 		@Override
-		public void add(int index,Task object) {
+		public void add(int index, Task object) {
 			object.addTaskListener(Product.this);
-			super.add(index,object);
+			super.add(index, object);
 		}
+
 		@Override
 		public boolean add(Task object) {
 			object.addTaskListener(Product.this);

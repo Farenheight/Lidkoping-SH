@@ -58,7 +58,7 @@ public class StoneDetailFragment extends Fragment {
 
 		if (getArguments().containsKey(ORDER_ID)) {
 			int orderID = getArguments().getInt(ORDER_ID);
-			mOrder = ModelHandler.getModel().getOrderById(orderID);
+			mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(orderID);
 		}
 		Log.d("DEBUG", "mOrder in onCreate: " + mOrder);
 	}
@@ -170,7 +170,7 @@ public class StoneDetailFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.cemeteryBoard))
 				.setText("<Not yet in model>");
 		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
-				.getCementary());
+				.getCemetary());
 
 		// Stone
 		Stone stone = ((Stone) mOrder.getProducts().get(0));
