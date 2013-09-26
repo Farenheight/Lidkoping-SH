@@ -93,7 +93,7 @@ class OrderDbStorage {
 				.getId());
 		values.put(OrderTable.COLUMN_NAME_ID_NAME, order.getIdName());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY, order.getCemetaryBoard());
-		values.put(OrderTable.COLUMN_NAME_CEMETERY, order.getCementary());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY, order.getCemetary());
 		values.put(OrderTable.COLUMN_NAME_TIME_CREATED, order.getTimeCreated());
 		values.put(OrderTable.COLUMN_NAME_TIME_LAST_UPDATE,
 				order.getLastTimeUpdate());

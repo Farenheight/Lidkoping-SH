@@ -16,7 +16,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private int id;
 	private final long timeCreated;
 	private long lastTimeUpdate;
-	private String cementary;
+	private String cemetary;
 	private long orderDate;
 	private String orderNumber;
 	private String idName;
@@ -51,7 +51,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.idName = idName != null ? idName : "";
 		this.timeCreated = timeCreated;
 		this.lastTimeUpdate = lastTimeUpdated;
-		this.cementary = cementary != null ? cementary : "";
+		this.cemetary = cemetary != null ? cemetary : "";
 		this.cemetaryBoard = cemetaryBoard != null ? cemetaryBoard : "";
 		this.graveyardNotation = graveyardNotation != null ? graveyardNotation
 				: "";
@@ -82,8 +82,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		return lastTimeUpdate;
 	}
 
-	public String getCementary() {
-		return cementary;
+	public String getCemetary() {
+		return cemetary;
 	}
 
 	public long getOrderDate() {
@@ -192,7 +192,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			if (this.lastTimeUpdate > newData.lastTimeUpdate) {
 				return newData.sync(this);
 			} else {
-				this.cementary = newData.cementary;
+				this.cemetary = newData.cemetary;
 				this.customer = newData.customer;
 				this.lastTimeUpdate = newData.lastTimeUpdate;
 				this.orderDate = newData.orderDate;
@@ -216,7 +216,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			Order or = (Order) o;
 			return this.id == or.id && this.timeCreated == or.getTimeCreated()
 					&& this.lastTimeUpdate == or.getLastTimeUpdate()
-					&& this.cementary.equals(or.getCementary())
+					&& this.cemetary.equals(or.getCemetary())
 					&& this.orderDate == or.getOrderDate()
 					&& this.orderNumber.equals(or.getOrderNumber())
 					&& this.idName.equals(or.getIdName())
