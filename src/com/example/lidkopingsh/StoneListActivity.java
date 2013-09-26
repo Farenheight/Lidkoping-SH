@@ -34,13 +34,6 @@ public class StoneListActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_stone_list);
-		
-		//Setup the task spinner
-		Spinner spinnerTasks = (Spinner) findViewById(R.id.spinnerTasks);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-		        R.array.tasks_array, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinnerTasks.setAdapter(adapter);
 
 		if (findViewById(R.id.stone_detail_container) != null) {
 			// The detail container view will be present only in the

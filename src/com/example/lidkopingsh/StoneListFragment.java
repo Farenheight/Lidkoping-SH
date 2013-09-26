@@ -7,9 +7,12 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.example.lidkopingsh.model.ModelHandler;
 import com.example.lidkopingsh.model.Order;
@@ -41,7 +44,7 @@ public class StoneListFragment extends ListFragment {
 	 * The current activated item position. Only used on tablets.
 	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
-	
+
 	/**
 	 * List containing all orders shown in gui.
 	 */
@@ -81,16 +84,33 @@ public class StoneListFragment extends ListFragment {
 	}
 
 	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof Callbacks)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
+
+		mCallbacks = (Callbacks) activity;
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	}
 
-		// Init adapter containing the data list
-		Collection<Order> orders = ModelHandler.getModel(this.getActivity()).getOrders();
-		mOrderList = new ArrayList<Order>(orders);
-		setListAdapter(new TasksAdapter(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, mOrderList));
-		Log.d("image", "" + (mOrderList.get(0) == mOrderList.get(1)));
+	View mHeaderView;
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View rootView = inflater.inflate(android.R.layout.list_content,
+				container, false);
+		mHeaderView = inflater.inflate(R.layout.filter_box, container, false);
+		return rootView;
 	}
 
 	@Override
@@ -106,16 +126,26 @@ public class StoneListFragment extends ListFragment {
 	}
 
 	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		// Trying to add a Header View.
+		getListView().addHeaderView(mHeaderView);
 
-		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof Callbacks)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
-		}
+		// Setup the task spinner TODO: Get real tasks from model
+		Spinner spinnerTasks = (Spinner) mHeaderView
+				.findViewById(R.id.spinnerTasks);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+				getActivity(), R.array.tasks_array,
+				android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerTasks.setAdapter(adapter);
 
-		mCallbacks = (Callbacks) activity;
+		// Init adapter containing the data list
+		Collection<Order> orders = ModelHandler.getModel(getActivity()).getOrders();
+		mOrderList = new ArrayList<Order>(orders);
+		setListAdapter(new TasksAdapter(getActivity(),
+				android.R.layout.simple_list_item_activated_1,
+				android.R.id.text1, mOrderList));
 	}
 
 	@Override

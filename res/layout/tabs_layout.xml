@@ -28,7 +28,7 @@
 
                 <include layout="@layout/tab_drawing" />
 
-                <include layout="@layout/tab_info" />
+                <include layout="@layout/tab_details" />
             </FrameLayout>
 
             <LinearLayout
