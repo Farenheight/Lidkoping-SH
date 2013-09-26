@@ -27,7 +27,7 @@ public class Task implements Syncable<Task> {
 	 *            The status of the task. DONE if done. NOT_DONE if not done.
 	 */
 	public Task(int id, int taskId, String name, Status status) {
-		this.name = name != null? name : "";
+		this.name = name != null ? name : "";
 		this.status = status;
 		this.listeners = new ArrayList<Listener<Task>>();
 		this.id = id;
@@ -62,8 +62,8 @@ public class Task implements Syncable<Task> {
 	 *            true if finished, false otherwise
 	 */
 	public void setStatus(Status status) {
-		if(this.status != status){
-			notifyTaskListeners();			
+		if (this.status != status) {
+			notifyTaskListeners();
 		}
 		this.status = status;
 	}
@@ -80,7 +80,7 @@ public class Task implements Syncable<Task> {
 	public int getId() {
 		return id;
 	}
-	
+
 	public int getTaskId() {
 		return taskId;
 	}
@@ -128,15 +128,16 @@ public class Task implements Syncable<Task> {
 			return false;
 		} else {
 			Task t = (Task) o;
-			return this.id == t.getId() && this.name.equals(t.getName())
+			return this.taskId == t.getTaskId()
+					&& this.name.equals(t.getName())
 					&& this.status.equals(t.getStatus());
 		}
 	}
 
 	@Override
 	public boolean sync(Task newData) {
-		if (newData != null && this.id == newData.id &&
-				getClass() == newData.getClass()) {
+		if (newData != null && this.taskId == newData.taskId
+				&& getClass() == newData.getClass()) {
 			this.setStatus(newData.getStatus());
 			this.name = newData.name;
 			return true;
@@ -144,8 +145,8 @@ public class Task implements Syncable<Task> {
 			return false;
 		}
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return name;
 	}
 }
