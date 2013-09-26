@@ -99,7 +99,6 @@ public class StoneListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 	}
 
 	View mHeaderView;
@@ -142,7 +141,7 @@ public class StoneListFragment extends ListFragment {
 		spinnerTasks.setAdapter(adapter);
 
 		// Init adapter containing the data list
-		Collection<Order> orders = ModelHandler.getModel().getOrders();
+		Collection<Order> orders = ModelHandler.getModel(getActivity()).getOrders();
 		mOrderList = new ArrayList<Order>(orders);
 		setListAdapter(new TasksAdapter(getActivity(),
 				android.R.layout.simple_list_item_activated_1,

@@ -26,7 +26,7 @@ public class Task implements Syncable<Task> {
 	 *            The status of the task. DONE if done. NOT_DONE if not done.
 	 */
 	public Task(int id, String name, Status status) {
-		this.name = name;
+		this.name = name != null? name : "";
 		this.status = status;
 		this.listeners = new ArrayList<Listener<Task>>();
 		this.id = id;
@@ -60,8 +60,10 @@ public class Task implements Syncable<Task> {
 	 *            true if finished, false otherwise
 	 */
 	public void setStatus(Status status) {
+		if(this.status != status){
+			notifyTaskListeners();			
+		}
 		this.status = status;
-		notifyTaskListeners();
 	}
 
 	/**
@@ -78,35 +80,29 @@ public class Task implements Syncable<Task> {
 	}
 
 	/**
-	 * Add TaskListener to this Task
+	 * Add {@link Listener} to this Task
 	 * 
 	 * @param listener
 	 *            The {@link TaskListener} that should listen to this
 	 *            {@link Task}
-	 * @return true if listeners was modified, false otherwise.
 	 */
-	public boolean addTaskListener(Listener<Task> listener) {
+	public void addTaskListener(Listener<Task> listener) {
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
-			return true;
 		}
-		return false;
 	}
 
 	/**
-	 * Remove TaskListener to this Task
+	 * Remove {@link Listener} to this Task
 	 * 
 	 * @param listener
 	 *            The {@link TaskListener} that should not listen to this
 	 *            {@link Task} anymore
-	 * @return true if listeners was modified, false otherwise.
 	 */
-	public boolean removeTaskListener(Listener<Task> listener) {
+	public void removeTaskListener(Listener<Task> listener) {
 		if (listeners.contains(listener)) {
 			listeners.remove(listener);
-			return true;
 		}
-		return false;
 	}
 
 	/**
@@ -133,7 +129,8 @@ public class Task implements Syncable<Task> {
 
 	@Override
 	public boolean sync(Task newData) {
-		if (newData != null && this.id == newData.id) {
+		if (newData != null && this.id == newData.id &&
+				getClass() == newData.getClass()) {
 			this.setStatus(newData.getStatus());
 			this.name = newData.name;
 			return true;

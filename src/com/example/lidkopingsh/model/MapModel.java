@@ -1,13 +1,16 @@
 package com.example.lidkopingsh.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
 	private Map<Integer, Product> products;
+	private List<Task> tasks;
 
 	public MapModel() {
 		this(new HashMap<Integer, Order>(), new HashMap<Integer, Product>());
@@ -16,6 +19,24 @@ public class MapModel implements IModel {
 	public MapModel(Map<Integer, Order> o, Map<Integer, Product> p) {
 		products = new HashMap<Integer, Product>(p);
 		orders = new HashMap<Integer, Order>(o);
+		tasks = new ArrayList<Task>();
+
+		// Store all possible tasks
+		for (Order order : orders.values()) {
+			for (Product product : order.getProducts()) {
+				for (Task task : product.getTasks()) {
+					boolean match = false;
+					for (Task taskListItem : tasks) {
+						if (task.getId() == taskListItem.getId()) {
+							match = true;
+						}
+					}
+					if (!match) {
+						tasks.add(task);
+					}
+				} // task
+			} // product
+		} // order
 	}
 
 	/*
@@ -64,6 +85,9 @@ public class MapModel implements IModel {
 		for (Product p : o.getProducts()) {
 			products.put(p.getId(), p);
 		}
+		
+		// TODO When adding orders, check if the order have tasks that
+		// does not exist in any other order.
 	}
 
 	/*
@@ -79,6 +103,8 @@ public class MapModel implements IModel {
 		for (Product p : orders.get(o.getId()).getProducts()) {
 			products.remove(p.getId());
 		}
+		// TODO When removing orders, check if the order have tasks that
+		// does not exist in any other order.
 	}
 
 	/*
@@ -89,5 +115,10 @@ public class MapModel implements IModel {
 	@Override
 	public Collection<Order> getOrders() {
 		return orders.values();
+	}
+
+	@Override
+	public List<Task> getAllExistingTasks() {
+		return tasks;
 	}
 }

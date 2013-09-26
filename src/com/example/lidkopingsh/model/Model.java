@@ -95,4 +95,10 @@ public class Model implements IModel {
 	public List<Order> getOrders() {
 		return orders;
 	}
+
+	@Override
+	public List<Task> getAllExistingTasks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

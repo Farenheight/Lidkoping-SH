@@ -1,6 +1,7 @@
 package com.example.lidkopingsh.model;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public interface IModel {
@@ -33,5 +34,7 @@ public interface IModel {
 	public abstract void removeOrder(Order o);
 
 	public abstract Collection<Order> getOrders();
+	
+	public abstract List<Task> getAllExistingTasks();
 
 }
