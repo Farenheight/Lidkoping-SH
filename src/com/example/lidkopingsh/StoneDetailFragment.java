@@ -6,7 +6,6 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,9 +60,8 @@ public class StoneDetailFragment extends Fragment {
 			mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
 					orderID);
 		}
-		Log.d("DEBUG", "mOrder in onCreate: " + mOrder);
 	}
-
+ 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -84,8 +82,6 @@ public class StoneDetailFragment extends Fragment {
 		detailTab.setContent(R.id.tabDetailContainer);
 		detailTab.setIndicator("Detaljer");
 		tabHost.addTab(detailTab);
-
-		Log.d("DEBUG", "mOrder in onCreateView: " + mOrder);
 
 		if (mOrder != null) {
 			initOrderDrawing(rootView);

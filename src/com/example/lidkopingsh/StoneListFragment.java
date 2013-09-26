@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.Spinner;
 
 import com.example.lidkopingsh.model.ModelHandler;
 import com.example.lidkopingsh.model.Order;
+import com.example.lidkopingsh.model.Task;
 
 /**
  * A list fragment representing a list of Stones. This fragment also supports
@@ -130,18 +132,18 @@ public class StoneListFragment extends ListFragment {
 		super.onActivityCreated(savedInstanceState);
 		// Trying to add a Header View.
 		getListView().addHeaderView(mHeaderView);
-
-		// Setup the task spinner TODO: Get real tasks from model
 		Spinner spinnerTasks = (Spinner) mHeaderView
 				.findViewById(R.id.spinnerTasks);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				getActivity(), R.array.tasks_array,
-				android.R.layout.simple_spinner_item);
+		ArrayList<Task> taskList = (ArrayList<Task>) ModelHandler.getModel(
+				getActivity()).getAllExistingTasks();
+		ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(getActivity(),
+				android.R.layout.simple_spinner_item, taskList);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerTasks.setAdapter(adapter);
 
 		// Init adapter containing the data list
-		Collection<Order> orders = ModelHandler.getModel(getActivity()).getOrders();
+		Collection<Order> orders = ModelHandler.getModel(getActivity())
+				.getOrders();
 		mOrderList = new ArrayList<Order>(orders);
 		setListAdapter(new TasksAdapter(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
