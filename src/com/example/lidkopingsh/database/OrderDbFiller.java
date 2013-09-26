@@ -58,6 +58,10 @@ public class OrderDbFiller {
 
 		return order;
 	}
+	
+	public static Order getOrderWithoutProducts(String idName) {
+		return getOrder(idName, getCustomer());
+	}
 
 	private static Customer getCustomer() {
 		return new Customer("Mr", "Namn Efternamn", "Adress gata 5",

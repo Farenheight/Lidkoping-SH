@@ -7,7 +7,6 @@ import android.content.Context;
 import com.example.lidkopingsh.model.ILayer;
 import com.example.lidkopingsh.model.IModel;
 import com.example.lidkopingsh.model.MapModel;
-import com.example.lidkopingsh.model.Model;
 import com.example.lidkopingsh.model.Order;
 
 /**
@@ -34,9 +33,8 @@ public class OrderDbLayer implements ILayer {
 	}
 
 	@Override
-	public void changed(Order object) {
-		// TODO Auto-generated method stub
-
+	public void changed(Order order) {
+		db.update(order);
 	}
 
 	@Override
