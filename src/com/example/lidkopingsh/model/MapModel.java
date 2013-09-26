@@ -2,12 +2,14 @@ package com.example.lidkopingsh.model;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
 	private Map<Integer, Product> products;
+	private List<Task> tasks;
 
 	public MapModel() {
 		this(new HashMap<Integer, Order>(), new HashMap<Integer, Product>());
@@ -16,6 +18,9 @@ public class MapModel implements IModel {
 	public MapModel(Map<Integer, Order> o, Map<Integer, Product> p) {
 		products = new HashMap<Integer, Product>(p);
 		orders = new HashMap<Integer, Order>(o);
+//		for(Order order : orders.values()){
+//			order.get
+//		}
 	}
 
 	/*
@@ -89,5 +94,11 @@ public class MapModel implements IModel {
 	@Override
 	public Collection<Order> getOrders() {
 		return orders.values();
+	}
+
+	@Override
+	public List<Task> getAllExistingTasks() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
