@@ -138,4 +138,8 @@ public class Task implements Syncable<Task> {
 			return false;
 		}
 	}
+	
+	public String toString(){
+		return name;
+	}
 }
