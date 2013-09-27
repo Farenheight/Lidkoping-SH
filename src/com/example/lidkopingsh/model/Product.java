@@ -46,10 +46,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			String frontWork, List<Task> tasks) {
 		this(tasks);
 		this.id = id;
-		this.materialColor = materialColor != null? materialColor : "";
-		this.description = description != null? description : "";
-		this.frontWork = frontWork != null? frontWork : "";
+		this.materialColor = materialColor != null ? materialColor : "";
+		this.description = description != null ? description : "";
+		this.frontWork = frontWork != null ? frontWork : "";
 	}
+
 	/**
 	 * Create a new Product
 	 * 
@@ -64,9 +65,10 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The frontWork for this product
 	 */
 	public Product(int id, String materialColor, String description,
-			String frontWork){
-		this(id,materialColor,description,frontWork,new ArrayList<Task>());
+			String frontWork) {
+		this(id, materialColor, description, frontWork, new ArrayList<Task>());
 	}
+
 	/**
 	 * Create a new product with tasks
 	 * 
@@ -138,7 +140,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		Iterator<Task> iterator = tasks.iterator();
 		while (iterator.hasNext()) {
 			Task t = iterator.next();
-			if (t != task && t.getId() == task.getId()) {
+			if (t != task && t.getStation() == task.getStation()) {
 				iterator.remove();
 			}
 		}
@@ -255,8 +257,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			Product p = ((Product) o);
 			return this.id == p.id
 					&& this.materialColor.equals(p.getMaterialColor())
-					&& ((this.description == null && p.getDescription() == null) 
-							|| (this.description != null && this.description
+					&& ((this.description == null && p.getDescription() == null) || (this.description != null && this.description
 							.equals(p.getDescription())))
 					&& this.frontWork.equals(p.getFrontWork())
 					&& this.tasks.equals(p.getTasks());

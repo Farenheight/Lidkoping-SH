@@ -10,40 +10,34 @@ import java.util.List;
  * 
  */
 public class Task implements Syncable<Task> {
-	private int id;
-	private int taskId;
 	private List<Listener<Task>> listeners;
 	private String name;
 	private Status status;
+	private Station station;
 
 	/**
 	 * Create a new task.
 	 * 
-	 * @param id
-	 *            The id of the Task
 	 * @param name
 	 *            The name of the task
 	 * @param status
 	 *            The status of the task. DONE if done. NOT_DONE if not done.
 	 */
-	public Task(int id, int taskId, String name, Status status) {
+	public Task(Station station, Status status) {
 		this.name = name != null ? name : "";
 		this.status = status;
 		this.listeners = new ArrayList<Listener<Task>>();
-		this.id = id;
-		this.taskId = taskId;
+		this.station = station;
 	}
 
 	/**
 	 * Create a new unfinished task.
 	 * 
-	 * @param id
-	 *            The id of the Task
-	 * @param name
-	 *            The name of the task
+	 * @param station
+	 *            The station
 	 */
-	public Task(int id, int taskId, String name) {
-		this(id, taskId, name, Status.NOT_DONE);
+	public Task(Station station) {
+		this(station, Status.NOT_DONE);
 	}
 
 	/**
@@ -77,12 +71,8 @@ public class Task implements Syncable<Task> {
 		return name;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public int getTaskId() {
-		return taskId;
+	public Station getStation() {
+		return station;
 	}
 
 	/**
@@ -128,7 +118,7 @@ public class Task implements Syncable<Task> {
 			return false;
 		} else {
 			Task t = (Task) o;
-			return this.taskId == t.getTaskId()
+			return this.station.equals(t.getStation())
 					&& this.name.equals(t.getName())
 					&& this.status.equals(t.getStatus());
 		}
@@ -136,8 +126,8 @@ public class Task implements Syncable<Task> {
 
 	@Override
 	public boolean sync(Task newData) {
-		if (newData != null && this.taskId == newData.taskId
-				&& getClass() == newData.getClass()) {
+		if (newData != null && getClass() == newData.getClass()
+				&& this.station.equals(((Task) newData).station)) {
 			this.setStatus(newData.getStatus());
 			this.name = newData.name;
 			return true;

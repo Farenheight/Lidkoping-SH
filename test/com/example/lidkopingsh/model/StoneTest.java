@@ -12,16 +12,16 @@ public class StoneTest {
 	@Test
 	public void testEquals() {
 		List<Task> tasks1 = new ArrayList<Task>();
-		tasks1.add(new Task(0, 0, "Polering"));
-		tasks1.add(new Task(1, 1, "Rengoring"));
+		tasks1.add(new Task(new Station(0,"Station" + 0)));
+		tasks1.add(new Task(new Station(1,"Station" + 1)));
 
 		List<Task> tasks2 = new ArrayList<Task>();
-		tasks2.add(new Task(0, 0, "Polering"));
-		tasks2.add(new Task(1, 1, "Rengoring"));
+		tasks2.add(new Task(new Station(0,"Station" + 0)));
+		tasks2.add(new Task(new Station(1,"Station" + 1)));
 
 		List<Task> tasks3 = new ArrayList<Task>();
-		tasks3.add(new Task(0, 0, "Polering"));
-		tasks3.add(new Task(1, 1, "Rengoring"));
+		tasks3.add(new Task(new Station(0,"Station" + 0)));
+		tasks3.add(new Task(new Station(1,"Station" + 1)));
 
 		Stone s1 = new Stone(0, "Red and BLue", "Description", "Fronstwork",
 				tasks1, "ST-90", "Side and back", "Textstyle", "Ornament");
