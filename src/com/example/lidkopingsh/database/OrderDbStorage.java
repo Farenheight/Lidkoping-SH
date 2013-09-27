@@ -19,6 +19,7 @@ import com.example.lidkopingsh.database.DataContract.TaskTable;
 import com.example.lidkopingsh.model.Customer;
 import com.example.lidkopingsh.model.Order;
 import com.example.lidkopingsh.model.Product;
+import com.example.lidkopingsh.model.Station;
 import com.example.lidkopingsh.model.Status;
 import com.example.lidkopingsh.model.Stone;
 import com.example.lidkopingsh.model.Task;
@@ -177,19 +178,19 @@ class OrderDbStorage {
 		// Task table
 		ContentValues values = new ContentValues();
 		
-		if (!stationIds.contains(t.getTaskId())) {
-			values.put(StationTable.COLUMN_NAME_STATION_ID, t.getTaskId());
-			values.put(StationTable.COLUMN_NAME_STATION, t.getName());
+		if (!stationIds.contains(t.getStation().getId())) {
+			values.put(StationTable.COLUMN_NAME_STATION_ID, t.getStation().getId());
+			values.put(StationTable.COLUMN_NAME_STATION, t.getStation().getName());
 			
 			db.insert(StationTable.TABLE_NAME, null, values);
-			stationIds.add(t.getTaskId());
+			stationIds.add(t.getStation().getId());
 		}
 		
 		// Task to product table
 		values = new ContentValues();
 		
 		values.put(TaskTable.COLUMN_NAME_PRODUCT_ID, productId);
-		values.put(TaskTable.COLUMN_NAME_STATION_ID, t.getTaskId());
+		values.put(TaskTable.COLUMN_NAME_STATION_ID, t.getStation().getId());
 		values.put(TaskTable.COLUMN_NAME_TASK_STATUS, t.getStatus().getId());
 		values.put(TaskTable.COLUMN_NAME_SORT_ORDER, sortOrder);
 		
@@ -343,11 +344,11 @@ class OrderDbStorage {
 	}
 	
 	private Task getTask(Cursor c) {
-		int taskId = getIntColumn(c, StationTable.COLUMN_NAME_STATION_ID);
+		int stationId = getIntColumn(c, StationTable.COLUMN_NAME_STATION_ID);
 		String name = getStringColumn(c, StationTable.COLUMN_NAME_STATION);
 		int status = getIntColumn(c, TaskTable.COLUMN_NAME_TASK_STATUS);
 		
-		return name != null ? new Task(taskId, taskId, name, Status.valueOf(status)) : null;
+		return name != null ? new Task(new Station(stationId, name), Status.valueOf(status)) : null;
 	}
 
 	private Collection<Integer> getTaskIds() {

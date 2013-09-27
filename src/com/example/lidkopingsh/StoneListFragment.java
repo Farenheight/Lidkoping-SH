@@ -7,7 +7,6 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import android.widget.Spinner;
 
 import com.example.lidkopingsh.model.ModelHandler;
 import com.example.lidkopingsh.model.Order;
+import com.example.lidkopingsh.model.Station;
 import com.example.lidkopingsh.model.Task;
 
 /**
@@ -134,10 +134,10 @@ public class StoneListFragment extends ListFragment {
 		getListView().addHeaderView(mHeaderView);
 		Spinner spinnerTasks = (Spinner) mHeaderView
 				.findViewById(R.id.spinnerTasks);
-		ArrayList<Task> taskList = (ArrayList<Task>) ModelHandler.getModel(
-				getActivity()).getAllExistingTasks();
-		ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(getActivity(),
-				android.R.layout.simple_spinner_item, taskList);
+		ArrayList<Station> stationList = (ArrayList<Station>) ModelHandler.getModel(
+				getActivity()).getStations();
+		ArrayAdapter<Station> adapter = new ArrayAdapter<Station>(getActivity(),
+				android.R.layout.simple_spinner_item, stationList);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerTasks.setAdapter(adapter);
 

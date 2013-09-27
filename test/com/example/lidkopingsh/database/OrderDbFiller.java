@@ -8,6 +8,7 @@ import java.util.List;
 import com.example.lidkopingsh.model.Customer;
 import com.example.lidkopingsh.model.Order;
 import com.example.lidkopingsh.model.Product;
+import com.example.lidkopingsh.model.Station;
 import com.example.lidkopingsh.model.Status;
 import com.example.lidkopingsh.model.Stone;
 import com.example.lidkopingsh.model.Task;
@@ -80,8 +81,8 @@ public class OrderDbFiller {
 
 	private static List<Task> getSocleTasks() {
 		List<Task> tasks2 = new ArrayList<Task>();
-		tasks2.add(new Task(1, 1, "Sagning", Status.DONE));
-		tasks2.add(new Task(2, 2, "Slipning"));
+		tasks2.add(new Task(new Station(1, "Sagning"), Status.DONE));
+		tasks2.add(new Task(new Station(2, "Slipning")));
 		return tasks2;
 	}
 
@@ -93,10 +94,10 @@ public class OrderDbFiller {
 
 	public static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task(1, 1, "Sagning"));
-		tasks.add(new Task(3, 3, "Råhuggning"));
-		tasks.add(new Task(4, 4, "Gravering"));
-		tasks.add(new Task(5, 5, "Malning"));
+		tasks.add(new Task(new Station(1, "Sagning")));
+		tasks.add(new Task(new Station(3, "Rahuggning")));
+		tasks.add(new Task(new Station(4, "Gravering")));
+		tasks.add(new Task(new Station(5, "Malning")));
 		return tasks;
 	}
 }
