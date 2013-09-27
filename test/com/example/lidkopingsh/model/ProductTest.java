@@ -23,17 +23,15 @@ public class ProductTest extends TestCase implements Listener<Product> {
 		Product p = new Product();
 		Task[] tasks = new Task[10];
 		for (int i = 0; i < tasks.length; i++) {
-			// TODO: Add taskId to Task constructors
-			fail();
-//			tasks[i] = new Task(i, "Task" + i, i % 2 == 0 ? Status.DONE
-//					: Status.NOT_DONE);
+			tasks[i] = new Task(new Station(i,"Station" + i), i % 2 == 0 ? Status.DONE
+					: Status.NOT_DONE);
 			p.addTask(tasks[i], 0);
 		}
 		{
 			int i = tasks.length;
 			for (Task task : p.getTasks()) {
-//				assertEquals(true, (task.equals(new Task(--i, "Task" + i,
-//						i % 2 == 0 ? Status.DONE : Status.NOT_DONE))));
+				assertEquals(true, (task.equals(new Task(new Station(--i,"Station" + i),
+						i % 2 == 0 ? Status.DONE : Status.NOT_DONE))));
 			}
 		}
 		/*
@@ -45,15 +43,15 @@ public class ProductTest extends TestCase implements Listener<Product> {
 		p = new Product();
 		tasks = new Task[10];
 		for (int i = 0; i < tasks.length; i++) {
-//			tasks[i] = new Task(i, "Task" + i, i % 2 == 0 ? Status.DONE
-//					: Status.NOT_DONE);
+			tasks[i] = new Task(new Station(i,"Station" + i), i % 2 == 0 ? Status.DONE
+					: Status.NOT_DONE);
 			p.addTask(tasks[i], -1);
 		}
 		{
 			int i = 0;
 			for (Task task : p.getTasks()) {
-//				assertEquals(true, (task.equals(new Task(i, "Task" + i,
-//						i % 2 == 0 ? Status.DONE : Status.NOT_DONE))));
+				assertEquals(true, (task.equals(new Task(new Station(i,"Station" + i),
+						i % 2 == 0 ? Status.DONE : Status.NOT_DONE))));
 				i++;
 			}
 		}
@@ -65,7 +63,7 @@ public class ProductTest extends TestCase implements Listener<Product> {
 	public void testListener() {
 		hasBeenNotified = false;
 		Product p = new Product();
-		Task t = new Task(0, 0, "Task");
+		Task t = new Task(new Station(0,"Station0"));
 		p.addTask(t, 0);
 		p.addProductListener(this);
 		t.setStatus(Status.DONE);

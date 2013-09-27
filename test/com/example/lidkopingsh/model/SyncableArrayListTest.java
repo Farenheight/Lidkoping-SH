@@ -42,16 +42,16 @@ public class SyncableArrayListTest implements Listener<Order>{
 		o0.addOrderListener(this);
 		Product p0 = new Product(0, "none", "none", "", null);
 		o0.addProduct(p0);
-		Task t0 = new Task(0, 0, "Task0");
-		Task t1 = new Task(1, 1, "Task1");
+		Task t0 = new Task(new Station(0,"Station0"));
+		Task t1 = new Task(new Station(1,"Station1"));
 		p0.addTask(t0);
 		p0.addTask(t1);
 		
 		Order o1 = new Order(); //clone
 		Product p1 = new Product(0, "new", "new", "new", null); //clone
 		o1.addProduct(p1);
-		Task t2 = new Task(0, 0, "Task0");
-		Task t3 = new Task(1, 1, "Task1");
+		Task t2 = new Task(new Station(0,"Station0"));
+		Task t3 = new Task(new Station(1,"Station1"));
 		p1.addTask(t2);
 		p1.addTask(t3);
 		
@@ -62,7 +62,7 @@ public class SyncableArrayListTest implements Listener<Order>{
 		synced = false;
 		
 		//Add new task on new Order and sync, then check if listener works
-		Task t4 = new Task(2, 2, "Task2");
+		Task t4 = new Task(new Station(2,"Station2"));
 		p1.addTask(t4);
 		o0.sync(o1);
 		t4.setStatus(Status.DONE);
@@ -72,14 +72,13 @@ public class SyncableArrayListTest implements Listener<Order>{
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		//Add new task on new Product and sync, then check if listener works
 		Product p3 = new Product(1,"","","",null);		
 		o1.addProduct(p3);
-		Task t5 = new Task(5, 5, "Task5");
+		Task t5 = new Task(new Station(5,"Station5"));
 		p3.addTask(t5);
 		o1.sync(o0);
 		t5.setStatus(Status.DONE);
