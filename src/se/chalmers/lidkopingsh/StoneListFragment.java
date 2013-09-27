@@ -57,7 +57,7 @@ public class StoneListFragment extends ListFragment {
 	 * List containing all orders shown in gui.
 	 */
 	public static List<Order> mOrderList;
-	
+
 	/**
 	 * Filter and sort spinner.
 	 */
@@ -67,7 +67,7 @@ public class StoneListFragment extends ListFragment {
 	 * Is main view.
 	 */
 	private View rootView;
-	
+
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
@@ -121,7 +121,6 @@ public class StoneListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 	}
 
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -147,7 +146,23 @@ public class StoneListFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		// Adding header view with filter field and station spinner
+		initHeaderView();
+		TasksAdapter tasksAdapter = initListViewAdapter();
+		initFilter(tasksAdapter);
+	}
+
+	private TasksAdapter initListViewAdapter() {
+		Collection<Order> orders = ModelHandler.getModel(getActivity())
+				.getOrders();
+		mOrderList = new ArrayList<Order>(orders);
+		final TasksAdapter tasksAdapter = new TasksAdapter(getActivity(),
+				android.R.layout.simple_list_item_activated_1,
+				android.R.id.text1, mOrderList);
+		setListAdapter(tasksAdapter);
+		return tasksAdapter;
+	}
+
+	private void initHeaderView() {
 		getListView().addHeaderView(mListHeader);
 		Spinner spinnerTasks = (Spinner) mListHeader
 				.findViewById(R.id.spinnerTasks);
@@ -157,17 +172,6 @@ public class StoneListFragment extends ListFragment {
 				android.R.layout.simple_spinner_item, taskList);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerTasks.setAdapter(adapter);
-
-		// Init adapter containing the data list
-		Collection<Order> orders = ModelHandler.getModel(getActivity())
-				.getOrders();
-		mOrderList = new ArrayList<Order>(orders);
-		final TasksAdapter tasksAdapter = new TasksAdapter(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, mOrderList);
-		setListAdapter(tasksAdapter);
-
-		initFilter(tasksAdapter);
 	}
 
 	private void initFilter(final TasksAdapter tasksAdapter) {
@@ -178,7 +182,8 @@ public class StoneListFragment extends ListFragment {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				Log.d("DEBUG", "Text changed, order count: " + tasksAdapter.getCount());
+				Log.d("DEBUG",
+						"Text changed, order count: " + tasksAdapter.getCount());
 				tasksAdapter.clear();
 				tasksAdapter.addAll(ModelHandler.getModel(getActivity())
 						.getOrders());
