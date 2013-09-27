@@ -34,5 +34,9 @@ public class Station {
 			return s.id == id && s.getName().equals(getName());
 		}
 	}
+	@Override
+	public String toString() {
+		return name;
+	}
 }
 
