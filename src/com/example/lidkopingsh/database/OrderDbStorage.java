@@ -93,7 +93,7 @@ class OrderDbStorage {
 			throw new IllegalArgumentException("Order can not be null");
 		}
 		
-		stationIds.addAll(getTaskIds());
+		stationIds.addAll(getStationIds());
 		
 		ContentValues values = new ContentValues();
 
@@ -199,17 +199,35 @@ class OrderDbStorage {
 	
 	public void delete(Order order){
 		for (Product p : order.getProducts()) {
-			db.delete(TaskTable.TABLE_NAME,
-					TaskTable.COLUMN_NAME_PRODUCT_ID + EQUALS + QUESTION_MARK,
+			db.delete(TaskTable.TABLE_NAME, TaskTable.COLUMN_NAME_PRODUCT_ID
+					+ EQUALS + QUESTION_MARK,
 					new String[] { String.valueOf(p.getId()) });
-			db.delete(StoneTable.TABLE_NAME, StoneTable.COLUMN_NAME_PRODUCT_ID + EQUALS + QUESTION_MARK, 
+			db.delete(StoneTable.TABLE_NAME, StoneTable.COLUMN_NAME_PRODUCT_ID
+					+ EQUALS + QUESTION_MARK,
 					new String[] { String.valueOf(p.getId()) });
+
+			for (Task t : p.getTasks()) {
+				Cursor c = db
+						.query(TaskTable.TABLE_NAME, null,
+								TaskTable.COLUMN_NAME_STATION_ID + EQUALS
+										+ QUESTION_MARK, new String[] { String
+										.valueOf(t.getStation().getId()) },
+								null, null, null);
+				if (!c.moveToNext()) {
+					db.delete(StationTable.TABLE_NAME,
+							StationTable.COLUMN_NAME_STATION_ID + EQUALS
+									+ QUESTION_MARK, new String[] { String
+									.valueOf(t.getStation().getId()) });
+					stationIds.remove(t.getStation().getId());
+				}
+			}
 		}
-		db.delete(ProductTable.TABLE_NAME, ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + QUESTION_MARK, 
+		db.delete(ProductTable.TABLE_NAME,
+				ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + QUESTION_MARK,
 				new String[] { order.getOrderNumber() });
-		db.delete(OrderTable.TABLE_NAME, OrderTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + QUESTION_MARK,
+		db.delete(OrderTable.TABLE_NAME, OrderTable.COLUMN_NAME_ORDER_NUMBER
+				+ EQUALS + QUESTION_MARK,
 				new String[] { order.getOrderNumber() });
-		
 	}
 	public void update(Order order){
 		delete(order);
@@ -344,14 +362,30 @@ class OrderDbStorage {
 	}
 	
 	private Task getTask(Cursor c) {
+		int status = getIntColumn(c, TaskTable.COLUMN_NAME_TASK_STATUS);
+
+		return !c.isNull(c.getColumnIndex(TaskTable.COLUMN_NAME_TASK_STATUS)) ? new Task(
+				getStation(c), Status.valueOf(status)) : null;
+	}
+	
+	private Station getStation(Cursor c){
 		int stationId = getIntColumn(c, StationTable.COLUMN_NAME_STATION_ID);
 		String name = getStringColumn(c, StationTable.COLUMN_NAME_STATION);
-		int status = getIntColumn(c, TaskTable.COLUMN_NAME_TASK_STATUS);
 		
-		return name != null ? new Task(new Station(stationId, name), Status.valueOf(status)) : null;
+		return new Station(stationId, name);
 	}
 
-	private Collection<Integer> getTaskIds() {
+	public Collection<Station> getStations() {
+		Cursor c = db.query(StationTable.TABLE_NAME, null, null, null, null,
+				null, null);
+		Collection<Station> stations = new ArrayList<Station>();
+		while (c.moveToNext()) {
+			stations.add(getStation(c));
+		}
+		return stations;
+	}
+	
+	private Collection<Integer> getStationIds() {
 		Collection<Integer> ids = new ArrayList<Integer>();
 		Cursor c = db.query(StationTable.TABLE_NAME,
 				new String[] { StationTable.COLUMN_NAME_STATION_ID }, null, null,

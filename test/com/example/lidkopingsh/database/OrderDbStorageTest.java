@@ -115,6 +115,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 		orders = dbStorage.query(null, null, null);
 		
 		assertTrue(orders.size() == 0);
+		assertTrue(dbStorage.getStations().size() == 0);
 	}
 	
 	@Test
