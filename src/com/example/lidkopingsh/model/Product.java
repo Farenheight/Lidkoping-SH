@@ -107,6 +107,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	@Override
 	public void changed(Task task) {
 		notifyProductListeners();
+		//Sort tasks on status.
 	}
 
 	/**

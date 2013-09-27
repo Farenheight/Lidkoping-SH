@@ -233,6 +233,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 					&& this.products.equals(or.getProducts());
 		}
 	}
+	@Override
+	public String toString() {
+		return this.idName;
+	}
 
 	public static String getNewOrderNumber() {
 		int year = Calendar.getInstance().get(Calendar.YEAR);

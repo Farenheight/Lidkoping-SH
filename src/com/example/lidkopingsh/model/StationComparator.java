@@ -16,19 +16,17 @@ public class StationComparator<T extends Order> implements Comparator<T> {
 
 	@Override
 	public int compare(T arg0, T arg1) {
-		if(getPriority(arg0) < getPriority(arg1)){
+		if(getPriority(arg0) >= getPriority(arg1)){
 			return 1;
 		}
-		if(getPriority(arg0) > getPriority(arg1)){
+		else{
 			return -1;
-		}else{
-			return 0;
 		}
 	}
 
 	/**
 	 * Get the number of stations left in this Order for any Products task to
-	 * come to the same Station as the Station in this Comparator. -1 if all of
+	 * come to the same Station as the Station in this Comparator. Integer.MAX_VALUE if all of
 	 * the Product's in this order already passed that station or doesn't have it
 	 * in there list.
 	 * 
@@ -47,6 +45,6 @@ public class StationComparator<T extends Order> implements Comparator<T> {
 				}
 			}
 		}
-		return -1;
+		return Integer.MAX_VALUE;
 	}
 }
