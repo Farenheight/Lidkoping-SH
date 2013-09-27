@@ -65,7 +65,7 @@ public class ProductTest extends TestCase implements Listener<Product> {
 	public void testListener() {
 		hasBeenNotified = false;
 		Product p = new Product();
-		Task t = new Task(0, 0, "Task");
+		Task t = new Task(new Station(0, "Task0"));
 		p.addTask(t, 0);
 		p.addProductListener(this);
 		t.setStatus(Status.DONE);

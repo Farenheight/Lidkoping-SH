@@ -124,9 +124,9 @@ public class StoneDetailFragment extends Fragment {
 			ToggleButton btn = (ToggleButton) inflater.inflate(
 					R.layout.task_toggler, container, false);
 			btn.setChecked(task.getStatus() == Status.DONE);
-			btn.setText(task.getName());
-			btn.setTextOff(task.getName());
-			btn.setTextOn(task.getName());
+			btn.setText(task.getStation().getName());
+			btn.setTextOff(task.getStation().getName());
+			btn.setTextOn(task.getStation().getName());
 			btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
 				public void onCheckedChanged(CompoundButton toggleButton,
