@@ -62,6 +62,11 @@ public class Order implements Listener<Product>, Syncable<Order> {
 
 		orderListeners = new ArrayList<Listener<Order>>();
 		this.products = new SyncableProductList(products);
+		if (products != null) {
+			for(Product p : products) {
+				p.addProductListener(this);
+			}
+		}
 	}
 
 	public int getId() {

@@ -8,6 +8,7 @@ import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
 
 import android.content.Context;
+import android.util.Log;
 
 
 /**
@@ -30,12 +31,14 @@ public class OrderDbLayer implements ILayer {
 		db = new OrderDbStorage(context);
 		if (db.query(null, null, null).isEmpty()) {
 			OrderDbFiller.fillDb(db);
+			Log.d("OrderdbLayer", "filled database with dummy data");
 		}
 	}
 
 	@Override
 	public void changed(Order order) {
 		db.update(order);
+		Log.d("Changed Order", "Changed objects in database");
 	}
 
 	@Override
