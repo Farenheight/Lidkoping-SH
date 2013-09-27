@@ -11,7 +11,6 @@ import java.util.List;
  */
 public class Task implements Syncable<Task> {
 	private List<Listener<Task>> listeners;
-	private String name;
 	private Status status;
 	private Station station;
 
@@ -24,7 +23,6 @@ public class Task implements Syncable<Task> {
 	 *            The status of the task. DONE if done. NOT_DONE if not done.
 	 */
 	public Task(Station station, Status status) {
-		this.name = name != null ? name : "";
 		this.status = status;
 		this.listeners = new ArrayList<Listener<Task>>();
 		this.station = station;
@@ -60,15 +58,6 @@ public class Task implements Syncable<Task> {
 			notifyTaskListeners();
 		}
 		this.status = status;
-	}
-
-	/**
-	 * Get the name of this task
-	 * 
-	 * @return The name of this task
-	 */
-	public String getName() {
-		return name;
 	}
 
 	public Station getStation() {
@@ -119,7 +108,6 @@ public class Task implements Syncable<Task> {
 		} else {
 			Task t = (Task) o;
 			return this.station.equals(t.getStation())
-					&& this.name.equals(t.getName())
 					&& this.status.equals(t.getStatus());
 		}
 	}
@@ -129,7 +117,6 @@ public class Task implements Syncable<Task> {
 		if (newData != null && getClass() == newData.getClass()
 				&& this.station.equals(((Task) newData).station)) {
 			this.setStatus(newData.getStatus());
-			this.name = newData.name;
 			return true;
 		} else {
 			return false;
@@ -137,6 +124,6 @@ public class Task implements Syncable<Task> {
 	}
 
 	public String toString() {
-		return name;
+		return station.getName() + " " + status;
 	}
 }
