@@ -10,10 +10,14 @@ import se.chalmers.lidkopingsh.model.Station;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -50,7 +54,17 @@ public class StoneListFragment extends ListFragment {
 	/**
 	 * List containing all orders shown in gui.
 	 */
-	private List<Order> mOrderList;
+	public static List<Order> mOrderList;
+
+	/**
+	 * Filter and sort spinner.
+	 */
+	private View mHeaderView;
+
+	/**
+	 * Is main view.
+	 */
+	private View rootView;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -78,6 +92,8 @@ public class StoneListFragment extends ListFragment {
 		}
 	};
 
+	private View mListHeader;
+
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -103,15 +119,13 @@ public class StoneListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 	}
 
-	View mHeaderView;
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		View rootView = inflater.inflate(android.R.layout.list_content,
+		this.rootView = inflater.inflate(android.R.layout.list_content,
 				container, false);
-		mHeaderView = inflater.inflate(R.layout.filter_box, container, false);
+		mListHeader = inflater.inflate(R.layout.list_header, container, false);
 		return rootView;
 	}
 
@@ -130,9 +144,25 @@ public class StoneListFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		// Trying to add a Header View.
-		getListView().addHeaderView(mHeaderView);
-		Spinner spinnerTasks = (Spinner) mHeaderView
+		initHeaderView();
+		TasksAdapter tasksAdapter = initListViewAdapter();
+		initFilter(tasksAdapter);
+	}
+
+	private TasksAdapter initListViewAdapter() {
+		Collection<Order> orders = ModelHandler.getModel(getActivity())
+				.getOrders();
+		mOrderList = new ArrayList<Order>(orders);
+		final TasksAdapter tasksAdapter = new TasksAdapter(getActivity(),
+				android.R.layout.simple_list_item_activated_1,
+				android.R.id.text1, mOrderList);
+		setListAdapter(tasksAdapter);
+		return tasksAdapter;
+	}
+
+	private void initHeaderView() {
+		getListView().addHeaderView(mListHeader);
+		Spinner spinnerTasks = (Spinner) mListHeader
 				.findViewById(R.id.spinnerTasks);
 		ArrayList<Station> stationList = (ArrayList<Station>) ModelHandler.getModel(
 				getActivity()).getStations();
@@ -140,14 +170,33 @@ public class StoneListFragment extends ListFragment {
 				android.R.layout.simple_spinner_item, stationList);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerTasks.setAdapter(adapter);
+	}
 
-		// Init adapter containing the data list
-		Collection<Order> orders = ModelHandler.getModel(getActivity())
-				.getOrders();
-		mOrderList = new ArrayList<Order>(orders);
-		setListAdapter(new TasksAdapter(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, mOrderList));
+	private void initFilter(final TasksAdapter tasksAdapter) {
+		EditText fieldFilter = (EditText) mListHeader
+				.findViewById(R.id.fieldFilter);
+		fieldFilter.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				Log.d("DEBUG",
+						"Text changed, order count: " + tasksAdapter.getCount());
+				tasksAdapter.clear();
+				tasksAdapter.addAll(ModelHandler.getModel(getActivity())
+						.getOrders());
+				tasksAdapter.getFilter().filter(s);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
 	}
 
 	@Override

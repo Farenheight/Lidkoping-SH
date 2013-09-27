@@ -6,7 +6,6 @@ import se.chalmers.lidkopingsh.model.ILayer;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
-
 import android.content.Context;
 import android.util.Log;
 
