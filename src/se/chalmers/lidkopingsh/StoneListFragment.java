@@ -7,19 +7,16 @@ import java.util.List;
 import se.chalmers.lidkopingsh.model.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Task;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Filter.FilterListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -56,7 +53,7 @@ public class StoneListFragment extends ListFragment {
 	/**
 	 * List containing all orders shown in gui.
 	 */
-	public static List<Order> mOrderList;
+	private List<Order> mOrderList;
 
 	/**
 	 * Filter and sort spinner.
@@ -147,48 +144,49 @@ public class StoneListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initHeaderView();
-		TasksAdapter tasksAdapter = initListViewAdapter();
-		initFilter(tasksAdapter);
+		initOrderListViewAdapter();
 	}
 
-	private TasksAdapter initListViewAdapter() {
-		Collection<Order> orders = ModelHandler.getModel(getActivity())
-				.getOrders();
-		mOrderList = new ArrayList<Order>(orders);
-		final TasksAdapter tasksAdapter = new TasksAdapter(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, mOrderList);
-		setListAdapter(tasksAdapter);
-		return tasksAdapter;
-	}
-
+	/**
+	 * Adds a header view to the main order list view and setups the station
+	 * spinner
+	 */
 	private void initHeaderView() {
 		getListView().addHeaderView(mListHeader);
-		Spinner spinnerTasks = (Spinner) mListHeader
+		Spinner spinnerStations = (Spinner) mListHeader
 				.findViewById(R.id.spinnerTasks);
-		ArrayList<Task> taskList = (ArrayList<Task>) ModelHandler.getModel(
+		ArrayList<Task> stationList = (ArrayList<Task>) ModelHandler.getModel(
 				getActivity()).getAllExistingTasks();
-		ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(getActivity(),
-				android.R.layout.simple_spinner_item, taskList);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinnerTasks.setAdapter(adapter);
+		ArrayAdapter<Task> stationsAdapter = new ArrayAdapter<Task>(getActivity(),
+				android.R.layout.simple_spinner_item, stationList);
+		stationsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerStations.setAdapter(stationsAdapter);
 	}
 
-	private void initFilter(final TasksAdapter tasksAdapter) {
+	private void initOrderListViewAdapter() {
+		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
+				.getOrders());
+		OrderAdapter orderAdapter = new OrderAdapter(getActivity(),
+				android.R.layout.simple_list_item_activated_1,
+				android.R.id.text1, mOrderList);
+		setListAdapter(orderAdapter);
+		initFilter(orderAdapter);
+	}
+
+	private void initFilter(final FilterableAdapter<Order, String> filterAdapter) {
 		EditText fieldFilter = (EditText) mListHeader
 				.findViewById(R.id.fieldFilter);
 		fieldFilter.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence currentText, int start, int before,
-					int count) {
-				tasksAdapter.getFilter().filter(currentText);
-				getListView().invalidateViews();
+			public void onTextChanged(CharSequence currentText, int start,
+					int before, int count) {
+				filterAdapter.getFilter().filter(currentText);
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence currentText, int start, int count,
-					int after) {
+			public void beforeTextChanged(CharSequence currentText, int start,
+					int count, int after) {
 			}
 
 			@Override
