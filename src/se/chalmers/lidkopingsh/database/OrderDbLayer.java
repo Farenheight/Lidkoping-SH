@@ -49,7 +49,7 @@ public class OrderDbLayer implements ILayer {
 			order.addOrderListener(this);
 		}
 
-		return new MapModel(orders);
+		return new MapModel(orders, db.getStations());
 	}
 
 }

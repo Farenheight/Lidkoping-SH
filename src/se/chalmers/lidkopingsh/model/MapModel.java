@@ -10,9 +10,9 @@ import java.util.NoSuchElementException;
 public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
 	private Map<Integer, Product> products;
-	private List<Task> tasks;
+	private Collection<Station> stations;
 	
-	public MapModel(Collection<Order> o) {
+	public MapModel(Collection<Order> o,Collection<Station> s) {
 		this.products = new HashMap<Integer, Product>();
 		this.orders = new HashMap<Integer, Order>();
 		
@@ -22,24 +22,11 @@ public class MapModel implements IModel {
 				this.products.put(p.getId(), p);
 			}
 		}
-		this.tasks = new ArrayList<Task>();
-
-		// Store all possible tasks
-		for (Order order : orders.values()) {
-			for (Product product : order.getProducts()) {
-				for (Task task : product.getTasks()) {
-					boolean match = false;
-					for (Task taskListItem : tasks) {
-						if (task.getStation().equals(taskListItem.getStation())) {
-							match = true;
-						}
-					}
-					if (!match) {
-						tasks.add(task);
-					}
-				} // task
-			} // product
-		} // order
+		this.stations = new ArrayList<Station>(stations);
+		
+	}
+	public MapModel(Collection<Order> o) {
+		this(o,new ArrayList<Station>());
 	}
 
 	/*
@@ -121,7 +108,7 @@ public class MapModel implements IModel {
 	}
 
 	@Override
-	public List<Task> getAllExistingTasks() {
-		return tasks;
+	public Collection<Station> getStations(){
+		return new ArrayList<Station>(stations);
 	}
 }
