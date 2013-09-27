@@ -21,7 +21,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * 
  */
 class OrderDbHelper extends SQLiteOpenHelper {
-
+ 
 	/**
 	 * Current version of the application's database structure.
 	 * If the structure is changed, this version number must be increased.
