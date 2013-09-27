@@ -22,7 +22,7 @@ public class MapModel implements IModel {
 				this.products.put(p.getId(), p);
 			}
 		}
-		this.stations = new ArrayList<Station>(stations);
+		this.stations = new ArrayList<Station>(s);
 		
 	}
 	public MapModel(Collection<Order> o) {

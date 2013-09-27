@@ -55,9 +55,9 @@ public class Task implements Syncable<Task> {
 	 */
 	public void setStatus(Status status) {
 		if (this.status != status) {
+			this.status = status;
 			notifyTaskListeners();
 		}
-		this.status = status;
 	}
 
 	public Station getStation() {
