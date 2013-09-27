@@ -1,17 +1,16 @@
-package se.chalmers.lidkopingsh.database;
+package com.example.lidkopingsh.database;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import se.chalmers.lidkopingsh.model.Customer;
-import se.chalmers.lidkopingsh.model.Order;
-import se.chalmers.lidkopingsh.model.Product;
-import se.chalmers.lidkopingsh.model.Status; 
-import se.chalmers.lidkopingsh.model.Stone;
-import se.chalmers.lidkopingsh.model.Task;
-
+import com.example.lidkopingsh.model.Customer;
+import com.example.lidkopingsh.model.Order;
+import com.example.lidkopingsh.model.Product;
+import com.example.lidkopingsh.model.Status;
+import com.example.lidkopingsh.model.Stone;
+import com.example.lidkopingsh.model.Task;
 
 public class OrderDbFiller {
 	private static int customerId = 500;
@@ -86,13 +85,13 @@ public class OrderDbFiller {
 		return tasks2;
 	}
 
-	static Stone getStone(String description, List<Task> tasks) {
+	public static Stone getStone(String description, List<Task> tasks) {
 		return new Stone(productId++, "Hallandia", description, "Polerad", tasks,
 				"NB 49", "Råhugget", "Helvetica nedhuggen i guld",
 				"Blomma nedhuggen i guld");
 	}
 
-	static List<Task> getStoneTasks() {
+	public static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		tasks.add(new Task(1, 1, "Sagning"));
 		tasks.add(new Task(3, 3, "Råhuggning"));

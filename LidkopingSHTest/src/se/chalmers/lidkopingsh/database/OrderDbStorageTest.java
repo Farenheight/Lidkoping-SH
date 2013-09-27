@@ -1,13 +1,13 @@
 package se.chalmers.lidkopingsh.database;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.database.DataContract.OrderTable;
 import se.chalmers.lidkopingsh.model.Order;
-
 import android.test.InstrumentationTestCase;
-
 
 /**
  * 
@@ -98,5 +98,73 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 
 		assertTrue(orders.contains(order));
 		assertTrue(orders.size() == 1);
+	}
+	
+	@Test
+	public void testDelete() {
+		Order order = OrderDbFiller.getOrderFullyPopulated("O.S.");
+
+		dbStorage.insert(order);
+		Collection<Order> orders = dbStorage.query(null, null, null);
+
+		assertTrue(orders.contains(order));
+		assertTrue(orders.size() == 1);
+		
+		dbStorage.delete(order);
+		orders = dbStorage.query(null, null, null);
+		
+		assertTrue(orders.size() == 0);
+	}
+	
+	@Test
+	public void testUpdate() {
+		Order order = OrderDbFiller.getOrderFullyPopulated("O.S.");
+
+		dbStorage.insert(order);
+		Collection<Order> orders = dbStorage.query(null, null, null);
+
+		assertTrue(orders.contains(order));
+		assertTrue(orders.size() == 1);
+		
+		order.addProduct(OrderDbFiller.getStone("Testbeskrivning", OrderDbFiller.getStoneTasks()));
+		dbStorage.update(order);
+		orders = dbStorage.query(null, null, null);
+		
+		assertTrue(orders.contains(order));
+		assertTrue(orders.size() == 1);
+	}
+	
+	@Test
+	public void testWhere() {
+		Order order1 = OrderDbFiller.getOrderFullyPopulated("O.S.");
+		Order order2 = OrderDbFiller.getOrderFullyPopulated("O.R.");
+		dbStorage.insert(order1);
+		dbStorage.insert(order2);
+		Collection<Order> orders = dbStorage.query(OrderTable.COLUMN_NAME_ID_NAME + " = ?", 
+				new String[] { "O.R." }, null);
+		assertTrue(orders.contains(order2));
+		assertTrue(orders.size() == 1);
+
+	}
+	
+	@Test
+	public void testSort() {
+		Order order1 = OrderDbFiller.getOrderFullyPopulated("O.S.");
+		Order order2 = OrderDbFiller.getOrderFullyPopulated("O.R.");
+		dbStorage.insert(order1);
+		dbStorage.insert(order2);
+		Collection<Order> orders = dbStorage.query(null, null, 
+				OrderTable.COLUMN_NAME_ID_NAME + " ASC");
+		Iterator<Order> iOrders = orders.iterator();
+
+		assertEquals(iOrders.next(), order2);
+		assertTrue(orders.size() == 2);
+		
+		orders = dbStorage.query(null, null, 
+				OrderTable.COLUMN_NAME_ID_NAME + " DESC");
+		iOrders = orders.iterator();
+
+		assertEquals(iOrders.next(), order1);
+		assertTrue(orders.size() == 2);
 	}
 }
