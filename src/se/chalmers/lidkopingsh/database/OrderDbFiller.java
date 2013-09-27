@@ -95,7 +95,7 @@ public class OrderDbFiller {
 
 	public static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task(new Station(1, "Sagning")));
+		tasks.add(new Task(new Station(1, "Sagning"), Status.DONE));
 		tasks.add(new Task(new Station(3, "Rahuggning")));
 		tasks.add(new Task(new Station(4, "Gravering")));
 		tasks.add(new Task(new Station(5, "Malning")));

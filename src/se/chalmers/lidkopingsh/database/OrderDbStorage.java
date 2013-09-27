@@ -226,6 +226,9 @@ class OrderDbStorage {
 		db.delete(ProductTable.TABLE_NAME,
 				ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + QUESTION_MARK,
 				new String[] { order.getOrderNumber() });
+		db.delete(CustomerTable.TABLE_NAME,
+				CustomerTable.COLUMN_NAME_CUSTOMER_ID + EQUALS + QUESTION_MARK,
+				new String[] { String.valueOf(order.getCustomer().getId()) });
 		db.delete(OrderTable.TABLE_NAME, OrderTable.COLUMN_NAME_ORDER_NUMBER
 				+ EQUALS + QUESTION_MARK,
 				new String[] { order.getOrderNumber() });
