@@ -8,7 +8,6 @@ import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 import uk.co.senab.photoview.PhotoViewAttacher;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -43,6 +42,7 @@ public class StoneDetailFragment extends Fragment {
 	private Order mOrder;
 
 	/** Attacher to imageView to zoom lib **/
+	@SuppressWarnings("unused") //It is used...
 	private PhotoViewAttacher mAttacher;
 
 	/**
@@ -99,8 +99,8 @@ public class StoneDetailFragment extends Fragment {
 		ImageView orderDrawing = (ImageView) rootView
 				.findViewById(R.id.orderDrawing);
 
-		// Set the Drawable displayed
-		Drawable bitmap = getResources().getDrawable(
+		// Set the drawable displayed TODO: get from model
+		getResources().getDrawable(
 				R.drawable.test_headstone_drawing);
 
 		// Attach a PhotoViewAttacher, which takes care of all of the zooming

@@ -6,15 +6,18 @@ import java.util.List;
 import se.chalmers.lidkopingsh.model.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
-import se.chalmers.lidkopingsh.model.Task;
+import se.chalmers.lidkopingsh.model.StationComparator;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -56,11 +59,6 @@ public class StoneListFragment extends ListFragment {
 	private List<Order> mOrderList;
 
 	/**
-	 * Filter and sort spinner.
-	 */
-	private View mHeaderView;
-
-	/**
 	 * Is main view.
 	 */
 	private View rootView;
@@ -91,7 +89,16 @@ public class StoneListFragment extends ListFragment {
 		}
 	};
 
+	/**
+	 * The header view over the main order list view. Containing search and
+	 * station spinner
+	 */
 	private View mListHeader;
+
+	/**
+	 * Adapter responsible for the main order list view
+	 */
+	private OrderAdapter mOrderAdapter;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -155,22 +162,39 @@ public class StoneListFragment extends ListFragment {
 		getListView().addHeaderView(mListHeader);
 		Spinner spinnerStations = (Spinner) mListHeader
 				.findViewById(R.id.spinnerTasks);
-		ArrayList<Station> stationList = (ArrayList<Station>) ModelHandler.getModel(
-				getActivity()).getStations();
-		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(getActivity(),
-				android.R.layout.simple_spinner_item, stationList);
-		stationsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerStations.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				Station station = (Station) parent.getItemAtPosition(pos);
+				mOrderAdapter.sort(new StationComparator<Order>(station));
+				Log.d("DEBUG", "Station selected: " + station.getName());
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// Do nothing
+			}
+		});
+		ArrayList<Station> stationList = (ArrayList<Station>) ModelHandler
+				.getModel(getActivity()).getStations();
+		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(
+				getActivity(), android.R.layout.simple_spinner_item,
+				stationList);
+		stationsAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerStations.setAdapter(stationsAdapter);
 	}
 
 	private void initOrderListViewAdapter() {
 		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
 				.getOrders());
-		OrderAdapter orderAdapter = new OrderAdapter(getActivity(),
+		mOrderAdapter = new OrderAdapter(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, mOrderList);
-		setListAdapter(orderAdapter);
-		initFilter(orderAdapter);
+		setListAdapter(mOrderAdapter);
+		initFilter(mOrderAdapter);
 	}
 
 	private void initFilter(final FilterableAdapter<Order, String> filterAdapter) {
@@ -209,7 +233,7 @@ public class StoneListFragment extends ListFragment {
 		super.onListItemClick(listView, view, position, id);
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(mOrderList.get(position).getId());
+		mCallbacks.onItemSelected(mOrderList.get(position - 1).getId());
 	}
 
 	@Override

@@ -14,7 +14,6 @@ public class OrderAdapter extends FilterableAdapter<Order, String> {
 
 	private int mResourceId;
 	private int mTextResourceId;
-	private List<Order> mOrderList;
 	private LayoutInflater mInflater;
 
 	public OrderAdapter(Context context, int resourceId, int textResourceId,
@@ -22,7 +21,6 @@ public class OrderAdapter extends FilterableAdapter<Order, String> {
 		super(context, resourceId, textResourceId, orderList);
 		this.mResourceId = resourceId;
 		this.mTextResourceId = textResourceId;
-		this.mOrderList = orderList;
 		this.mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
