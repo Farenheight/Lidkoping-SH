@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.model.ModelFilter;
+import se.chalmers.lidkopingsh.model.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
 import android.util.Log;
@@ -23,6 +24,7 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 	private LayoutInflater mInflater;
 	private List<Order> orders;
 	private Filter mFilter;
+	private Context context;
 
 	public TasksAdapter(Context context, int resource, int textViewResourceId,
 			List<Order> orders) {
@@ -32,6 +34,7 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 		this.mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.orders = orders;
+		this.context = context;
 	}
 
 	@Override
@@ -85,25 +88,39 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint) {
 
+			if (constraint.toString().equals("")) {
+				Log.d("DEBUG", "Constraint is empty string");
+			} else {
+				Log.d("DEBUG", "Constraint: " + constraint);
+			}
+
+			// Resets list TODO:reset to moment specific list, not all orders
+			clear();
+			addAll(ModelHandler.getModel(context).getOrders());
+
 			List<Order> newOrderList = (new ModelFilter()).getOrdersByFilter(
 					constraint, orders);
+
 			FilterResults results = new FilterResults();
 			results.values = newOrderList;
 			results.count = newOrderList.size();
+
 			return results;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
-			clear();
+
 			if (results.values != null) {
-				Log.d("DEBUG", "Results: " + results.count);
+				clear();
 				addAll((Collection<Order>) results.values);
-				Log.d("DEBUG", "Results found, count: " + results.count);
 				notifyDataSetChanged();
 			} else {
-				Log.d("DEBUG", "Results: " + results.values);
+				Log.e("DEBUG", "Filter result is null of some reason");
+				Log.d("DEBUG", "Trying to filter again.");
+				filter(constraint);
 			}
 		}
 	}

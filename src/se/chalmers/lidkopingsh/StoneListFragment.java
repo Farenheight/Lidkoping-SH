@@ -180,18 +180,14 @@ public class StoneListFragment extends ListFragment {
 		fieldFilter.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
+			public void onTextChanged(CharSequence currentText, int start, int before,
 					int count) {
-				Log.d("DEBUG",
-						"Text changed, order count: " + tasksAdapter.getCount());
-				tasksAdapter.clear();
-				tasksAdapter.addAll(ModelHandler.getModel(getActivity())
-						.getOrders());
-				tasksAdapter.getFilter().filter(s);
+				tasksAdapter.getFilter().filter(currentText);
+				getListView().invalidateViews();
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
+			public void beforeTextChanged(CharSequence currentText, int start, int count,
 					int after) {
 			}
 
