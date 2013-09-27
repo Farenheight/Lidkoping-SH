@@ -1,7 +1,7 @@
 package se.chalmers.lidkopingsh.model;
 
 public enum Status {
-	DONE(0),NOT_DONE(1);
+	NOT_DONE(0), DONE(1);
 	
 	private final int id;
 	

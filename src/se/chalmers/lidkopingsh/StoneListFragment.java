@@ -1,11 +1,11 @@
 package se.chalmers.lidkopingsh;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.model.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.Task;
 import android.app.Activity;
 import android.os.Bundle;
@@ -155,9 +155,9 @@ public class StoneListFragment extends ListFragment {
 		getListView().addHeaderView(mListHeader);
 		Spinner spinnerStations = (Spinner) mListHeader
 				.findViewById(R.id.spinnerTasks);
-		ArrayList<Task> stationList = (ArrayList<Task>) ModelHandler.getModel(
-				getActivity()).getAllExistingTasks();
-		ArrayAdapter<Task> stationsAdapter = new ArrayAdapter<Task>(getActivity(),
+		ArrayList<Station> stationList = (ArrayList<Station>) ModelHandler.getModel(
+				getActivity()).getStations();
+		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(getActivity(),
 				android.R.layout.simple_spinner_item, stationList);
 		stationsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerStations.setAdapter(stationsAdapter);

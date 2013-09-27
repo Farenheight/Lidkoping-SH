@@ -76,6 +76,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	public Product(List<Task> tasks) {
 		this.listeners = new ArrayList<Listener<Product>>();
 		this.tasks = new SyncableTaskList(tasks);
+		if (tasks != null) {
+			for(Task t : tasks) {
+				t.addTaskListener(this);
+			}
+		}
 	}
 
 	/**

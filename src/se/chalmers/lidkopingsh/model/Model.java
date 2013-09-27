@@ -98,8 +98,9 @@ public class Model implements IModel {
 	}
 
 	@Override
-	public List<Task> getAllExistingTasks() {
+	public Collection<Station> getStations() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

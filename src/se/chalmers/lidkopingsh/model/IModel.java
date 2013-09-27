@@ -35,6 +35,5 @@ public interface IModel {
 
 	public abstract Collection<Order> getOrders();
 	
-	public abstract List<Task> getAllExistingTasks();
-
+	public abstract Collection<Station> getStations();
 }
