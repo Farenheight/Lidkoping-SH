@@ -81,8 +81,8 @@ public class OrderDbFiller {
 
 	private static List<Task> getSocleTasks() {
 		List<Task> tasks2 = new ArrayList<Task>();
-		tasks2.add(new Task(taskId++, "Sågning", Status.DONE));
-		tasks2.add(new Task(taskId++, "Slipning"));
+		tasks2.add(new Task(taskId++, 1, "Sagning", Status.DONE));
+		tasks2.add(new Task(taskId++, 2, "Slipning"));
 		return tasks2;
 	}
 
@@ -94,10 +94,10 @@ public class OrderDbFiller {
 
 	public static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task(taskId++, "Sågning"));
-		tasks.add(new Task(taskId++, "Råhuggning"));
-		tasks.add(new Task(taskId++, "Gravering"));
-		tasks.add(new Task(taskId++, "Målning"));
+		tasks.add(new Task(taskId++, 1, "Sagning"));
+		tasks.add(new Task(taskId++, 3, "Råhuggning"));
+		tasks.add(new Task(taskId++, 4, "Gravering"));
+		tasks.add(new Task(taskId++, 5, "Malning"));
 		return tasks;
 	}
 }

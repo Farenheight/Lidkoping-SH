@@ -21,12 +21,12 @@ import com.example.lidkopingsh.database.DataContract.TaskToProductTable;
  * 
  */
 class OrderDbHelper extends SQLiteOpenHelper {
-
+ 
 	/**
 	 * Current version of the application's database structure.
 	 * If the structure is changed, this version number must be increased.
 	 */
-	private static final int DATABASE_VERSION = 8;
+	private static final int DATABASE_VERSION = 9;
 	private static final String DATABASE_NAME = "Orders.db";
 	
 	private static final String TEXT_TYPE = " TEXT";

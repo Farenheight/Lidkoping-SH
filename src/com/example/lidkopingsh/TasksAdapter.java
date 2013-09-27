@@ -1,5 +1,7 @@
 package com.example.lidkopingsh;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import android.content.Context;
@@ -19,7 +21,9 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 	private int mViewResource;
 	/** The Resource id for the text view in each list item */
 	private int mFieldId;
-	private LayoutInflater mInflater; 
+	private LayoutInflater mInflater;
+	private List<Order> orders;
+	private Filter mFilter;
 
 	public TasksAdapter(Context context, int resource, int textViewResourceId,
 			List<Order> orders) {
@@ -28,11 +32,13 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 		this.mFieldId = textViewResourceId;
 		this.mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.orders = orders;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		return createViewFromResource(position, convertView, parent, mViewResource);
+		return createViewFromResource(position, convertView, parent,
+				mViewResource);
 	}
 
 	private <T> View createViewFromResource(int position, View convertView,
@@ -66,9 +72,57 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 
 		return view;
 	}
-	public Filter getFilter(){
-		return null;
-		
+
+	@Override
+	public Filter getFilter() {
+		if (mFilter == null) {
+			mFilter = new StoneFilter();
+		}
+		return mFilter;
+	}
+
+	private class StoneFilter extends Filter {
+
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+
+			FilterResults results = new FilterResults();
+			if (constraint != null && constraint.length() != 0) {
+				// Filtering logic
+				List<Order> newOrderList = new ArrayList<Order>();
+
+				for (Order order : orders) {
+					String idName = order.getIdName().toUpperCase();
+					String constr = constraint.toString().toUpperCase();
+					idName = idName.replaceAll("\\.", ""); //Removes dots
+					constr = constr.replaceAll("\\.", ""); //Removes dots
+					Log.d("DEBUG", "idName: " + idName + " contrs: " + constr);
+					if (idName.startsWith(constr))
+						newOrderList.add(order);
+				}
+				
+
+				results.values = newOrderList;
+				results.count = newOrderList.size();
+			} else {
+				// If no input, everything returned
+				results.values = orders;
+				results.count = orders.size();
+				Log.d("DEBUG", "No input, results size: " + results.count);
+
+			}
+			return results;
+		}
+
+		@Override
+		protected void publishResults(CharSequence constraint,
+				FilterResults results) {
+			clear();
+			addAll((Collection<Order>) results.values);
+			Log.d("DEBUG", "Results found, count: " + results.count);
+			notifyDataSetChanged();
+		}
+
 	}
 
 }

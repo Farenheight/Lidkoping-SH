@@ -7,15 +7,21 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Filter.FilterListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.example.lidkopingsh.model.ModelHandler;
 import com.example.lidkopingsh.model.Order;
+import com.example.lidkopingsh.model.Task;
 
 /**
  * A list fragment representing a list of Stones. This fragment also supports
@@ -48,7 +54,7 @@ public class StoneListFragment extends ListFragment {
 	/**
 	 * List containing all orders shown in gui.
 	 */
-	private List<Order> mOrderList;
+	public static List<Order> mOrderList;
 	
 	/**
 	 * Filter and sort spinner.
@@ -86,6 +92,8 @@ public class StoneListFragment extends ListFragment {
 		}
 	};
 
+	private View mListHeader;
+
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -118,7 +126,7 @@ public class StoneListFragment extends ListFragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		this.rootView = inflater.inflate(android.R.layout.list_content,
 				container, false);
-		mHeaderView = inflater.inflate(R.layout.filter_box, container, false);
+		mListHeader = inflater.inflate(R.layout.list_header, container, false);
 		return rootView;
 	}
 
@@ -132,41 +140,58 @@ public class StoneListFragment extends ListFragment {
 			setActivatedPosition(savedInstanceState
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
-		initFilter();
-		
-		
-		
-	}
-	/**
-	 * Initiates filter.
-	 */
-	private void initFilter() {
-	//TODO fill with content, see:
-	//http://stackoverflow.com/questions/14663725/list-view-filter-android
-		
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		// Trying to add a Header View.
-		getListView().addHeaderView(mHeaderView);
-
-		// Setup the task spinner TODO: Get real tasks from model
-		Spinner spinnerTasks = (Spinner) mHeaderView
+		// Adding header view with filter field and station spinner
+		getListView().addHeaderView(mListHeader);
+		Spinner spinnerTasks = (Spinner) mListHeader
 				.findViewById(R.id.spinnerTasks);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				getActivity(), R.array.tasks_array,
-				android.R.layout.simple_spinner_item);
+		ArrayList<Task> taskList = (ArrayList<Task>) ModelHandler.getModel(
+				getActivity()).getAllExistingTasks();
+		ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(getActivity(),
+				android.R.layout.simple_spinner_item, taskList);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerTasks.setAdapter(adapter);
 
 		// Init adapter containing the data list
-		Collection<Order> orders = ModelHandler.getModel(getActivity()).getOrders();
+		Collection<Order> orders = ModelHandler.getModel(getActivity())
+				.getOrders();
 		mOrderList = new ArrayList<Order>(orders);
-		setListAdapter(new TasksAdapter(getActivity(),
+		final TasksAdapter tasksAdapter = new TasksAdapter(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, mOrderList));
+				android.R.id.text1, mOrderList);
+		setListAdapter(tasksAdapter);
+
+		initFilter(tasksAdapter);
+	}
+
+	private void initFilter(final TasksAdapter tasksAdapter) {
+		EditText fieldFilter = (EditText) mListHeader
+				.findViewById(R.id.fieldFilter);
+		fieldFilter.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				Log.d("DEBUG", "Text changed, order count: " + tasksAdapter.getCount());
+				tasksAdapter.clear();
+				tasksAdapter.addAll(ModelHandler.getModel(getActivity())
+						.getOrders());
+				tasksAdapter.getFilter().filter(s);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
 	}
 
 	@Override

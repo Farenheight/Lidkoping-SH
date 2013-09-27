@@ -60,6 +60,7 @@ public class Model implements IModel {
 		orders.add(o);
 	}
 	
+	@Deprecated
 	public void addOrders(Collection<Order> orders) {
 		this.orders.addAll(orders);
 	}
