@@ -1,11 +1,10 @@
 package se.chalmers.lidkopingsh;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import se.chalmers.lidkopingsh.model.ModelFilter;
 import se.chalmers.lidkopingsh.model.Order;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
-
 
 public class TasksAdapter extends ArrayAdapter<Order> {
 
@@ -87,31 +85,11 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint) {
 
+			List<Order> newOrderList = (new ModelFilter()).getOrdersByFilter(
+					constraint, orders);
 			FilterResults results = new FilterResults();
-			if (constraint != null && constraint.length() != 0) {
-				// Filtering logic
-				List<Order> newOrderList = new ArrayList<Order>();
-
-				for (Order order : orders) {
-					String idName = order.getIdName().toUpperCase();
-					String constr = constraint.toString().toUpperCase();
-					idName = idName.replaceAll("\\.", ""); //Removes dots
-					constr = constr.replaceAll("\\.", ""); //Removes dots
-					Log.d("DEBUG", "idName: " + idName + " contrs: " + constr);
-					if (idName.startsWith(constr))
-						newOrderList.add(order);
-				}
-				
-
-				results.values = newOrderList;
-				results.count = newOrderList.size();
-			} else {
-				// If no input, everything returned
-				results.values = orders;
-				results.count = orders.size();
-				Log.d("DEBUG", "No input, results size: " + results.count);
-
-			}
+			results.values = newOrderList;
+			results.count = newOrderList.size();
 			return results;
 		}
 
@@ -119,11 +97,15 @@ public class TasksAdapter extends ArrayAdapter<Order> {
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
 			clear();
-			addAll((Collection<Order>) results.values);
-			Log.d("DEBUG", "Results found, count: " + results.count);
-			notifyDataSetChanged();
+			if (results.values != null) {
+				Log.d("DEBUG", "Results: " + results.count);
+				addAll((Collection<Order>) results.values);
+				Log.d("DEBUG", "Results found, count: " + results.count);
+				notifyDataSetChanged();
+			} else {
+				Log.d("DEBUG", "Results: " + results.values);
+			}
 		}
-
 	}
 
 }
