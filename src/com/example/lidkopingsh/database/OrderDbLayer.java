@@ -5,7 +5,8 @@ import java.util.Collection;
 import android.content.Context;
 
 import com.example.lidkopingsh.model.ILayer;
-import com.example.lidkopingsh.model.Model;
+import com.example.lidkopingsh.model.IModel;
+import com.example.lidkopingsh.model.MapModel;
 import com.example.lidkopingsh.model.Order;
 
 /**
@@ -15,16 +16,18 @@ import com.example.lidkopingsh.model.Order;
  * @author Olliver Mattsson
  */
 public class OrderDbLayer implements ILayer {
-	
+
 	private final OrderDbStorage db;
-	
+
 	/**
 	 * Creates a layer for communication between model and Order database.
-	 * @param context to use to open or create the database
+	 * 
+	 * @param context
+	 *            to use to open or create the database
 	 */
 	public OrderDbLayer(Context context) {
 		db = new OrderDbStorage(context);
-		if(db.query(null, null, null).isEmpty()){
+		if (db.query(null, null, null).isEmpty()) {
 			OrderDbFiller.fillDb(db);
 		}
 	}
@@ -35,17 +38,14 @@ public class OrderDbLayer implements ILayer {
 	}
 
 	@Override
-	public Model getModel() {
+	public IModel getModel() {
 		Collection<Order> orders = db.query(null, null, null);
-		
+
 		for (Order order : orders) {
 			order.addOrderListener(this);
 		}
-		
-		Model model = new Model();
-		model.addOrders(orders);
-		
-		return model;
+
+		return new MapModel(orders);
 	}
 
 }

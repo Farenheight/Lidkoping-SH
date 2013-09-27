@@ -14,8 +14,8 @@ import com.example.lidkopingsh.database.DataContract.CustomerTable;
 import com.example.lidkopingsh.database.DataContract.OrderTable;
 import com.example.lidkopingsh.database.DataContract.ProductTable;
 import com.example.lidkopingsh.database.DataContract.StoneTable;
+import com.example.lidkopingsh.database.DataContract.StationTable;
 import com.example.lidkopingsh.database.DataContract.TaskTable;
-import com.example.lidkopingsh.database.DataContract.TaskToProductTable;
 import com.example.lidkopingsh.model.Customer;
 import com.example.lidkopingsh.model.Order;
 import com.example.lidkopingsh.model.Product;
@@ -53,6 +53,8 @@ class OrderDbStorage {
 	private static final String WHERE = " WHERE ";
 	
 	private final SQLiteDatabase db;
+	
+	private final Collection<Integer> stationIds;
 
 	/**
 	 * Create a Order database connection for querying, adding or updating Order
@@ -64,14 +66,15 @@ class OrderDbStorage {
 	public OrderDbStorage(Context context) {
 		OrderDbHelper dbHelper = new OrderDbHelper(context);
 		db = dbHelper.getWritableDatabase();
+		stationIds = new ArrayList<Integer>();
 	}
 	
 	/**
 	 * Clear all rows in the database.
 	 */
 	public void clear() {
-		db.delete(TaskToProductTable.TABLE_NAME, null, null);
 		db.delete(TaskTable.TABLE_NAME, null, null);
+		db.delete(StationTable.TABLE_NAME, null, null);
 		db.delete(StoneTable.TABLE_NAME, null, null);
 		db.delete(ProductTable.TABLE_NAME, null, null);
 		db.delete(CustomerTable.TABLE_NAME, null, null);
@@ -88,6 +91,9 @@ class OrderDbStorage {
 		if (order == null) {
 			throw new IllegalArgumentException("Order can not be null");
 		}
+		
+		stationIds.addAll(getTaskIds());
+		
 		ContentValues values = new ContentValues();
 
 		values.put(OrderTable.COLUMN_NAME_ORDER_ID, order.getId());
@@ -170,27 +176,30 @@ class OrderDbStorage {
 	private void insertTask(Task t, int productId, int sortOrder) {
 		// Task table
 		ContentValues values = new ContentValues();
-
-		values.put(TaskTable.COLUMN_NAME_TASK_ID, t.getId());
-		values.put(TaskTable.COLUMN_NAME_TASK, t.getName());
 		
-		db.insert(TaskTable.TABLE_NAME, null, values);
+		if (!stationIds.contains(t.getTaskId())) {
+			values.put(StationTable.COLUMN_NAME_STATION_ID, t.getTaskId());
+			values.put(StationTable.COLUMN_NAME_STATION, t.getName());
+			
+			db.insert(StationTable.TABLE_NAME, null, values);
+			stationIds.add(t.getTaskId());
+		}
 		
 		// Task to product table
 		values = new ContentValues();
 		
-		values.put(TaskToProductTable.COLUMN_NAME_PRODUCT_ID, productId);
-		values.put(TaskToProductTable.COLUMN_NAME_TASK_ID, t.getId());
-		values.put(TaskToProductTable.COLUMN_NAME_TASK_STATUS, t.getStatus().getId());
-		values.put(TaskToProductTable.COLUMN_NAME_SORT_ORDER, sortOrder);
+		values.put(TaskTable.COLUMN_NAME_PRODUCT_ID, productId);
+		values.put(TaskTable.COLUMN_NAME_STATION_ID, t.getTaskId());
+		values.put(TaskTable.COLUMN_NAME_TASK_STATUS, t.getStatus().getId());
+		values.put(TaskTable.COLUMN_NAME_SORT_ORDER, sortOrder);
 		
-		db.insert(TaskToProductTable.TABLE_NAME, null, values);
+		db.insert(TaskTable.TABLE_NAME, null, values);
 	}
 	
 	public void delete(Order order){
 		for (Product p : order.getProducts()) {
-			db.delete(TaskToProductTable.TABLE_NAME,
-					TaskToProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + QUESTION_MARK,
+			db.delete(TaskTable.TABLE_NAME,
+					TaskTable.COLUMN_NAME_PRODUCT_ID + EQUALS + QUESTION_MARK,
 					new String[] { String.valueOf(p.getId()) });
 			db.delete(StoneTable.TABLE_NAME, StoneTable.COLUMN_NAME_PRODUCT_ID + EQUALS + QUESTION_MARK, 
 					new String[] { String.valueOf(p.getId()) });
@@ -301,13 +310,13 @@ class OrderDbStorage {
 		String sqlProducts = SELECT_FROM + ProductTable.TABLE_NAME + SPACE + PRODUCT
 				+ LEFT_JOIN + StoneTable.TABLE_NAME + SPACE + STONE + ON + PRODUCT + DOT
 				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + STONE + DOT + StoneTable.COLUMN_NAME_PRODUCT_ID
-				+ LEFT_JOIN + TaskToProductTable.TABLE_NAME + SPACE + TASK_TO_PRODUCT + ON + PRODUCT + DOT
-				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_PRODUCT_ID
-				+ LEFT_JOIN + TaskTable.TABLE_NAME + SPACE + TASK + ON + TASK_TO_PRODUCT + DOT 
-				+ TaskToProductTable.COLUMN_NAME_TASK_ID + EQUALS + TASK + DOT + TaskTable.COLUMN_NAME_TASK_ID
+				+ LEFT_JOIN + TaskTable.TABLE_NAME + SPACE + TASK_TO_PRODUCT + ON + PRODUCT + DOT
+				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + TASK_TO_PRODUCT + DOT + TaskTable.COLUMN_NAME_PRODUCT_ID
+				+ LEFT_JOIN + StationTable.TABLE_NAME + SPACE + TASK + ON + TASK_TO_PRODUCT + DOT 
+				+ TaskTable.COLUMN_NAME_STATION_ID + EQUALS + TASK + DOT + StationTable.COLUMN_NAME_STATION_ID
 				+ WHERE + PRODUCT + DOT + ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + QUESTION_MARK
 				+ ORDER_BY + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID 
-				+ COMMA_SEP + TASK_TO_PRODUCT + DOT + TaskToProductTable.COLUMN_NAME_SORT_ORDER;
+				+ COMMA_SEP + TASK_TO_PRODUCT + DOT + TaskTable.COLUMN_NAME_SORT_ORDER;
 		
 		Cursor c = db.rawQuery(sqlProducts, new String[] { orderNumber });
 		Collection<Product> products = new LinkedList<Product>();
@@ -334,11 +343,24 @@ class OrderDbStorage {
 	}
 	
 	private Task getTask(Cursor c) {
-		int taskId = getIntColumn(c, TaskTable.COLUMN_NAME_TASK_ID);
-		String name = getStringColumn(c, TaskTable.COLUMN_NAME_TASK);
-		int status = getIntColumn(c, TaskToProductTable.COLUMN_NAME_TASK_STATUS);
+		int taskId = getIntColumn(c, StationTable.COLUMN_NAME_STATION_ID);
+		String name = getStringColumn(c, StationTable.COLUMN_NAME_STATION);
+		int status = getIntColumn(c, TaskTable.COLUMN_NAME_TASK_STATUS);
 		
-		return name != null ? new Task(taskId, name, Status.valueOf(status)) : null;
+		return name != null ? new Task(taskId, taskId, name, Status.valueOf(status)) : null;
+	}
+
+	private Collection<Integer> getTaskIds() {
+		Collection<Integer> ids = new ArrayList<Integer>();
+		Cursor c = db.query(StationTable.TABLE_NAME,
+				new String[] { StationTable.COLUMN_NAME_STATION_ID }, null, null,
+				null, null, null);
+		
+		while (c.moveToNext()) {
+			ids.add(getIntColumn(c, StationTable.COLUMN_NAME_STATION_ID));
+		}
+		
+		return ids;
 	}
 	
 	private List<Task> getTasks(Cursor c) {
