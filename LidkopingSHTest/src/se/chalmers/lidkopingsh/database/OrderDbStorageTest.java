@@ -7,24 +7,24 @@ import org.junit.Test;
 
 import se.chalmers.lidkopingsh.database.DataContract.OrderTable;
 import se.chalmers.lidkopingsh.model.Order;
-import android.test.InstrumentationTestCase;
+import android.test.AndroidTestCase;
 
 /**
  * 
  * @author Anton Jansson
  * @author Olliver Mattsson
  */
-public class OrderDbStorageTest extends InstrumentationTestCase {
+public class OrderDbStorageTest extends AndroidTestCase {
 
 	private OrderDbStorage dbStorage;
 	private static Collection<Order> originalData;
 
 	@Override
 	protected void setUp() throws Exception {
-		dbStorage = new OrderDbStorage(getInstrumentation().getContext());
+		dbStorage = new OrderDbStorage(this.getContext());
 		dbStorage.clear();
 
-		originalData = new OrderDbStorage(getInstrumentation().getContext())
+		originalData = new OrderDbStorage(this.getContext())
 				.query(null, null, null);
 
 		super.setUp();
@@ -32,8 +32,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		OrderDbStorage dbStorage = new OrderDbStorage(getInstrumentation()
-				.getContext());
+		OrderDbStorage dbStorage = new OrderDbStorage(this.getContext());
 		dbStorage.clear();
 
 		for (Order o : originalData) {

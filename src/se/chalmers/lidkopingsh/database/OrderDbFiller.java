@@ -8,7 +8,8 @@ import java.util.List;
 import se.chalmers.lidkopingsh.model.Customer;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
-import se.chalmers.lidkopingsh.model.Status; 
+import se.chalmers.lidkopingsh.model.Station;
+import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 
@@ -81,23 +82,23 @@ public class OrderDbFiller {
 
 	private static List<Task> getSocleTasks() {
 		List<Task> tasks2 = new ArrayList<Task>();
-		tasks2.add(new Task(1, 1, "Sagning", Status.DONE));
-		tasks2.add(new Task(2, 2, "Slipning"));
+		tasks2.add(new Task(new Station(1, "Sagning"), Status.DONE));
+		tasks2.add(new Task(new Station(2, "Slipning")));
 		return tasks2;
 	}
 
-	static Stone getStone(String description, List<Task> tasks) {
+	public static Stone getStone(String description, List<Task> tasks) {
 		return new Stone(productId++, "Hallandia", description, "Polerad", tasks,
 				"NB 49", "Råhugget", "Helvetica nedhuggen i guld",
 				"Blomma nedhuggen i guld");
 	}
 
-	static List<Task> getStoneTasks() {
+	public static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task(1, 1, "Sagning"));
-		tasks.add(new Task(3, 3, "Råhuggning"));
-		tasks.add(new Task(4, 4, "Gravering"));
-		tasks.add(new Task(5, 5, "Malning"));
+		tasks.add(new Task(new Station(1, "Sagning")));
+		tasks.add(new Task(new Station(3, "Rahuggning")));
+		tasks.add(new Task(new Station(4, "Gravering")));
+		tasks.add(new Task(new Station(5, "Malning")));
 		return tasks;
 	}
 }

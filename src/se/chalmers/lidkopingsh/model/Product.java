@@ -138,7 +138,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		Iterator<Task> iterator = tasks.iterator();
 		while (iterator.hasNext()) {
 			Task t = iterator.next();
-			if (t != task && t.getId() == task.getId()) {
+			if (t != task && t.getStation().equals(task.getStation())) {
 				iterator.remove();
 			}
 		}

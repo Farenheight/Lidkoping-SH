@@ -8,7 +8,7 @@ public class TaskTest implements Listener<Task>{
 	private boolean synced = false;
 	@Test
 	public void testListener() {
-		Task t = new Task(0, 1, "Task0");
+		Task t = new Task(new Station(0, "Task0"));
 		t.addTaskListener(this);
 		t.setStatus(Status.DONE);
 		assertTrue(synced); synced = false;
