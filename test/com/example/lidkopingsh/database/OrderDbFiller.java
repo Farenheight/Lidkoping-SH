@@ -17,7 +17,6 @@ public class OrderDbFiller {
 	private static int orderId = 1;
 	private static int orderNumber = 130001;
 	private static int productId = 400;
-	private static int taskId = 600;
 	private static int charcode = 65;
 	public static void fillDb(OrderDbStorage db){
 		for(int i=0;i<20;i++){
@@ -81,8 +80,8 @@ public class OrderDbFiller {
 
 	private static List<Task> getSocleTasks() {
 		List<Task> tasks2 = new ArrayList<Task>();
-		tasks2.add(new Task(taskId++, 1, "Sagning", Status.DONE));
-		tasks2.add(new Task(taskId++, 2, "Slipning"));
+		tasks2.add(new Task(1, 1, "Sagning", Status.DONE));
+		tasks2.add(new Task(2, 2, "Slipning"));
 		return tasks2;
 	}
 
@@ -94,10 +93,10 @@ public class OrderDbFiller {
 
 	public static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task(taskId++, 1, "Sagning"));
-		tasks.add(new Task(taskId++, 3, "Råhuggning"));
-		tasks.add(new Task(taskId++, 4, "Gravering"));
-		tasks.add(new Task(taskId++, 5, "Malning"));
+		tasks.add(new Task(1, 1, "Sagning"));
+		tasks.add(new Task(3, 3, "Råhuggning"));
+		tasks.add(new Task(4, 4, "Gravering"));
+		tasks.add(new Task(5, 5, "Malning"));
 		return tasks;
 	}
 }

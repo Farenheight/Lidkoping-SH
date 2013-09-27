@@ -8,8 +8,8 @@ import com.example.lidkopingsh.database.DataContract.CustomerTable;
 import com.example.lidkopingsh.database.DataContract.OrderTable;
 import com.example.lidkopingsh.database.DataContract.ProductTable;
 import com.example.lidkopingsh.database.DataContract.StoneTable;
+import com.example.lidkopingsh.database.DataContract.StationTable;
 import com.example.lidkopingsh.database.DataContract.TaskTable;
-import com.example.lidkopingsh.database.DataContract.TaskToProductTable;
 
 /**
  * Helper class for database connection. This handles the opening of the
@@ -26,7 +26,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	 * Current version of the application's database structure.
 	 * If the structure is changed, this version number must be increased.
 	 */
-	private static final int DATABASE_VERSION = 9;
+	private static final int DATABASE_VERSION = 12;
 	private static final String DATABASE_NAME = "Orders.db";
 	
 	private static final String TEXT_TYPE = " TEXT";
@@ -71,18 +71,18 @@ class OrderDbHelper extends SQLiteOpenHelper {
 			+ StoneTable.COLUMN_NAME_STONE_MODEL + TEXT_TYPE + NOT_NULL + " )";
 	
 	private static final String TASK_TABLE_CREATE = CREATE_TABLE
-			+ TaskTable.TABLE_NAME + " ("
-			+ TaskTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
-			+ TaskTable.COLUMN_NAME_TASK + TEXT_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
-			+ TaskTable.COLUMN_NAME_TASK_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + " )";
+			+ StationTable.TABLE_NAME + " ("
+			+ StationTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
+			+ StationTable.COLUMN_NAME_STATION + TEXT_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
+			+ StationTable.COLUMN_NAME_STATION_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + " )";
 	
 	private static final String TASK_TO_PRODUCT_TABLE_CREATE = CREATE_TABLE
-			+ TaskToProductTable.TABLE_NAME + " ("
-			+ TaskToProductTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
-			+ TaskToProductTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-			+ TaskToProductTable.COLUMN_NAME_TASK_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-			+ TaskToProductTable.COLUMN_NAME_TASK_STATUS + INTEGER_TYPE + NOT_NULL + COMMA_SEP
-			+ TaskToProductTable.COLUMN_NAME_SORT_ORDER + INTEGER_TYPE + NOT_NULL + " )";
+			+ TaskTable.TABLE_NAME + " ("
+			+ TaskTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
+			+ TaskTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ TaskTable.COLUMN_NAME_STATION_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ TaskTable.COLUMN_NAME_TASK_STATUS + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ TaskTable.COLUMN_NAME_SORT_ORDER + INTEGER_TYPE + NOT_NULL + " )";
 	
 	private static final String CUSTOMER_TABLE_CREATE = CREATE_TABLE
 			+ CustomerTable.TABLE_NAME + " ("
@@ -117,8 +117,8 @@ class OrderDbHelper extends SQLiteOpenHelper {
 		dropTable(db, OrderTable.TABLE_NAME);
 		dropTable(db, ProductTable.TABLE_NAME);
 		dropTable(db, StoneTable.TABLE_NAME);
+		dropTable(db, StationTable.TABLE_NAME);
 		dropTable(db, TaskTable.TABLE_NAME);
-		dropTable(db, TaskToProductTable.TABLE_NAME);
 		dropTable(db, CustomerTable.TABLE_NAME);
 		onCreate(db);
 	}
