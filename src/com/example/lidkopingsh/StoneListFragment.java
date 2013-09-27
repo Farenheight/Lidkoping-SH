@@ -49,7 +49,17 @@ public class StoneListFragment extends ListFragment {
 	 * List containing all orders shown in gui.
 	 */
 	private List<Order> mOrderList;
+	
+	/**
+	 * Filter and sort spinner.
+	 */
+	private View mHeaderView;
 
+	/**
+	 * Is main view.
+	 */
+	private View rootView;
+	
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
@@ -101,13 +111,12 @@ public class StoneListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 	}
 
-	View mHeaderView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		View rootView = inflater.inflate(android.R.layout.list_content,
+		this.rootView = inflater.inflate(android.R.layout.list_content,
 				container, false);
 		mHeaderView = inflater.inflate(R.layout.filter_box, container, false);
 		return rootView;
@@ -123,6 +132,18 @@ public class StoneListFragment extends ListFragment {
 			setActivatedPosition(savedInstanceState
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
+		initFilter();
+		
+		
+		
+	}
+	/**
+	 * Initiates filter.
+	 */
+	private void initFilter() {
+	//TODO fill with content, see:
+	//http://stackoverflow.com/questions/14663725/list-view-filter-android
+		
 	}
 
 	@Override
