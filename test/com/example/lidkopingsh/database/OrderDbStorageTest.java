@@ -1,11 +1,13 @@
 package com.example.lidkopingsh.database;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.junit.Test;
 
 import android.test.InstrumentationTestCase;
 
+import com.example.lidkopingsh.database.DataContract.OrderTable;
 import com.example.lidkopingsh.model.Order;
 
 /**
@@ -100,7 +102,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 	}
 	
 	@Test
-	public void testDelete(){
+	public void testDelete() {
 		Order order = OrderDbFiller.getOrderFullyPopulated("O.S.");
 
 		dbStorage.insert(order);
@@ -116,7 +118,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 	}
 	
 	@Test
-	public void testUpdate(){
+	public void testUpdate() {
 		Order order = OrderDbFiller.getOrderFullyPopulated("O.S.");
 
 		dbStorage.insert(order);
@@ -131,5 +133,39 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 		
 		assertTrue(orders.contains(order));
 		assertTrue(orders.size() == 1);
+	}
+	
+	@Test
+	public void testWhere() {
+		Order order1 = OrderDbFiller.getOrderFullyPopulated("O.S.");
+		Order order2 = OrderDbFiller.getOrderFullyPopulated("O.R.");
+		dbStorage.insert(order1);
+		dbStorage.insert(order2);
+		Collection<Order> orders = dbStorage.query(OrderTable.COLUMN_NAME_ID_NAME + " = ?", 
+				new String[] { "O.R." }, null);
+		assertTrue(orders.contains(order2));
+		assertTrue(orders.size() == 1);
+
+	}
+	
+	@Test
+	public void testSort() {
+		Order order1 = OrderDbFiller.getOrderFullyPopulated("O.S.");
+		Order order2 = OrderDbFiller.getOrderFullyPopulated("O.R.");
+		dbStorage.insert(order1);
+		dbStorage.insert(order2);
+		Collection<Order> orders = dbStorage.query(null, null, 
+				OrderTable.COLUMN_NAME_ID_NAME + " ASC");
+		Iterator<Order> iOrders = orders.iterator();
+
+		assertEquals(iOrders.next(), order2);
+		assertTrue(orders.size() == 2);
+		
+		orders = dbStorage.query(null, null, 
+				OrderTable.COLUMN_NAME_ID_NAME + " DESC");
+		iOrders = orders.iterator();
+
+		assertEquals(iOrders.next(), order1);
+		assertTrue(orders.size() == 2);
 	}
 }
