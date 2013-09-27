@@ -47,15 +47,15 @@ class DataContract {
         public static final String COLUMN_NAME_ORNAMENT = "ornament";
 	}
 	
-	public static abstract class TaskTable implements BaseColumns {
-        public static final String TABLE_NAME = "task";
-        public static final String COLUMN_NAME_TASK_ID = "task_id";
-        public static final String COLUMN_NAME_TASK = "name";
+	public static abstract class StationTable implements BaseColumns {
+        public static final String TABLE_NAME = "station";
+        public static final String COLUMN_NAME_STATION_ID = "station_id";
+        public static final String COLUMN_NAME_STATION = "name";
 	}
 	
-	public static abstract class TaskToProductTable implements BaseColumns {
-        public static final String TABLE_NAME = "task_to_product";
-        public static final String COLUMN_NAME_TASK_ID = "task_id";
+	public static abstract class TaskTable implements BaseColumns {
+        public static final String TABLE_NAME = "task";
+        public static final String COLUMN_NAME_STATION_ID = "station_id";
         public static final String COLUMN_NAME_PRODUCT_ID = "task_product_id";
         public static final String COLUMN_NAME_TASK_STATUS = "status";
         public static final String COLUMN_NAME_SORT_ORDER = "sort_order";

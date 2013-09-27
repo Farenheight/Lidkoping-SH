@@ -2,8 +2,6 @@ package com.example.lidkopingsh.database;
 
 import java.util.Collection;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import android.test.InstrumentationTestCase;
@@ -18,30 +16,30 @@ import com.example.lidkopingsh.model.Order;
 public class OrderDbStorageTest extends InstrumentationTestCase {
 
 	private OrderDbStorage dbStorage;
-	private Collection<Order> originalData;
-
-	@BeforeClass
-	private void setUpClass() {
-		originalData = new OrderDbStorage(getInstrumentation().getContext())
-				.query(null, null, null);
-	}
+	private static Collection<Order> originalData;
 
 	@Override
 	protected void setUp() throws Exception {
 		dbStorage = new OrderDbStorage(getInstrumentation().getContext());
 		dbStorage.clear();
 
+		originalData = new OrderDbStorage(getInstrumentation().getContext())
+				.query(null, null, null);
+
 		super.setUp();
 	}
 
-	@AfterClass
-	private void tearDownClass() {
-		dbStorage = new OrderDbStorage(getInstrumentation().getContext());
+	@Override
+	protected void tearDown() throws Exception {
+		OrderDbStorage dbStorage = new OrderDbStorage(getInstrumentation()
+				.getContext());
 		dbStorage.clear();
 
 		for (Order o : originalData) {
 			dbStorage.insert(o);
 		}
+
+		super.tearDown();
 	}
 
 	@Test
@@ -93,6 +91,7 @@ public class OrderDbStorageTest extends InstrumentationTestCase {
 	@Test
 	public void testInsertOrderWithoutProducts() {
 		Order order = OrderDbFiller.getOrderWithoutProducts("O.G.");
+
 		dbStorage.insert(order);
 		Collection<Order> orders = dbStorage.query(null, null, null);
 
