@@ -17,7 +17,7 @@ public class ModelHandler {
 
 	public static ILayer getLayer(Context context) {
 		if (layer == null) {
-			layer = new SortTestLayer();
+			layer = new OrderDbLayer(context);
 		}
 		return layer;
 	}
