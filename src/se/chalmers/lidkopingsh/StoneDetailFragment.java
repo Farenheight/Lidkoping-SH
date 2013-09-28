@@ -10,6 +10,7 @@ import se.chalmers.lidkopingsh.model.Task;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,7 +118,10 @@ public class StoneDetailFragment extends Fragment {
 	 */
 	private void initTasks(LayoutInflater inflater, ViewGroup container,
 			View rootView) {
-		// TODO: Vas, sockel etc tasks.
+		// TODO: Add vas, sockel etc tasks.
+		if(mOrder.getProducts().size() < 1) {
+			Log.e("DEBUG", "Size of product list is: " + mOrder.getProducts().size());
+		}
 		List<Task> tasks = mOrder.getProducts().get(0).getTasks();
 		for (int i = 0; i < mOrder.getProducts().get(0).getTasks().size(); i++) {
 			final Task task = tasks.get(i);
@@ -170,6 +174,9 @@ public class StoneDetailFragment extends Fragment {
 				.getCemetary());
 
 		// Stone
+		if(mOrder.getProducts().size() < 1) {
+			Log.e("DEBUG", "Size of product list is: " + mOrder.getProducts().size());
+		}
 		Stone stone = ((Stone) mOrder.getProducts().get(0));
 		((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
 				.getStoneModel());

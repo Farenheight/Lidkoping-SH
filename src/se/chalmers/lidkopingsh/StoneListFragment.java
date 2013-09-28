@@ -169,6 +169,7 @@ public class StoneListFragment extends ListFragment {
 					int pos, long id) {
 				Station station = (Station) parent.getItemAtPosition(pos);
 				mOrderAdapter.sort(new StationComparator<Order>(station));
+				mOrderAdapter.notifyDataSetChanged();
 				Log.d("DEBUG", "Station selected: " + station.getName());
 			}
 
