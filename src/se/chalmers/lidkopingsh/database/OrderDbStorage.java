@@ -91,11 +91,36 @@ class OrderDbStorage {
 	 */
 	public void insert(Order order) {
 		if (order == null) {
-			throw new IllegalArgumentException("Order can not be null");
+			throw new IllegalArgumentException("Order cannot be null");
 		}
-		
+
+		db.beginTransaction();
+		insertOrder(order);
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
+
+	/**
+	 * Insert new orders into the database.
+	 * 
+	 * @param orders A collection of orders to insert.
+	 */
+	public void insert(Collection<Order> orders) {
+		if (orders == null) {
+			throw new IllegalArgumentException("Orders cannot be null");
+		}
+
+		db.beginTransaction();
+		for (Order order : orders) {
+			insertOrder(order);
+		}
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
+	
+	private void insertOrder(Order order) {
 		stationIds.addAll(getStationIds());
-		
+
 		ContentValues values = new ContentValues();
 
 		values.put(OrderTable.COLUMN_NAME_ORDER_ID, order.getId());
@@ -104,10 +129,13 @@ class OrderDbStorage {
 		values.put(OrderTable.COLUMN_NAME_CUSTOMER_ID, order.getCustomer()
 				.getId());
 		values.put(OrderTable.COLUMN_NAME_ID_NAME, order.getIdName());
-		values.put(OrderTable.COLUMN_NAME_CEMETERY_BOARD, order.getCemetaryBoard());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_BOARD,
+				order.getCemetaryBoard());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY, order.getCemetary());
-		values.put(OrderTable.COLUMN_NAME_CEMETERY_BLOCK, order.getCemetaryBlock());
-		values.put(OrderTable.COLUMN_NAME_CEMETERY_NUMBER, order.getCemetaryNumber());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_BLOCK,
+				order.getCemetaryBlock());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_NUMBER,
+				order.getCemetaryNumber());
 		values.put(OrderTable.COLUMN_NAME_TIME_CREATED, order.getTimeCreated());
 		values.put(OrderTable.COLUMN_NAME_TIME_LAST_UPDATE,
 				order.getLastTimeUpdate());
@@ -199,6 +227,8 @@ class OrderDbStorage {
 	}
 	
 	public void delete(Order order){
+		db.beginTransaction();
+		
 		for (Product p : order.getProducts()) {
 			db.delete(TaskTable.TABLE_NAME, TaskTable.COLUMN_NAME_PRODUCT_ID
 					+ EQUALS + QUESTION_MARK,
@@ -232,6 +262,9 @@ class OrderDbStorage {
 		db.delete(OrderTable.TABLE_NAME, OrderTable.COLUMN_NAME_ORDER_NUMBER
 				+ EQUALS + QUESTION_MARK,
 				new String[] { order.getOrderNumber() });
+		
+		db.setTransactionSuccessful();
+		db.endTransaction();
 	}
 	public void update(Order order){
 		delete(order);
