@@ -48,56 +48,21 @@ public class StoneListFragment extends ListFragment {
 	 */
 	private Callbacks mCallbacks = sDummyCallbacks;
 
-	/**
-	 * The current activated item position. Only used on tablets.
-	 */
+	/** The current activated item position. Only used on tablets. */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
 
-	/**
-	 * List containing all orders shown in gui.
-	 */
+	/** List containing all orders shown in the main order list. */
 	private List<Order> mOrderList;
-
-	/**
-	 * Is main view.
-	 */
-	private View rootView;
-
-	/**
-	 * A callback interface that all activities containing this fragment must
-	 * implement. This mechanism allows activities to be notified of item
-	 * selections.
-	 */
-	public interface Callbacks {
-
-		/**
-		 * Callback for when an order has been selected in the list.
-		 * 
-		 * @param id
-		 *            Provides an identification value for the selected item.
-		 */
-		public void onItemSelected(int id);
-	}
-
-	/**
-	 * A dummy implementation of the {@link Callbacks} interface that does
-	 * nothing. Used only when this fragment is not attached to an activity.
-	 */
-	private static Callbacks sDummyCallbacks = new Callbacks() {
-		@Override
-		public void onItemSelected(int id) {
-		}
-	};
 
 	/**
 	 * The header view over the main order list view. Containing search and
 	 * station spinner
+	 * 
+	 * TODO: Make it apart of the list layout file
 	 */
 	private View mListHeader;
 
-	/**
-	 * Adapter responsible for the main order list view
-	 */
+	/** Adapter responsible for the main order list view */
 	private OrderAdapter mOrderAdapter;
 
 	/**
@@ -121,35 +86,20 @@ public class StoneListFragment extends ListFragment {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
-
-	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
-		this.rootView = inflater.inflate(android.R.layout.list_content,
-				container, false);
 		mListHeader = inflater.inflate(R.layout.list_header, container, false);
-		return rootView;
+		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-
 		// Restore the previously serialized activated item position.
 		if (savedInstanceState != null
 				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			setActivatedPosition(savedInstanceState
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
 		initHeaderView();
 		initOrderListViewAdapter();
 	}
@@ -264,7 +214,32 @@ public class StoneListFragment extends ListFragment {
 		} else {
 			getListView().setItemChecked(position, true);
 		}
-
 		mActivatedPosition = position;
 	}
+	
+	/**
+	 * A callback interface that all activities containing this fragment must
+	 * implement. This mechanism allows activities to be notified of item
+	 * selections.
+	 */
+	public interface Callbacks {
+
+		/**
+		 * Callback for when an order has been selected in the list.
+		 * 
+		 * @param orderId
+		 *            The id of the order that was clicked.
+		 */
+		public void onItemSelected(int orderId);
+	}
+
+	/**
+	 * A dummy implementation of the {@link Callbacks} interface that does
+	 * nothing. Used only when this fragment is not attached to an activity.
+	 */
+	private static Callbacks sDummyCallbacks = new Callbacks() {
+		@Override
+		public void onItemSelected(int orderId) {
+		}
+	};
 }
