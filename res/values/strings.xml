@@ -28,5 +28,6 @@
         <string name="noteHint">Skriv här</string>
         <string name="tablet_startup_hint">Klicka i listan till vänster för att visa en order</string>
         <string name="dynamic_id_name">O.R.</string>
+        <string name="searchHint">Sök</string>
 
 </resources>

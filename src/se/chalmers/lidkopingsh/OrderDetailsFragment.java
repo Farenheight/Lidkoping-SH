@@ -148,8 +148,10 @@ public class OrderDetailsFragment extends Fragment {
 				R.drawable.test_headstone_drawing));
 
 		// Attaches the library
-		new PhotoViewAttacher(orderDrawing);
+		PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
+		pva.setMaximumScale(8f);
 	}
+	
 
 	/**
 	 * Adds info such as customer name, order number etc to rootView
