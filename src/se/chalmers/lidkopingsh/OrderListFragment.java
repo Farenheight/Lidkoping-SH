@@ -12,10 +12,8 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -24,13 +22,15 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 /**
- * A list fragment representing a list of Stones. This fragment also supports
+ * A list fragment representing a list of Orders. This fragment also supports
  * tablet devices by allowing list items to be given an 'activated' state upon
  * selection. This helps indicate which item is currently being viewed in a
  * {@link OrderDetailsFragment}.
  * 
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
+ * 
+ * TODO: Is it good code having anonymous listeners for the search and sort
  */
 public class OrderListFragment extends ListFragment {
 
@@ -51,14 +51,6 @@ public class OrderListFragment extends ListFragment {
 
 	/** List containing all orders shown in the main order list. */
 	private List<Order> mOrderList;
-
-	/**
-	 * The header view over the main order list view. Containing search and
-	 * station spinner
-	 * 
-	 * TODO: Make it apart of the list layout file
-	 */
-	private View mListHeader;
 
 	/** Adapter responsible for the main order list view */
 	private OrderAdapter mOrderAdapter;
@@ -84,13 +76,6 @@ public class OrderListFragment extends ListFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		mListHeader = inflater.inflate(R.layout.custom_orderlist_header, container, false);
-		return super.onCreateView(inflater, container, savedInstanceState);
-	}
-
-	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		// Restore the previously serialized activated item position.
 		if (savedInstanceState != null
@@ -98,18 +83,32 @@ public class OrderListFragment extends ListFragment {
 			setActivatedPosition(savedInstanceState
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
+
+		// Important that the header view gets initialized before the list
+		// adapter
 		initHeaderView();
 		initOrderListViewAdapter();
 	}
 
 	/**
-	 * Adds a header view to the main order list view and setups the station
-	 * spinner
+	 * Adds the header view to the main order list containing a the station
+	 * spinner and the search/filter field
 	 */
 	private void initHeaderView() {
-		getListView().addHeaderView(mListHeader);
-		Spinner spinnerStations = (Spinner) mListHeader
-				.findViewById(R.id.spinnerStations);
+		getListView().addHeaderView(
+				LayoutInflater.from(getActivity()).inflate(
+						R.layout.custom_orderlist_header, null));
+		initStationSpinner();
+		initSearch();
+	}
+
+	private void initStationSpinner() {
+
+		Spinner spinnerStations = (Spinner) getView().findViewById(
+				R.id.spinnerStations);
+
+		// When the user chooses an item in the stations spinner, sort the order
+		// list accordingly
 		spinnerStations.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -118,14 +117,14 @@ public class OrderListFragment extends ListFragment {
 				Station station = (Station) parent.getItemAtPosition(pos);
 				mOrderAdapter.sort(new StationComparator<Order>(station));
 				mOrderAdapter.notifyDataSetChanged();
-				Log.d("DEBUG", "Station selected: " + station.getName());
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// Do nothing
 			}
 		});
+
+		// Sets up the Adapter and gets it data from the {@link ModelHandler}
 		ArrayList<Station> stationList = (ArrayList<Station>) ModelHandler
 				.getModel(getActivity()).getStations();
 		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(
@@ -136,25 +135,18 @@ public class OrderListFragment extends ListFragment {
 		spinnerStations.setAdapter(stationsAdapter);
 	}
 
-	private void initOrderListViewAdapter() {
-		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
-				.getOrders());
-		mOrderAdapter = new OrderAdapter(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, mOrderList);
-		setListAdapter(mOrderAdapter);
-		initFilter(mOrderAdapter);
-	}
+	private void initSearch() {
+		EditText fieldSearch = (EditText) getView().findViewById(
+				R.id.fieldFilter);
 
-	private void initFilter(final FilterableAdapter<Order, String> filterAdapter) {
-		EditText fieldFilter = (EditText) mListHeader
-				.findViewById(R.id.fieldFilter);
-		fieldFilter.addTextChangedListener(new TextWatcher() {
+		// When the user enters text in the search field, filter out relevant
+		// orders
+		fieldSearch.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void onTextChanged(CharSequence currentText, int start,
 					int before, int count) {
-				filterAdapter.getFilter().filter(currentText);
+				mOrderAdapter.getFilter().filter(currentText);
 			}
 
 			@Override
@@ -168,10 +160,22 @@ public class OrderListFragment extends ListFragment {
 		});
 	}
 
+	/**
+	 * Sets up the adapter responsible for keeping the data
+	 */
+	private void initOrderListViewAdapter() {
+		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
+				.getOrders());
+		mOrderAdapter = new OrderAdapter(getActivity(),
+				android.R.layout.simple_list_item_activated_1,
+				android.R.id.text1, mOrderList);
+		// Important to use this method and not ListView.setAdapter()
+		setListAdapter(mOrderAdapter);
+	}
+
 	@Override
 	public void onDetach() {
 		super.onDetach();
-
 		// Reset the active callbacks interface to the dummy implementation.
 		mCallbacks = sDummyCallbacks;
 	}
@@ -214,7 +218,7 @@ public class OrderListFragment extends ListFragment {
 		}
 		mActivatedPosition = position;
 	}
-	
+
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
