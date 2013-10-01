@@ -1,6 +1,7 @@
 package se.chalmers.lidkopingsh.database;
 
 import se.chalmers.lidkopingsh.database.DataContract.CustomerTable;
+import se.chalmers.lidkopingsh.database.DataContract.ImageTable;
 import se.chalmers.lidkopingsh.database.DataContract.OrderTable;
 import se.chalmers.lidkopingsh.database.DataContract.ProductTable;
 import se.chalmers.lidkopingsh.database.DataContract.StationTable;
@@ -26,7 +27,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	 * Current version of the application's database structure.
 	 * If the structure is changed, this version number must be increased.
 	 */
-	private static final int DATABASE_VERSION = 12;
+	private static final int DATABASE_VERSION = 14;
 	private static final String DATABASE_NAME = "Orders.db";
 	
 	private static final String TEXT_TYPE = " TEXT";
@@ -51,6 +52,13 @@ class OrderDbHelper extends SQLiteOpenHelper {
 			+ OrderTable.COLUMN_NAME_CUSTOMER_ID + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_TIME_CREATED + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_TIME_LAST_UPDATE + INTEGER_TYPE + NOT_NULL + " )";
+	
+	private static final String IMAGE_TABLE_CREATE = CREATE_TABLE 
+			+ ImageTable.TABLE_NAME + " ("
+			+ ImageTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
+			+ ImageTable.COLUMN_NAME_IMAGE_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
+			+ ImageTable.COLUMN_NAME_ORDER_NUMBER + TEXT_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
+			+ ImageTable.COLUMN_NAME_IMAGE + TEXT_TYPE + ") ";
 	
 	private static final String PRODUCT_TABLE_CREATE = CREATE_TABLE
 			+ ProductTable.TABLE_NAME + " (" 
@@ -105,6 +113,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(ORDER_TABLE_CREATE);
+		db.execSQL(IMAGE_TABLE_CREATE);
 		db.execSQL(PRODUCT_TABLE_CREATE);
 		db.execSQL(STONE_TABLE_CREATE);
 		db.execSQL(TASK_TABLE_CREATE);
@@ -115,6 +124,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		dropTable(db, OrderTable.TABLE_NAME);
+		dropTable(db, ImageTable.TABLE_NAME);
 		dropTable(db, ProductTable.TABLE_NAME);
 		dropTable(db, StoneTable.TABLE_NAME);
 		dropTable(db, StationTable.TABLE_NAME);

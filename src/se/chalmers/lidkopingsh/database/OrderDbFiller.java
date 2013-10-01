@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.model.Customer;
+import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Station;
@@ -20,6 +21,8 @@ public class OrderDbFiller {
 	private static int orderNumber = 130001;
 	private static int productId = 400;
 	private static int charcode = 65;
+	private static int imageId = 600;
+	
 	public static void fillDb(OrderDbStorage db){
 		for(int i=0;i<20;i++){
 			db.insert(getOrderFullyPopulated("O." + (char)charcode++ + "."));
@@ -73,9 +76,14 @@ public class OrderDbFiller {
 		return new Order(orderId++, String.valueOf(orderNumber++), idName,
 				System.currentTimeMillis(), System.currentTimeMillis(),
 				"Kyrkogård", "Kyrkogårdsnämnd", "Kvarter", "Nummer",
-				System.currentTimeMillis(), customer, null);
+				System.currentTimeMillis(), customer, null, getImages());
 	}
 
+	private static Collection<Image> getImages() {
+		Collection<Image> images = new LinkedList<Image>();
+		images.add(new Image(imageId++, "/path"));
+		return images;
+	}
 	private static Product getSocle(String description, List<Task> tasks) {
 		return new Product(productId++, "Hallandia", description, "Polerad", tasks);
 	}

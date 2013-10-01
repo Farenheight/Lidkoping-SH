@@ -26,6 +26,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private Customer customer;
 	private List<Listener<Order>> orderListeners;
 	private SyncableList<Product> products;
+	private Collection<Image> images;
 
 	/**
 	 * For testing purposes only.
@@ -37,7 +38,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 						.parseLong("1371679200000"), new Customer("Mr",
 						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
 						"olle.bengtsson@testuser.com",
-						(int) System.currentTimeMillis()), null);
+						(int) System.currentTimeMillis()), null, null);
 	}
 
 	/**
@@ -47,7 +48,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Order(int id, String orderNumber, String idName, long timeCreated,
 			long lastTimeUpdated, String cemetary, String cemetaryBoard,
 			String cemetaryBlock, String cemetaryNumber, long orderDate,
-			Customer customer, Collection<Product> products) {
+			Customer customer, Collection<Product> products, Collection<Image> images)  {
 		this.id = id;
 		this.orderNumber = orderNumber != null ? orderNumber : "";
 		this.idName = idName != null ? idName : "";
@@ -59,6 +60,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.cemetaryNumber = cemetaryNumber != null ? cemetaryNumber : "";
 		this.orderDate = orderDate;
 		this.customer = customer.clone();
+		this.images = images;
 
 		orderListeners = new ArrayList<Listener<Order>>();
 		this.products = new SyncableProductList(products);
@@ -101,6 +103,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		return orderDate;
 	}
 
+	public Collection<Image> getImages() {
+		return images;
+	}
+	
 	public String getOrderNumber() {
 		return orderNumber;
 	}

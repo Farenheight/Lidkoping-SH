@@ -6,12 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.database.DataContract.CustomerTable;
+import se.chalmers.lidkopingsh.database.DataContract.ImageTable;
 import se.chalmers.lidkopingsh.database.DataContract.OrderTable;
 import se.chalmers.lidkopingsh.database.DataContract.ProductTable;
 import se.chalmers.lidkopingsh.database.DataContract.StationTable;
 import se.chalmers.lidkopingsh.database.DataContract.StoneTable;
 import se.chalmers.lidkopingsh.database.DataContract.TaskTable;
 import se.chalmers.lidkopingsh.model.Customer;
+import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Station;
@@ -36,6 +38,7 @@ import android.database.sqlite.SQLiteDatabase;
 class OrderDbStorage {
 	
 	private static final String CUSTOMER = "c";
+	private static final String IMAGE = "i";
 	private static final String ORDER = "o";
 	private static final String PRODUCT = "p";
 	private static final String STONE = "s";
@@ -113,6 +116,10 @@ class OrderDbStorage {
 				order.getLastTimeUpdate());
 
 		insertCustomer(order.getCustomer());
+		for (Image i: order.getImages()) {
+			insertImage(i, order.getOrderNumber());
+		}
+		
 		for (Product p : order.getProducts()) {
 			insertProduct(p, order.getOrderNumber());
 		}
@@ -141,6 +148,16 @@ class OrderDbStorage {
 		db.insert(CustomerTable.TABLE_NAME, null, values);
 	}
 
+	private void insertImage(Image i, String orderNumber) {
+		ContentValues values = new ContentValues();
+		
+		values.put(ImageTable.COLUMN_NAME_IMAGE_ID,i.getId());
+		values.put(ImageTable.COLUMN_NAME_ORDER_NUMBER, orderNumber);
+		values.put(ImageTable.COLUMN_NAME_IMAGE, i.getImagePath());
+		
+		db.insert(ImageTable.TABLE_NAME, null, values);
+	}
+	
 	private void insertProduct(Product p, String orderNumber) {
 		ContentValues values = new ContentValues();
 
@@ -307,9 +324,34 @@ class OrderDbStorage {
 
 		Order order = new Order(orderID, orderNumber, idName, timeCreated,
 				timeLastUpdate, cemetery, cemeteryBoard, cemeteryBlock, cemeteryNumber, orderDate,
-				getCustomer(c), getProducts(orderNumber));
+				getCustomer(c), getProducts(orderNumber), getImages(orderNumber));
 
 		return order;
+	}
+	
+	private Image getImage(Cursor c) {
+		int imageId = getIntColumn(c, ImageTable.COLUMN_NAME_IMAGE_ID);
+		String imagePath = getStringColumn(c, ImageTable.COLUMN_NAME_IMAGE);
+		
+		return new Image(imageId, imagePath);
+	}
+	
+	private Collection<Image> getImages(String orderNumber) {
+		String sqlImages = SELECT_FROM + ImageTable.TABLE_NAME + SPACE + IMAGE
+				+ JOIN + OrderTable.TABLE_NAME + SPACE + ORDER + ON + IMAGE
+				+ DOT + ImageTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + ORDER
+				+ DOT + OrderTable.COLUMN_NAME_ORDER_NUMBER + WHERE + IMAGE
+				+ DOT + ImageTable.COLUMN_NAME_ORDER_NUMBER + EQUALS
+				+ QUESTION_MARK;
+
+		Cursor c = db.rawQuery(sqlImages, new String[] { orderNumber });
+		Collection<Image> images = new LinkedList<Image>();
+		
+		while(c.moveToNext()) {
+			images.add(getImage(c));
+		}
+		
+		return images;
 	}
 	
 	private Product getProduct(Cursor c) {

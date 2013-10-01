@@ -29,6 +29,13 @@ class DataContract {
         public static final String COLUMN_NAME_TIME_LAST_UPDATE = "time_last_update";
 	}
 	
+	public static abstract class ImageTable implements BaseColumns {
+        public static final String TABLE_NAME = "image";
+        public static final String COLUMN_NAME_IMAGE_ID = "image_id";
+        public static final String COLUMN_NAME_ORDER_NUMBER = "order_number";
+        public static final String COLUMN_NAME_IMAGE = "image";
+	}
+	
 	public static abstract class ProductTable implements BaseColumns {
         public static final String TABLE_NAME = "product";
         public static final String COLUMN_NAME_PRODUCT_ID = "product_id";
