@@ -4,7 +4,7 @@ import java.util.Locale;
 
 import android.util.Log;
 
-public class ModelFilter implements IModelFilter<Order> {
+public class IdNameFilter implements IModelFilter<Order> {
 
 	@Override
 	public boolean passesFilter(Order order, String constraint) {
@@ -15,5 +15,6 @@ public class ModelFilter implements IModelFilter<Order> {
 		Log.d("DEBUG", "" + idName.startsWith(constr));
 		return idName.startsWith(constr);
 	}
+	
 
 }

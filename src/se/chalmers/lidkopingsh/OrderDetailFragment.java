@@ -1,26 +1,38 @@
 package se.chalmers.lidkopingsh;
 
+import java.util.List;
+
 import se.chalmers.lidkopingsh.model.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.Status;
+import se.chalmers.lidkopingsh.model.Stone;
+import se.chalmers.lidkopingsh.model.Task;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.example.lidkopingsh.R;
 
 /**
  * A fragment representing a single Stone detail screen. This fragment is either
- * contained in the {@link StoneDetailActivity} on handsets or to the right in
+ * contained in the {@link OrderDetailActivity} on handsets or to the right in
  * the {@link MainActivity}s two-pane layout if displayed on tablets.
  * 
  * TODO: Implement initDetails and initTasks. Otherwise checked.
  */
-public class StoneDetailFragment extends Fragment {
+public class OrderDetailFragment extends Fragment {
 
 	/** Used as a key for sending */
 	public static final String ORDER_ID = "item_id";
@@ -35,7 +47,7 @@ public class StoneDetailFragment extends Fragment {
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */
-	public StoneDetailFragment() {
+	public OrderDetailFragment() {
 	}
 
 	@Override
@@ -89,7 +101,7 @@ public class StoneDetailFragment extends Fragment {
 
 		// Add detail tab
 		TabHost.TabSpec detailTab = tabHost.newTabSpec("detailTab");
-		detailTab.setContent(R.id.tabDetailContainer);
+		detailTab.setContent(R.id.flow_layout);
 		detailTab.setIndicator("Detaljer");
 		tabHost.addTab(detailTab);
 		initDetails();
@@ -97,38 +109,37 @@ public class StoneDetailFragment extends Fragment {
 	}
 
 	private void initTasks() {
-		// LayoutInflater inflater = LayoutInflater.from(getActivity());
-		// if (mOrder.getProducts().size() < 1) {
-		// Log.e("DEBUG", "Size of product list is: "
-		// + mOrder.getProducts().size());
-		// }
-		// List<Task> tasks = mOrder.getProducts().get(0).getTasks();
-		// for (int i = 0; i < mOrder.getProducts().get(0).getTasks().size();
-		// i++) {
-		// final Task task = tasks.get(i);
-		// ToggleButton btn = (ToggleButton) inflater.inflate(
-		// R.layout.task_toggler, null);
-		// btn.setChecked(task.getStatus() == Status.DONE);
-		// btn.setText(task.getStation().getName());
-		// btn.setTextOff(task.getStation().getName());
-		// btn.setTextOn(task.getStation().getName());
-		// btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		// @Override
-		// public void onCheckedChanged(CompoundButton toggleButton,
-		// boolean isChecked) {
-		// if (isChecked) {
-		// task.setStatus(Status.DONE);
-		// } else {
-		// task.setStatus(Status.NOT_DONE);
-		// }
-		// }
-		// });
-		// LinearLayout layout = (LinearLayout) rootView
-		// .findViewById(R.id.task_container);
-		// LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-		// LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f);
-		// layout.addView(btn, params);
-		// }
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		if (mOrder.getProducts().size() < 1) {
+			Log.e("DEBUG", "Size of product list is: "
+					+ mOrder.getProducts().size());
+		}
+		List<Task> tasks = mOrder.getProducts().get(0).getTasks();
+		for (int i = 0; i < mOrder.getProducts().get(0).getTasks().size(); i++) {
+			final Task task = tasks.get(i);
+			ToggleButton btn = (ToggleButton) inflater.inflate(
+					R.layout.task_toggler, null);
+			btn.setChecked(task.getStatus() == Status.DONE);
+			btn.setText(task.getStation().getName());
+			btn.setTextOff(task.getStation().getName());
+			btn.setTextOn(task.getStation().getName());
+			btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton toggleButton,
+						boolean isChecked) {
+					if (isChecked) {
+						task.setStatus(Status.DONE);
+					} else {
+						task.setStatus(Status.NOT_DONE);
+					}
+				}
+			});
+			LinearLayout layout = (LinearLayout) rootView
+					.findViewById(R.id.task_container);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f);
+			layout.addView(btn, params);
+		}
 
 	}
 
@@ -155,40 +166,38 @@ public class StoneDetailFragment extends Fragment {
 	 * @param container
 	 */
 	private void initDetails() {
-		// // Header
-		// ((TextView) rootView.findViewById(R.id.idName)).setText(mOrder
-		// .getIdName());
-		// ((TextView) rootView.findViewById(R.id.orderNumber)).setText(mOrder
-		// .getOrderNumber());
-		//
-		// // General
-		// ((TextView) rootView.findViewById(R.id.burialName))
-		// .setText("<Not yet in model>");
-		// ((TextView) rootView.findViewById(R.id.cemeteryBoard))
-		// .setText("<Not yet in model>");
-		// ((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
-		// .getCemetary());
-		//
-		// // Stone
-		// if (mOrder.getProducts().size() < 1) {
-		// Log.e("DEBUG", "Size of product list is: "
-		// + mOrder.getProducts().size());
-		// }
-		// Stone stone = ((Stone) mOrder.getProducts().get(0));
-		// ((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
-		// .getStoneModel());
-		// ((TextView)
-		// rootView.findViewById(R.id.materialAndColor)).setText(stone
-		// .getMaterialColor());
-		// ((TextView) rootView.findViewById(R.id.ornament)).setText(stone
-		// .getOrnament());
-		// ((TextView) rootView.findViewById(R.id.desc)).setText(stone
-		// .getDescription());
-		// ((TextView)
-		// rootView.findViewById(R.id.frontProcessing)).setText(stone
-		// .getFrontWork());
-		// ((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
-		// .setText(stone.getTextStyle());
+		// Header
+		((TextView) rootView.findViewById(R.id.idName)).setText(mOrder
+				.getIdName());
+		((TextView) rootView.findViewById(R.id.orderNumber)).setText(mOrder
+				.getOrderNumber());
+
+		// General
+		((TextView) rootView.findViewById(R.id.burialName))
+				.setText("<Not yet in model>");
+		((TextView) rootView.findViewById(R.id.cemeteryBoard))
+				.setText("<Not yet in model>");
+		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
+				.getCemetary());
+
+		// Stone
+		if (mOrder.getProducts().size() < 1) {
+			Log.e("DEBUG", "Size of product list is: "
+					+ mOrder.getProducts().size());
+		}
+		Stone stone = ((Stone) mOrder.getProducts().get(0));
+		((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
+				.getStoneModel());
+		((TextView) rootView.findViewById(R.id.materialAndColor)).setText(stone
+				.getMaterialColor());
+		((TextView) rootView.findViewById(R.id.ornament)).setText(stone
+				.getOrnament());
+		((TextView) rootView.findViewById(R.id.desc)).setText(stone
+				.getDescription());
+		((TextView) rootView.findViewById(R.id.frontProcessing)).setText(stone
+				.getFrontWork());
+		((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
+				.setText(stone.getTextStyle());
 
 	}
 

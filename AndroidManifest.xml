@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="se.chalmers.lidkopingsh.StoneDetailActivity"
+            android:name="se.chalmers.lidkopingsh.OrderDetailActivity"
             android:label="@string/title_stone_detail"
             android:parentActivityName="se.chalmers.lidkopingsh.MainActivity"
             android:windowSoftInputMode="adjustNothing" >

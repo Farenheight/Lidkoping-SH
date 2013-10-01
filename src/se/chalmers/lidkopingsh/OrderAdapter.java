@@ -2,7 +2,7 @@ package se.chalmers.lidkopingsh;
 
 import java.util.List;
 
-import se.chalmers.lidkopingsh.model.ModelFilter;
+import se.chalmers.lidkopingsh.model.IdNameFilter;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -66,8 +66,8 @@ public class OrderAdapter extends FilterableAdapter<Order, String> {
 
 	@Override
 	protected boolean passesFilter(Order order, String constraint) {
-		ModelFilter modelFilter = new ModelFilter();
-		return modelFilter.passesFilter(order, constraint);
+		IdNameFilter idNameFilter = new IdNameFilter();
+		return idNameFilter.passesFilter(order, constraint);
 	}
 
 }

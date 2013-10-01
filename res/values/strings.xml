@@ -24,5 +24,7 @@
         <string name="long_test_string">This is a longer test string for testing longer strings suitability in lorem ipsum</string>
         <string name="stoneModel">Stenmodell</string>
         <string name="order_drawing">Order ritning</string>
+        <string name="workerNote">Anteckningar</string>
+        <string name="noteHint">Skriv här</string>
 
 </resources>

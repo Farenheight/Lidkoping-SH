@@ -8,12 +8,7 @@
     android:showDividers="middle"
     tools:context=".MainActivity" >
 
-    <fragment
-    android:id="@+id/stone_list"
-    android:name="se.chalmers.lidkopingsh.StoneListFragment"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="1" />
+    <include layout="@layout/activity_stone_list"/>
 
     <FrameLayout
         android:id="@+id/stone_detail_container"

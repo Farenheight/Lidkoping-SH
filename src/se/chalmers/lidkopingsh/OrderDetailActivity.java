@@ -14,11 +14,11 @@ import android.view.MenuItem;
  * side-by-side with a list of items in the {@link MainActivity}.
  * 
  * This activity is mostly just a 'shell' activity containing nothing more than
- * a {@link StoneDetailFragment}.
+ * a {@link OrderDetailFragment}.
  * 
  * TODO: Class is checked. Remove this.
  */
-public class StoneDetailActivity extends FragmentActivity {
+public class OrderDetailActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +36,9 @@ public class StoneDetailActivity extends FragmentActivity {
 		// a saved fragment, create it below.
 		if (savedInstanceState == null) {
 			Bundle arguments = new Bundle();
-			arguments.putInt(StoneDetailFragment.ORDER_ID, getIntent()
-					.getIntExtra(StoneDetailFragment.ORDER_ID, -1));
-			StoneDetailFragment fragment = new StoneDetailFragment();
+			arguments.putInt(OrderDetailFragment.ORDER_ID, getIntent()
+					.getIntExtra(OrderDetailFragment.ORDER_ID, -1));
+			OrderDetailFragment fragment = new OrderDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.stone_detail_container, fragment).commit();

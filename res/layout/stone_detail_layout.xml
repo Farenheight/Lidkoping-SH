@@ -26,7 +26,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" >
 
-   			  <include layout="@layout/tab_details" />
+   			  <include layout="@layout/order_detail_cards" />
               <include layout="@layout/tab_drawing" />
 
             </FrameLayout>
