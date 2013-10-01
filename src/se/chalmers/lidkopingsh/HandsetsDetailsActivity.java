@@ -13,10 +13,8 @@ import android.view.MenuItem;
  * 
  * This activity is mostly just a 'shell' activity containing nothing more than
  * a {@link OrderDetailsFragment}.
- * 
- * TODO: Class is checked. Remove this.
  */
-public class OrderDetailsActivity extends FragmentActivity {
+public class HandsetsDetailsActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +37,7 @@ public class OrderDetailsActivity extends FragmentActivity {
 			OrderDetailsFragment fragment = new OrderDetailsFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.stone_detail_container, fragment).commit();
+					.add(R.id.tablet_hint_container, fragment).commit();
 		}
 	}
 

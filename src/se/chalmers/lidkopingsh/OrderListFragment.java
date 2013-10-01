@@ -28,7 +28,7 @@ import android.widget.Spinner;
  * tablet devices by allowing list items to be given an 'activated' state upon
  * selection. This helps indicate which item is currently being viewed in a
  * {@link OrderDetailsFragment}.
- * <p>
+ * 
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
@@ -109,7 +109,7 @@ public class OrderListFragment extends ListFragment {
 	private void initHeaderView() {
 		getListView().addHeaderView(mListHeader);
 		Spinner spinnerStations = (Spinner) mListHeader
-				.findViewById(R.id.spinnerTasks);
+				.findViewById(R.id.spinnerStations);
 		spinnerStations.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override

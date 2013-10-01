@@ -23,7 +23,7 @@
                 android:id="@+id/idName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="O.S"
+                android:text="@string/dynamic_id_name"
                 android:textSize="60sp" />
 
             <TextView
@@ -35,14 +35,14 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/burialNameHeader"
+                android:id="@+id/cemetery_number_header"
                 style="?android:attr/textAppearanceLarge"
-                android:text="@string/burial_name"
+                android:text="@string/cemetery_number"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/burialName"
+                android:id="@+id/cemetery_number"
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
