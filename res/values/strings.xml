@@ -26,5 +26,6 @@
         <string name="order_drawing">Order ritning</string>
         <string name="workerNote">Anteckningar</string>
         <string name="noteHint">Skriv här</string>
+        <string name="tablet_startup_hint">Klicka i listan till vänster för att visa en order</string>
 
 </resources>

@@ -23,13 +23,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.example.lidkopingsh.R;
-
 /**
  * A list fragment representing a list of Stones. This fragment also supports
  * tablet devices by allowing list items to be given an 'activated' state upon
  * selection. This helps indicate which item is currently being viewed in a
- * {@link OrderDetailFragment}.
+ * {@link OrderDetailsFragment}.
  * <p>
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
@@ -88,7 +86,7 @@ public class OrderListFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mListHeader = inflater.inflate(R.layout.list_header, container, false);
+		mListHeader = inflater.inflate(R.layout.custom_orderlist_header, container, false);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 

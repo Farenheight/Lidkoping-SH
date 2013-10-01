@@ -6,16 +6,29 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".MainActivity" >
+    tools:context=".OrderDetailsActivity" >
 
-    <include layout="@layout/activity_stone_list"/>
+    <include layout="@layout/orderlist_root" 
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"/>
 
     <FrameLayout
         android:id="@+id/stone_detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
-        android:background="#818" >
+        android:background="#ddd" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="50dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/tablet_startup_hint"
+            android:textColor="#777"
+            android:textSize="40sp" />
+
     </FrameLayout>
 
 </LinearLayout>

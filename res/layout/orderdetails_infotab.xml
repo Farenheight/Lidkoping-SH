@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:background="#ddd" >
 
-    <include layout="@layout/order_detail_cards"
+    <include layout="@layout/orderdetails_infotab_cards"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent" />

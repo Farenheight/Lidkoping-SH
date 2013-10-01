@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/stone_detail_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OrderDetailsActivity"
+    tools:ignore="MergeRootFrame" >
+
+        <TabHost
+            android:id="@+id/orderTabHost"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="#fff" >
+
+                    <include layout="@layout/orderdetails_infotab_cards" />
+
+                    <include layout="@layout/orderdetails_drawingtab" />
+                </FrameLayout>
+            </LinearLayout>
+        </TabHost>
+
+</RelativeLayout>

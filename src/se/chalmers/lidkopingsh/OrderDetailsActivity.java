@@ -1,7 +1,5 @@
 package se.chalmers.lidkopingsh;
 
-import com.example.lidkopingsh.R;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -14,16 +12,16 @@ import android.view.MenuItem;
  * side-by-side with a list of items in the {@link MainActivity}.
  * 
  * This activity is mostly just a 'shell' activity containing nothing more than
- * a {@link OrderDetailFragment}.
+ * a {@link OrderDetailsFragment}.
  * 
  * TODO: Class is checked. Remove this.
  */
-public class OrderDetailActivity extends FragmentActivity {
+public class OrderDetailsActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_stone_detail);
+		setContentView(R.layout.orderdetails_root);
 
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -36,9 +34,9 @@ public class OrderDetailActivity extends FragmentActivity {
 		// a saved fragment, create it below.
 		if (savedInstanceState == null) {
 			Bundle arguments = new Bundle();
-			arguments.putInt(OrderDetailFragment.ORDER_ID, getIntent()
-					.getIntExtra(OrderDetailFragment.ORDER_ID, -1));
-			OrderDetailFragment fragment = new OrderDetailFragment();
+			arguments.putInt(OrderDetailsFragment.ORDER_ID, getIntent()
+					.getIntExtra(OrderDetailsFragment.ORDER_ID, -1));
+			OrderDetailsFragment fragment = new OrderDetailsFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.stone_detail_container, fragment).commit();

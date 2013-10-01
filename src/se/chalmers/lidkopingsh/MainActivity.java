@@ -1,17 +1,14 @@
 package se.chalmers.lidkopingsh;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.example.lidkopingsh.R;
-
 /**
  * An activity containing only a {@link OrderListFragment} on handsets and also
- * a {@link OrderDetailFragment} on tablets.
+ * a {@link OrderDetailsFragment} on tablets.
  * 
  * This activity also implements the required
  * {@link OrderListFragment.Callbacks} interface to listen for item selections.
@@ -21,48 +18,53 @@ import com.example.lidkopingsh.R;
 public class MainActivity extends FragmentActivity implements
 		OrderListFragment.Callbacks {
 
-
-	/**
-	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-	 * device.
-	 */
-	private boolean mTabletMode;
+	/** Whether or not the app is running on a tablet sized device */
+	private boolean mTabletSize;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_stone_twopane);
 
-		new FlowLayout(this);
-		// The detail container view will be present only in the large-screen
-		// layouts (res/values-sw600dp). If this view is present, then the
-		// activity should be in two-pane mode.
-		if (findViewById(R.id.stone_detail_container) != null) {
-			mTabletMode = true;
-			// In two-pane mode, list items should be given the
-			// 'activated' state when touched.
+		mTabletSize = getResources().getBoolean(R.bool.isTablet);
+		mTabletSize = true;
+		if (mTabletSize) {
+			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
-					R.id.stone_list)).setActivateOnItemClick(true);
+					R.id.order_list)).setActivateOnItemClick(true);
+		} else {
+			setContentView(R.layout.orderlist_root); 
 		}
-		
-		//Debug only
-		//printDPI();
+
+		printDPI();
 	}
 
+	/**
+	 * TODO: Remove before release
+	 */
 	private void printDPI() {
 		switch (getResources().getDisplayMetrics().densityDpi) {
 		case DisplayMetrics.DENSITY_LOW:
-		    Log.d("DEBUG", "Running on LDPI");
-		    break;
+			Log.d("DEBUG", "Running on LDPI");
+			break;
 		case DisplayMetrics.DENSITY_MEDIUM:
-			 Log.d("DEBUG", "Running on MDPI");
-		    break;
+			Log.d("DEBUG", "Running on MDPI");
+			break;
 		case DisplayMetrics.DENSITY_HIGH:
-			 Log.d("DEBUG", "Running on HDPI");
-		    break;
+			// ZTE Blade III
+			Log.d("DEBUG", "Running on HDPI");
+			break;
 		case DisplayMetrics.DENSITY_XHIGH:
-			 Log.d("DEBUG", "Running on XHDPI");
-		    break;
+			// Galaxy Nexus
+			Log.d("DEBUG", "Running on XHDPI");
+			break;
+		case DisplayMetrics.DENSITY_XXHIGH:
+			// Galaxy s4, htc One, Nexus 5?
+			Log.d("DEBUG", "Running on XXHDPI");
+			break;
+		default:
+			// Nexus 7?
+			Log.d("DEBUG", "Running on a strange resolution");
+			break;
 		}
 	}
 
@@ -76,18 +78,18 @@ public class MainActivity extends FragmentActivity implements
 		// replacing the detail fragment
 		// TODO: Explore the possibility of saving the created fragment/activity
 		// instead of creating a new each time the user chooses a stone
-		if (mTabletMode) {
+		if (mTabletSize) {
 			Bundle arguments = new Bundle();
-			arguments.putInt(OrderDetailFragment.ORDER_ID, orderId);
-			OrderDetailFragment fragment = new OrderDetailFragment();
+			arguments.putInt(OrderDetailsFragment.ORDER_ID, orderId);
+			OrderDetailsFragment fragment = new OrderDetailsFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.stone_detail_container, fragment).commit();
 		}
 		// On handsets, start the detail activity for the selected item ID.
 		else {
-			Intent detailIntent = new Intent(this, OrderDetailActivity.class);
-			detailIntent.putExtra(OrderDetailFragment.ORDER_ID, orderId);
+			Intent detailIntent = new Intent(this, OrderDetailsActivity.class);
+			detailIntent.putExtra(OrderDetailsFragment.ORDER_ID, orderId);
 			startActivity(detailIntent);
 		}
 	}

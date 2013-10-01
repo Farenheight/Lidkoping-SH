@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.lidkopingsh"
+    package="se.chalmers.lidkopingsh"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="se.chalmers.lidkopingsh.OrderDetailActivity"
+            android:name="se.chalmers.lidkopingsh.OrderDetailsActivity"
             android:label="@string/title_stone_detail"
             android:parentActivityName="se.chalmers.lidkopingsh.MainActivity"
             android:windowSoftInputMode="adjustNothing" >
