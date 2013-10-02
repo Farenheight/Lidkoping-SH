@@ -2,7 +2,10 @@ package se.chalmers.lidkopingsh;
 
 import se.chalmers.lidkopingsh.model.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.Product;
+import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
+import se.chalmers.lidkopingsh.model.Task;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,9 +13,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 /**
  * A fragment representing a single Stone detail screen. This fragment is either
@@ -98,39 +105,56 @@ public class OrderDetailsFragment extends Fragment {
 	}
 
 	private void initTasks() {
-//		LayoutInflater inflater = LayoutInflater.from(getActivity());
-//		if (mOrder.getProducts().size() < 1) {
-//			Log.e("DEBUG", "Size of product list is: "
-//					+ mOrder.getProducts().size());
-//		}
-//		List<Task> tasks = mOrder.getProducts().get(0).getTasks();
-//		for (int i = 0; i < mOrder.getProducts().get(0).getTasks().size(); i++) {
-//			final Task task = tasks.get(i);
-//			ToggleButton btn = (ToggleButton) inflater.inflate(
-//					R.layout.custom_task_toggler, null);
-//			btn.setChecked(task.getStatus() == Status.DONE);
-//			btn.setText(task.getStation().getName());
-//			btn.setTextOff(task.getStation().getName());
-//			btn.setTextOn(task.getStation().getName());
-//			btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-//				@Override
-//				public void onCheckedChanged(CompoundButton toggleButton,
-//						boolean isChecked) {
-//					if (isChecked) {
-//						task.setStatus(Status.DONE);
-//					} else {
-//						task.setStatus(Status.NOT_DONE);
-//					}
-//				}
-//			});
-//			LinearLayout layout = (LinearLayout) rootView
-//					.findViewById(R.id.task_container);
-//			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f);
-//			layout.addView(btn, params);
-//		}
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		if (mOrder.getProducts().size() < 1) {
+			Log.e("DEBUG", "Size of product list is: "
+					+ mOrder.getProducts().size());
+		}
+		for (Product p : mOrder.getProducts()) {
+			// Create a new view that contains the tasks of a single product
+			View productView = (View) inflater.inflate(
+					R.layout.orderdetails_infotab_product, null);
+			LinearLayout layout = (LinearLayout) rootView
+					.findViewById(R.id.task_card);
+			// TODO Fix to actual type of Product
+			((TextView) productView.findViewById(R.id.idName)).setText("Stone");
+			layout.addView(productView);
+			for (final Task t : p.getTasks()) {
+				View taskView = (View) inflater.inflate(
+						R.layout.orderdetails_infotab_task, null);
+				((TextView) taskView.findViewById(R.id.idName)).setText(t
+						.getStation().getName());
+				layout = (LinearLayout) productView
+						.findViewById(R.id.flow_layout);
+				layout.addView(taskView);
+				
+				ToggleButton btn = (ToggleButton) taskView
+						.findViewById(R.id.idTaskToggleButton);
+				btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					@Override
+					public void onCheckedChanged(CompoundButton toggleButton,
+							boolean isChecked) {
+						if (isChecked) {
 
+							t.setStatus(Status.DONE);
+						} else {
+							t.setStatus(Status.NOT_DONE);
+						}
+					}
+				});
+
+			}
+		}
 	}
+
+	// List<Task> tasks = mOrder.getProducts().get(0).getTasks();
+	// for (int i = 0; i < mOrder.getProducts().get(0).getTasks().size(); i++) {
+	// LinearLayout layout = (LinearLayout) rootView
+	// .findViewById(R.id.task_container);
+	// LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+	// LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f);
+	// layout.addView(btn, params);
+	// }
 
 	/**
 	 * Make image zoomable by attaching PhotoView lib

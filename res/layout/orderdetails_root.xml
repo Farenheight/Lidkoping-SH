@@ -28,7 +28,7 @@
                     android:layout_weight="1"
                     android:background="#fff" >
 
-                    <include layout="@layout/orderdetails_infotab_cards" />
+                    <include layout="@layout/orderdetails_infotab" />
 
                     <include layout="@layout/orderdetails_drawingtab" />
                 </FrameLayout>

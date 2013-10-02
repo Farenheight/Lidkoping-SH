@@ -144,13 +144,12 @@
                 android:textSize="16sp" />
         </GridLayout>
 
-        <GridLayout
+<GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:background="#fff"
             android:columnCount="2"
-            android:minWidth="350dp"
             android:padding="15dp"
             android:rowCount="5"
             android:useDefaultMargins="true" >
@@ -160,7 +159,6 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/desc"
                 android:textIsSelectable="true"
                 android:textSize="16sp"
@@ -171,7 +169,6 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
@@ -181,7 +178,6 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/front_processing"
                 android:textIsSelectable="true"
                 android:textSize="16sp"
@@ -192,7 +188,6 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
@@ -202,7 +197,6 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/text_style_and_processing"
                 android:textIsSelectable="true"
                 android:textSize="16sp"
@@ -213,7 +207,6 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
