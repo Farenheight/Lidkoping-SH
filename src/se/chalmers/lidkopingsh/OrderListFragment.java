@@ -161,14 +161,12 @@ public class OrderListFragment extends ListFragment {
 	}
 
 	/**
-	 * Sets up the adapter responsible for keeping the data
+	 * Sets up the adapter responsible for keeping the list view's data
 	 */
 	private void initOrderListViewAdapter() {
 		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
 				.getOrders());
-		mOrderAdapter = new OrderAdapter(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, mOrderList);
+		mOrderAdapter = new OrderAdapter(getActivity(), mOrderList);
 		// Important to use this method and not ListView.setAdapter()
 		setListAdapter(mOrderAdapter);
 	}

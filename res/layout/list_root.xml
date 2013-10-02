@@ -1,8 +1,17 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/order_list"
-    android:name="se.chalmers.lidkopingsh.OrderListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout="@layout/list_content" >
-</fragment>
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+     >
+
+    <fragment
+        android:id="@+id/order_list"
+        android:name="se.chalmers.lidkopingsh.OrderListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@android:layout/list_content" >
+    </fragment>
+
+</LinearLayout>

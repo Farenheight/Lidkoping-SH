@@ -1,7 +1,5 @@
 package se.chalmers.lidkopingsh;
 
-import java.util.List;
-
 import se.chalmers.lidkopingsh.model.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
@@ -55,7 +53,7 @@ public class OrderDetailsFragment extends Fragment {
 		rootView = inflater.inflate(R.layout.od_root, container,
 				false);
 
-		// TODO: Consider include this again if bugs appear
+		// Consider include this again if bugs appear
 		// if (getArguments().containsKey(ORDER_ID)) {
 
 		// Gets and saves the order matching the orderId passed to the fragment
@@ -73,9 +71,6 @@ public class OrderDetailsFragment extends Fragment {
 	 * Sets up the tab host for this stone detail view with one drawing tab and
 	 * one details tab. Data is also collected from mOrder and added to the
 	 * tab's views.
-	 * 
-	 * TODO: Consider putting the task container outside of the tabs. It would
-	 * make more sense graphically as well.
 	 * 
 	 */
 	private void initTabs() {
@@ -145,15 +140,6 @@ public class OrderDetailsFragment extends Fragment {
 		}
 	}
 
-	// List<Task> tasks = mOrder.getProducts().get(0).getTasks();
-	// for (int i = 0; i < mOrder.getProducts().get(0).getTasks().size(); i++) {
-	// LinearLayout layout = (LinearLayout) rootView
-	// .findViewById(R.id.task_container);
-	// LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-	// LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f);
-	// layout.addView(btn, params);
-	// }
-
 	/**
 	 * Attaches the PhotoView library to the order's drawing making it possible
 	 * to zoom and pan it smoothly
@@ -191,7 +177,7 @@ public class OrderDetailsFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
 
-		// Stone TODO: Check if the first product really is a stone...
+		// TODO: Check if the first product really is a stone...
 		Stone stone = ((Stone) mOrder.getProducts().get(0));
 		((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
 				.getStoneModel());
