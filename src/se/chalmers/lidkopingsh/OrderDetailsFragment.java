@@ -128,7 +128,6 @@ public class OrderDetailsFragment extends Fragment {
 					public void onCheckedChanged(CompoundButton toggleButton,
 							boolean isChecked) {
 						if (isChecked) {
-
 							t.setStatus(Status.DONE);
 						} else {
 							t.setStatus(Status.NOT_DONE);

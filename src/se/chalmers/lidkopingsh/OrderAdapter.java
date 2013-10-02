@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import se.chalmers.lidkopingsh.model.IModelFilter;
+import se.chalmers.lidkopingsh.model.ModelFilter;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -23,14 +25,6 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 * the documentation.
 	 */
 	private List<Order> mObjects;
-
-	/**
-	 * Lock used to modify the content of {@link #mObjects}. Any write operation
-	 * performed on the array should be synchronized on this lock. This lock is
-	 * also used by the filter (see {@link #getFilter()} to make a synchronized
-	 * copy of the original array of data.
-	 */
-	private final Object mLock = new Object();
 
 	// A copy of the original mObjects array, initialized from and then used
 	// instead as soon as
@@ -116,35 +110,36 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 
 	private View createViewFromResource(int position, View convertView,
 			ViewGroup parent) {
-		View view;
+		View listItemView;
 
 		// If recycled view not obtained from android, inflate a new one
 		if (convertView == null) {
-			view = mInflater.inflate(R.layout.custom_list_item, parent, false);
+			listItemView = mInflater.inflate(R.layout.custom_list_item, parent,
+					false);
 		} else {
-			view = convertView;
+			listItemView = convertView;
 		}
 
 		Order order = getItem(position);
-		TextView text;
+		TextView tmpTextView;
 
 		// Id name
-		text = (TextView) view.findViewById(R.id.id_name);
-		text.setText(order.getIdName());
+		tmpTextView = (TextView) listItemView.findViewById(R.id.id_name);
+		tmpTextView.setText(order.getIdName());
 
 		// Customer name TODO: Change to deceased's name if available later
-		text = (TextView) view.findViewById(R.id.deceased_name);
-		text.setText(order.getCustomer().getName());
+		tmpTextView = (TextView) listItemView.findViewById(R.id.deceased_name);
+		tmpTextView.setText(order.getCustomer().getName());
 
 		// Other details
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(order.getOrderDate());
 		String date = cal.get(Calendar.DAY_OF_MONTH) + "/"
 				+ cal.get(Calendar.MONTH);
-		text = (TextView) view.findViewById(R.id.other_details);
-		text.setText(date + " - " + order.getCemetary());
+		tmpTextView = (TextView) listItemView.findViewById(R.id.other_details);
+		tmpTextView.setText(date + " - " + order.getCemetary());
 
-		return view;
+		return listItemView;
 	}
 
 	/**
@@ -158,58 +153,37 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	}
 
 	/**
-	 * An array filter constrains the content of the array adapter with a
-	 * prefix. Each item that does not start with the supplied prefix is removed
-	 * from the list.
+	 * A filter that mostly sends the filtering to be done to a ModelFilter.
 	 */
 	private class ArrayFilter extends Filter {
+		private ModelFilter mModelFilter;
+
 		@Override
-		protected FilterResults performFiltering(CharSequence prefix) {
+		protected FilterResults performFiltering(CharSequence constraint) {
 			FilterResults results = new FilterResults();
 
 			if (mOriginalValues == null) {
-				synchronized (mLock) {
-					mOriginalValues = new ArrayList<Order>(mObjects);
-				}
+				mOriginalValues = new ArrayList<Order>(mObjects);
 			}
 
-			if (prefix == null || prefix.length() == 0) {
+			if (constraint == null || constraint.length() == 0) {
 				ArrayList<Order> list;
-				synchronized (mLock) {
-					list = new ArrayList<Order>(mOriginalValues);
-				}
+				list = new ArrayList<Order>(mOriginalValues);
 				results.values = list;
 				results.count = list.size();
 			} else {
-				String prefixString = prefix.toString().toLowerCase();
+				String lcConstraint = constraint.toString().toLowerCase();
+				ArrayList<Order> orderList = new ArrayList<Order>(mOriginalValues);
 
-				ArrayList<Order> values;
-				synchronized (mLock) {
-					values = new ArrayList<Order>(mOriginalValues);
+				final ArrayList<Order> newValues = new ArrayList<Order>();
+				
+				if(mModelFilter == null) {
+					mModelFilter = new ModelFilter();
 				}
 
-				final int count = values.size();
-				final ArrayList<Order> newValues = new ArrayList<Order>();
-
-				for (int i = 0; i < count; i++) {
-					final Order value = values.get(i);
-					final String valueText = value.toString().toLowerCase();
-
-					// First match against the whole, non-splitted value
-					if (valueText.startsWith(prefixString)) {
-						newValues.add(value);
-					} else {
-						final String[] words = valueText.split(" ");
-						final int wordCount = words.length;
-
-						// Start at index 0, in case valueText starts with
-						// space(s)
-						for (int k = 0; k < wordCount; k++) {
-							if (words[k].startsWith(prefixString)) {
-								newValues.add(value);
-								break;
-							}
-						}
+				for (Order order : orderList) {					
+					if(mModelFilter.passesFilter(order, constraint.toString())) {
+						newValues.add(order);
 					}
 				}
 
