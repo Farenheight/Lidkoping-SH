@@ -11,7 +11,7 @@
         android:paddingBottom="@dimen/default_padding" >
 
         <LinearLayout
-            android:id="@+id/task_card"
+            android:id="@+id/root_task_cont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_margin"

@@ -9,7 +9,6 @@ import se.chalmers.lidkopingsh.model.Task;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +22,8 @@ import android.widget.ToggleButton;
 
 /**
  * A fragment representing a single Stone detail screen. This fragment is either
- * contained in the {@link HandsetsDetailsActivity} on handsets or to the right in
- * the {@link MainActivity}s two-pane layout if displayed on tablets.
+ * contained in the {@link HandsetsDetailsActivity} on handsets or to the right
+ * in the {@link MainActivity}s two-pane layout if displayed on tablets.
  * 
  */
 public class OrderDetailsFragment extends Fragment {
@@ -50,8 +49,7 @@ public class OrderDetailsFragment extends Fragment {
 			Bundle savedInstanceState) {
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
-		rootView = inflater.inflate(R.layout.od_root, container,
-				false);
+		rootView = inflater.inflate(R.layout.od_root, container, false);
 
 		// Consider include this again if bugs appear
 		// if (getArguments().containsKey(ORDER_ID)) {
@@ -99,43 +97,40 @@ public class OrderDetailsFragment extends Fragment {
 	 */
 	private void initTasks() {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		if (mOrder.getProducts().size() < 1) {
-			Log.e("DEBUG", "Size of product list is: "
-					+ mOrder.getProducts().size());
-		}
+		LinearLayout rootTaskCont = (LinearLayout) rootView
+				.findViewById(R.id.root_task_cont);
 		for (Product p : mOrder.getProducts()) {
 			// Create a new view that contains the tasks of a single product
-			View productView = (View) inflater.inflate(
+			ViewGroup productView = (ViewGroup) inflater.inflate(
 					R.layout.od_product_task_cont, null);
-			LinearLayout layout = (LinearLayout) rootView
-					.findViewById(R.id.task_card);
 			// TODO Fix to actual type of Product
-			((TextView) productView.findViewById(R.id.idName)).setText("Stone");
-			layout.addView(productView);
-			for (final Task t : p.getTasks()) {
-				View taskView = (View) inflater.inflate(
-						R.layout.od_task_cont, null);
-				((TextView) taskView.findViewById(R.id.idName)).setText(t
-						.getStation().getName());
-				layout = (LinearLayout) productView
-						.findViewById(R.id.flow_layout);
-				layout.addView(taskView);
+			((TextView) productView.findViewById(R.id.task_name))
+					.setText("Stone");
+			for (final Task task : p.getTasks()) {
+				View taskView = inflater.inflate(R.layout.od_task_cont, null);
 				
+				//Set task name
+				((TextView) taskView.findViewById(R.id.task_name)).setText(task
+						.getStation().getName());
+				
+				//Set the task toggler
 				ToggleButton btn = (ToggleButton) taskView
-						.findViewById(R.id.idTaskToggleButton);
+						.findViewById(R.id.task_toggler);
+				btn.setChecked(task.getStatus() == Status.DONE);
 				btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					@Override
 					public void onCheckedChanged(CompoundButton toggleButton,
 							boolean isChecked) {
 						if (isChecked) {
-							t.setStatus(Status.DONE);
+							task.setStatus(Status.DONE);
 						} else {
-							t.setStatus(Status.NOT_DONE);
+							task.setStatus(Status.NOT_DONE);
 						}
 					}
 				});
-
+				productView.addView(taskView);
 			}
+			rootTaskCont.addView(productView);
 		}
 	}
 
@@ -155,7 +150,6 @@ public class OrderDetailsFragment extends Fragment {
 		PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
 		pva.setMaximumScale(8f);
 	}
-	
 
 	/**
 	 * Adds info such as customer name, order number etc to rootView
@@ -163,16 +157,16 @@ public class OrderDetailsFragment extends Fragment {
 	 */
 	private void initDetails() {
 		// Header
-		((TextView) rootView.findViewById(R.id.idName)).setText(mOrder
+		((TextView) rootView.findViewById(R.id.task_name)).setText(mOrder
 				.getIdName());
 		((TextView) rootView.findViewById(R.id.orderNumber)).setText(mOrder
 				.getOrderNumber());
 
 		// General
-		((TextView) rootView.findViewById(R.id.cemetery_number))
-				.setText(mOrder.getCemetaryNumber());
-		((TextView) rootView.findViewById(R.id.cemeteryBoard))
-				.setText(mOrder.getCemetaryBoard());
+		((TextView) rootView.findViewById(R.id.cemetery_number)).setText(mOrder
+				.getCemetaryNumber());
+		((TextView) rootView.findViewById(R.id.cemeteryBoard)).setText(mOrder
+				.getCemetaryBoard());
 		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
 
