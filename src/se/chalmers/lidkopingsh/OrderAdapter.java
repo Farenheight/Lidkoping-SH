@@ -10,6 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+/**
+ * TODO: Change to extending ArrayAdapter again. Two reasons, first, that would
+ * make it easier implementing section headers. Second it's better using
+ * something in android's default libraries.
+ */ 
 public class OrderAdapter extends FilterableAdapter<Order, String> {
 
 	private int mResourceId;
