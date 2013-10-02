@@ -8,7 +8,7 @@
     android:showDividers="middle"
     tools:context=".HandsetsDetailsActivity" >
 
-    <include layout="@layout/orderlist_root" 
+    <include layout="@layout/list_root" 
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"/>

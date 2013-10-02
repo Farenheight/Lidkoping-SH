@@ -52,7 +52,7 @@ public class OrderDetailsFragment extends Fragment {
 			Bundle savedInstanceState) {
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
-		rootView = inflater.inflate(R.layout.orderdetails_root, container,
+		rootView = inflater.inflate(R.layout.od_root, container,
 				false);
 
 		// TODO: Consider include this again if bugs appear
@@ -92,11 +92,11 @@ public class OrderDetailsFragment extends Fragment {
 
 		// Add detail tab
 		TabHost.TabSpec detailTab = tabHost.newTabSpec("detailTab");
-		detailTab.setContent(R.id.flow_layout);
+		detailTab.setContent(R.id.tab_info_container);
 		detailTab.setIndicator("Detaljer");
 		tabHost.addTab(detailTab);
 		initDetails();
-		// initTasks();
+		initTasks();
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class OrderDetailsFragment extends Fragment {
 		for (Product p : mOrder.getProducts()) {
 			// Create a new view that contains the tasks of a single product
 			View productView = (View) inflater.inflate(
-					R.layout.orderdetails_infotab_product, null);
+					R.layout.od_product_task_cont, null);
 			LinearLayout layout = (LinearLayout) rootView
 					.findViewById(R.id.task_card);
 			// TODO Fix to actual type of Product
@@ -119,7 +119,7 @@ public class OrderDetailsFragment extends Fragment {
 			layout.addView(productView);
 			for (final Task t : p.getTasks()) {
 				View taskView = (View) inflater.inflate(
-						R.layout.orderdetails_infotab_task, null);
+						R.layout.od_task_cont, null);
 				((TextView) taskView.findViewById(R.id.idName)).setText(t
 						.getStation().getName());
 				layout = (LinearLayout) productView

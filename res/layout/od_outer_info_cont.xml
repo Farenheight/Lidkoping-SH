@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_info_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ddd"
@@ -9,11 +10,11 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        layout="@layout/orderdetails_infotab_cards" />
+        layout="@layout/od_inner_info_cont" />
 
     <include 
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        layout="@layout/orderdetails_tasktab" />
+        layout="@layout/od_root_task_card" />
 </LinearLayout>

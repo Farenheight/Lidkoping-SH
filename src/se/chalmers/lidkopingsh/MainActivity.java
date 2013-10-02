@@ -38,7 +38,7 @@ public class MainActivity extends FragmentActivity implements
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
 					R.id.order_list)).setActivateOnItemClick(true);
 		} else {
-			setContentView(R.layout.orderlist_root); 
+			setContentView(R.layout.list_root); 
 		}
 
 		printDPI();

@@ -28,9 +28,9 @@
                     android:layout_weight="1"
                     android:background="#fff" >
 
-                    <include layout="@layout/orderdetails_infotab" />
+                    <include layout="@layout/od_outer_info_cont" />
 
-                    <include layout="@layout/orderdetails_drawingtab" />
+                    <include layout="@layout/od_outer_drawing_cont" />
                 </FrameLayout>
             </LinearLayout>
         </TabHost>
