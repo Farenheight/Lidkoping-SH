@@ -13,7 +13,9 @@ class mySQLConnection {
 	}
 
 	public function commit() {
-		$this -> con -> commit();
+		if(!$this -> con -> commit()){
+			errorSql("Commit failed", $mysqli -> errno, $mysqli -> error);
+		}
 	}
 
 	public function prepare($statement) {
@@ -28,39 +30,12 @@ class mySQLConnection {
 		}
 	}
 	
-	
-
-	/////////
-
-	public function connect() {
-		$this -> link = mysql_connect($this -> host, $this -> username, $this -> password);
-		if (!$this -> link) {
-			echo "Log in problem<br>";
-			die('Could not connect: ' . mysql_error());
+	public function execute(){
+		if (!$this->stmt->execute()) {
+			errorSql("Execute failed", $this->stmt->errno, $this->stmt->error);
 		}
-		mysql_select_db($this -> db, $this -> link);
-		mysql_set_charset("UTF8");
+		//$this->stmt->close();
+		return $this->stmt;
 	}
-
-	public function fetchQuery($query) {
-		$result = mysql_query($query, $this -> link);
-		return $result;
-	}
-
-	public function commandQuery($query) {
-		$status = mysql_query($query, $this -> link);
-		if (!$status) {
-			echo "Invalid query: " . mysql_error();
-		}
-	}
-
-	public function disconnect() {
-		mysql_close($this -> link);
-	}
-
-	public function getLink() {
-		return $this -> link;
-	}
-
 }
 ?>
