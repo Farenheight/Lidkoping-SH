@@ -17,9 +17,9 @@
         <string name="back_and_side_processing">Bearbetning på bak och framsida</string>
         <string name="text_style_and_processing">Textstil och bearbetning</string>
         <string name="ornament">Ornament</string>
-        <string name="burial_name">Gravplatsbeteckning</string>
-        <string name="test">&lt;test string></string>
-        <string name="dynamic">&lt;dynamic string></string>
+        <string name="cemetery_number">Gravplatsbeteckning</string>
+        <string name="test">test string</string>
+        <string name="dynamic">dynamic</string>
         <string name="base">Sockel</string>
         <string name="long_test_string">This is a longer test string for testing longer strings suitability in lorem ipsum</string>
         <string name="stoneModel">Stenmodell</string>
@@ -27,5 +27,7 @@
         <string name="workerNote">Anteckningar</string>
         <string name="noteHint">Skriv här</string>
         <string name="tablet_startup_hint">Klicka i listan till vänster för att visa en order</string>
+        <string name="dynamic_id_name">O.R.</string>
+        <string name="searchHint">Sök</string>
 
 </resources>

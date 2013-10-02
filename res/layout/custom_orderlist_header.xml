@@ -6,7 +6,7 @@
     android:layout_marginBottom="16dp" >
 
     <Spinner
-        android:id="@+id/spinnerTasks"
+        android:id="@+id/spinnerStations"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
@@ -17,9 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="16dp" 
         android:ems="16"
-        android:hint="Filter"
+        android:hint="@string/searchHint"
         android:inputType="text" >
 
     </EditText>

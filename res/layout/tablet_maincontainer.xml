@@ -6,7 +6,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".OrderDetailsActivity" >
+    tools:context=".HandsetsDetailsActivity" >
 
     <include layout="@layout/orderlist_root" 
         android:layout_weight="1"
@@ -14,7 +14,7 @@
         android:layout_height="match_parent"/>
 
     <FrameLayout
-        android:id="@+id/stone_detail_container"
+        android:id="@+id/tablet_hint_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"

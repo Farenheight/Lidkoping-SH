@@ -1,10 +1,12 @@
 package se.chalmers.lidkopingsh;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 
 /**
  * An activity containing only a {@link OrderListFragment} on handsets and also
@@ -13,7 +15,6 @@ import android.util.Log;
  * This activity also implements the required
  * {@link OrderListFragment.Callbacks} interface to listen for item selections.
  * 
- * TODO: Class is checked. Remove this.
  */
 public class MainActivity extends FragmentActivity implements
 		OrderListFragment.Callbacks {
@@ -24,9 +25,14 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// Display dimensions
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		Log.d("DEBUG", "Screen width: " + size.x + " Screen height: " + size.y);
 
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
-		mTabletSize = true;
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
@@ -84,11 +90,11 @@ public class MainActivity extends FragmentActivity implements
 			OrderDetailsFragment fragment = new OrderDetailsFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.stone_detail_container, fragment).commit();
+					.replace(R.id.tablet_hint_container, fragment).commit();
 		}
-		// On handsets, start the detail activity for the selected item ID.
+		// On handsets, start the detail activity for the selected item ID
 		else {
-			Intent detailIntent = new Intent(this, OrderDetailsActivity.class);
+			Intent detailIntent = new Intent(this, HandsetsDetailsActivity.class);
 			detailIntent.putExtra(OrderDetailsFragment.ORDER_ID, orderId);
 			startActivity(detailIntent);
 		}
