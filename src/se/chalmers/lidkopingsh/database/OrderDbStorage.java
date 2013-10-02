@@ -117,11 +117,11 @@ class OrderDbStorage {
 
 		insertCustomer(order.getCustomer());
 		for (Image i: order.getImages()) {
-			insertImage(i, order.getOrderNumber());
+			insertImage(i, order.getId());
 		}
 		
 		for (Product p : order.getProducts()) {
-			insertProduct(p, order.getOrderNumber());
+			insertProduct(p, order.getId());
 		}
 
 		db.insert(OrderTable.TABLE_NAME, null, values);
@@ -148,21 +148,21 @@ class OrderDbStorage {
 		db.insert(CustomerTable.TABLE_NAME, null, values);
 	}
 
-	private void insertImage(Image i, String orderNumber) {
+	private void insertImage(Image i, int orderId) {
 		ContentValues values = new ContentValues();
 		
 		values.put(ImageTable.COLUMN_NAME_IMAGE_ID,i.getId());
-		values.put(ImageTable.COLUMN_NAME_ORDER_NUMBER, orderNumber);
+		values.put(ImageTable.COLUMN_NAME_ORDER_ID, orderId);
 		values.put(ImageTable.COLUMN_NAME_IMAGE, i.getImagePath());
 		
 		db.insert(ImageTable.TABLE_NAME, null, values);
 	}
 	
-	private void insertProduct(Product p, String orderNumber) {
+	private void insertProduct(Product p, int orderId) {
 		ContentValues values = new ContentValues();
 
 		values.put(ProductTable.COLUMN_NAME_PRODUCT_ID, p.getId());
-		values.put(ProductTable.COLUMN_NAME_ORDER_NUMBER, orderNumber);
+		values.put(ProductTable.COLUMN_NAME_ORDER_ID, orderId);
 		values.put(ProductTable.COLUMN_NAME_DESCRIPTION, p.getDescription());
 		values.put(ProductTable.COLUMN_NAME_MATERIAL_COLOR, p.getMaterialColor());
 		values.put(ProductTable.COLUMN_NAME_FRONT_WORK, p.getFrontWork());
@@ -241,8 +241,8 @@ class OrderDbStorage {
 			}
 		}
 		db.delete(ProductTable.TABLE_NAME,
-				ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + QUESTION_MARK,
-				new String[] { order.getOrderNumber() });
+				ProductTable.COLUMN_NAME_ORDER_ID + EQUALS + QUESTION_MARK,
+				new String[] { Integer.toString(order.getId()) });
 		db.delete(CustomerTable.TABLE_NAME,
 				CustomerTable.COLUMN_NAME_CUSTOMER_ID + EQUALS + QUESTION_MARK,
 				new String[] { String.valueOf(order.getCustomer().getId()) });
@@ -309,7 +309,7 @@ class OrderDbStorage {
 	}
 
 	private Order getOrder(Cursor c) {
-		int orderID = getIntColumn(c, OrderTable.COLUMN_NAME_ORDER_ID);
+		int orderId = getIntColumn(c, OrderTable.COLUMN_NAME_ORDER_ID);
 		long orderDate = getLongColumn(c, OrderTable.COLUMN_NAME_ORDER_DATE);
 		String orderNumber = getStringColumn(c,
 				OrderTable.COLUMN_NAME_ORDER_NUMBER);
@@ -322,9 +322,9 @@ class OrderDbStorage {
 		long timeLastUpdate = getLongColumn(c,
 				OrderTable.COLUMN_NAME_TIME_LAST_UPDATE);
 
-		Order order = new Order(orderID, orderNumber, idName, timeCreated,
+		Order order = new Order(orderId, orderNumber, idName, timeCreated,
 				timeLastUpdate, cemetery, cemeteryBoard, cemeteryBlock, cemeteryNumber, orderDate,
-				getCustomer(c), getProducts(orderNumber), getImages(orderNumber));
+				getCustomer(c), getProducts(orderId), getImages(orderId));
 
 		return order;
 	}
@@ -336,15 +336,15 @@ class OrderDbStorage {
 		return new Image(imageId, imagePath);
 	}
 	
-	private Collection<Image> getImages(String orderNumber) {
+	private Collection<Image> getImages(int orderId) {
 		String sqlImages = SELECT_FROM + ImageTable.TABLE_NAME + SPACE + IMAGE
 				+ JOIN + OrderTable.TABLE_NAME + SPACE + ORDER + ON + IMAGE
-				+ DOT + ImageTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + ORDER
-				+ DOT + OrderTable.COLUMN_NAME_ORDER_NUMBER + WHERE + IMAGE
-				+ DOT + ImageTable.COLUMN_NAME_ORDER_NUMBER + EQUALS
+				+ DOT + ImageTable.COLUMN_NAME_ORDER_ID + EQUALS + ORDER
+				+ DOT + OrderTable.COLUMN_NAME_ORDER_ID + WHERE + IMAGE
+				+ DOT + ImageTable.COLUMN_NAME_ORDER_ID + EQUALS
 				+ QUESTION_MARK;
 
-		Cursor c = db.rawQuery(sqlImages, new String[] { orderNumber });
+		Cursor c = db.rawQuery(sqlImages, new String[] { Integer.toString(orderId) });
 		Collection<Image> images = new LinkedList<Image>();
 		
 		while(c.moveToNext()) {
@@ -356,7 +356,6 @@ class OrderDbStorage {
 	
 	private Product getProduct(Cursor c) {
 		int productId = getIntColumn(c, ProductTable.COLUMN_NAME_PRODUCT_ID);
-		String orderNumber = getStringColumn(c, ProductTable.COLUMN_NAME_ORDER_NUMBER);
 		String description = getStringColumn(c, ProductTable.COLUMN_NAME_DESCRIPTION);
 		String materialColor = getStringColumn(c, ProductTable.COLUMN_NAME_MATERIAL_COLOR);
 		String frontWork = getStringColumn(c, ProductTable.COLUMN_NAME_FRONT_WORK);
@@ -365,13 +364,13 @@ class OrderDbStorage {
 		
 		boolean isStone = !c.isNull(c.getColumnIndexOrThrow(StoneTable.COLUMN_NAME_PRODUCT_ID));
 		if (isStone) {
-			return getStone(c, productId, orderNumber, description, materialColor, frontWork, tasks);
+			return getStone(c, productId, description, materialColor, frontWork, tasks);
 		} else {
 			return new Product(productId, materialColor, description, frontWork, tasks);
 		}
 	}
 
-	private Collection<Product> getProducts(String orderNumber) {
+	private Collection<Product> getProducts(int orderId) {
 		String sqlProducts = SELECT_FROM + ProductTable.TABLE_NAME + SPACE + PRODUCT
 				+ LEFT_JOIN + StoneTable.TABLE_NAME + SPACE + STONE + ON + PRODUCT + DOT
 				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + STONE + DOT + StoneTable.COLUMN_NAME_PRODUCT_ID
@@ -379,11 +378,11 @@ class OrderDbStorage {
 				+ ProductTable.COLUMN_NAME_PRODUCT_ID + EQUALS + TASK_TO_PRODUCT + DOT + TaskTable.COLUMN_NAME_PRODUCT_ID
 				+ LEFT_JOIN + StationTable.TABLE_NAME + SPACE + TASK + ON + TASK_TO_PRODUCT + DOT 
 				+ TaskTable.COLUMN_NAME_STATION_ID + EQUALS + TASK + DOT + StationTable.COLUMN_NAME_STATION_ID
-				+ WHERE + PRODUCT + DOT + ProductTable.COLUMN_NAME_ORDER_NUMBER + EQUALS + QUESTION_MARK
+				+ WHERE + PRODUCT + DOT + ProductTable.COLUMN_NAME_ORDER_ID + EQUALS + QUESTION_MARK
 				+ ORDER_BY + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID 
 				+ COMMA_SEP + TASK_TO_PRODUCT + DOT + TaskTable.COLUMN_NAME_SORT_ORDER;
 		
-		Cursor c = db.rawQuery(sqlProducts, new String[] { orderNumber });
+		Cursor c = db.rawQuery(sqlProducts, new String[] { Integer.toString(orderId) });
 		Collection<Product> products = new LinkedList<Product>();
 		
 		while (c.moveToNext()) {
@@ -393,7 +392,7 @@ class OrderDbStorage {
 		return products;
 	}
 	
-	private Stone getStone(Cursor c, int productId, String orderNumber,
+	private Stone getStone(Cursor c, int productId,
 			String description, String materialColor, String frontWork,
 			List<Task> tasks) {
 		String stoneModel = getStringColumn(c,

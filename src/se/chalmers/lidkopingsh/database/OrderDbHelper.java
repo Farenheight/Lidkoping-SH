@@ -27,7 +27,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	 * Current version of the application's database structure.
 	 * If the structure is changed, this version number must be increased.
 	 */
-	private static final int DATABASE_VERSION = 14;
+	private static final int DATABASE_VERSION = 15;
 	private static final String DATABASE_NAME = "Orders.db";
 	
 	private static final String TEXT_TYPE = " TEXT";
@@ -44,7 +44,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 			+ OrderTable.COLUMN_NAME_ORDER_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_ORDER_DATE + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_ORDER_NUMBER + TEXT_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
-			+ OrderTable.COLUMN_NAME_ID_NAME + TEXT_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
+			+ OrderTable.COLUMN_NAME_ID_NAME + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_CEMETERY_BOARD + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_CEMETERY + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ OrderTable.COLUMN_NAME_CEMETERY_BLOCK + TEXT_TYPE + COMMA_SEP
@@ -57,14 +57,14 @@ class OrderDbHelper extends SQLiteOpenHelper {
 			+ ImageTable.TABLE_NAME + " ("
 			+ ImageTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
 			+ ImageTable.COLUMN_NAME_IMAGE_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
-			+ ImageTable.COLUMN_NAME_ORDER_NUMBER + TEXT_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
+			+ ImageTable.COLUMN_NAME_ORDER_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
 			+ ImageTable.COLUMN_NAME_IMAGE + TEXT_TYPE + ") ";
 	
 	private static final String PRODUCT_TABLE_CREATE = CREATE_TABLE
 			+ ProductTable.TABLE_NAME + " (" 
 			+ ProductTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
-			+ ProductTable.COLUMN_NAME_ORDER_NUMBER + TEXT_TYPE + NOT_NULL + COMMA_SEP
+			+ ProductTable.COLUMN_NAME_ORDER_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_FRONT_WORK + TEXT_TYPE + NOT_NULL +COMMA_SEP
 			+ ProductTable.COLUMN_NAME_MATERIAL_COLOR + TEXT_TYPE + NOT_NULL + " )";
