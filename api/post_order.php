@@ -1,7 +1,6 @@
 <?php
 
-function postOrder(){
-	
-}
+function postOrder() {
 
+}
 ?>
