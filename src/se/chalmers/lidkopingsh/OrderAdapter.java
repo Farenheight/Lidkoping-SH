@@ -1,13 +1,13 @@
 package se.chalmers.lidkopingsh;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +16,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-/**
- * TODO: Change to extending ArrayAdapter again. Two reasons, first, that would
- * make it easier implementing section headers. Second it's better using
- * something in android's default libraries.
- */
 public class OrderAdapter extends BaseAdapter implements Filterable {
 	/**
 	 * Contains the list of objects that represent the data of this
@@ -122,20 +117,32 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	private View createViewFromResource(int position, View convertView,
 			ViewGroup parent) {
 		View view;
-		TextView text;
 
-		int resource = R.layout.custom_list_item;
-
+		// If recycled view not obtained from android, inflate a new one
 		if (convertView == null) {
-			view = mInflater.inflate(resource, parent, false);
+			view = mInflater.inflate(R.layout.custom_list_item, parent, false);
 		} else {
 			view = convertView;
 		}
 
-		text = (TextView) view.findViewById(R.id.id_name);
-
 		Order order = getItem(position);
+		TextView text;
+
+		// Id name
+		text = (TextView) view.findViewById(R.id.id_name);
 		text.setText(order.getIdName());
+
+		// Customer name TODO: Change to deceased's name if available later
+		text = (TextView) view.findViewById(R.id.deceased_name);
+		text.setText(order.getCustomer().getName());
+
+		// Other details
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(order.getOrderDate());
+		String date = cal.get(Calendar.DAY_OF_MONTH) + "/"
+				+ cal.get(Calendar.MONTH);
+		text = (TextView) view.findViewById(R.id.other_details);
+		text.setText(date + " - " + order.getCemetary());
 
 		return view;
 	}
@@ -151,11 +158,9 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	}
 
 	/**
-	 * <p>
 	 * An array filter constrains the content of the array adapter with a
 	 * prefix. Each item that does not start with the supplied prefix is removed
 	 * from the list.
-	 * </p>
 	 */
 	private class ArrayFilter extends Filter {
 		@Override
