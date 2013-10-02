@@ -81,7 +81,7 @@ public class OrderDetailsFragment extends Fragment {
 		drawingTab.setIndicator("Ritning");
 		tabHost.addTab(drawingTab);
 		initDrawing();
-		// initTasks(); //TODO: Comment in when vertical task container is done
+		initTasks(R.id.tabDrawingContainer);
 
 		// Add detail tab
 		TabHost.TabSpec detailTab = tabHost.newTabSpec("detailTab");
@@ -89,49 +89,52 @@ public class OrderDetailsFragment extends Fragment {
 		detailTab.setIndicator("Detaljer");
 		tabHost.addTab(detailTab);
 		initDetails();
-		initTasks();
+		initTasks(R.id.tab_info_container);
 	}
 
 	/**
-	 * TODO: Rewrite
+	 * Setups a task container with all it's data.
 	 */
-	private void initTasks() {
+	private void initTasks(int tabResource) {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		LinearLayout rootTaskCont = (LinearLayout) rootView
-				.findViewById(R.id.root_task_cont);
+		LinearLayout rootTaskCont = (LinearLayout) rootView.findViewById(
+				tabResource).findViewById(R.id.root_task_cont);
 		for (Product p : mOrder.getProducts()) {
-			// Create a new view that contains the tasks of a single product
 			ViewGroup productView = (ViewGroup) inflater.inflate(
 					R.layout.od_product_task_cont, null);
 			// TODO Fix to actual type of Product
 			((TextView) productView.findViewById(R.id.task_name))
 					.setText("Stone");
 			for (final Task task : p.getTasks()) {
-				View taskView = inflater.inflate(R.layout.od_task_cont, null);
-				
-				//Set task name
-				((TextView) taskView.findViewById(R.id.task_name)).setText(task
-						.getStation().getName());
-				
-				//Set the task toggler
-				ToggleButton btn = (ToggleButton) taskView
-						.findViewById(R.id.task_toggler);
-				btn.setChecked(task.getStatus() == Status.DONE);
-				btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-					@Override
-					public void onCheckedChanged(CompoundButton toggleButton,
-							boolean isChecked) {
-						if (isChecked) {
-							task.setStatus(Status.DONE);
-						} else {
-							task.setStatus(Status.NOT_DONE);
-						}
-					}
-				});
-				productView.addView(taskView);
+				productView.addView(initTaskView(inflater, task));
 			}
 			rootTaskCont.addView(productView);
 		}
+	}
+
+	private View initTaskView(LayoutInflater inflater, final Task task) {
+		View taskView = inflater.inflate(R.layout.od_task_cont, null);
+
+		// Set task name
+		((TextView) taskView.findViewById(R.id.task_name)).setText(task
+				.getStation().getName());
+
+		// Set the task toggler
+		ToggleButton btn = (ToggleButton) taskView
+				.findViewById(R.id.task_toggler);
+		btn.setChecked(task.getStatus() == Status.DONE);
+		btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton toggleButton,
+					boolean isChecked) {
+				if (isChecked) {
+					task.setStatus(Status.DONE);
+				} else {
+					task.setStatus(Status.NOT_DONE);
+				}
+			}
+		});
+		return taskView;
 	}
 
 	/**
@@ -170,8 +173,7 @@ public class OrderDetailsFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
 
-		// TODO: Check if the first product really is a stone...
-		Stone stone = ((Stone) mOrder.getProducts().get(0));
+		Stone stone = getStone();
 		((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
 				.getStoneModel());
 		((TextView) rootView.findViewById(R.id.materialAndColor)).setText(stone
@@ -185,6 +187,18 @@ public class OrderDetailsFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
 				.setText(stone.getTextStyle());
 
+	}
+
+	/**
+	 * TODO: Move to model
+	 */
+	private Stone getStone() {
+		for (Product product : mOrder.getProducts()) {
+			if (product instanceof Stone) {
+				return (Stone) product;
+			}
+		}
+		return null;
 	}
 
 }

@@ -9,7 +9,9 @@
         android:id="@+id/task_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
         android:text="@string/dynamic"
-        android:textSize="40sp" />
+        android:textColor="#777"
+        android:textSize="35sp" />
 
 </LinearLayout>

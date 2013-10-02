@@ -3,7 +3,9 @@
     android:id="@+id/list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp" >
 
     <TextView
         android:id="@+id/id_name"
@@ -11,7 +13,9 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="O.M."
+        android:textColor="#888"
         android:textSize="50sp"
+        android:textStyle="normal|bold"
         tools:ignore="HardcodedText" />
 
     <LinearLayout
@@ -26,16 +30,20 @@
             android:layout_height="wrap_content"
             android:paddingTop="17dp"
             android:text="Olle Bengtsson"
+            android:textColor="#777"
             android:textSize="20sp"
+            android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/other_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12/09 - 130001 - Örslösa"
+            android:text="12/09 - Kyrkogård"
+            android:textColor="#777"
             android:textSize="16sp"
             tools:ignore="HardcodedText" />
+
     </LinearLayout>
 
 </LinearLayout>

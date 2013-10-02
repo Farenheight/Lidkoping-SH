@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">LidkopingSH</string>
+    <string name="app_name">Lidkopings Stenhuggeri</string>
     <string name="title_stone_detail">Stone Detail</string>
     
     <string-array name="tasks_array">
         <item>Polering</item>
-        <item>Sågning</item>
+        <item>Sagning</item>
     </string-array>
-        <string name="cemetery_board">Kyrkogårdsnämnd</string>
-        <string name="cemetery">Kyrkogård</string>
+        <string name="cemetery_board">Kyrkogardsnämnd</string>
+        <string name="cemetery">Kyrkogard</string>
         <string name="desc">Beskrivning</string>
         <string name="model">Modell</string>
         <string name="material_and_color">Material och färg</string>

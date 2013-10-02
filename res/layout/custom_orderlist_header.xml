@@ -2,22 +2,25 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:orientation="vertical"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="16dp" >
+    android:paddingBottom="16dp"
+    android:background="#eee"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp" >
 
     <Spinner
         android:id="@+id/spinnerStations"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:textSize="50sp" />
+        android:layout_marginTop="15dp"
+        android:textSize="50sp"
+         />
 
     <EditText
         android:id="@+id/fieldFilter"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp" 
+        android:layout_marginTop="16dp"
         android:ems="16"
         android:hint="@string/searchHint"
         android:inputType="text" >

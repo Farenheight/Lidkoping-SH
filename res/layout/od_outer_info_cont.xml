@@ -2,7 +2,6 @@
     android:id="@+id/tab_info_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ddd"
     android:orientation="horizontal"
     android:baselineAligned="false" >
 
@@ -13,8 +12,5 @@
         layout="@layout/od_inner_info_cont" />
 
     <include 
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
         layout="@layout/od_root_task_cont" />
 </LinearLayout>
