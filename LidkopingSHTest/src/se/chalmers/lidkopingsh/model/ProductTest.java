@@ -102,17 +102,17 @@ public class ProductTest extends TestCase implements Listener<Product> {
 		List<Task> tasks1 = new ArrayList<Task>();
 		tasks1.add(new Task(new Station(0, "Polering")));
 		tasks1.add(new Task(new Station(1, "Rengoring")));
-		Product p1 = new Product(0, "Blue and cool", "Description", "Plain", tasks1);
+		Product p1 = new Product(0, "Blue and cool", "Description", "Plain", tasks1, null);
 		
 		List<Task> tasks2 = new ArrayList<Task>();
 		tasks2.add(new Task(new Station(0, "Polering")));
 		tasks2.add(new Task(new Station(1, "Rengoring")));
-		Product p2 = new Product(0, "Blue and cool", "Description", "Plain", tasks2);
+		Product p2 = new Product(0, "Blue and cool", "Description", "Plain", tasks2, null);
 		
 		List<Task> tasks3 = new ArrayList<Task>();
 		tasks3.add(new Task(new Station(2, "Polering")));
 		tasks3.add(new Task(new Station(1, "Rengoring")));
-		Product p3 = new Product(0, "Blue and cool", "Description", "Plain", tasks3);
+		Product p3 = new Product(0, "Blue and cool", "Description", "Plain", tasks3, null);
 		
 		assertTrue(p1.equals(p2));
 		assertTrue(p2.equals(p1));

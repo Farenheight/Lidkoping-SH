@@ -41,8 +41,8 @@ public class Stone extends Product {
 	 */
 	public Stone(int id, String materialColor, String description,
 			String frontWork, List<Task> tasks, String stoneModel,
-			String sideToBackWork, String textStyle, String ornament) {
-		super(id, materialColor, description, frontWork, tasks);
+			String sideToBackWork, String textStyle, String ornament, ProductType type) {
+		super(id, materialColor, description, frontWork, tasks, type);
 		this.stoneModel = stoneModel != null? stoneModel : "";
 		this.sideBackWork = sideToBackWork != null? sideToBackWork : "";
 		this.textStyle = textStyle != null? textStyle : "";
@@ -58,7 +58,7 @@ public class Stone extends Product {
 				"Framsidan & sockelns ovansida polerad ,matt fas",
 				new ArrayList<Task>(), "NB 46", "Polerade",
 				"Sx358-nedhuggen i guld",
-				"Kors & sol i guld\nF�glar & blommor vita");
+				"Kors & sol i guld\nF�glar & blommor vita", new ProductType(1, "Sten"));
 	}
 
 	public String getStoneModel() {

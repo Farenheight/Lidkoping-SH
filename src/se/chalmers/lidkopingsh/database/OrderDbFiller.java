@@ -9,6 +9,7 @@ import se.chalmers.lidkopingsh.model.Customer;
 import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
+import se.chalmers.lidkopingsh.model.ProductType;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
@@ -85,7 +86,7 @@ public class OrderDbFiller {
 		return images;
 	}
 	private static Product getSocle(String description, List<Task> tasks) {
-		return new Product(productId++, "Hallandia", description, "Polerad", tasks);
+		return new Product(productId++, "Hallandia", description, "Polerad", tasks, new ProductType(1,"Sockel"));
 	}
 
 	private static List<Task> getSocleTasks() {
@@ -98,7 +99,7 @@ public class OrderDbFiller {
 	public static Stone getStone(String description, List<Task> tasks) {
 		return new Stone(productId++, "Hallandia", description, "Polerad", tasks,
 				"NB 49", "Råhugget", "Helvetica nedhuggen i guld",
-				"Blomma nedhuggen i guld");
+				"Blomma nedhuggen i guld", new ProductType(2, "Sten"));
 	}
 
 	public static List<Task> getStoneTasks() {

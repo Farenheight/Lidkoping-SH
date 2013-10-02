@@ -1,5 +1,11 @@
 package se.chalmers.lidkopingsh.model;
 
+/**
+ * Holds the filepath to an image and its identification number.
+ * 
+ * @author Alexander Härenstam
+ * @author Olliver Mattsson
+ */
 public class Image {
 	private int id;
 	private String imagePath;

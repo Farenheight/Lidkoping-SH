@@ -4,6 +4,7 @@ import se.chalmers.lidkopingsh.database.DataContract.CustomerTable;
 import se.chalmers.lidkopingsh.database.DataContract.ImageTable;
 import se.chalmers.lidkopingsh.database.DataContract.OrderTable;
 import se.chalmers.lidkopingsh.database.DataContract.ProductTable;
+import se.chalmers.lidkopingsh.database.DataContract.ProductTypeTable;
 import se.chalmers.lidkopingsh.database.DataContract.StationTable;
 import se.chalmers.lidkopingsh.database.DataContract.StoneTable;
 import se.chalmers.lidkopingsh.database.DataContract.TaskTable;
@@ -27,7 +28,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	 * Current version of the application's database structure.
 	 * If the structure is changed, this version number must be increased.
 	 */
-	private static final int DATABASE_VERSION = 15;
+	private static final int DATABASE_VERSION = 16;
 	private static final String DATABASE_NAME = "Orders.db";
 	
 	private static final String TEXT_TYPE = " TEXT";
@@ -65,6 +66,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 			+ ProductTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_PRODUCT_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_ORDER_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
+			+ ProductTable.COLUMN_NAME_PRODUCT_TYPE_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP
 			+ ProductTable.COLUMN_NAME_FRONT_WORK + TEXT_TYPE + NOT_NULL +COMMA_SEP
 			+ ProductTable.COLUMN_NAME_MATERIAL_COLOR + TEXT_TYPE + NOT_NULL + " )";
@@ -77,6 +79,12 @@ class OrderDbHelper extends SQLiteOpenHelper {
 			+ StoneTable.COLUMN_NAME_TEXTSTYLE + TEXT_TYPE + NOT_NULL + COMMA_SEP
 			+ StoneTable.COLUMN_NAME_SIDE_BACK_WORK + TEXT_TYPE + COMMA_SEP
 			+ StoneTable.COLUMN_NAME_STONE_MODEL + TEXT_TYPE + NOT_NULL + " )";
+	
+	private static final String PRODUCT_TYPE_TABLE_CREATE = CREATE_TABLE
+			+ ProductTypeTable.TABLE_NAME + " ("
+			+ ProductTypeTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
+			+ ProductTypeTable.COLUMN_NAME_PRODUCT_TYPE_ID + INTEGER_TYPE + NOT_NULL + UNIQUE + COMMA_SEP
+			+ ProductTypeTable.COLUMN_NAME_TYPE + TEXT_TYPE + NOT_NULL + " )";
 	
 	private static final String TASK_TABLE_CREATE = CREATE_TABLE
 			+ StationTable.TABLE_NAME + " ("
@@ -116,6 +124,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 		db.execSQL(IMAGE_TABLE_CREATE);
 		db.execSQL(PRODUCT_TABLE_CREATE);
 		db.execSQL(STONE_TABLE_CREATE);
+		db.execSQL(PRODUCT_TYPE_TABLE_CREATE);
 		db.execSQL(TASK_TABLE_CREATE);
 		db.execSQL(TASK_TO_PRODUCT_TABLE_CREATE);
 		db.execSQL(CUSTOMER_TABLE_CREATE);
@@ -127,6 +136,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 		dropTable(db, ImageTable.TABLE_NAME);
 		dropTable(db, ProductTable.TABLE_NAME);
 		dropTable(db, StoneTable.TABLE_NAME);
+		dropTable(db, ProductTypeTable.TABLE_NAME);
 		dropTable(db, StationTable.TABLE_NAME);
 		dropTable(db, TaskTable.TABLE_NAME);
 		dropTable(db, CustomerTable.TABLE_NAME);

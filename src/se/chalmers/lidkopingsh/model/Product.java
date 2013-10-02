@@ -16,6 +16,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	private String materialColor;
 	private String description;
 	private String frontWork;
+	private ProductType type;
 	/**
 	 * The {@link ProductListener}s that should listen when a task is changed on
 	 * this product.
@@ -43,12 +44,13 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            be completed.
 	 */
 	public Product(int id, String materialColor, String description,
-			String frontWork, List<Task> tasks) {
+			String frontWork, List<Task> tasks, ProductType type) {
 		this(tasks);
 		this.id = id;
 		this.materialColor = materialColor != null? materialColor : "";
 		this.description = description != null? description : "";
 		this.frontWork = frontWork != null? frontWork : "";
+		this.type = type;
 	}
 	/**
 	 * Create a new Product
@@ -64,8 +66,8 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The frontWork for this product
 	 */
 	public Product(int id, String materialColor, String description,
-			String frontWork){
-		this(id,materialColor,description,frontWork,new ArrayList<Task>());
+			String frontWork, ProductType type){
+		this(id,materialColor,description,frontWork,new ArrayList<Task>(), type);
 	}
 	/**
 	 * Create a new product with tasks
@@ -88,7 +90,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 */
 	public Product() {
 		this(0, "Svart sten", "Den fulaste stenen i vi säljer",
-				"Mycket repor på framsidan", new ArrayList<Task>());
+				"Mycket repor på framsidan", new ArrayList<Task>(), new ProductType(1,"Robins fula stenar"));
+	}
+
+	public ProductType getType() {
+		return type;
 	}
 
 	public int getId() {

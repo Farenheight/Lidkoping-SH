@@ -77,11 +77,11 @@ public class OrderTest {
 
 		order0.addOrderListener(listener);
 
-		Product product0 = new Product(0, "", "", "");
+		Product product0 = new Product(0, "", "", "",null);
 		Task task0 = new Task(new Station(0, "Task0"));
 		Task task1 = new Task(new Station(1, "Task1"));
 
-		Product product1 = new Stone(1, "", "", "", null, "", "", "", "");
+		Product product1 = new Stone(1, "", "", "", null, "", "", "", "", null);
 		Task task2 = new Task(new Station(2, "Task2"));
 		Task task3 = new Task(new Station(3, "Task3"));
 
@@ -98,11 +98,11 @@ public class OrderTest {
 				System.currentTimeMillis(), null, "", "", "",
 				System.currentTimeMillis(), new Customer(), null,null);
 
-		Product product2 = new Product(0, "", "", "");
+		Product product2 = new Product(0, "", "", "", null);
 		Task task4 = new Task(new Station(0, "Task0"));
 		Task task5 = new Task(new Station(1, "Task1"));
 
-		Product product3 = new Stone(1, "", "", "", null, "", "", "", "");
+		Product product3 = new Stone(1, "", "", "", null, "", "", "", "", null);
 		Task task6 = new Task(new Station(2, "Task2"));
 		Task task7 = new Task(new Station(3, "Task3"));
 
