@@ -27,9 +27,9 @@ public class OrderDbLayer implements ILayer {
 	 * @param context
 	 *            to use to open or create the database
 	 */
-	public OrderDbLayer(Context context, String serverPath) {
+	public OrderDbLayer(Context context) {
 		db = new OrderDbStorage(context);
-		serverLayer = new ServerLayer(serverPath);
+		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", context);
 		if (db.query(null, null, null).isEmpty()) {
 			OrderDbFiller.fillDb(db);
 			Log.d("OrderdbLayer", "filled database with dummy data");
@@ -55,6 +55,11 @@ public class OrderDbLayer implements ILayer {
 		}
 
 		return new MapModel(orders, db.getStations());
+	}
+	
+	@Override
+	public void updateDatabase(Order o) {
+		db.update(o);
 	}
 
 }
