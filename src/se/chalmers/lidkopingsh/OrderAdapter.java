@@ -112,10 +112,22 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 			ViewGroup parent) {
 		View listItemView;
 
-		// If recycled view not obtained from android, inflate a new one
-		if (convertView == null) {
-			listItemView = mInflater.inflate(R.layout.custom_list_item, parent,
+		if (position == 0) {
+			listItemView = mInflater.inflate(R.layout.list_item_header, parent,
 					false);
+			((TextView) listItemView.findViewById(R.id.list_item_header_text))
+					.setText("STENAR SOM SKA SÅGAS");
+
+		} else if (position == getDonePosition(mObjects)) {
+			listItemView = mInflater.inflate(R.layout.list_item_header, parent,
+					false);
+			((TextView) listItemView.findViewById(R.id.list_item_header_text))
+					.setText("REDAN SÅGADE STENAR");
+		}
+		// If recycled view not obtained from android, inflate a new one
+		else if (convertView == null
+				|| convertView.findViewById(R.id.list_header_view) != null) {
+			listItemView = mInflater.inflate(R.layout.list_item, parent, false);
 		} else {
 			listItemView = convertView;
 		}
@@ -140,6 +152,17 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		tmpTextView.setText(date + " - " + order.getCemetary());
 
 		return listItemView;
+	}
+
+	/**
+	 * Position in sorted list that divides for example painted stones from not
+	 * painted. TODO: Implement and move to model
+	 * 
+	 * @param mObjects
+	 * @return
+	 */
+	private int getDonePosition(List<Order> mObjects2) {
+		return 5;
 	}
 
 	/**
@@ -173,16 +196,17 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 				results.count = list.size();
 			} else {
 				String lcConstraint = constraint.toString().toLowerCase();
-				ArrayList<Order> orderList = new ArrayList<Order>(mOriginalValues);
+				ArrayList<Order> orderList = new ArrayList<Order>(
+						mOriginalValues);
 
 				final ArrayList<Order> newValues = new ArrayList<Order>();
-				
-				if(mModelFilter == null) {
+
+				if (mModelFilter == null) {
 					mModelFilter = new ModelFilter();
 				}
 
-				for (Order order : orderList) {					
-					if(mModelFilter.passesFilter(order, constraint.toString())) {
+				for (Order order : orderList) {
+					if (mModelFilter.passesFilter(order, constraint.toString())) {
 						newValues.add(order);
 					}
 				}
@@ -205,5 +229,6 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 				notifyDataSetInvalidated();
 			}
 		}
+
 	}
 }

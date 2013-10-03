@@ -97,7 +97,7 @@ public class OrderListFragment extends ListFragment {
 	private void initHeaderView() {
 		getListView().addHeaderView(
 				LayoutInflater.from(getActivity()).inflate(
-						R.layout.custom_orderlist_header, null));
+						R.layout.list_header, null));
 		initStationSpinner();
 		initSearch();
 	}
