@@ -9,6 +9,7 @@ import se.chalmers.lidkopingsh.model.Task;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class OrderDetailsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
+		
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
 		rootView = inflater.inflate(R.layout.od_root, container, false);
@@ -61,26 +63,20 @@ public class OrderDetailsFragment extends Fragment {
 		// if (getArguments().containsKey(ORDER_ID)) {
 
 		// Gets and saves the order matching the orderId passed to the fragment
-		// TODO: Consider catching NoElementFoundException.
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
-
-		// Collects data from mOrder and layouts the views accordingly
-		initTabs();
-		initTasks(R.id.tab_info_container);
-
+	
 		return rootView;
 	}
 	
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-	
-		
-		super.onViewCreated(view, savedInstanceState);
+	public void onResume() {
+		super.onResume();
+		// Collects data from mOrder and initialize the views accordingly
+		initTabs();
+		initTasks(R.id.tab_info_container);
 	}
 	
-	
-
 	/**
 	 * Sets up the tab host for this stone detail view with one drawing tab and
 	 * one details tab. Data is also collected from mOrder and added to the
@@ -150,18 +146,14 @@ public class OrderDetailsFragment extends Fragment {
 			@Override
 			public void onCheckedChanged(CompoundButton toggleButton,
 					boolean isChecked) {
-				if (isChecked) {
-					task.setStatus(Status.DONE);
-				} else {
+				if (task.getStatus() == Status.DONE) {
 					task.setStatus(Status.NOT_DONE);
+				} else {
+					task.setStatus(Status.DONE);
 				}
-				updateStatus(btn);
 			}
 		});
 		return taskView;
-	}
-
-	private void updateStatus(View btn) {
 	}
 
 	/**

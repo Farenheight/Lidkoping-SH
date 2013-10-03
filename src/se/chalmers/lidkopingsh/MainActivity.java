@@ -25,12 +25,13 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		// Display dimensions
-		Display display = getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		Log.d("DEBUG", "Screen width: " + size.x + " Screen height: " + size.y);
+
+		// // Display dimensions
+		// Display display = getWindowManager().getDefaultDisplay();
+		// Point size = new Point();
+		// display.getSize(size);
+		// Log.d("DEBUG", "Screen width: " + size.x + " Screen height: "
+		// + size.y);
 
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
@@ -38,7 +39,7 @@ public class MainActivity extends FragmentActivity implements
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
 					R.id.order_list)).setActivateOnItemClick(true);
 		} else {
-			setContentView(R.layout.list_root); 
+			setContentView(R.layout.list_root);
 		}
 
 		printDPI();
@@ -94,7 +95,8 @@ public class MainActivity extends FragmentActivity implements
 		}
 		// On handsets, start the detail activity for the selected item ID
 		else {
-			Intent detailIntent = new Intent(this, HandsetsDetailsActivity.class);
+			Intent detailIntent = new Intent(this,
+					HandsetsDetailsActivity.class);
 			detailIntent.putExtra(OrderDetailsFragment.ORDER_ID, orderId);
 			startActivity(detailIntent);
 		}
