@@ -3,7 +3,7 @@
     android:layout_height="100dp"
     android:orientation="vertical"
     android:paddingBottom="16dp"
-    android:background="#ddd"
+    android:background="#ccc"
     android:paddingLeft="20dp"
     android:paddingRight="20dp" >
 

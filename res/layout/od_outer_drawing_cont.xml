@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tabDrawingContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,13 +11,14 @@
         android:id="@+id/orderDrawing"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:layout_margin="15dp"
+        android:layout_weight="1"
         android:contentDescription="@string/order_drawing"
         android:src="@drawable/test_headstone_drawing" />
 
-    <include
-        android:layout_height="match_parent"
-        layout="@layout/od_root_task_cont" />
+    <FrameLayout
+        android:layout_width="240dp"
+        android:layout_height="10dp"
+        tools:ignore="UselessLeaf" />
 
 </LinearLayout>

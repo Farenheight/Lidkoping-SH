@@ -123,7 +123,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 
 		// Customer name TODO: Change to deceased's name if available later
 		tmpTextView = (TextView) listItemView.findViewById(R.id.deceased_name);
-		tmpTextView.setText(order.getCustomer().getName());
+		tmpTextView.setText("Avlidnes namn"); //TODO: add in model
 
 		// Other details
 		Calendar cal = Calendar.getInstance();
@@ -131,7 +131,8 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		String date = cal.get(Calendar.DAY_OF_MONTH) + "/"
 				+ cal.get(Calendar.MONTH);
 		tmpTextView = (TextView) listItemView.findViewById(R.id.other_details);
-		tmpTextView.setText(date + " - " + order.getCemetary());
+		//TODO: implement getting current task in model + getting a percentage done
+		tmpTextView.setText(date + " - " + "Sågning - " + "75%"); 
 	}
 
 	/**

@@ -17,6 +17,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -30,6 +31,10 @@ public class OrderDetailsFragment extends Fragment {
 
 	/** Used as a key when sending the object between activities and fragments */
 	public static final String ORDER_ID = "item_id";
+
+	private static final String DRAWING_TAB = "drawing tab";
+
+	private static final String DETAIL_TAB = "DETAILS tab";
 
 	/** The order displayed by this StoneDetailFragment */
 	private Order mOrder;
@@ -47,6 +52,7 @@ public class OrderDetailsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
 		rootView = inflater.inflate(R.layout.od_root, container, false);
@@ -61,9 +67,19 @@ public class OrderDetailsFragment extends Fragment {
 
 		// Collects data from mOrder and layouts the views accordingly
 		initTabs();
+		initTasks(R.id.tab_info_container);
 
 		return rootView;
 	}
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+	
+		
+		super.onViewCreated(view, savedInstanceState);
+	}
+	
+	
 
 	/**
 	 * Sets up the tab host for this stone detail view with one drawing tab and
@@ -72,33 +88,39 @@ public class OrderDetailsFragment extends Fragment {
 	 * 
 	 */
 	private void initTabs() {
-		TabHost tabHost = (TabHost) rootView.findViewById(R.id.orderTabHost);
+		final TabHost tabHost = (TabHost) rootView
+				.findViewById(R.id.orderTabHost);
 		tabHost.setup();
 
+		tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+
+			@Override
+			public void onTabChanged(String tabId) {
+			}
+		});
+
 		// Add drawing tab
-		TabHost.TabSpec drawingTab = tabHost.newTabSpec("drawingTab");
+		TabHost.TabSpec drawingTab = tabHost.newTabSpec(DRAWING_TAB);
 		drawingTab.setContent(R.id.tabDrawingContainer);
 		drawingTab.setIndicator("Ritning");
 		tabHost.addTab(drawingTab);
 		initDrawing();
-		initTasks(R.id.tabDrawingContainer);
 
 		// Add detail tab
-		TabHost.TabSpec detailTab = tabHost.newTabSpec("detailTab");
+		TabHost.TabSpec detailTab = tabHost.newTabSpec(DETAIL_TAB);
 		detailTab.setContent(R.id.tab_info_container);
 		detailTab.setIndicator("Detaljer");
 		tabHost.addTab(detailTab);
 		initDetails();
-		initTasks(R.id.tab_info_container);
 	}
 
 	/**
 	 * Setups a task container with all it's data.
 	 */
-	private void initTasks(int tabResource) {
+	private View initTasks(int tabResource) {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		LinearLayout rootTaskCont = (LinearLayout) rootView.findViewById(
-				tabResource).findViewById(R.id.root_task_cont);
+		LinearLayout rootTaskCont = (LinearLayout) rootView
+				.findViewById(R.id.root_task_cont);
 		for (Product p : mOrder.getProducts()) {
 			ViewGroup productView = (ViewGroup) inflater.inflate(
 					R.layout.od_product_task_cont, null);
@@ -110,6 +132,7 @@ public class OrderDetailsFragment extends Fragment {
 			}
 			rootTaskCont.addView(productView);
 		}
+		return rootTaskCont;
 	}
 
 	private View initTaskView(LayoutInflater inflater, final Task task) {
@@ -120,7 +143,7 @@ public class OrderDetailsFragment extends Fragment {
 				.getStation().getName());
 
 		// Set the task toggler
-		ToggleButton btn = (ToggleButton) taskView
+		final ToggleButton btn = (ToggleButton) taskView
 				.findViewById(R.id.task_toggler);
 		btn.setChecked(task.getStatus() == Status.DONE);
 		btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -132,9 +155,13 @@ public class OrderDetailsFragment extends Fragment {
 				} else {
 					task.setStatus(Status.NOT_DONE);
 				}
+				updateStatus(btn);
 			}
 		});
 		return taskView;
+	}
+
+	private void updateStatus(View btn) {
 	}
 
 	/**
