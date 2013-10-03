@@ -6,13 +6,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import se.chalmers.lidkopingsh.model.IModelFilter;
 import se.chalmers.lidkopingsh.model.ModelFilter;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -24,35 +24,27 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 * ArrayAdapter. The content of this list is referred to as "the array" in
 	 * the documentation.
 	 */
-	private List<Order> mObjects;
+	private List<Order> mOrders;
 
-	// A copy of the original mObjects array, initialized from and then used
-	// instead as soon as
-	// the mFilter ArrayFilter is used. mObjects will then only contain the
-	// filtered values.
-	private ArrayList<Order> mOriginalValues;
+	// A copy of the original mOrders list, initialized from and then used
+	// instead as soon as the mFilter ArrayFilter is used. mOrders will then
+	// only contain the filtered values.
+	private ArrayList<Order> mOriginalObjects;
 	private ArrayFilter mFilter;
+	private ModelFilter mModelFilter;
 
 	private LayoutInflater mInflater;
 
-	private Context mContext;
-
 	/**
-	 * Constructor
 	 * 
 	 * @param context
-	 *            The current context.
-	 * @param resource
-	 *            The resource ID for a layout file containing a TextView to use
-	 *            when instantiating views.
-	 * @param objects
-	 *            The objects to represent in the ListView.
+	 * @param orders
+	 *            The order list this adapter will manage
 	 */
-	public OrderAdapter(Context context, List<Order> objects) {
-		mContext = context;
+	public OrderAdapter(Context context, List<Order> orders) {
 		mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mObjects = objects;
+		mOrders = orders;
 	}
 
 	/**
@@ -63,35 +55,25 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 *            adapter.
 	 */
 	public void sort(Comparator<? super Order> comparator) {
-		if (mOriginalValues != null) {
-			Collections.sort(mOriginalValues, comparator);
+		if (mOriginalObjects != null) {
+			Collections.sort(mOriginalObjects, comparator);
 		} else {
-			Collections.sort(mObjects, comparator);
+			Collections.sort(mOrders, comparator);
 		}
-	}
-
-	/**
-	 * Returns the context associated with this array adapter. The context is
-	 * used to create views from the resource passed to the constructor.
-	 * 
-	 * @return The Context associated with this adapter.
-	 */
-	public Context getContext() {
-		return mContext;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public int getCount() {
-		return mObjects.size();
+		return mOrders.size();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Order getItem(int position) {
-		return mObjects.get(position);
+		return mOrders.get(position);
 	}
 
 	/**
@@ -105,24 +87,18 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 * {@inheritDoc}
 	 */
 	public View getView(int position, View convertView, ViewGroup parent) {
-		return createViewFromResource(position, convertView, parent);
-	}
-
-	private View createViewFromResource(int position, View convertView,
-			ViewGroup parent) {
 		View listItemView;
-
 		if (position == 0) {
 			listItemView = mInflater.inflate(R.layout.list_item_header, parent,
 					false);
 			((TextView) listItemView.findViewById(R.id.list_item_header_text))
-					.setText("STENAR SOM SKA SÅGAS");
+					.setText("STENAR SOM SKA SÃ…GAS");
 
-		} else if (position == getDonePosition(mObjects)) {
+		} else if (position == getDonePosition(mOrders)) {
 			listItemView = mInflater.inflate(R.layout.list_item_header, parent,
 					false);
 			((TextView) listItemView.findViewById(R.id.list_item_header_text))
-					.setText("REDAN SÅGADE STENAR");
+					.setText("REDAN SÃ…GADE STENAR");
 		}
 		// If recycled view not obtained from android, inflate a new one
 		else if (convertView == null
@@ -131,7 +107,14 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		} else {
 			listItemView = convertView;
 		}
+		initListItemView(listItemView, position);
+		return listItemView;
+	}
 
+	/**
+	 * Populates the {listItemView} with the order at {position}
+	 */
+	private void initListItemView(View listItemView, int position) {
 		Order order = getItem(position);
 		TextView tmpTextView;
 
@@ -150,16 +133,11 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 				+ cal.get(Calendar.MONTH);
 		tmpTextView = (TextView) listItemView.findViewById(R.id.other_details);
 		tmpTextView.setText(date + " - " + order.getCemetary());
-
-		return listItemView;
 	}
 
 	/**
 	 * Position in sorted list that divides for example painted stones from not
 	 * painted. TODO: Implement and move to model
-	 * 
-	 * @param mObjects
-	 * @return
 	 */
 	private int getDonePosition(List<Order> mObjects2) {
 		return 5;
@@ -177,28 +155,27 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 
 	/**
 	 * A filter that mostly sends the filtering to be done to a ModelFilter.
+	 * TODO: Move more of the implementation to modelfilter and test it. Maybe
+	 * find the old test in git somewhere?
 	 */
 	private class ArrayFilter extends Filter {
-		private ModelFilter mModelFilter;
 
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint) {
 			FilterResults results = new FilterResults();
 
-			if (mOriginalValues == null) {
-				mOriginalValues = new ArrayList<Order>(mObjects);
+			if (mOriginalObjects == null) {
+				mOriginalObjects = new ArrayList<Order>(mOrders);
 			}
 
 			if (constraint == null || constraint.length() == 0) {
 				ArrayList<Order> list;
-				list = new ArrayList<Order>(mOriginalValues);
+				list = new ArrayList<Order>(mOriginalObjects);
 				results.values = list;
 				results.count = list.size();
 			} else {
-				String lcConstraint = constraint.toString().toLowerCase();
 				ArrayList<Order> orderList = new ArrayList<Order>(
-						mOriginalValues);
-
+						mOriginalObjects);
 				final ArrayList<Order> newValues = new ArrayList<Order>();
 
 				if (mModelFilter == null) {
@@ -218,11 +195,11 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 			return results;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
-			// noinspection unchecked
-			mObjects = (List<Order>) results.values;
+			mOrders = (List<Order>) results.values;
 			if (results.count > 0) {
 				notifyDataSetChanged();
 			} else {
