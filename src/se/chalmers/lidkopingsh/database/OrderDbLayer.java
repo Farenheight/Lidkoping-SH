@@ -29,6 +29,7 @@ public class OrderDbLayer implements ILayer {
 	 */
 	public OrderDbLayer(Context context) {
 		db = new OrderDbStorage(context);
+		//TODO: Remove server path. Set it in settings. 
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", context);
 		if (db.query(null, null, null).isEmpty()) {
 			OrderDbFiller.fillDb(db);

@@ -21,6 +21,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Handling communication between remote server and local database.
@@ -34,9 +35,6 @@ public class ServerLayer extends AbstractServerLayer {
 	private HttpPost httpPost;
 	private final Context context;
 
-	// private final HttpResponse httpResponse;
-	// private final HttpEntity httpEntity;
-
 	/**
 	 * Creates a new ServerLayer with a set server path.
 	 * 
@@ -48,8 +46,6 @@ public class ServerLayer extends AbstractServerLayer {
 		try {
 			httpClient = new DefaultHttpClient();
 			httpPost = new HttpPost(serverPath);
-			// httpResponse = httpClient.execute(httpPost);
-			// httpEntity = httpResponse.getEntity();
 		} catch (Exception e) {
 			Log.e("server_layer",
 					"Error in HTTP Server Connection" + e.toString());
@@ -66,6 +62,8 @@ public class ServerLayer extends AbstractServerLayer {
 		BufferedReader reader = null;
 		try {
 			httpPost.setEntity(new StringEntity(orderString));
+			httpPost.setHeader("Lidkopingsh-Authentication",
+					"1234567890qwertyuiop");
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			reader = new BufferedReader(new InputStreamReader(httpResponse
 					.getEntity().getContent()));
@@ -76,19 +74,21 @@ public class ServerLayer extends AbstractServerLayer {
 	}
 
 	/**
-	 * Gets the updated orders from the server
+	 * Get the updated orders from the server
 	 * 
 	 * @param orderVerifiers
 	 *            A JsonObject with the ids and timestamps for comparing orders
 	 */
 	private void getUpdatedOrdersFromServer(String orderVerifiers) {
-		BufferedReader reader = sendHttpPostRequest(orderVerifiers);
+		BufferedReader reader = sendHttpPostRequest("getUpdates=1&data="
+				+ orderVerifiers);
 		IModel model = ModelHandler.getModel(context);
 		ILayer layer = ModelHandler.getLayer(context);
 		try {
 			Gson gson = new Gson();
 			Collection<Order> arrayOrders = gson.fromJson(reader,
-					Collection.class);
+					new TypeToken<Collection<Order>>() {
+					}.getType());
 			for (Order o : arrayOrders) {
 				try {
 					Order order = model.getOrderById(o.getId());
