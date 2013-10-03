@@ -267,6 +267,63 @@ class OrderDbStorage {
 		db.beginTransaction();
 		
 		for (Product p : order.getProducts()) {
+			//checks if there are any products with the given type left if not the type is removed
+			Cursor cursor = db.query(ProductTable.TABLE_NAME, null,
+					ProductTable.COLUMN_NAME_PRODUCT_TYPE_ID + EQUALS
+							+ QUESTION_MARK, new String[] { String
+							.valueOf(p.getType().getId()) },
+					null, null, null);
+			if(!cursor.moveToNext()){
+				db.delete(ProductTypeTable.TABLE_NAME,
+						ProductTypeTable.COLUMN_NAME_PRODUCT_TYPE_ID + EQUALS
+								+ QUESTION_MARK, new String[] { String
+								.valueOf(p.getType().getId()) });
+				productTypeIds.remove(p.getType().getId());
+			}
+			db.delete(TaskTable.TABLE_NAME, TaskTable.COLUMN_NAME_PRODUCT_ID
+					+ EQUALS + QUESTION_MARK,
+					new String[] { String.valueOf(p.getId()) });
+			db.delete(StoneTable.TABLE_NAME, StoneTable.COLUMN_NAME_PRODUCT_ID
+					+ EQUALS + QUESTION_MARK,
+					new String[] { String.valueOf(p.getId()) });
+
+			for (Task t : p.getTasks()) {
+				Cursor c = db//checks if there are any tasks with the given station if not the station is removed
+						.query(TaskTable.TABLE_NAME, null,
+								TaskTable.COLUMN_NAME_STATION_ID + EQUALS
+										+ QUESTION_MARK, new String[] { String
+										.valueOf(t.getStation().getId()) },
+								null, null, null);
+				if (!c.moveToNext()) {
+					db.delete(StationTable.TABLE_NAME,
+							StationTable.COLUMN_NAME_STATION_ID + EQUALS
+									+ QUESTION_MARK, new String[] { String
+									.valueOf(t.getStation().getId()) });
+					stationIds.remove(t.getStation().getId());
+				}
+			}
+
+		}
+
+		db.delete(ImageTable.TABLE_NAME, ImageTable.COLUMN_NAME_ORDER_ID
+				+ EQUALS + QUESTION_MARK,
+				new String[] { Integer.toString(order.getId()) });
+		db.delete(ProductTable.TABLE_NAME, ProductTable.COLUMN_NAME_ORDER_ID
+				+ EQUALS + QUESTION_MARK,
+				new String[] { Integer.toString(order.getId()) });
+		db.delete(CustomerTable.TABLE_NAME,
+				CustomerTable.COLUMN_NAME_CUSTOMER_ID + EQUALS + QUESTION_MARK,
+				new String[] { String.valueOf(order.getCustomer().getId()) });
+		db.delete(OrderTable.TABLE_NAME, OrderTable.COLUMN_NAME_ORDER_NUMBER
+				+ EQUALS + QUESTION_MARK,
+				new String[] { order.getOrderNumber() });
+		
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
+	public void deleteOrder(Order order){
+		
+		for (Product p : order.getProducts()) {
 			db.delete(TaskTable.TABLE_NAME, TaskTable.COLUMN_NAME_PRODUCT_ID
 					+ EQUALS + QUESTION_MARK,
 					new String[] { String.valueOf(p.getId()) });
@@ -305,13 +362,22 @@ class OrderDbStorage {
 				+ EQUALS + QUESTION_MARK,
 				new String[] { order.getOrderNumber() });
 		
-		db.setTransactionSuccessful();
-		db.endTransaction();
 	}
 
 	public void update(Order order) {
 		delete(order);
 		insert(order);
+	}
+	
+	public void updateOrders(Collection<Order> orders){
+		db.beginTransaction();
+		
+		for(Order o : orders){
+			
+		}
+		
+		db.setTransactionSuccessful();
+		db.endTransaction();
 	}
 
 	/**
