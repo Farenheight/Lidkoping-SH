@@ -19,6 +19,7 @@ import android.util.Log;
 public class OrderDbLayer implements ILayer {
 
 	private final OrderDbStorage db;
+	private final ServerLayer serverLayer;
 
 	/**
 	 * Creates a layer for communication between model and Order database.
@@ -26,8 +27,9 @@ public class OrderDbLayer implements ILayer {
 	 * @param context
 	 *            to use to open or create the database
 	 */
-	public OrderDbLayer(Context context) {
+	public OrderDbLayer(Context context, String serverPath) {
 		db = new OrderDbStorage(context);
+		serverLayer = new ServerLayer(serverPath);
 		if (db.query(null, null, null).isEmpty()) {
 			OrderDbFiller.fillDb(db);
 			Log.d("OrderdbLayer", "filled database with dummy data");
@@ -36,8 +38,12 @@ public class OrderDbLayer implements ILayer {
 
 	@Override
 	public void changed(Order order) {
-		db.update(order);
-		Log.d("Changed Order", "Changed objects in database");
+		//TODO: getUpdates()"sync"->(updateDatabase())->sendUpdate().
+		//(timestamps), use a stack before updating local db.
+		//Server manages DB check timestamp on order. Newer or Older? Merge them?
+		//db.update(order);
+		serverLayer.sendUpdate(order);
+		serverLayer.getUpdates();
 	}
 
 	@Override
