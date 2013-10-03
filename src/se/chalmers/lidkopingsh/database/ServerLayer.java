@@ -82,24 +82,12 @@ public class ServerLayer extends AbstractServerLayer {
 	private void getUpdatedOrdersFromServer(String orderVerifiers) {
 		BufferedReader reader = sendHttpPostRequest("getUpdates=1&data="
 				+ orderVerifiers);
-		IModel model = ModelHandler.getModel(context);
-		ILayer layer = ModelHandler.getLayer(context);
 		try {
 			Gson gson = new Gson();
 			Collection<Order> arrayOrders = gson.fromJson(reader,
 					new TypeToken<Collection<Order>>() {
 					}.getType());
-			for (Order o : arrayOrders) {
-				try {
-					Order order = model.getOrderById(o.getId());
-					order.sync(o);
-					layer.updateDatabase(o);
-				} catch (NoSuchElementException e) {
-					o.addOrderListener(layer);
-					model.addOrder(o);
-					layer.updateDatabase(o);
-				}
-			}
+			updateDatabase(arrayOrders);
 		} catch (JsonSyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -132,9 +120,20 @@ public class ServerLayer extends AbstractServerLayer {
 	/**
 	 * Update the local database.
 	 */
-	private void updateDatabase() {
-		// TODO Auto-generated method stub
-
+	private void updateDatabase(Collection<Order> orders) {
+		IModel model = ModelHandler.getModel(context);
+		ILayer layer = ModelHandler.getLayer(context);
+		for (Order o : orders) {
+			try {
+				Order order = model.getOrderById(o.getId());
+				order.sync(o);
+				layer.updateDatabase(o);
+			} catch (NoSuchElementException e) {
+				o.addOrderListener(layer);
+				model.addOrder(o);
+				layer.updateDatabase(o);
+			}
+		}
 	}
 
 }

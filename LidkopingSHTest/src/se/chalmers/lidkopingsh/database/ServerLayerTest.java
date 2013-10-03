@@ -1,7 +1,5 @@
 package se.chalmers.lidkopingsh.database;
 
-import static org.junit.Assert.fail;
-
 import java.util.Collection;
 
 import org.junit.Test;
@@ -9,6 +7,11 @@ import org.junit.Test;
 import se.chalmers.lidkopingsh.model.Order;
 import android.test.AndroidTestCase;
 
+/**
+ *  
+ * @author Alexander Härenstam
+ * @author Olliver Mattsson
+ */
 public class ServerLayerTest extends AndroidTestCase {
 
 	private OrderDbStorage dbStorage;
