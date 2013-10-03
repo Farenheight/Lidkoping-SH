@@ -122,7 +122,10 @@ class OrderDbStorage {
 		for (Order order : orders) {
 			insertOrder(order);
 		}
-
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
+	private void insertOrder(Order order) {
 		stationIds.addAll(getStationIds());
 		productTypeIds.addAll(getProductTypeIds());
 
