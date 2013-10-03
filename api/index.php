@@ -6,8 +6,10 @@ header('Content-type: text/json');
 require_once 'authentication.php';
 require_once 'db_config.php';
 require_once 'exceptions.php';
+require_once 'class/mySQLConnection.php';
 
 checkAuthenticated();
+$con = new mySQLConnection();
 
 if (isset($_POST['getUpdates'])) {
 	require_once 'get_updates.php';
