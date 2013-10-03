@@ -3,12 +3,12 @@ package se.chalmers.lidkopingsh.model;
 /**
  * Specifies an identification number and a name for a certain type of product.
  * 
- * @author Alexander Härenstam
+ * @author Alexander Hï¿½renstam
  * @author Olliver Mattsson
  */
 public class ProductType {
-	int id;
-	String name;
+	private int id;
+	private String name;
 	
 	public ProductType(int id, String name){
 		this.id = id;
