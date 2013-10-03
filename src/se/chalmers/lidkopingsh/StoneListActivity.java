@@ -1,12 +1,10 @@
 package se.chalmers.lidkopingsh;
 
-import com.example.lidkopingsh.R;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+
+import com.example.lidkopingsh.R;
 
 /**
  * An activity representing a list of Stones. This activity has different

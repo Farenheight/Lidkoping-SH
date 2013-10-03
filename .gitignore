@@ -2,8 +2,8 @@
 .DS_Store
 local.properties
 # Directories
-/gen
-/bin
+gen/
+bin/
 *.log
 *.class
 *.metadata

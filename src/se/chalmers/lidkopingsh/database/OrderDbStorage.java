@@ -26,6 +26,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract.DeletedContacts;
 
 /**
  * Query, insert into and update the Order database content. This class converts
@@ -99,9 +100,33 @@ class OrderDbStorage {
 	 */
 	public void insert(Order order) {
 		if (order == null) {
-			throw new IllegalArgumentException("Order can not be null");
+			throw new IllegalArgumentException("Order cannot be null");
 		}
 
+		db.beginTransaction();
+		insertOrder(order);
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
+
+	/**
+	 * Insert new orders into the database.
+	 * 
+	 * @param orders A collection of orders to insert.
+	 */
+	public void insert(Collection<Order> orders) {
+		if (orders == null) {
+			throw new IllegalArgumentException("Orders cannot be null");
+		}
+
+		db.beginTransaction();
+		for (Order order : orders) {
+			insertOrder(order);
+		}
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
+	private void insertOrder(Order order) {
 		stationIds.addAll(getStationIds());
 		productTypeIds.addAll(getProductTypeIds());
 
@@ -240,7 +265,26 @@ class OrderDbStorage {
 	}
 
 	public void delete(Order order) {
+		db.beginTransaction();
+		deleteOrder(order);
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
+	public void deleteOrder(Order order){
 		for (Product p : order.getProducts()) {
+			//checks if there are any products with the given type left if not the type is removed
+			Cursor cursor = db.query(ProductTable.TABLE_NAME, null,
+					ProductTable.COLUMN_NAME_PRODUCT_TYPE_ID + EQUALS
+							+ QUESTION_MARK, new String[] { String
+							.valueOf(p.getType().getId()) },
+					null, null, null);
+			if(!cursor.moveToNext()){
+				db.delete(ProductTypeTable.TABLE_NAME,
+						ProductTypeTable.COLUMN_NAME_PRODUCT_TYPE_ID + EQUALS
+								+ QUESTION_MARK, new String[] { String
+								.valueOf(p.getType().getId()) });
+				productTypeIds.remove(p.getType().getId());
+			}
 			db.delete(TaskTable.TABLE_NAME, TaskTable.COLUMN_NAME_PRODUCT_ID
 					+ EQUALS + QUESTION_MARK,
 					new String[] { String.valueOf(p.getId()) });
@@ -249,7 +293,7 @@ class OrderDbStorage {
 					new String[] { String.valueOf(p.getId()) });
 
 			for (Task t : p.getTasks()) {
-				Cursor c = db
+				Cursor c = db//checks if there are any tasks with the given station if not the station is removed
 						.query(TaskTable.TABLE_NAME, null,
 								TaskTable.COLUMN_NAME_STATION_ID + EQUALS
 										+ QUESTION_MARK, new String[] { String
@@ -278,11 +322,24 @@ class OrderDbStorage {
 		db.delete(OrderTable.TABLE_NAME, OrderTable.COLUMN_NAME_ORDER_NUMBER
 				+ EQUALS + QUESTION_MARK,
 				new String[] { order.getOrderNumber() });
+		
 	}
 
 	public void update(Order order) {
 		delete(order);
 		insert(order);
+	}
+	
+	public void updateOrders(Collection<Order> orders){
+		db.beginTransaction();
+		
+		for(Order o : orders){
+			deleteOrder(o);
+			insertOrder(o);
+		}
+		
+		db.setTransactionSuccessful();
+		db.endTransaction();
 	}
 
 	/**
