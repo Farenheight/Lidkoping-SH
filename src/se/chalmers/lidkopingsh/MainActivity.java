@@ -1,12 +1,10 @@
 package se.chalmers.lidkopingsh;
 
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 
 /**
  * An activity containing only a {@link OrderListFragment} on handsets and also
@@ -34,6 +32,7 @@ public class MainActivity extends FragmentActivity implements
 		// + size.y);
 
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
+		mTabletSize = true;
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(

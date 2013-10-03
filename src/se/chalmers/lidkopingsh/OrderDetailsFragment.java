@@ -66,15 +66,16 @@ public class OrderDetailsFragment extends Fragment {
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
 	
+		// Collects data from mOrder and initialize the views accordingly
+		initTabs();
+		initTasks(R.id.tab_info_container);
 		return rootView;
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		// Collects data from mOrder and initialize the views accordingly
-		initTabs();
-		initTasks(R.id.tab_info_container);
+
 	}
 	
 	/**

@@ -14,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -73,6 +74,13 @@ public class OrderListFragment extends ListFragment {
 		}
 
 		mCallbacks = (Callbacks) activity;
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		return LayoutInflater.from(getActivity()).inflate(
+				R.layout.list_root_inner, null);
 	}
 
 	@Override
