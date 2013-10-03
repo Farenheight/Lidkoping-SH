@@ -3,7 +3,7 @@
 function getUpdates(){
 	$data = $_POST['getUpdates'];
 	
-	$select = "SELECT * FROM `order` o
+	$select = "SELECT *, o.order_id AS order_table_id, c.name AS customer_name FROM `order` o
 		JOIN `customer` c ON c.customer_id = o.customer_id
 		LEFT JOIN `image` i ON i.order_id = o.order_id
 		LEFT JOIN `product` p ON p.order_id = o.order_id
@@ -48,7 +48,7 @@ function produceOrders($res){
 		// Add order if not already added
 		if(empty($allOrders) || $currentOrder['id'] != $row['order_id']){
 			$currentOrder = array(
-			   "id" => $row['order_id'],
+			   "id" => $row['order_table_id'],
 			   "timeCreated" => $row['time_created'],
 			   "lastTimeUpdate" => $row['time_last_update'],
 			   "cemetery" => $row['cemetery'],
@@ -60,7 +60,7 @@ function produceOrders($res){
 			   "cemeteryNumber" => $row['cemetery_number'],
 			   "customer" => array(
 			      "title" => $row['title'],
-			      "name" => $row['name'],
+			      "name" => $row['customer_name'],
 			      "address" => $row['address'],
 			      "postAddress" => $row['postal_address'],
 			      "eMail" => $row['email'],
@@ -75,9 +75,8 @@ function produceOrders($res){
 			$currentOrder['images'] = array();
 		}
 		$images = $currentOrder['images'];
-		
 		if(empty($images) || $images[count($images)-1]['id'] != $row['image_id']){
-			array_push($currentOrder, array(
+			array_push($images, array(
 				"id" => $row['image_id'],
 				"imagePath" => $row['file_name']
 			));
