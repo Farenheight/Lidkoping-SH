@@ -12,7 +12,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -164,33 +163,19 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		protected FilterResults performFiltering(CharSequence constraint) {
 			FilterResults results = new FilterResults();
 
+			// First time the filter is run, save the original values in a new
+			// list and create a new model filter
 			if (mOriginalObjects == null) {
 				mOriginalObjects = new ArrayList<Order>(mOrders);
 			}
-
-			if (constraint == null || constraint.length() == 0) {
-				ArrayList<Order> list;
-				list = new ArrayList<Order>(mOriginalObjects);
-				results.values = list;
-				results.count = list.size();
-			} else {
-				ArrayList<Order> orderList = new ArrayList<Order>(
-						mOriginalObjects);
-				final ArrayList<Order> newValues = new ArrayList<Order>();
-
-				if (mModelFilter == null) {
-					mModelFilter = new ModelFilter();
-				}
-
-				for (Order order : orderList) {
-					if (mModelFilter.passesFilter(order, constraint.toString())) {
-						newValues.add(order);
-					}
-				}
-
-				results.values = newValues;
-				results.count = newValues.size();
+			if (mModelFilter == null) {
+				mModelFilter = new ModelFilter();
 			}
+
+			List<Order> filteredOrders = mModelFilter.getOrdersByFilter(
+					constraint.toString(), mOrders, mOriginalObjects);
+			results.values = filteredOrders;
+			results.count = filteredOrders.size();
 
 			return results;
 		}
