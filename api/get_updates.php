@@ -1,7 +1,11 @@
 <?php
 
 function getUpdates(){
-	$data = $_POST['data'];
+	$data = "";
+	if(isset($_POST['data'])){
+		$data = $_POST['data'];
+	}
+	
 	
 	$select = "SELECT *, o.order_id AS order_table_id, c.name AS customer_name,
 		p.product_id AS p_product_id, pt.name AS type_name
