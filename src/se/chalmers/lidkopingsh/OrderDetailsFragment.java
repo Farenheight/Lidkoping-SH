@@ -189,7 +189,7 @@ public class OrderDetailsFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.cemetery_number)).setText(mOrder
 				.getCemetaryNumber());
 		((TextView) rootView.findViewById(R.id.cemeteryBoard)).setText(mOrder
-				.getCemetaryBoard());
+				.getCemeteryBoard());
 		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
 

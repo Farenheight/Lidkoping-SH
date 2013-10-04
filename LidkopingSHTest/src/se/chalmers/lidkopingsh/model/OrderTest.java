@@ -3,6 +3,8 @@ package se.chalmers.lidkopingsh.model;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 public class OrderTest {
@@ -13,12 +15,12 @@ public class OrderTest {
 		long time = System.currentTimeMillis();
 
 		Order o1 = new Order(1, "130001", "K.J", time, time, "Goteborg", null,
-				null, null, time, new Customer(), null);
+				null, null, time, new Customer("","","","","",0), null);
 		Order o2 = new Order(1, "130001", "K.J", time, time, "Goteborg", null,
-				null, null, time, new Customer(), null);
+				null, null, time, new Customer("","","","","",0), null);
 		assertTrue(o1.equals(o2));
 
-		Product p = new Product();
+		Product p = new Product(new ArrayList<Task>());
 		o2.addProduct(p);
 		assertFalse(o1.equals(o2));
 
@@ -37,13 +39,13 @@ public class OrderTest {
 		// TODO filled with null to avoid compilation errors
 		Order o0 = new Order(0, "2", "OM", 2837203547257l,
 				System.currentTimeMillis(), "Kvanum", null, null, null, 0l,
-				new Customer(), null);
+				new Customer("","","","","",0), null);
 		Order o1 = new Order(0, "3", "OK", 2837203547257l,
 				System.currentTimeMillis(), "Lish", null, null, null, 2l,
-				new Customer(), null);
+				new Customer("","","","","",0), null);
 		Order o2 = new Order(0, "3", "OK", 2837203547257l,
 				System.currentTimeMillis(), "Lish", null, null, null, 2l,
-				new Customer(), null);
+				new Customer("","","","","",0), null);
 		assertFalse(o0.equals(o1));
 		assertTrue(o1.equals(o2));
 		o0.sync(o1);
@@ -73,7 +75,7 @@ public class OrderTest {
 		OrderListener listener = new OrderListener();
 		Order order0 = new Order(0, "13555", "OV", System.currentTimeMillis(),
 				System.currentTimeMillis(), "Kvanum", null, "", "",
-				System.currentTimeMillis(), new Customer(), null);
+				System.currentTimeMillis(), new Customer("","","","","",0), null);
 
 		order0.addOrderListener(listener);
 
@@ -96,7 +98,7 @@ public class OrderTest {
 
 		Order order1 = new Order(0, "", "", System.currentTimeMillis(),
 				System.currentTimeMillis(), null, "", "", "",
-				System.currentTimeMillis(), new Customer(), null);
+				System.currentTimeMillis(), new Customer("","","","","",0), null);
 
 		Product product2 = new Product(0, "", "", "");
 		Task task4 = new Task(new Station(0, "Task0"));

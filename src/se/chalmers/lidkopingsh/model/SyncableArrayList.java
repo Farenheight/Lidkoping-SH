@@ -3,7 +3,12 @@ package se.chalmers.lidkopingsh.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+/**
+ * 
+ * @author robin
+ *
+ * @param <T>
+ */
 public class SyncableArrayList<T extends Syncable<? super T>> extends
 		ArrayList<T> implements SyncableList<T> {
 	private static final long serialVersionUID = 8556149278420032244L;

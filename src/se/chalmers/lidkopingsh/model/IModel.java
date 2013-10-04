@@ -28,7 +28,7 @@ public interface IModel {
 	 *             when the id does not exist
 	 */
 	public abstract Order getOrderById(int id) throws NoSuchElementException;
-
+	
 	public abstract void addOrder(Order o);
 
 	public abstract void removeOrder(Order o);

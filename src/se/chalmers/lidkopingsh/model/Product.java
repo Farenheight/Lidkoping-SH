@@ -6,7 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A product have different tasks that is needed to complete the product
+ * A product is something with different tasks that is needed to complete the
+ * product. A Product is something made of stone, so different fields like
+ * frontWork or materialColor is needed to describe how the Product should look
  * 
  * @author Robin Gronberg
  * 
@@ -33,7 +35,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The id of the Product (from the database). The id should be
 	 *            unique for each element
 	 * @param materialColor
-	 *            The matierial and color for this Product.
+	 *            The material and color for this Product.
 	 * @param description
 	 *            The description for this Product.
 	 * @param frontWork
@@ -44,12 +46,19 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 */
 	public Product(int id, String materialColor, String description,
 			String frontWork, List<Task> tasks) {
-		this(tasks);
 		this.id = id;
-		this.materialColor = materialColor != null? materialColor : "";
-		this.description = description != null? description : "";
-		this.frontWork = frontWork != null? frontWork : "";
+		this.materialColor = materialColor != null ? materialColor : "";
+		this.description = description != null ? description : "";
+		this.frontWork = frontWork != null ? frontWork : "";
+		this.listeners = new ArrayList<Listener<Product>>();
+		this.tasks = new SyncableTaskList(tasks);
+		if (tasks != null) {
+			for (Task t : tasks) {
+				t.addTaskListener(this);
+			}
+		}
 	}
+
 	/**
 	 * Create a new Product
 	 * 
@@ -64,9 +73,10 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The frontWork for this product
 	 */
 	public Product(int id, String materialColor, String description,
-			String frontWork){
-		this(id,materialColor,description,frontWork,new ArrayList<Task>());
+			String frontWork) {
+		this(id, materialColor, description, frontWork, new ArrayList<Task>());
 	}
+
 	/**
 	 * Create a new product with tasks
 	 * 
@@ -74,21 +84,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The tasks which is needed to complete this product.
 	 */
 	public Product(List<Task> tasks) {
-		this.listeners = new ArrayList<Listener<Product>>();
-		this.tasks = new SyncableTaskList(tasks);
-		if (tasks != null) {
-			for(Task t : tasks) {
-				t.addTaskListener(this);
-			}
-		}
-	}
-
-	/**
-	 * Create a new product no tasks and dummy data
-	 */
-	public Product() {
-		this(0, "Svart sten", "Den fulaste stenen i vi säljer",
-				"Mycket repor på framsidan", new ArrayList<Task>());
+		this(0, "", "", "", tasks);
 	}
 
 	public int getId() {
@@ -260,8 +256,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			Product p = ((Product) o);
 			return this.id == p.id
 					&& this.materialColor.equals(p.getMaterialColor())
-					&& ((this.description == null && p.getDescription() == null) 
-							|| (this.description != null && this.description
+					&& ((this.description == null && p.getDescription() == null) || (this.description != null && this.description
 							.equals(p.getDescription())))
 					&& this.frontWork.equals(p.getFrontWork())
 					&& this.tasks.equals(p.getTasks());
@@ -277,9 +272,6 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 */
 	private class SyncableTaskList extends SyncableArrayList<Task> {
 		private static final long serialVersionUID = 4082149811877348098L;
-
-		public SyncableTaskList() {
-		}
 
 		public SyncableTaskList(Collection<Task> collection) {
 			super(collection);
