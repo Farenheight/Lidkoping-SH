@@ -20,7 +20,7 @@ public class ProductTest extends TestCase implements Listener<Product> {
 		 * task9 NOT_DONE task8 DONE task7 NOT_DONE task6 DONE task5 NOT_DONE
 		 * task4 DONE task3 NOT_DONE task2 DONE task1 NOT_DONE task0 DONE
 		 */
-		Product p = new Product();
+		Product p = new Product(new ArrayList<Task>());
 		Task[] tasks = new Task[10];
 		for (int i = 0; i < tasks.length; i++) {
 			tasks[i] = new Task(new Station(i,"Station" + i), i % 2 == 0 ? Status.DONE
@@ -40,7 +40,7 @@ public class ProductTest extends TestCase implements Listener<Product> {
 		 * task0 DONE task1 NOT_DONE task2 DONE task3 NOT_DONE task4 DONE task5
 		 * NOT_DONE task6 DONE task7 NOT_DONE task8 DONE task9 NOT_DONE
 		 */
-		p = new Product();
+		p = new Product(new ArrayList<Task>());
 		tasks = new Task[10];
 		for (int i = 0; i < tasks.length; i++) {
 			tasks[i] = new Task(new Station(i,"Station" + i), i % 2 == 0 ? Status.DONE
@@ -62,7 +62,7 @@ public class ProductTest extends TestCase implements Listener<Product> {
 	@Test
 	public void testListener() {
 		hasBeenNotified = false;
-		Product p = new Product();
+		Product p = new Product(new ArrayList<Task>());
 		Task t = new Task(new Station(0,"Station0"));
 		p.addTask(t, 0);
 		p.addProductListener(this);

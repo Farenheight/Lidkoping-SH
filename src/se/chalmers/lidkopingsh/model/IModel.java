@@ -31,7 +31,7 @@ public interface IModel {
 	public int getFirstUncompletedIndex(List<Order> sortedList, Station station);
 
 	public void addOrder(Order o);
-
+	
 	public void removeOrder(Order o);
 
 	public Collection<Order> getOrders();

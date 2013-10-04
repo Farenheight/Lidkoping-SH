@@ -103,8 +103,11 @@ public class Model implements IModel {
 		return null;
 	}
 
+
 	@Override
-	public int getFirstUncompletedIndex(List<Order> sortedList, Station station) {
+	public int getFirstUncompletedIndex(
+			List<Order> sortedList,
+			Station station) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

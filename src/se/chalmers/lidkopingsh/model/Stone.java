@@ -1,6 +1,5 @@
 package se.chalmers.lidkopingsh.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,18 +46,6 @@ public class Stone extends Product {
 		this.sideBackWork = sideToBackWork != null? sideToBackWork : "";
 		this.textStyle = textStyle != null? textStyle : "";
 		this.ornament = ornament != null? ornament : "";
-	}
-
-	/**
-	 * Create a new Stone with Dummy data
-	 */
-	public Stone() {
-		this(1, "Hallandia-granit",
-				"Gravv�rd 80x65 cm\nPolerande blomlister 90x40 cm",
-				"Framsidan & sockelns ovansida polerad ,matt fas",
-				new ArrayList<Task>(), "NB 46", "Polerade",
-				"Sx358-nedhuggen i guld",
-				"Kors & sol i guld\nF�glar & blommor vita", new ProductType(1, "Sten"));
 	}
 
 	public String getStoneModel() {
