@@ -7,3 +7,7 @@ local.properties
 *.log
 *.class
 *.metadata
+
+api/lib/
+api/db_config.php
+LidkopingSHTest/gen/
