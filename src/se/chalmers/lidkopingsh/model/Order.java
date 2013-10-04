@@ -47,7 +47,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.orderNumber = orderNumber != null ? orderNumber : "";
 		this.idName = idName != null ? idName : "";
 		this.timeCreated = timeCreated;
-		this.lastTimeUpdate = lastTimeUpdated;
+		this.lastTimeUpdate = this.lastTimeSync = lastTimeUpdated;
 		this.cemetary = cemetary != null ? cemetary : "";
 		this.cemeteryBoard = cemetaryBoard != null ? cemetaryBoard : "";
 		this.cemetaryBlock = cemetaryBlock != null ? cemetaryBlock : "";
