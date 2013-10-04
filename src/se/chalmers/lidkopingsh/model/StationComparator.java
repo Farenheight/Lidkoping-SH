@@ -44,18 +44,9 @@ public class StationComparator<T extends Order> implements Comparator<T> {
 	 * @return
 	 */
 	private int getPriority(T o) {
-		for (Product p : o.getProducts()) {
-			int i = 0;
-			for (Task t : p.getTasks()) {
-				if (t.getStatus().equals(Status.NOT_DONE)) {
-					if (t.getStation().equals(station)) {
-						return i;
-					} else {
-						i++;
-					}
-				}
-			}
-		}
-		return Integer.MAX_VALUE;
+		return o.getNumOfStationsLeft(station);
+	}
+	public Station getStation() {
+		return station;
 	}
 }

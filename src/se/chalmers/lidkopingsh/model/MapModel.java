@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import android.util.Log;
+
 public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
 	private Map<Integer, Product> products;
@@ -26,21 +28,16 @@ public class MapModel implements IModel {
 
 	}
 
-	/**
-	 * Loops through the sorted list provided and returns the first occurrence
-	 * of a order that has already been to the provided station.
-	 * 
-	 * @param sortedList
-	 *            The sorted list should be ordered after the most relevant
-	 *            station first.
-	 * @param station
-	 *            The station to
-	 * @return The index of the first order that has not passed the provided
-	 *         station
-	 */
+
 	public int getFirstUncompletedIndex(List<Order> sortedList, Station station) {
-		// TODO: implement
-		return 5;
+		int i = 0;
+		for(Order o : sortedList){
+			if(o.getNumOfStationsLeft(station) == Integer.MAX_VALUE) {
+				return i;
+			}
+			i++;				
+		}
+		return i;
 	}
 
 	public MapModel(Collection<Order> o) {

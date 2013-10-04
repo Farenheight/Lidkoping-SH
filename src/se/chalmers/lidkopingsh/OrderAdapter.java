@@ -9,6 +9,7 @@ import java.util.List;
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.Station;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,10 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 
 	private Context mContext;
 
+	private int dividerIndex;
+	
+	private Station currentSortStation;
+
 	/**
 	 * 
 	 * @param context
@@ -58,12 +63,15 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 *            The comparator used to sort the objects contained in this
 	 *            adapter.
 	 */
-	public void sort(Comparator<? super Order> comparator) {
+	public void sort(Comparator<? super Order> comparator,Station station) {
 		if (mOriginalObjects != null) {
 			Collections.sort(mOriginalObjects, comparator);
 		} else {
 			Collections.sort(mOrders, comparator);
 		}
+		dividerIndex = ModelHandler.getModel(mContext)
+				.getFirstUncompletedIndex(mOrders, station);
+		currentSortStation = station;
 	}
 
 	/**
@@ -93,19 +101,17 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View listItemView;
 		IModel model = ModelHandler.getModel(mContext);
-		if (position == 0) {
+		if (position == 0 && dividerIndex != 0) {
 			listItemView = mInflater.inflate(R.layout.list_item_header, parent,
 					false);
 			((TextView) listItemView.findViewById(R.id.list_item_header_text))
-					.setText("STENAR SOM SKA SÅGAS");
+					.setText(currentSortStation.getName());
 
-			// TODO: Get the current station (instead of null)
-		} else if (position == model
-				.getFirstUncompletedIndex(mOrders, null)) {
+		} else if (position == dividerIndex) {
 			listItemView = mInflater.inflate(R.layout.list_item_header, parent,
 					false);
 			((TextView) listItemView.findViewById(R.id.list_item_header_text))
-					.setText("REDAN SÅGADE STENAR");
+					.setText("Passerat " + currentSortStation);
 		}
 		// If recycled view not obtained from android, inflate a new one
 		else if (convertView == null
@@ -183,7 +189,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		@Override
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
-			//TODO: Check if values is a List<Order>
+			// TODO: Check if values is a List<Order>
 			mOrders = (List<Order>) results.values;
 			if (results.count > 0) {
 				notifyDataSetChanged();

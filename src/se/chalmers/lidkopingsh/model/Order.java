@@ -117,6 +117,24 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public List<Product> getProducts() {
 		return products;
 	}
+	
+	/**
+	 * Get the number of {@link Station}'s left until station. Returns
+	 * Integer.MAX_VALUE if Order doesn't have Product with a @ {@link Task} with
+	 * station or if station has already passed.
+	 * 
+	 * @param station
+	 *            The Station to check.
+	 * @return The number of stations left until station.
+	 */
+	public int getNumOfStationsLeft(Station station) {
+		int min = Integer.MAX_VALUE;
+		for (Product p : getProducts()) {
+			int i = p.getNumOfStationsLeft(station);
+			min = min < i? min : i;
+		}
+		return min;
+	}
 
 	/**
 	 * Get whenever this Order is synced with the database or not. If an order

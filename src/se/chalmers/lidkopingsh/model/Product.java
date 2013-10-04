@@ -53,9 +53,9 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	public Product(int id, String materialColor, String description,
 			String frontWork, List<Task> tasks, ProductType type) {
 		this.id = id;
-		this.materialColor = materialColor != null? materialColor : "";
-		this.description = description != null? description : "";
-		this.frontWork = frontWork != null? frontWork : "";
+		this.materialColor = materialColor != null ? materialColor : "";
+		this.description = description != null ? description : "";
+		this.frontWork = frontWork != null ? frontWork : "";
 		this.type = type;
 		this.materialColor = materialColor != null ? materialColor : "";
 		this.description = description != null ? description : "";
@@ -83,8 +83,9 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The frontWork for this product
 	 */
 	public Product(int id, String materialColor, String description,
-			String frontWork, ProductType type){
-		this(id,materialColor,description,frontWork,new ArrayList<Task>(), type);
+			String frontWork, ProductType type) {
+		this(id, materialColor, description, frontWork, new ArrayList<Task>(),
+				type);
 	}
 
 	/**
@@ -94,7 +95,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The tasks which is needed to complete this product.
 	 */
 	public Product(List<Task> tasks) {
-		this(0, "", "", "", tasks,new ProductType(0, ""));
+		this(0, "", "", "", tasks, new ProductType(0, ""));
 	}
 
 	public ProductType getType() {
@@ -120,6 +121,29 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	@Override
 	public void changed(Task task) {
 		notifyProductListeners();
+	}
+
+	/**
+	 * Get the number of {@link Station}'s left until station. Returns
+	 * Integer.MAX_VALUE if Product doesn't have a @ {@link Task} with station
+	 * or if station has already passed.
+	 * 
+	 * @param station
+	 *            The Station to check
+	 * @return The number of stations left until station s.
+	 */
+	public int getNumOfStationsLeft(Station station) {
+		int i = 0;
+		for (Task t : getTasks()) {
+			if (t.getStatus().equals(Status.NOT_DONE)) {
+				if (t.getStation().equals(station)) {
+					return i;
+				} else {
+					i++;
+				}
+			}
+		}
+		return Integer.MAX_VALUE;
 	}
 
 	/**

@@ -28,13 +28,26 @@ public interface IModel {
 	 */
 	public Order getOrderById(int id) throws NoSuchElementException;
 
+	/**
+	 * Loops through the sorted list provided and returns the first occurrence
+	 * of a order that has already been to the provided station.
+	 * 
+	 * @param sortedList
+	 *            The sorted list should be ordered after the most relevant
+	 *            station first.
+	 * @param station
+	 *            The station to
+	 * @return The index of the first order that has not passed the provided
+	 *         station
+	 */
 	public int getFirstUncompletedIndex(List<Order> sortedList, Station station);
 
 	public void addOrder(Order o);
-	
+
 	public void removeOrder(Order o);
 
 	public Collection<Order> getOrders();
 
 	public Collection<Station> getStations();
+
 }
