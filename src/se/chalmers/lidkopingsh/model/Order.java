@@ -345,5 +345,9 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			return super.remove(object);
 		}
 	}
+	@Override
+	public String toString() {
+		return id + "";
+	}
 
 }
