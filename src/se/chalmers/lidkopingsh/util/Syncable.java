@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.util;
 
 /**
  * Something that should can be synced from another source of data.

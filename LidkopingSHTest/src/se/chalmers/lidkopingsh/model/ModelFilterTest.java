@@ -8,6 +8,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.ModelFilter;
+
 public class ModelFilterTest {
 	private List<Order> orders;
 	private List<Order> originalOrders;

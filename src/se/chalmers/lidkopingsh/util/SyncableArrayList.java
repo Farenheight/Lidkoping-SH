@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.util;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -4,6 +4,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.util.Listener;
+import se.chalmers.lidkopingsh.util.Syncable;
+import se.chalmers.lidkopingsh.util.SyncableArrayList;
+import se.chalmers.lidkopingsh.util.SyncableList;
+
 public class SyncableArrayListTest implements Listener<Order>{
 	@Test
 	public void testSyncList() {

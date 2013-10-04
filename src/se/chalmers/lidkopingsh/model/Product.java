@@ -5,6 +5,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import se.chalmers.lidkopingsh.util.Listener;
+import se.chalmers.lidkopingsh.util.Syncable;
+import se.chalmers.lidkopingsh.util.SyncableArrayList;
+import se.chalmers.lidkopingsh.util.SyncableList;
+
 /**
  * A product is something with different tasks that is needed to complete the
  * product. A Product is something made of stone, so different fields like

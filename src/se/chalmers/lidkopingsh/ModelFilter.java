@@ -1,8 +1,10 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import se.chalmers.lidkopingsh.model.Order;
 
 public class ModelFilter implements IModelFilter<Order> {
 

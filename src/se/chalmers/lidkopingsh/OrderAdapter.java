@@ -6,9 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.IModel;
-import se.chalmers.lidkopingsh.model.ModelFilter;
-import se.chalmers.lidkopingsh.model.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
 import android.view.LayoutInflater;

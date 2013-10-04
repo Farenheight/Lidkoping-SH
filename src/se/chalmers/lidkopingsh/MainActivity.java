@@ -3,8 +3,6 @@ package se.chalmers.lidkopingsh;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.DisplayMetrics;
-import android.util.Log;
 
 /**
  * An activity containing only a {@link OrderListFragment} on handsets and also

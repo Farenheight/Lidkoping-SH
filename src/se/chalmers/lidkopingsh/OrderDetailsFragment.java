@@ -1,6 +1,6 @@
 package se.chalmers.lidkopingsh;
 
-import se.chalmers.lidkopingsh.model.ModelHandler;
+import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;

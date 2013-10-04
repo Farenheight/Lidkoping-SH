@@ -7,6 +7,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.util.Listener;
+
 public class ProductTest extends TestCase implements Listener<Product> {
 
 	@Test

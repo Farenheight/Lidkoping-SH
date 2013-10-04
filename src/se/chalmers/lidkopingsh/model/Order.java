@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import se.chalmers.lidkopingsh.util.Listener;
+import se.chalmers.lidkopingsh.util.Syncable;
+import se.chalmers.lidkopingsh.util.SyncableArrayList;
+import se.chalmers.lidkopingsh.util.SyncableList;
+
 /**
  * A class representing an Order.
  * 
@@ -15,6 +20,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private int id;
 	private final long timeCreated;
 	private long lastTimeUpdate;
+	private long lastTimeSync;
 	private String cemetary;
 	private long orderDate;
 	private String orderNumber;
@@ -35,7 +41,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Order(int id, String orderNumber, String idName, long timeCreated,
 			long lastTimeUpdated, String cemetary, String cemetaryBoard,
 			String cemetaryBlock, String cemetaryNumber, long orderDate,
-			Customer customer, Collection<Product> products, Collection<Image> images)  {
+			Customer customer, Collection<Product> products,
+			Collection<Image> images) {
 		this.id = id;
 		this.orderNumber = orderNumber != null ? orderNumber : "";
 		this.idName = idName != null ? idName : "";
@@ -94,7 +101,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Collection<Image> getImages() {
 		return images;
 	}
-	
+
 	public String getOrderNumber() {
 		return orderNumber;
 	}
@@ -109,6 +116,16 @@ public class Order implements Listener<Product>, Syncable<Order> {
 
 	public List<Product> getProducts() {
 		return products;
+	}
+
+	/**
+	 * Get whenever this Order is synced with the database or not. If an order
+	 * is synced. This Order should have the same data as the remote server.
+	 * 
+	 * @return true if synced, false otherwise
+	 */
+	public boolean isSynced() {
+		return lastTimeSync == lastTimeUpdate;
 	}
 
 	/**
@@ -190,19 +207,23 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public void removeOrderListener(Listener<Order> listener) {
 		orderListeners.remove(listener);
 	}
-	
+
 	/**
 	 * Add a {@link Listener} that gets notified when this Order is synced
+	 * 
 	 * @param listener
 	 */
-	public void addSyncOrderListener(Listener<Order> listener){
+	public void addSyncOrderListener(Listener<Order> listener) {
 		orderSyncedListeners.add(listener);
 	}
+
 	/**
-	 * Removes a {@link Listener} that should not get notified anymore when this Order is synced.
+	 * Removes a {@link Listener} that should not get notified anymore when this
+	 * Order is synced.
+	 * 
 	 * @param listener
 	 */
-	public void removeSyncOrderListener(Listener<Order> listener){
+	public void removeSyncOrderListener(Listener<Order> listener) {
 		orderSyncedListeners.remove(listener);
 	}
 
@@ -215,6 +236,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			listener.changed(this);
 		}
 	}
+
 	/**
 	 * Notify syncedListeners when synced.
 	 */
@@ -244,6 +266,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				this.orderNumber = newData.orderNumber;
 				this.idName = newData.idName;
 				products.sync(newData.getProducts());
+				this.lastTimeSync = newData.lastTimeUpdate;
 				notifySyncedListeners();
 				return true;
 			}

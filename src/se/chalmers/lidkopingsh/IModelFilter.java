@@ -1,4 +1,6 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh;
+
+import se.chalmers.lidkopingsh.model.Order;
 
 @Deprecated
 public interface IModelFilter<T> {

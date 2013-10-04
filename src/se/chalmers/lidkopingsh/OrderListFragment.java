@@ -3,7 +3,7 @@ package se.chalmers.lidkopingsh;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.chalmers.lidkopingsh.model.ModelHandler;
+import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.StationComparator;
