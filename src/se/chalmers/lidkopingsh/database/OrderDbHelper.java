@@ -40,7 +40,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	private static final String COMMA_SEP = ", ";
 
 	/**
-	 * These variables defines the tables more specifically, what typ they are and if they should be
+	 * These variables defines the tables more specifically, what type they are and if they should be
 	 * unique, not null or primary key.
 	 */
 	private static final String ORDER_TABLE_CREATE = CREATE_TABLE 
