@@ -15,6 +15,11 @@ import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 
+/**
+ * A class to fill the database with dummydata. Is to be removed when not needed anymore.
+ * @author Olliver
+ *
+ */
 
 public class OrderDbFiller {
 	private static int customerId = 500;
