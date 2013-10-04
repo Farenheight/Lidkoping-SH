@@ -15,8 +15,7 @@ public interface IModel {
 	 * @throws NoSuchElementException
 	 *             when the id does not exist
 	 */
-	public abstract Product getProductById(int id)
-			throws NoSuchElementException;
+	public Product getProductById(int id) throws NoSuchElementException;
 
 	/**
 	 * Returns the order with the specified id.
@@ -27,13 +26,15 @@ public interface IModel {
 	 * @throws NoSuchElementException
 	 *             when the id does not exist
 	 */
-	public abstract Order getOrderById(int id) throws NoSuchElementException;
+	public Order getOrderById(int id) throws NoSuchElementException;
 
-	public abstract void addOrder(Order o);
+	public int getFirstUncompletedIndex(List<Order> sortedList, Station station);
 
-	public abstract void removeOrder(Order o);
+	public void addOrder(Order o);
 
-	public abstract Collection<Order> getOrders();
-	
-	public abstract Collection<Station> getStations();
+	public void removeOrder(Order o);
+
+	public Collection<Order> getOrders();
+
+	public Collection<Station> getStations();
 }

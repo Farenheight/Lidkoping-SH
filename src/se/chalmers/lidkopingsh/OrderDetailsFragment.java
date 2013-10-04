@@ -9,7 +9,6 @@ import se.chalmers.lidkopingsh.model.Task;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -193,7 +192,7 @@ public class OrderDetailsFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
 
-		Stone stone = getStone();
+		Stone stone = mOrder.getStone();
 		((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
 				.getStoneModel());
 		((TextView) rootView.findViewById(R.id.materialAndColor)).setText(stone
@@ -207,18 +206,6 @@ public class OrderDetailsFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
 				.setText(stone.getTextStyle());
 
-	}
-
-	/**
-	 * TODO: Move to model
-	 */
-	private Stone getStone() {
-		for (Product product : mOrder.getProducts()) {
-			if (product instanceof Stone) {
-				return (Stone) product;
-			}
-		}
-		return null;
 	}
 
 }
