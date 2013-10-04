@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Misc
 .DS_Store
 local.properties
@@ -7,3 +8,7 @@ bin/
 *.log
 *.class
 *.metadata
+=======
+db_config.php
+api/lib/
+>>>>>>> dev-server
