@@ -38,7 +38,7 @@ function getUpdates(){
 	$stmt = $GLOBALS['con']->prepare($select);
 	$stmt->execute();
 	
-	echo output(produceOrders($stmt->get_result()));
+	echo output(true, produceOrders($stmt->get_result()));
 }
 
 
