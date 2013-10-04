@@ -27,8 +27,8 @@ function getUpdates(){
 				if($i > 0){
 					$select .= " OR ";
 				}
-				$select .= "((`time_last_update`=". $GLOBALS['con']->escape($data_array[0][1]) .") 
-					AND (`order_table_id`=". $GLOBALS['con']->escape($data_array[0][0]) ."))";
+				$select .= "((`time_last_update`=". $GLOBALS['con']->escape($data_array[$i][1]) .") 
+					AND (`order_table_id`=". $GLOBALS['con']->escape($data_array[$i][0]) ."))";
 			}
 			$select .= ")";
 		}
@@ -45,19 +45,19 @@ function getUpdates(){
 
 function checkInputFormat($jsonarray) {
 	if(is_null($jsonarray)){
-			errorGeneric("JSON data was not valid, when trying to decode request data");
+			errorGeneric("JSON data was not valid, when trying to decode request data", 20);
 	}
 	
 	$size = sizeof($jsonarray);
 	if ($size <= 0) {
-		errorGeneric("Input array is empty.", 20);
+		errorGeneric("Input array is empty.", 21);
 	}
 	for ($i = 0; $i < $size; $i++) {
 		if (empty($jsonarray[$i][0]) || empty($jsonarray[$i][1])) {
-			errorGeneric("Argument(s) missing for order at index $i.", 21);
+			errorGeneric("First occurence of missing or invalid argument(s) for order at index $i.", 22);
 		}
 		if (!is_numeric($jsonarray[$i][0]) || !is_numeric($jsonarray[$i][1])) {
-			errorGeneric("Argument(s) is not numeric for order at index $i.", 22);
+			errorGeneric("First occurence of not numeric argument(s) for order at index $i.", 23);
 		}
 	}
 }
