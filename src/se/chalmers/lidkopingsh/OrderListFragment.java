@@ -31,7 +31,6 @@ import android.widget.Spinner;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  * 
- * TODO: Is it good code having anonymous listeners for the search and sort
  */
 public class OrderListFragment extends ListFragment {
 

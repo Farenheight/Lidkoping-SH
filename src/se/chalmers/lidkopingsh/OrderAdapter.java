@@ -6,7 +6,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.ModelFilter;
+import se.chalmers.lidkopingsh.model.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 public class OrderAdapter extends BaseAdapter implements Filterable {
+
 	/**
 	 * Contains the list of objects that represent the data of this
 	 * ArrayAdapter. The content of this list is referred to as "the array" in
@@ -34,6 +37,8 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 
 	private LayoutInflater mInflater;
 
+	private Context mContext;
+
 	/**
 	 * 
 	 * @param context
@@ -44,6 +49,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mOrders = orders;
+		mContext = context;
 	}
 
 	/**
@@ -87,13 +93,16 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 */
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View listItemView;
+		IModel model = ModelHandler.getModel(mContext);
 		if (position == 0) {
 			listItemView = mInflater.inflate(R.layout.list_item_header, parent,
 					false);
 			((TextView) listItemView.findViewById(R.id.list_item_header_text))
 					.setText("STENAR SOM SKA SÅGAS");
 
-		} else if (position == getDonePosition(mOrders)) {
+			// TODO: Get the current station (instead of null)
+		} else if (position == model
+				.getFirstUncompletedIndex(mOrders, null)) {
 			listItemView = mInflater.inflate(R.layout.list_item_header, parent,
 					false);
 			((TextView) listItemView.findViewById(R.id.list_item_header_text))
@@ -123,7 +132,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 
 		// Customer name TODO: Change to deceased's name if available later
 		tmpTextView = (TextView) listItemView.findViewById(R.id.deceased_name);
-		tmpTextView.setText("Avlidnes namn"); //TODO: add in model
+		tmpTextView.setText("Avlidnes namn"); // TODO: add in model
 
 		// Other details
 		Calendar cal = Calendar.getInstance();
@@ -131,16 +140,9 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		String date = cal.get(Calendar.DAY_OF_MONTH) + "/"
 				+ cal.get(Calendar.MONTH);
 		tmpTextView = (TextView) listItemView.findViewById(R.id.other_details);
-		//TODO: implement getting current task in model + getting a percentage done
-		tmpTextView.setText(date + " - " + "Sågning - " + "75%"); 
-	}
-
-	/**
-	 * Position in sorted list that divides for example painted stones from not
-	 * painted. TODO: Implement and move to model
-	 */
-	private int getDonePosition(List<Order> mObjects2) {
-		return 5;
+		// TODO: implement getting current task in model + getting a percentage
+		// done
+		tmpTextView.setText(date + " - " + "Sågning - " + "75%");
 	}
 
 	/**
@@ -155,8 +157,6 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 
 	/**
 	 * A filter that mostly sends the filtering to be done to a ModelFilter.
-	 * TODO: Move more of the implementation to modelfilter and test it. Maybe
-	 * find the old test in git somewhere?
 	 */
 	private class ArrayFilter extends Filter {
 

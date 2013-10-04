@@ -65,7 +65,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		orderListeners = new ArrayList<Listener<Order>>();
 		this.products = new SyncableProductList(products);
 		if (products != null) {
-			for(Product p : products) {
+			for (Product p : products) {
 				p.addProductListener(this);
 			}
 		}
@@ -262,6 +262,20 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		}
 
 		return "" + yearPart + numPart;
+	}
+
+	/**
+	 * Loops through the product list to find a stone
+	 * 
+	 * @return The first found stone in product list
+	 */
+	public Stone getStone() {
+		for (Product product : getProducts()) {
+			if (product instanceof Stone) {
+				return (Stone) product;
+			}
+		}
+		return null;
 	}
 
 	/**
