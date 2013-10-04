@@ -1,5 +1,6 @@
 <?php
 ini_set("display_errors", 1);
+$start = microtime(true);
 
 header('Content-type: text/json; charset=utf-8');
 
@@ -25,4 +26,5 @@ if (isset($_POST['getUpdates'])) {
 } else {
 	echo 'Empty respons.';
 }
+//echo round((microtime(true)-$start)*1000, 2) . "ms";
 ?>

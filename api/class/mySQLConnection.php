@@ -7,14 +7,14 @@ class mySQLConnection {
 	public function mySQLConnection() {
 		$this -> con = new mysqli($GLOBALS['db_host'], $GLOBALS['db_username'], $GLOBALS['db_password'], $GLOBALS['db_database']);
 		if ($this -> con -> connect_errno) {
-			errorSql("Failed to connect", $mysqli -> connect_errno, $mysqli -> connect_error);
+			errorSql("Failed to connect: ".$mysqli -> connect_error, $mysqli -> connect_errno);
 		}
 		$this -> con -> autocommit(FALSE);
 	}
 
 	public function commit() {
 		if (!$this -> con -> commit()) {
-			errorSql("Commit failed", $this -> con -> errno, $this -> con -> error);
+			errorSql("Commit failed: ".$this -> con -> error, $this -> con -> errno);
 		}
 	}
 	
@@ -24,7 +24,7 @@ class mySQLConnection {
 
 	public function prepare($statement) {
 		if (!($this -> stmt = $this -> con -> prepare($statement))) {
-			errorSql("Prepare failed", $this -> con -> errno, $this -> con -> error);
+			errorSql("Prepare failed: ".$this -> con -> error, $this -> con -> errno);
 		}
 		return $this -> stmt;
 	}
