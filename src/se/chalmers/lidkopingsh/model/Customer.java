@@ -6,7 +6,7 @@ package se.chalmers.lidkopingsh.model;
  * @author Kim
  * 
  */
-public class Customer {
+public class Customer{
 
 	private String title;
 	private String name;
@@ -35,14 +35,6 @@ public class Customer {
 		this.eMail = eMail != null ? eMail : "";
 		this.title = title != null ? title : "";
 		this.id = id;
-	}
-
-	/**
-	 * Only for testing purposes.
-	 */
-	public Customer() {
-		this("Mr", "Olle Bengtsson", "Anonymgatan 1", "416 00 Göteborg",
-				"anonym@mail.com", 1);
 	}
 
 	public String getTitle() {

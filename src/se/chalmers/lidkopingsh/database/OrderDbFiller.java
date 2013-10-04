@@ -6,13 +6,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.model.Customer;
+import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
+import se.chalmers.lidkopingsh.model.ProductType;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 
+/**
+ * A class to fill the database with dummydata. Is to be removed when not needed anymore.
+ * @author Olliver
+ *
+ */
 
 public class OrderDbFiller {
 	private static int customerId = 500;
@@ -20,6 +27,8 @@ public class OrderDbFiller {
 	private static int orderNumber = 130001;
 	private static int productId = 400;
 	private static int charcode = 65;
+	private static int imageId = 600;
+	
 	public static void fillDb(OrderDbStorage db){
 		for(int i=0;i<20;i++){
 			db.insert(getOrderFullyPopulated("O." + (char)charcode++ + "."));
@@ -73,11 +82,16 @@ public class OrderDbFiller {
 		return new Order(orderId++, String.valueOf(orderNumber++), idName,
 				System.currentTimeMillis(), System.currentTimeMillis(),
 				"Kyrkogård", "Kyrkogårdsnämnd", "Kvarter", "Nummer",
-				System.currentTimeMillis(), customer, null);
+				System.currentTimeMillis(), customer, null, getImages());
 	}
 
+	private static Collection<Image> getImages() {
+		Collection<Image> images = new LinkedList<Image>();
+		images.add(new Image(imageId++, "/path"));
+		return images;
+	}
 	private static Product getSocle(String description, List<Task> tasks) {
-		return new Product(productId++, "Hallandia", description, "Polerad", tasks);
+		return new Product(productId++, "Hallandia", description, "Polerad", tasks, new ProductType(1,"Sockel"));
 	}
 
 	private static List<Task> getSocleTasks() {
@@ -90,15 +104,15 @@ public class OrderDbFiller {
 	public static Stone getStone(String description, List<Task> tasks) {
 		return new Stone(productId++, "Hallandia", description, "Polerad", tasks,
 				"NB 49", "Råhugget", "Helvetica nedhuggen i guld",
-				"Blomma nedhuggen i guld");
+				"Blomma nedhuggen i guld", new ProductType(2, "Sten"));
 	}
 
 	public static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task(new Station(1, "Sagning"), Status.DONE));
-		tasks.add(new Task(new Station(3, "Rahuggning")));
+		tasks.add(new Task(new Station(1, "Sågning"), Status.DONE));
+		tasks.add(new Task(new Station(3, "Råhuggning")));
 		tasks.add(new Task(new Station(4, "Gravering")));
-		tasks.add(new Task(new Station(5, "Malning")));
+		tasks.add(new Task(new Station(5, "Målning")));
 		return tasks;
 	}
 }

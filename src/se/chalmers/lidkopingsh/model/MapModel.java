@@ -7,26 +7,41 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import android.util.Log;
+
 public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
 	private Map<Integer, Product> products;
 	private Collection<Station> stations;
-	
-	public MapModel(Collection<Order> o,Collection<Station> s) {
+
+	public MapModel(Collection<Order> o, Collection<Station> s) {
 		this.products = new HashMap<Integer, Product>();
 		this.orders = new HashMap<Integer, Order>();
-		
-		for(Order or : o){
+
+		for (Order or : o) {
 			this.orders.put(or.getId(), or);
-			for(Product p : or.getProducts()){
+			for (Product p : or.getProducts()) {
 				this.products.put(p.getId(), p);
 			}
 		}
 		this.stations = new ArrayList<Station>(s);
-		
+
 	}
+
+
+	public int getFirstUncompletedIndex(List<Order> sortedList, Station station) {
+		int i = 0;
+		for(Order o : sortedList){
+			if(o.getNumOfStationsLeft(station) == Integer.MAX_VALUE) {
+				return i;
+			}
+			i++;				
+		}
+		return i;
+	}
+
 	public MapModel(Collection<Order> o) {
-		this(o,new ArrayList<Station>());
+		this(o, new ArrayList<Station>());
 	}
 
 	/*
@@ -75,7 +90,7 @@ public class MapModel implements IModel {
 		for (Product p : o.getProducts()) {
 			products.put(p.getId(), p);
 		}
-		
+
 		// TODO When adding orders, check if the order have tasks that
 		// does not exist in any other order.
 	}
@@ -108,7 +123,7 @@ public class MapModel implements IModel {
 	}
 
 	@Override
-	public Collection<Station> getStations(){
+	public Collection<Station> getStations() {
 		return new ArrayList<Station>(stations);
 	}
 }

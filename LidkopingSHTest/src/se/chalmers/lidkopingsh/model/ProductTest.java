@@ -7,6 +7,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.util.Listener;
+
 public class ProductTest extends TestCase implements Listener<Product> {
 
 	@Test
@@ -20,7 +22,7 @@ public class ProductTest extends TestCase implements Listener<Product> {
 		 * task9 NOT_DONE task8 DONE task7 NOT_DONE task6 DONE task5 NOT_DONE
 		 * task4 DONE task3 NOT_DONE task2 DONE task1 NOT_DONE task0 DONE
 		 */
-		Product p = new Product();
+		Product p = new Product(new ArrayList<Task>());
 		Task[] tasks = new Task[10];
 		for (int i = 0; i < tasks.length; i++) {
 			tasks[i] = new Task(new Station(i,"Station" + i), i % 2 == 0 ? Status.DONE
@@ -40,7 +42,7 @@ public class ProductTest extends TestCase implements Listener<Product> {
 		 * task0 DONE task1 NOT_DONE task2 DONE task3 NOT_DONE task4 DONE task5
 		 * NOT_DONE task6 DONE task7 NOT_DONE task8 DONE task9 NOT_DONE
 		 */
-		p = new Product();
+		p = new Product(new ArrayList<Task>());
 		tasks = new Task[10];
 		for (int i = 0; i < tasks.length; i++) {
 			tasks[i] = new Task(new Station(i,"Station" + i), i % 2 == 0 ? Status.DONE
@@ -62,7 +64,7 @@ public class ProductTest extends TestCase implements Listener<Product> {
 	@Test
 	public void testListener() {
 		hasBeenNotified = false;
-		Product p = new Product();
+		Product p = new Product(new ArrayList<Task>());
 		Task t = new Task(new Station(0,"Station0"));
 		p.addTask(t, 0);
 		p.addProductListener(this);
@@ -102,17 +104,17 @@ public class ProductTest extends TestCase implements Listener<Product> {
 		List<Task> tasks1 = new ArrayList<Task>();
 		tasks1.add(new Task(new Station(0, "Polering")));
 		tasks1.add(new Task(new Station(1, "Rengoring")));
-		Product p1 = new Product(0, "Blue and cool", "Description", "Plain", tasks1);
+		Product p1 = new Product(0, "Blue and cool", "Description", "Plain", tasks1, null);
 		
 		List<Task> tasks2 = new ArrayList<Task>();
 		tasks2.add(new Task(new Station(0, "Polering")));
 		tasks2.add(new Task(new Station(1, "Rengoring")));
-		Product p2 = new Product(0, "Blue and cool", "Description", "Plain", tasks2);
+		Product p2 = new Product(0, "Blue and cool", "Description", "Plain", tasks2, null);
 		
 		List<Task> tasks3 = new ArrayList<Task>();
 		tasks3.add(new Task(new Station(2, "Polering")));
 		tasks3.add(new Task(new Station(1, "Rengoring")));
-		Product p3 = new Product(0, "Blue and cool", "Description", "Plain", tasks3);
+		Product p3 = new Product(0, "Blue and cool", "Description", "Plain", tasks3, null);
 		
 		assertTrue(p1.equals(p2));
 		assertTrue(p2.equals(p1));

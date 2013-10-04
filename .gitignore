@@ -2,12 +2,11 @@
 .DS_Store
 local.properties
 # Directories
-/gen
-/bin
+gen/
+bin/
 *.log
 *.class
 *.metadata
-
 api/lib/
 api/db_config.php
 LidkopingSHTest/gen/
