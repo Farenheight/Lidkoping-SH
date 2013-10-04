@@ -269,6 +269,20 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	}
 
 	/**
+	 * Loops through the product list to find a stone
+	 * 
+	 * @return The first found stone in product list
+	 */
+	public Stone getStone() {
+		for (Product product : getProducts()) {
+			if (product instanceof Stone) {
+				return (Stone) product;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Inner class that makes sure that listeners are added and removed properly
 	 * when an {@link Order} is synced
 	 * 
