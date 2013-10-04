@@ -1,76 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/tabDetailContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-       <LinearLayout
+    <LinearLayout
+        android:id="@+id/product_task_cont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/default_padding" >
+
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_margin="@dimen/default_margin"
+            android:background="#fff"
+            android:columnCount="2"
+            android:padding="30dp"
+            android:rowCount="5"
+            android:useDefaultMargins="true"
+             >
 
             <TextView
-                android:id="@+id/idName"
-                android:layout_width="0dp"
+                android:id="@+id/task_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="O.S"
+                android:text="@string/dynamic_id_name"
                 android:textSize="60sp" />
 
             <TextView
                 android:id="@+id/orderNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="left"
                 android:text="@string/dynamic"
                 android:textSize="18sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:orientation="vertical" >
-        </LinearLayout>
-
-        <ScrollView 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:rowCount="5"
-            android:useDefaultMargins="true" >
 
             <TextView
-                android:id="@+id/burialNameHeader"
+                android:id="@+id/cemetery_number_header"
                 style="?android:attr/textAppearanceLarge"
-                android:text="@string/burial_name"
+                android:text="@string/cemetery_number"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/burialName"
+                android:id="@+id/cemetery_number"
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
@@ -170,13 +143,23 @@
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:background="#fff"
+            android:columnCount="1"
+            android:padding="30dp"
+            android:rowCount="10"
+            android:useDefaultMargins="true" >
 
             <TextView
                 android:id="@+id/TextView04"
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/desc"
                 android:textIsSelectable="true"
                 android:textSize="16sp"
@@ -187,7 +170,6 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
@@ -197,7 +179,6 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/front_processing"
                 android:textIsSelectable="true"
                 android:textSize="16sp"
@@ -208,7 +189,6 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
@@ -218,7 +198,6 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/text_style_and_processing"
                 android:textIsSelectable="true"
                 android:textSize="16sp"
@@ -229,10 +208,32 @@
                 style="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/workerNotesHeader"
+                style="?android:attr/textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="@string/workerNote"
+                android:textIsSelectable="true"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editText1"
+                android:layout_column="0"
+                android:layout_gravity="right|top"
+                android:ems="10"
+                android:hint="@string/noteHint"
+                android:text="@string/noteHint" >
+
+                <requestFocus />
+            </EditText>
         </GridLayout>
-        </ScrollView>
     </LinearLayout>
+
+</ScrollView>
