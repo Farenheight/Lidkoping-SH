@@ -181,10 +181,10 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 			return results;
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
+			//TODO: Check if values is a List<Order>
 			mOrders = (List<Order>) results.values;
 			if (results.count > 0) {
 				notifyDataSetChanged();

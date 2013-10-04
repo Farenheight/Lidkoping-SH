@@ -59,7 +59,7 @@ public class OrderDetailsFragment extends Fragment {
 		// all other static views displayed in the fragment.
 		rootView = inflater.inflate(R.layout.od_root, container, false);
 
-		// Consider include this again if bugs appear
+		// TODO:Consider include this again if bugs appear
 		// if (getArguments().containsKey(ORDER_ID)) {
 
 		// Gets and saves the order matching the orderId passed to the fragment

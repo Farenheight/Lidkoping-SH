@@ -24,13 +24,6 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// // Display dimensions
-		// Display display = getWindowManager().getDefaultDisplay();
-		// Point size = new Point();
-		// display.getSize(size);
-		// Log.d("DEBUG", "Screen width: " + size.x + " Screen height: "
-		// + size.y);
-
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		mTabletSize = true;
 		if (mTabletSize) {
@@ -41,37 +34,6 @@ public class MainActivity extends FragmentActivity implements
 			setContentView(R.layout.list_root);
 		}
 
-		printDPI();
-	}
-
-	/**
-	 * TODO: Remove before release
-	 */
-	private void printDPI() {
-		switch (getResources().getDisplayMetrics().densityDpi) {
-		case DisplayMetrics.DENSITY_LOW:
-			Log.d("DEBUG", "Running on LDPI");
-			break;
-		case DisplayMetrics.DENSITY_MEDIUM:
-			Log.d("DEBUG", "Running on MDPI");
-			break;
-		case DisplayMetrics.DENSITY_HIGH:
-			// ZTE Blade III
-			Log.d("DEBUG", "Running on HDPI");
-			break;
-		case DisplayMetrics.DENSITY_XHIGH:
-			// Galaxy Nexus
-			Log.d("DEBUG", "Running on XHDPI");
-			break;
-		case DisplayMetrics.DENSITY_XXHIGH:
-			// Galaxy s4, htc One, Nexus 5?
-			Log.d("DEBUG", "Running on XXHDPI");
-			break;
-		default:
-			// Nexus 7?
-			Log.d("DEBUG", "Running on a strange resolution");
-			break;
-		}
 	}
 
 	/**
