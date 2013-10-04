@@ -26,7 +26,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract.DeletedContacts;
 
 /**
  * Query, insert into and update the Order database content. This class converts
@@ -141,7 +140,8 @@ class OrderDbStorage {
 				.getId());
 		values.put(OrderTable.COLUMN_NAME_ID_NAME, order.getIdName());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY_BOARD,
-				order.getCemetaryBoard());
+				order.getCemeteryBoard());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_BOARD, order.getCemeteryBoard());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY, order.getCemetary());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY_BLOCK,
 				order.getCemetaryBlock());

@@ -3,7 +3,7 @@ package se.chalmers.lidkopingsh;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.chalmers.lidkopingsh.model.ModelHandler;
+import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.StationComparator;
@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,18 +22,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.example.lidkopingsh.R;
-
 /**
- * A list fragment representing a list of Stones. This fragment also supports
+ * A list fragment representing a list of Orders. This fragment also supports
  * tablet devices by allowing list items to be given an 'activated' state upon
  * selection. This helps indicate which item is currently being viewed in a
- * {@link StoneDetailFragment}.
- * <p>
+ * {@link OrderDetailsFragment}.
+ * 
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
+ * 
  */
-public class StoneListFragment extends ListFragment {
+public class OrderListFragment extends ListFragment {
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -48,63 +46,20 @@ public class StoneListFragment extends ListFragment {
 	 */
 	private Callbacks mCallbacks = sDummyCallbacks;
 
-	/**
-	 * The current activated item position. Only used on tablets.
-	 */
+	/** The current activated item position. Only used on tablets. */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
 
-	/**
-	 * List containing all orders shown in gui.
-	 */
+	/** List containing all orders shown in the main order list. */
 	private List<Order> mOrderList;
 
-	/**
-	 * Is main view.
-	 */
-	private View rootView;
-
-	/**
-	 * A callback interface that all activities containing this fragment must
-	 * implement. This mechanism allows activities to be notified of item
-	 * selections.
-	 */
-	public interface Callbacks {
-
-		/**
-		 * Callback for when an order has been selected in the list.
-		 * 
-		 * @param id
-		 *            Provides an identification value for the selected item.
-		 */
-		public void onItemSelected(int id);
-	}
-
-	/**
-	 * A dummy implementation of the {@link Callbacks} interface that does
-	 * nothing. Used only when this fragment is not attached to an activity.
-	 */
-	private static Callbacks sDummyCallbacks = new Callbacks() {
-		@Override
-		public void onItemSelected(int id) {
-		}
-	};
-
-	/**
-	 * The header view over the main order list view. Containing search and
-	 * station spinner
-	 */
-	private View mListHeader;
-
-	/**
-	 * Adapter responsible for the main order list view
-	 */
+	/** Adapter responsible for the main order list view */
 	private OrderAdapter mOrderAdapter;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */
-	public StoneListFragment() {
+	public OrderListFragment() {
 	}
 
 	@Override
@@ -121,47 +76,46 @@ public class StoneListFragment extends ListFragment {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
-
-	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
-		this.rootView = inflater.inflate(android.R.layout.list_content,
-				container, false);
-		mListHeader = inflater.inflate(R.layout.list_header, container, false);
-		return rootView;
+		return LayoutInflater.from(getActivity()).inflate(
+				R.layout.list_root_inner, null);
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-
 		// Restore the previously serialized activated item position.
 		if (savedInstanceState != null
 				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			setActivatedPosition(savedInstanceState
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
-	}
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+		// Important that the header view gets initialized before the list
+		// adapter
 		initHeaderView();
 		initOrderListViewAdapter();
 	}
 
 	/**
-	 * Adds a header view to the main order list view and setups the station
-	 * spinner
+	 * Adds the header view to the main order list containing a the station
+	 * spinner and the search/filter field
 	 */
 	private void initHeaderView() {
-		getListView().addHeaderView(mListHeader);
-		Spinner spinnerStations = (Spinner) mListHeader
-				.findViewById(R.id.spinnerTasks);
+		getListView().addHeaderView(
+				LayoutInflater.from(getActivity()).inflate(
+						R.layout.list_header, null));
+		initStationSpinner();
+		initSearch();
+	}
+
+	private void initStationSpinner() {
+
+		Spinner spinnerStations = (Spinner) getView().findViewById(
+				R.id.spinnerStations);
+
+		// When the user chooses an item in the stations spinner, sort the order
+		// list accordingly
 		spinnerStations.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -170,14 +124,14 @@ public class StoneListFragment extends ListFragment {
 				Station station = (Station) parent.getItemAtPosition(pos);
 				mOrderAdapter.sort(new StationComparator<Order>(station));
 				mOrderAdapter.notifyDataSetChanged();
-				Log.d("DEBUG", "Station selected: " + station.getName());
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// Do nothing
 			}
 		});
+
+		// Sets up the Adapter and gets it data from the {@link ModelHandler}
 		ArrayList<Station> stationList = (ArrayList<Station>) ModelHandler
 				.getModel(getActivity()).getStations();
 		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(
@@ -188,25 +142,18 @@ public class StoneListFragment extends ListFragment {
 		spinnerStations.setAdapter(stationsAdapter);
 	}
 
-	private void initOrderListViewAdapter() {
-		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
-				.getOrders());
-		mOrderAdapter = new OrderAdapter(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, mOrderList);
-		setListAdapter(mOrderAdapter);
-		initFilter(mOrderAdapter);
-	}
+	private void initSearch() {
+		EditText fieldSearch = (EditText) getView().findViewById(
+				R.id.fieldFilter);
 
-	private void initFilter(final FilterableAdapter<Order, String> filterAdapter) {
-		EditText fieldFilter = (EditText) mListHeader
-				.findViewById(R.id.fieldFilter);
-		fieldFilter.addTextChangedListener(new TextWatcher() {
+		// When the user enters text in the search field, filter out relevant
+		// orders
+		fieldSearch.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void onTextChanged(CharSequence currentText, int start,
 					int before, int count) {
-				filterAdapter.getFilter().filter(currentText);
+				mOrderAdapter.getFilter().filter(currentText);
 			}
 
 			@Override
@@ -220,10 +167,20 @@ public class StoneListFragment extends ListFragment {
 		});
 	}
 
+	/**
+	 * Sets up the adapter responsible for keeping the list view's data
+	 */
+	private void initOrderListViewAdapter() {
+		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
+				.getOrders());
+		mOrderAdapter = new OrderAdapter(getActivity(), mOrderList);
+		// Important to use this method and not ListView.setAdapter()
+		setListAdapter(mOrderAdapter);
+	}
+
 	@Override
 	public void onDetach() {
 		super.onDetach();
-
 		// Reset the active callbacks interface to the dummy implementation.
 		mCallbacks = sDummyCallbacks;
 	}
@@ -264,7 +221,32 @@ public class StoneListFragment extends ListFragment {
 		} else {
 			getListView().setItemChecked(position, true);
 		}
-
 		mActivatedPosition = position;
 	}
+
+	/**
+	 * A callback interface that all activities containing this fragment must
+	 * implement. This mechanism allows activities to be notified of item
+	 * selections.
+	 */
+	public interface Callbacks {
+
+		/**
+		 * Callback for when an order has been selected in the list.
+		 * 
+		 * @param orderId
+		 *            The id of the order that was clicked.
+		 */
+		public void onItemSelected(int orderId);
+	}
+
+	/**
+	 * A dummy implementation of the {@link Callbacks} interface that does
+	 * nothing. Used only when this fragment is not attached to an activity.
+	 */
+	private static Callbacks sDummyCallbacks = new Callbacks() {
+		@Override
+		public void onItemSelected(int orderId) {
+		}
+	};
 }

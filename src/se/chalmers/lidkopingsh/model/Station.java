@@ -27,7 +27,7 @@ public class Station {
 	@Override
 	public boolean equals(Object o) {
 		if(o == this) return true;
-		else if(o == null && o.getClass() != this.getClass()){
+		else if(o == null || o.getClass() != this.getClass()){
 			return false;
 		}else{
 			Station s = (Station)o;

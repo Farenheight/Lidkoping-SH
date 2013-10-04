@@ -11,22 +11,40 @@ public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
 	private Map<Integer, Product> products;
 	private Collection<Station> stations;
-	
-	public MapModel(Collection<Order> o,Collection<Station> s) {
+
+	public MapModel(Collection<Order> o, Collection<Station> s) {
 		this.products = new HashMap<Integer, Product>();
 		this.orders = new HashMap<Integer, Order>();
-		
-		for(Order or : o){
+
+		for (Order or : o) {
 			this.orders.put(or.getId(), or);
-			for(Product p : or.getProducts()){
+			for (Product p : or.getProducts()) {
 				this.products.put(p.getId(), p);
 			}
 		}
 		this.stations = new ArrayList<Station>(s);
-		
+
 	}
+
+	/**
+	 * Loops through the sorted list provided and returns the first occurrence
+	 * of a order that has already been to the provided station.
+	 * 
+	 * @param sortedList
+	 *            The sorted list should be ordered after the most relevant
+	 *            station first.
+	 * @param station
+	 *            The station to
+	 * @return The index of the first order that has not passed the provided
+	 *         station
+	 */
+	public int getFirstUncompletedIndex(List<Order> sortedList, Station station) {
+		// TODO: implement
+		return 5;
+	}
+
 	public MapModel(Collection<Order> o) {
-		this(o,new ArrayList<Station>());
+		this(o, new ArrayList<Station>());
 	}
 
 	/*
@@ -75,7 +93,7 @@ public class MapModel implements IModel {
 		for (Product p : o.getProducts()) {
 			products.put(p.getId(), p);
 		}
-		
+
 		// TODO When adding orders, check if the order have tasks that
 		// does not exist in any other order.
 	}
@@ -108,7 +126,7 @@ public class MapModel implements IModel {
 	}
 
 	@Override
-	public Collection<Station> getStations(){
+	public Collection<Station> getStations() {
 		return new ArrayList<Station>(stations);
 	}
 }

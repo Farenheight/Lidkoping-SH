@@ -1,4 +1,8 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.database;
+
+import se.chalmers.lidkopingsh.model.IModel;
+import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.util.Listener;
 
 public interface ILayer extends Listener<Order> {
 	/**

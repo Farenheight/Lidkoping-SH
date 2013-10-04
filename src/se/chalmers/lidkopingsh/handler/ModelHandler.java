@@ -1,6 +1,8 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.handler;
 
+import se.chalmers.lidkopingsh.database.ILayer;
 import se.chalmers.lidkopingsh.database.OrderDbLayer;
+import se.chalmers.lidkopingsh.model.IModel;
 import android.content.Context;
 
 

@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.util;
 
 /**
  * Something that should listen to another object of type {@link T}. 

@@ -1,0 +1,34 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:divider="?android:attr/dividerHorizontal"
+    android:orientation="horizontal"
+    android:showDividers="middle"
+    tools:context=".HandsetsDetailsActivity" >
+
+    <include layout="@layout/list_root" 
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/tablet_hint_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:background="#ddd" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="50dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/tablet_startup_hint"
+            android:textColor="#777"
+            android:textSize="40sp" />
+
+    </FrameLayout>
+
+</LinearLayout>

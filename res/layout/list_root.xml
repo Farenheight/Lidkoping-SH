@@ -2,15 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:orientation="vertical" >
+     >
 
     <fragment
-        android:id="@+id/stone_list"
-        android:name="se.chalmers.lidkopingsh.StoneListFragment"
+        android:id="@+id/order_list"
+        android:name="se.chalmers.lidkopingsh.OrderListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@android:layout/list_content" />
+        tools:layout="@android:layout/list_content" >
+    </fragment>
 
 </LinearLayout>

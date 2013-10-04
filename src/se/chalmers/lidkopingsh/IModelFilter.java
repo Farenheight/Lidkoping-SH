@@ -1,7 +1,8 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh;
 
-import java.util.List;
+import se.chalmers.lidkopingsh.model.Order;
 
+@Deprecated
 public interface IModelFilter<T> {
 	public boolean passesFilter(Order order, String constraint);
 }

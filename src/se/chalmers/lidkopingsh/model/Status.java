@@ -14,7 +14,7 @@ public enum Status {
 	}
 	
 	/**
-	 * Returns the status with the specified id.
+	 * Returns the status with the specified id. Used by database
 	 * @param id The id of the status.
 	 * @return The status.
 	 */
