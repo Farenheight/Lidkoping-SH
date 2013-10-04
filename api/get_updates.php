@@ -3,7 +3,9 @@
 function getUpdates(){
 	$data = $_POST['getUpdates'];
 	
-	$select = "SELECT *, o.order_id AS order_table_id, c.name AS customer_name FROM `order` o
+	$select = "SELECT *, o.order_id AS order_table_id, c.name AS customer_name,
+		p.product_id AS p_product_id, pt.name AS type_name, s.side_back_work as stone_side_back_work
+		FROM `order` o
 		JOIN `customer` c ON c.customer_id = o.customer_id
 		LEFT JOIN `image` i ON i.order_id = o.order_id
 		LEFT JOIN `product` p ON p.order_id = o.order_id
@@ -35,6 +37,8 @@ function getUpdates(){
 	
 	$stmt = $GLOBALS['con']->prepare($select);
 	$stmt->execute();
+	
+	//echo print_r(produceOrders($stmt->get_result()));
 	echo json_encode(produceOrders($stmt->get_result()));
 }
 
@@ -42,11 +46,9 @@ function getUpdates(){
 function produceOrders($res){
 	$allOrders = array();
 	while($row = $res->fetch_assoc()){
-		if (!empty($allOrders)){
-			$currentOrder = $allOrders[count($allOrders)-1];
-		}
-		// Add order if not already added
-		if(empty($allOrders) || $currentOrder['id'] != $row['order_id']){
+		// Add order if not already added, otherwise get latest order as current
+		$currentOrder = !empty($allOrders) ? $allOrders[count($allOrders)-1] : null;
+		if(is_null($currentOrder) || $currentOrder['id'] != $row['order_id']){
 			$currentOrder = array(
 			   "id" => $row['order_table_id'],
 			   "timeCreated" => $row['time_created'],
@@ -71,65 +73,70 @@ function produceOrders($res){
 		}
 		
 		// Add image if not added
-		if(!array_key_exists("images", $currentOrder)){
-			$currentOrder['images'] = array();
-		}
-		$images = $currentOrder['images'];
-		if(empty($images) || $images[count($images)-1]['id'] != $row['image_id']){
-			array_push($images, array(
+		@$images = $currentOrder['images'] ?: array();
+		if(!is_null($row['image_id']) && (empty($images) || 
+				$images[count($images)-1]['id'] != $row['image_id'])){
+			// Check if image is added
+			$image = array(
 				"id" => $row['image_id'],
 				"imagePath" => $row['file_name']
-			));
+			);
+			if(!in_array($image, $images)){
+				array_push($images, $image);
+				$currentOrder['images'] = $images;
+			}
 		}
 		
 		// Add product if not added
-		if(!array_key_exists("products", $currentOrder)){
-			$currentOrder['products'] = array();
-		}
-		$products = $currentOrder['products'];
-		if(empty($products) || $products[count($products)-1]['id'] != $row['product_id']){
+		@$products = $currentOrder['products'] ?: array();
+		if(!is_null($row['p_product_id']) && (empty($products) ||
+				$products[count($products)-1]['id'] != $row['p_product_id'])){
 			$product = array(
-				"id" => $row['product_id'],
+				"id" => $row['p_product_id'],
 		        "materialColor" => $row['material_color'],
 		        "description" => $row['description'],
 		        "frontWork" => $row['frontwork'],
 		        "type" => array(
 		        	"id" => $row['product_type_id'],
-		        	"name" => $row['name']
+		        	"name" => $row['type_name']
 				)
 			);
 			// Add stone details if exists
 			if (!is_null($row['stone_product_id'])) {
 				$product = array_merge($product, array(
 					"stoneModel" => $row['stone_model'],
-			        "sideBackWork" => $row['side_back_work'],
+			        "sideBackWork" => $row['stone_side_back_work'],
 			        "textStyle" => $row['textstyle'],
 			        "ornament" => $row['ornament']
 				));
 			}
-			array_push($currentOrder['products'], $product);
+			array_push($products, $product);
+			$currentOrder['products'] = $products;
 		}
 		
 		// Add task to current product
-		$products = $currentOrder['products'];
+		@$products = $currentOrder['products'];
 		if(!empty($products)){
 			$currentProduct = $products[count($products)-1];
-			if(!array_key_exists("tasks", $currentProduct)){
-				$currentProduct['tasks'] = array();
-			}
+			@$tasks = $currentProduct['tasks'] ?: array();
 			if(!is_null($row['status'])){
-				array_push($currentProduct['tasks'], array(
+				$task = array(
 					"status" => $row['status'],
 					"station" => array(
 						"id" => $row['station_id'],
 						"name" => $row['name']
 					)
-				));
+				);
+				if (!in_array($task, $tasks)) {
+					array_push($tasks, $task);
+					$currentProduct['tasks'] = $tasks;
+					$currentOrder['products'][count($products)-1] = $currentProduct;
+				}
 			}
-			
 		}
 		
-		
+		// Update order data in array
+		$allOrders[count($allOrders)-1] = $currentOrder;
 	}
 	
 	return $allOrders;

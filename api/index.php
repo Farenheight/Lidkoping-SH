@@ -1,7 +1,7 @@
 <?php
 ini_set("display_errors", 1);
 
-header('Content-type: text/json');
+header('Content-type: text/json; charset=utf-8');
 
 require_once 'authentication.php';
 require_once 'db_config.php';
@@ -10,6 +10,11 @@ require_once 'class/mySQLConnection.php';
 
 checkAuthenticated();
 $con = new mySQLConnection();
+
+// Set encoding format for database, otherwise values are not retrieved correctly
+$stmt = $GLOBALS['con']->prepare("SET NAMES 'utf8'");
+$stmt->execute();
+$GLOBALS['con']->commit();
 
 if (isset($_POST['getUpdates'])) {
 	require_once 'get_updates.php';
