@@ -57,7 +57,7 @@ public class ServerLayer extends AbstractServerLayer {
 		Gson gson = new Gson();
 		try {
 			httpPost.setEntity(new StringEntity(orderString));
-			httpPost.setHeader("Lidkopingsh-Authentication",
+			httpPost.setHeader("LidkopingSH-Authentication",
 					"1234567890qwertyuiop");
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			reader = new BufferedReader(new InputStreamReader(httpResponse
@@ -93,8 +93,8 @@ public class ServerLayer extends AbstractServerLayer {
 		long[][] orderArray = new long[orders.size()][2];
 		int i = 0;
 		for (Order o : orders) {
-			orderArray[i][1] = (long) o.getId();
-			orderArray[i][2] = (long) o.getLastTimeUpdate();
+			orderArray[i][0] = (long) o.getId();
+			orderArray[i][1] = (long) o.getLastTimeUpdate();
 			i++;
 		}
 		Gson gson = new Gson();

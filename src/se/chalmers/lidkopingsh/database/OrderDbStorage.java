@@ -37,7 +37,7 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Olliver Mattsson
  * 
  */
-class OrderDbStorage {
+public class OrderDbStorage {
 
 	private static final String CUSTOMER = "c";
 	private static final String IMAGE = "i";
