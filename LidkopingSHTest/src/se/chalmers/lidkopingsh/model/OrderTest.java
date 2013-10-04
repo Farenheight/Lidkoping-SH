@@ -33,9 +33,9 @@ public class OrderTest {
 		o2.removeProduct(p);
 		assertFalse(o1.equals(o2));
 	}
-
 	@Test
 	public void testSync() {
+		SyncListener syncListener = new SyncListener();
 		// TODO filled with null to avoid compilation errors
 		Order o0 = new Order(0, "2", "OM", 2837203547257l,
 				System.currentTimeMillis(), "Kvanum", null, null, null, 0l,
@@ -48,7 +48,10 @@ public class OrderTest {
 				new Customer("","","","","",0), null);
 		assertFalse(o0.equals(o1));
 		assertTrue(o1.equals(o2));
+		
+		o0.addSyncOrderListener(syncListener);
 		o0.sync(o1);
+		assertTrue(syncListener.hasSynced);
 		assertTrue(o0.equals(o1));
 		assertTrue(o0.equals(o2));
 
@@ -68,6 +71,13 @@ public class OrderTest {
 		o0.sync(o1);
 		assertTrue(o0.equals(o1));
 
+	}
+	private class SyncListener implements Listener<Order>{
+		public boolean hasSynced = false;
+		@Override
+		public void changed(Order object) {
+			hasSynced = true;
+		}
 	}
 
 	@Test

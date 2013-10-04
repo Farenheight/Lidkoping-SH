@@ -24,6 +24,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private String cemetaryNumber;
 	private Customer customer;
 	private List<Listener<Order>> orderListeners;
+	private List<Listener<Order>> orderSyncedListeners;
 	private SyncableList<Product> products;
 
 	/**
@@ -47,6 +48,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.customer = customer.clone();
 
 		orderListeners = new ArrayList<Listener<Order>>();
+		orderSyncedListeners = new ArrayList<Listener<Order>>();
 		this.products = new SyncableProductList(products);
 		if (products != null) {
 			for (Product p : products) {
@@ -182,6 +184,21 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public void removeOrderListener(Listener<Order> listener) {
 		orderListeners.remove(listener);
 	}
+	
+	/**
+	 * Add a {@link Listener} that gets notified when this Order is synced
+	 * @param listener
+	 */
+	public void addSyncOrderListener(Listener<Order> listener){
+		orderSyncedListeners.add(listener);
+	}
+	/**
+	 * Removes a {@link Listener} that should not get notified anymore when this Order is synced.
+	 * @param listener
+	 */
+	public void removeSyncOrderListener(Listener<Order> listener){
+		orderSyncedListeners.remove(listener);
+	}
 
 	/**
 	 * Notify listeners on change.
@@ -189,6 +206,14 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public void notifyOrderListeners() {
 		lastTimeUpdate = System.currentTimeMillis();
 		for (Listener<Order> listener : orderListeners) {
+			listener.changed(this);
+		}
+	}
+	/**
+	 * Notify syncedListeners when synced.
+	 */
+	public void notifySyncedListeners() {
+		for (Listener<Order> listener : orderSyncedListeners) {
 			listener.changed(this);
 		}
 	}
@@ -213,6 +238,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				this.orderNumber = newData.orderNumber;
 				this.idName = newData.idName;
 				products.sync(newData.getProducts());
+				notifySyncedListeners();
 				return true;
 			}
 		} else {
