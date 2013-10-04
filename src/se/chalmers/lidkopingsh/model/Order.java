@@ -1,45 +1,38 @@
 package se.chalmers.lidkopingsh.model;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+
+import se.chalmers.lidkopingsh.util.Listener;
+import se.chalmers.lidkopingsh.util.Syncable;
+import se.chalmers.lidkopingsh.util.SyncableArrayList;
+import se.chalmers.lidkopingsh.util.SyncableList;
 
 /**
  * A class representing an Order.
  * 
  * @author Kim
+ * @author Robin Gronberg
  * 
  */
 public class Order implements Listener<Product>, Syncable<Order> {
-	private static int currentOrderNumberCount = 0;
 	private int id;
 	private final long timeCreated;
 	private long lastTimeUpdate;
+	private long lastTimeSync;
 	private String cemetary;
 	private long orderDate;
 	private String orderNumber;
 	private String idName;
-	private String cemetaryBoard;
+	private String cemeteryBoard;
 	private String cemetaryBlock;
 	private String cemetaryNumber;
 	private Customer customer;
 	private List<Listener<Order>> orderListeners;
+	private List<Listener<Order>> orderSyncedListeners;
 	private SyncableList<Product> products;
 	private Collection<Image> images;
-
-	/**
-	 * For testing purposes only.
-	 */
-	public Order() {
-		this(5, getNewOrderNumber(), "O.R.", System.currentTimeMillis(), System
-				.currentTimeMillis(), "Kyrkogard", "Kyrkonamnd",
-				"Kyrkogardsblock", "Kyrkogardsnummer", Long
-						.parseLong("1371679200000"), new Customer("Mr",
-						"Olle Bengtsson", "Testvagen 52", "416 72 Goteborg",
-						"olle.bengtsson@testuser.com",
-						(int) System.currentTimeMillis()), null, null);
-	}
 
 	/**
 	 * Creates an Order with the specified properties. For unknown or not
@@ -48,14 +41,15 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Order(int id, String orderNumber, String idName, long timeCreated,
 			long lastTimeUpdated, String cemetary, String cemetaryBoard,
 			String cemetaryBlock, String cemetaryNumber, long orderDate,
-			Customer customer, Collection<Product> products, Collection<Image> images)  {
+			Customer customer, Collection<Product> products,
+			Collection<Image> images) {
 		this.id = id;
 		this.orderNumber = orderNumber != null ? orderNumber : "";
 		this.idName = idName != null ? idName : "";
 		this.timeCreated = timeCreated;
 		this.lastTimeUpdate = lastTimeUpdated;
 		this.cemetary = cemetary != null ? cemetary : "";
-		this.cemetaryBoard = cemetaryBoard != null ? cemetaryBoard : "";
+		this.cemeteryBoard = cemetaryBoard != null ? cemetaryBoard : "";
 		this.cemetaryBlock = cemetaryBlock != null ? cemetaryBlock : "";
 		this.cemetaryNumber = cemetaryNumber != null ? cemetaryNumber : "";
 		this.orderDate = orderDate;
@@ -63,9 +57,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.images = images;
 
 		orderListeners = new ArrayList<Listener<Order>>();
+		orderSyncedListeners = new ArrayList<Listener<Order>>();
 		this.products = new SyncableProductList(products);
 		if (products != null) {
-			for(Product p : products) {
+			for (Product p : products) {
 				p.addProductListener(this);
 			}
 		}
@@ -79,8 +74,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		return timeCreated;
 	}
 
-	public String getCemetaryBoard() {
-		return cemetaryBoard;
+	public String getCemeteryBoard() {
+		return cemeteryBoard;
 	}
 
 	public String getCemetaryBlock() {
@@ -106,13 +101,13 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Collection<Image> getImages() {
 		return images;
 	}
-	
+
 	public String getOrderNumber() {
 		return orderNumber;
 	}
 
 	public Customer getCustomer() {
-		return customer;
+		return customer.clone();
 	}
 
 	public String getIdName() {
@@ -123,6 +118,25 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		return products;
 	}
 
+	/**
+	 * Get whenever this Order is synced with the database or not. If an order
+	 * is synced. This Order should have the same data as the remote server.
+	 * 
+	 * @return true if synced, false otherwise
+	 */
+	public boolean isSynced() {
+		return lastTimeSync == lastTimeUpdate;
+	}
+
+	/**
+	 * Add a new product to this Order. This will notify all {@link Listener}s
+	 * that something has changed on this Project. If a product with the same id
+	 * is already in the list, that product is removed before this product is
+	 * added.
+	 * 
+	 * @param product
+	 *            The product to add into this {@link Order}
+	 */
 	public void addProduct(Product product) {
 		for (Product p : products) {
 			if (product.getId() == p.getId()) {
@@ -133,6 +147,14 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		notifyOrderListeners();
 	}
 
+	/**
+	 * Adds a list of {@link Product}s to this Order. If any of the products
+	 * already exist in this order with the same id, that product is removed
+	 * before the new product is added.
+	 * 
+	 * @param products
+	 *            A list of {@link Product}s to add to this Order
+	 */
 	public void addProducts(Collection<Product> products) {
 		for (Product p : products) {
 			addProduct(p);
@@ -187,11 +209,39 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	}
 
 	/**
+	 * Add a {@link Listener} that gets notified when this Order is synced
+	 * 
+	 * @param listener
+	 */
+	public void addSyncOrderListener(Listener<Order> listener) {
+		orderSyncedListeners.add(listener);
+	}
+
+	/**
+	 * Removes a {@link Listener} that should not get notified anymore when this
+	 * Order is synced.
+	 * 
+	 * @param listener
+	 */
+	public void removeSyncOrderListener(Listener<Order> listener) {
+		orderSyncedListeners.remove(listener);
+	}
+
+	/**
 	 * Notify listeners on change.
 	 */
 	public void notifyOrderListeners() {
 		lastTimeUpdate = System.currentTimeMillis();
 		for (Listener<Order> listener : orderListeners) {
+			listener.changed(this);
+		}
+	}
+
+	/**
+	 * Notify syncedListeners when synced.
+	 */
+	public void notifySyncedListeners() {
+		for (Listener<Order> listener : orderSyncedListeners) {
 			listener.changed(this);
 		}
 	}
@@ -205,7 +255,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public boolean sync(Order newData) {
 		if (newData != null && this.id == newData.id
 				&& getClass() == newData.getClass()) {
-			// If this object is newer that newData, switch the sync
+			// If this object is newer then newData, switch the sync
 			if (this.lastTimeUpdate > newData.lastTimeUpdate) {
 				return newData.sync(this);
 			} else {
@@ -216,6 +266,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				this.orderNumber = newData.orderNumber;
 				this.idName = newData.idName;
 				products.sync(newData.getProducts());
+				this.lastTimeSync = newData.lastTimeUpdate;
+				notifySyncedListeners();
 				return true;
 			}
 		} else {
@@ -234,7 +286,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			return this.id == or.id && this.timeCreated == or.getTimeCreated()
 					&& this.lastTimeUpdate == or.getLastTimeUpdate()
 					&& this.cemetary.equals(or.getCemetary())
-					&& this.cemetaryBoard.equals(or.getCemetaryBoard())
+					&& this.cemeteryBoard.equals(or.getCemeteryBoard())
 					&& this.cemetaryBlock.equals(or.getCemetaryBlock())
 					&& this.cemetaryNumber.equals(or.getCemetaryNumber())
 					&& this.orderDate == or.getOrderDate()
@@ -245,23 +297,18 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		}
 	}
 
-	public static String getNewOrderNumber() {
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		int yearPart = year % 2000;
-
-		String numPart = "";
-		currentOrderNumberCount++;
-		if (currentOrderNumberCount < 10) {
-			numPart = "000" + currentOrderNumberCount;
-		} else if (currentOrderNumberCount < 100) {
-			numPart = "00" + currentOrderNumberCount;
-		} else if (currentOrderNumberCount < 1000) {
-			numPart = "0" + currentOrderNumberCount;
-		} else {
-			numPart = "" + currentOrderNumberCount;
+	/**
+	 * Loops through the product list to find a stone
+	 * 
+	 * @return The first found stone in product list
+	 */
+	public Stone getStone() {
+		for (Product product : getProducts()) {
+			if (product instanceof Stone) {
+				return (Stone) product;
+			}
 		}
-
-		return "" + yearPart + numPart;
+		return null;
 	}
 
 	/**
@@ -273,9 +320,6 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 */
 	private class SyncableProductList extends SyncableArrayList<Product> {
 		private static final long serialVersionUID = 2154927418889429341L;
-
-		public SyncableProductList() {
-		}
 
 		public SyncableProductList(Collection<Product> collection) {
 			super(collection);

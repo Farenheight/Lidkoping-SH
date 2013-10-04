@@ -3,6 +3,9 @@ package se.chalmers.lidkopingsh.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.chalmers.lidkopingsh.util.Listener;
+import se.chalmers.lidkopingsh.util.Syncable;
+
 /**
  * A task is something that needs to be done to finish a product.
  * 

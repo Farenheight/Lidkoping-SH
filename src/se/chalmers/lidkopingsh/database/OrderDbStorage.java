@@ -26,11 +26,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract.DeletedContacts;
 
 /**
  * Query, insert into and update the Order database content. This class converts
  * data between the {@link Order} model object and database table format.
+ * When inserting an object it must contain an id since it has to be matched with the other tables in the
+ * database.
  * 
  * @author Anton Jansson
  * @author Olliver Mattsson
@@ -139,7 +140,8 @@ class OrderDbStorage {
 				.getId());
 		values.put(OrderTable.COLUMN_NAME_ID_NAME, order.getIdName());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY_BOARD,
-				order.getCemetaryBoard());
+				order.getCemeteryBoard());
+		values.put(OrderTable.COLUMN_NAME_CEMETERY_BOARD, order.getCemeteryBoard());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY, order.getCemetary());
 		values.put(OrderTable.COLUMN_NAME_CEMETERY_BLOCK,
 				order.getCemetaryBlock());
@@ -161,13 +163,6 @@ class OrderDbStorage {
 		db.insert(OrderTable.TABLE_NAME, null, values);
 	}
 
-	/**
-	 * Insert a new customer into the database. The customer object must contain
-	 * its customer id, which is referred to in the Order table.
-	 * 
-	 * @param customer
-	 *            The customer to insert.
-	 */
 	private void insertCustomer(Customer customer) {
 		ContentValues values = new ContentValues();
 
@@ -264,12 +259,23 @@ class OrderDbStorage {
 		db.insert(TaskTable.TABLE_NAME, null, values);
 	}
 
+	/**
+	 * Deletes an order
+	 * 
+	 * @param order The order to be deleted.
+	 */
 	public void delete(Order order) {
 		db.beginTransaction();
 		deleteOrder(order);
 		db.setTransactionSuccessful();
 		db.endTransaction();
 	}
+	
+	/**
+	 * Delete an order
+	 * 
+	 * @param order The order to be deleted
+	 */
 	public void deleteOrder(Order order){
 		for (Product p : order.getProducts()) {
 			//checks if there are any products with the given type left if not the type is removed
@@ -325,11 +331,21 @@ class OrderDbStorage {
 		
 	}
 
+	/**
+	 * Updates an order.
+	 * 
+	 * @param order The order to be updated.
+	 */
 	public void update(Order order) {
 		delete(order);
 		insert(order);
 	}
 	
+	/**
+	 * Updates several orders.
+	 * 
+	 * @param orders The orders to be updated.
+	 */
 	public void updateOrders(Collection<Order> orders){
 		db.beginTransaction();
 		
@@ -601,6 +617,7 @@ class OrderDbStorage {
 		return tasks;
 	}
 
+	//Gets a column with the specified type, int, long or String
 	private int getIntColumn(Cursor c, String columnName) {
 		return c.getInt(c.getColumnIndexOrThrow(columnName));
 	}

@@ -15,6 +15,11 @@ import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 
+/**
+ * A class to fill the database with dummydata. Is to be removed when not needed anymore.
+ * @author Olliver
+ *
+ */
 
 public class OrderDbFiller {
 	private static int customerId = 500;
@@ -104,10 +109,10 @@ public class OrderDbFiller {
 
 	public static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		tasks.add(new Task(new Station(1, "Sagning"), Status.DONE));
-		tasks.add(new Task(new Station(3, "Rahuggning")));
+		tasks.add(new Task(new Station(1, "Sågning"), Status.DONE));
+		tasks.add(new Task(new Station(3, "Råhuggning")));
 		tasks.add(new Task(new Station(4, "Gravering")));
-		tasks.add(new Task(new Station(5, "Malning")));
+		tasks.add(new Task(new Station(5, "Målning")));
 		return tasks;
 	}
 }

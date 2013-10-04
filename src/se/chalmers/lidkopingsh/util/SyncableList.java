@@ -1,8 +1,8 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.util;
 
 import java.util.List;
 /**
- * A List that can be synced
+ * A List that can be synced. Syncing a SyncableList sync's every element in the list.
  * @author Robin Gronberg
  *
  * @param <T> The type of objects within the list.

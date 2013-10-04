@@ -39,6 +39,10 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	private static final String NOT_NULL = " NOT NULL";
 	private static final String COMMA_SEP = ", ";
 
+	/**
+	 * These variables defines the tables rows more specifically, what type they are and if they should be
+	 * unique, not null or primary key.
+	 */
 	private static final String ORDER_TABLE_CREATE = CREATE_TABLE 
 			+ OrderTable.TABLE_NAME + " ("
 			+ OrderTable._ID + INTEGER_TYPE + PRIMARY_KEY + COMMA_SEP
@@ -112,12 +116,16 @@ class OrderDbHelper extends SQLiteOpenHelper {
 
 	/**
 	 * Create a helper object to create, open, and/or manage the database.
+	 * 
 	 * @param context to use to open or create the database
 	 */
 	public OrderDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 	
+	/**
+	 * Creates all the tables for the database
+	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(ORDER_TABLE_CREATE);
@@ -130,6 +138,9 @@ class OrderDbHelper extends SQLiteOpenHelper {
 		db.execSQL(CUSTOMER_TABLE_CREATE);
 	}
 
+	/**
+	 * Upgrades all the tables of the database.
+	 */
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		dropTable(db, OrderTable.TABLE_NAME);
@@ -143,6 +154,12 @@ class OrderDbHelper extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
+	/**
+	 * Drops a table from the database.
+	 * 
+	 * @param db The database from which the table should be dropped
+	 * @param tableName The table to be dropped
+	 */
 	private void dropTable(SQLiteDatabase db, String tableName) {
 		db.execSQL("DROP TABLE IF EXISTS " + tableName);
 	}
