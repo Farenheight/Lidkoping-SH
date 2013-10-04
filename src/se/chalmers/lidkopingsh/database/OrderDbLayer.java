@@ -11,7 +11,7 @@ import android.util.Log;
 
 
 /**
- * Handles communication between model and Order database.
+ * Handles communication between Model and Order database.
  * 
  * @author Anton Jansson
  * @author Olliver Mattsson
@@ -39,10 +39,7 @@ public class OrderDbLayer implements ILayer {
 
 	@Override
 	public void changed(Order order) {
-		//TODO: getUpdates()"sync"->(updateDatabase())->sendUpdate().
-		//(timestamps), use a stack before updating local db.
-		//Server manages DB check timestamp on order. Newer or Older? Merge them?
-		//db.update(order);
+		//TODO: Check if change was same as in DB.
 		serverLayer.sendUpdate(order);
 		serverLayer.getUpdates();
 	}
