@@ -7,4 +7,5 @@ public interface ILayer extends Listener<Order> {
 	 * @return The model that the layer holds
 	 */
 	public IModel getModel();
+	public void updateDatabase(Order o);
 }

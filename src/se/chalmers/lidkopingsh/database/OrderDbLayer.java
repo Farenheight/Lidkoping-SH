@@ -19,6 +19,7 @@ import android.util.Log;
 public class OrderDbLayer implements ILayer {
 
 	private final OrderDbStorage db;
+	private final ServerLayer serverLayer;
 
 	/**
 	 * Creates a layer for communication between model and Order database.
@@ -28,6 +29,8 @@ public class OrderDbLayer implements ILayer {
 	 */
 	public OrderDbLayer(Context context) {
 		db = new OrderDbStorage(context);
+		//TODO: Remove server path. Set it in settings. 
+		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", context);
 		if (db.query(null, null, null).isEmpty()) {
 			OrderDbFiller.fillDb(db);
 			Log.d("OrderdbLayer", "filled database with dummy data");
@@ -36,8 +39,12 @@ public class OrderDbLayer implements ILayer {
 
 	@Override
 	public void changed(Order order) {
-		db.update(order);
-		Log.d("Changed Order", "Changed objects in database");
+		//TODO: getUpdates()"sync"->(updateDatabase())->sendUpdate().
+		//(timestamps), use a stack before updating local db.
+		//Server manages DB check timestamp on order. Newer or Older? Merge them?
+		//db.update(order);
+		serverLayer.sendUpdate(order);
+		serverLayer.getUpdates();
 	}
 
 	@Override
@@ -49,6 +56,11 @@ public class OrderDbLayer implements ILayer {
 		}
 
 		return new MapModel(orders, db.getStations());
+	}
+	
+	@Override
+	public void updateDatabase(Order o) {
+		db.update(o);
 	}
 
 }
