@@ -1,10 +1,10 @@
 <?php
 
 function getUpdates(){
-	$data = $_POST['getUpdates'];
+	$data = $_POST['data'];
 	
 	$select = "SELECT *, o.order_id AS order_table_id, c.name AS customer_name,
-		p.product_id AS p_product_id, pt.name AS type_name, s.side_back_work as stone_side_back_work
+		p.product_id AS p_product_id, pt.name AS type_name
 		FROM `order` o
 		JOIN `customer` c ON c.customer_id = o.customer_id
 		LEFT JOIN `image` i ON i.order_id = o.order_id
@@ -12,28 +12,30 @@ function getUpdates(){
 		LEFT JOIN `product_type` pt ON pt.product_type_id = p.product_type_id
 		LEFT JOIN `stone` s ON s.stone_product_id = p.product_id
 		LEFT JOIN `task` t ON t.product_id = p.product_id
-		LEFT JOIN  `station` st ON st.station_id = t.station_id
-		WHERE `archived`='0'";
+		LEFT JOIN `station` st ON st.station_id = t.station_id
+		HAVING `archived`='0'";
 	
-	if(isset($_POST['data'])){
+	if(!empty($_POST['data'])){
 		$data_array = json_decode($data, true);
-		if($data_array === null){
-			errorGeneric("JSON data was not valid, when trying to decode request data");
-		}else if(count($data_array) > 0){
-			$select .= " AND IS NOT(";
-			for($i = 0; $i < count($data_array); $i++){
+		
+		checkInputFormat($data_array);
+		
+		$size = sizeof($data_array);
+		if($size > 0){
+			$select .= " AND NOT(";
+			for($i = 0; $i < $size; $i++){
 				if($i > 0){
 					$select .= " OR ";
 				}
 				$select .= "((`time_last_update`=". $GLOBALS['con']->escape($data_array[0][1]) .") 
-				AND (`o.order_id`=". $GLOBALS['con']->escape($data_array[0][0]) ."))";
+					AND (`order_table_id`=". $GLOBALS['con']->escape($data_array[0][0]) ."))";
 			}
 			$select .= ")";
 		}
 		
 	}
 	
-	$select .= " ORDER BY o.order_id, p.product_id, t.sort_order";
+	$select .= " ORDER BY order_table_id, p.product_id, t.sort_order";
 	
 	$stmt = $GLOBALS['con']->prepare($select);
 	$stmt->execute();
@@ -41,6 +43,24 @@ function getUpdates(){
 	echo output(true, produceOrders($stmt->get_result()));
 }
 
+function checkInputFormat($jsonarray) {
+	if(is_null($jsonarray)){
+			errorGeneric("JSON data was not valid, when trying to decode request data");
+	}
+	
+	$size = sizeof($jsonarray);
+	if ($size <= 0) {
+		errorGeneric("Input array is empty.", 20);
+	}
+	for ($i = 0; $i < $size; $i++) {
+		if (empty($jsonarray[$i][0]) || empty($jsonarray[$i][1])) {
+			errorGeneric("Argument(s) missing for order at index $i.", 21);
+		}
+		if (!is_numeric($jsonarray[$i][0]) || !is_numeric($jsonarray[$i][1])) {
+			errorGeneric("Argument(s) is not numeric for order at index $i.", 22);
+		}
+	}
+}
 
 function produceOrders($res){
 	$allOrders = array();
@@ -104,7 +124,7 @@ function produceOrders($res){
 			if (!is_null($row['stone_product_id'])) {
 				$product = array_merge($product, array(
 					"stoneModel" => $row['stone_model'],
-			        "sideBackWork" => $row['stone_side_back_work'],
+			        "sideBackWork" => $row['side_back_work'],
 			        "textStyle" => $row['textstyle'],
 			        "ornament" => $row['ornament']
 				));
@@ -139,95 +159,6 @@ function produceOrders($res){
 	}
 	
 	return $allOrders;
-}
-
-function echoTestOrder(){
-	$a = array(
-	   "id" => 1,
-	   "timeCreated" => 1380616350928,
-	   "lastTimeUpdate" => 1380616350931,
-	   "cemetary" => "KyrkogÃ¥rd",
-	   "orderDate" => 1380616350928,
-	   "orderNumber" => "130001",
-	   "idName" => "O.S",
-	   "cemetaryBoard" => "KyrkogÃ¥rdsnÃ¤mnd",
-	   "cemetaryBlock" => "Kvarter",
-	   "cemetaryNumber" => "Nummer",
-	   "customer" => array(
-	      "title" => "Mr",
-	      "name" => "Namn Efternamn",
-	      "address" => "Adress gata 5",
-	      "postAddress" => "123 45 Stad",
-	      "eMail" => "email@test.se",
-	      "id" => 500
-	   ),
-	   "products" => array(
-	      	array(
-	         "stoneModel" => "NB 49",
-	         "sideBackWork" => "RÃ¥hugget",
-	         "textStyle" => "Helvetica nedhuggen i guld",
-	         "ornament" => "Blomma nedhuggen i guld",
-	         "id" => 400,
-	         "materialColor" => "Hallandia",
-	         "description" => "Beskrivning",
-	         "frontWork" => "Polerad",
-	         "tasks" => array(
-	            array(
-	               "status" => "DONE",
-	               "station" => array(
-	                  "id" => 1,
-	                  "name" => "Sagning"
-	               )
-	            ),
-	            array(
-	               "status" => "NOT_DONE",
-	               "station" => array(
-	                  "id" => 3,
-	                  "name" => "Rahuggning"
-	               )
-	            ),
-	            array(
-	               "status" => "NOT_DONE",
-	               "station" => array(
-	                  "id" => 4,
-	                  "name" => "Gravering"
-	               )
-	            ),
-	            array(
-	               "status" => "NOT_DONE",
-	               "station" => array(
-	                  "id" => 5,
-	                  "name" => "Malning"
-	               )
-	            )
-	         )
-	      ),
-	      array(
-	         "id" => 401,
-	         "materialColor" => "Hallandia",
-	         "description" => "Sockel under mark",
-	         "frontWork" => "Polerad",
-	         "tasks" => array(
-	            array(
-	               "status" => "DONE",
-	               "station" => array(
-	                  "id" => 1,
-	                  "name" => "Sagning"
-	               )
-	            ),
-	            array(
-	               "status" => "NOT_DONE",
-	               "station" => array(
-	                  "id" => 2,
-	                  "name" => "Slipning"
-	               )
-	            )
-	         )
-	      )
-	   )
-	);
-
-	echo json_encode($a, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 }
 
 ?>
