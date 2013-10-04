@@ -29,7 +29,7 @@ public class ModelFilterTest {
 		String testConstraint = "Not a matching string";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null));
+				0, new Customer("","","","","",0), null,null));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -48,7 +48,7 @@ public class ModelFilterTest {
 		String testConstraint = "O";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null));
+				0, new Customer("","","","","",0), null,null));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -67,7 +67,7 @@ public class ModelFilterTest {
 		String testConstraint = "SS";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null));
+				0, new Customer("","","","","",0), null,null));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -86,7 +86,7 @@ public class ModelFilterTest {
 		String testConstraint = "o.r";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null));
+				0, new Customer("","","","","",0), null,null));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -105,7 +105,7 @@ public class ModelFilterTest {
 		String testConstraint = "or";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null));
+				0, new Customer("","","","","",0), null,null));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -123,11 +123,11 @@ public class ModelFilterTest {
 		String testConstraint = "";
 
 		orders.add(new Order(0, null, "O.R", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null));
+				new Customer("","","","","",0), null,null));
 		orders.add(new Order(0, null, "O.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null));
+				new Customer("","","","","",0), null,null));
 		orders.add(new Order(0, null, "S.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null));
+				new Customer("","","","","",0), null,null));
 		
 		originalOrders.addAll(orders);
 
@@ -147,11 +147,11 @@ public class ModelFilterTest {
 		String testConstraint = null;
 
 		orders.add(new Order(0, null, "O.R", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null));
+				new Customer("","","","","",0), null,null));
 		orders.add(new Order(0, null, "O.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null));
+				new Customer("","","","","",0), null,null));
 		orders.add(new Order(0, null, "S.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null));
+				new Customer("","","","","",0), null,null));
 		
 		originalOrders.addAll(orders);
 

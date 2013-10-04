@@ -36,7 +36,7 @@ public class SyncableArrayListTest implements Listener<Order>{
 	private boolean synced = false;
 	@Test
 	public void testSyncListeners(){
-		Order o0 = new Order(0,"","",0,0,"","","","",0,new Customer("", "","", "", "", 0),null);
+		Order o0 = new Order(0,"","",0,0,"","","","",0,new Customer("", "","", "", "", 0),null,null);
 		o0.addOrderListener(this);
 		Product p0 = new Product(0, "none", "none", "", null);
 		o0.addProduct(p0);
@@ -45,7 +45,7 @@ public class SyncableArrayListTest implements Listener<Order>{
 		p0.addTask(t0);
 		p0.addTask(t1);
 		
-		Order o1 = new Order(0,"","",0,0,"","","","",0,new Customer("", "","", "", "", 0),null);
+		Order o1 = new Order(0,"","",0,0,"","","","",0,new Customer("", "","", "", "", 0),null,null);
 		Product p1 = new Product(0, "new", "new", "new", null); //clone
 		o1.addProduct(p1);
 		Task t2 = new Task(new Station(0, "Task0"));

@@ -15,31 +15,19 @@ public class TestStationComparator {
 		Station station2 = new Station(2, "Station2");
 		
 		
-<<<<<<< HEAD
-		Order order0 = new Order(0,"","0",0,0,"","","","",0,new Customer(),null,null);
-=======
-		Order order0 = new Order(0,"","0",0,0,"","","","",0,new Customer("","","","","",0),null);
->>>>>>> refs/heads/dev-gui
+		Order order0 = new Order(0,"","0",0,0,"","","","",0,new Customer("","","","","",0),null,null);
 		order0.addProduct(new Product(Arrays.asList(new Task[]{
 				new Task(station0),
 				new Task(station1),
 				new Task(station2)
 				})));
-<<<<<<< HEAD
-		Order order1 = new Order(0,"","1",0,0,"","","","",0,new Customer(),null,null);
-=======
-		Order order1 = new Order(0,"","1",0,0,"","","","",0,new Customer("","","","","",0),null);
->>>>>>> refs/heads/dev-gui
+		Order order1 = new Order(0,"","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);
 		order1.addProduct(new Product(Arrays.asList(new Task[]{
 				new Task(station0,Status.DONE),
 				new Task(station1),
 				new Task(station2)
 		})));
-<<<<<<< HEAD
-		Order order2 = new Order(0,"","2",0,0,"","","","",0,new Customer(),null,null);
-=======
-		Order order2 = new Order(0,"","2",0,0,"","","","",0,new Customer("","","","","",0),null);
->>>>>>> refs/heads/dev-gui
+		Order order2 = new Order(0,"","2",0,0,"","","","",0,new Customer("","","","","",0),null,null);
 		order2.addProduct(new Product(Arrays.asList(new Task[]{
 				new Task(station0,Status.DONE),
 				new Task(station1,Status.DONE),

@@ -15,17 +15,9 @@ public class OrderTest {
 		long time = System.currentTimeMillis();
 
 		Order o1 = new Order(1, "130001", "K.J", time, time, "Goteborg", null,
-<<<<<<< HEAD
-				null, null, time, new Customer(), null,null);
-=======
-				null, null, time, new Customer("","","","","",0), null);
->>>>>>> refs/heads/dev-gui
+				null, null, time, new Customer("","","","","",0), null,null);
 		Order o2 = new Order(1, "130001", "K.J", time, time, "Goteborg", null,
-<<<<<<< HEAD
-				null, null, time, new Customer(), null,null);
-=======
-				null, null, time, new Customer("","","","","",0), null);
->>>>>>> refs/heads/dev-gui
+				null, null, time, new Customer("","","","","",0), null,null);
 		assertTrue(o1.equals(o2));
 
 		Product p = new Product(new ArrayList<Task>());
@@ -47,25 +39,13 @@ public class OrderTest {
 		// TODO filled with null to avoid compilation errors
 		Order o0 = new Order(0, "2", "OM", 2837203547257l,
 				System.currentTimeMillis(), "Kvanum", null, null, null, 0l,
-<<<<<<< HEAD
-				new Customer(), null,null);
-=======
-				new Customer("","","","","",0), null);
->>>>>>> refs/heads/dev-gui
+				new Customer("","","","","",0), null,null);
 		Order o1 = new Order(0, "3", "OK", 2837203547257l,
 				System.currentTimeMillis(), "Lish", null, null, null, 2l,
-<<<<<<< HEAD
-				new Customer(), null,null);
-=======
-				new Customer("","","","","",0), null);
->>>>>>> refs/heads/dev-gui
+				new Customer("","","","","",0), null,null);
 		Order o2 = new Order(0, "3", "OK", 2837203547257l,
 				System.currentTimeMillis(), "Lish", null, null, null, 2l,
-<<<<<<< HEAD
-				new Customer(), null,null);
-=======
-				new Customer("","","","","",0), null);
->>>>>>> refs/heads/dev-gui
+				new Customer("","","","","",0), null,null);
 		assertFalse(o0.equals(o1));
 		assertTrue(o1.equals(o2));
 		
@@ -105,11 +85,7 @@ public class OrderTest {
 		OrderListener listener = new OrderListener();
 		Order order0 = new Order(0, "13555", "OV", System.currentTimeMillis(),
 				System.currentTimeMillis(), "Kvanum", null, "", "",
-<<<<<<< HEAD
-				System.currentTimeMillis(), new Customer(), null,null);
-=======
-				System.currentTimeMillis(), new Customer("","","","","",0), null);
->>>>>>> refs/heads/dev-gui
+				System.currentTimeMillis(), new Customer("","","","","",0), null,null);
 
 		order0.addOrderListener(listener);
 
@@ -132,11 +108,7 @@ public class OrderTest {
 
 		Order order1 = new Order(0, "", "", System.currentTimeMillis(),
 				System.currentTimeMillis(), null, "", "", "",
-<<<<<<< HEAD
-				System.currentTimeMillis(), new Customer(), null,null);
-=======
-				System.currentTimeMillis(), new Customer("","","","","",0), null);
->>>>>>> refs/heads/dev-gui
+				System.currentTimeMillis(), new Customer("","","","","",0), null,null);
 
 		Product product2 = new Product(0, "", "", "", null);
 		Task task4 = new Task(new Station(0, "Task0"));
