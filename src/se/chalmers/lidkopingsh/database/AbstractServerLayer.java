@@ -7,7 +7,7 @@ import se.chalmers.lidkopingsh.model.Order;
 /**
  * Interface for a layer between remote Server and Local database.
  * 
- * @author Alexander Härenstam
+ * @author Alexander Hï¿½renstam
  * @author Olliver Mattsson
  *
  */
@@ -16,7 +16,7 @@ public abstract class AbstractServerLayer {
 	/**
 	 * Retrieve updates from server.
 	 */
-	public abstract void getUpdates();
+	public abstract Collection<Order> getUpdates();
 	
 	/**
 	 * Send updates to server.

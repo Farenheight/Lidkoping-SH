@@ -1,6 +1,7 @@
 package se.chalmers.lidkopingsh.database;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 import se.chalmers.lidkopingsh.model.ILayer;
 import se.chalmers.lidkopingsh.model.IModel;
@@ -41,7 +42,8 @@ public class OrderDbLayer implements ILayer {
 	public void changed(Order order) {
 		//TODO: Check if change was same as in DB.
 		serverLayer.sendUpdate(order);
-		serverLayer.getUpdates();
+		updateDatabase(serverLayer.getUpdates());
+		
 	}
 
 	@Override
@@ -55,9 +57,23 @@ public class OrderDbLayer implements ILayer {
 		return new MapModel(orders, db.getStations());
 	}
 	
-	@Override
-	public void updateDatabase(Order o) {
-		db.update(o);
+	/**
+	 * Updates local database with a collection of orders
+	 * @param orders The orders to update
+	 */
+	public void updateDatabase(Collection<Order> orders) {
+		IModel model = getModel();
+		for (Order o : orders) {
+			try {
+				Order order = model.getOrderById(o.getId());
+				order.sync(o);
+				db.update(o);
+			} catch (NoSuchElementException e) {
+				o.addOrderListener(this);
+				model.addOrder(o);
+				db.update(o);
+			}
+		}
 	}
 
 }

@@ -3,7 +3,6 @@ package se.chalmers.lidkopingsh.database;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Collection;
-import java.util.NoSuchElementException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -11,8 +10,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import se.chalmers.lidkopingsh.model.ILayer;
-import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
@@ -78,22 +75,22 @@ public class ServerLayer extends AbstractServerLayer {
 	 * @param orderVerifiers
 	 *            A JsonObject with the ids and timestamps for comparing orders
 	 */
-	private void getUpdatedOrdersFromServer(String orderVerifiers) {
+	private Collection<Order> getUpdatedOrdersFromServer(String orderVerifiers) {
 		BufferedReader reader = sendHttpPostRequest("getUpdates=1&data="
 				+ orderVerifiers);
 		try {
 			Gson gson = new Gson();
-			Collection<Order> arrayOrders = gson.fromJson(reader,
+			return gson.fromJson(reader,
 					new TypeToken<Collection<Order>>() {
 					}.getType());
-			updateDatabase(arrayOrders);
 		} catch (JsonSyntaxException e) {
 			Log.e("server_layer", "Error in DB Update " + e.toString());
 		}
+		return null;
 	}
 
 	@Override
-	public void getUpdates() {
+	public Collection<Order> getUpdates() {
 		Collection<Order> orders = ModelHandler.getModel(context).getOrders();
 		long[][] orderArray = new long[orders.size()][2];
 		int i = 0;
@@ -103,7 +100,7 @@ public class ServerLayer extends AbstractServerLayer {
 			i++;
 		}
 		Gson gson = new Gson();
-		getUpdatedOrdersFromServer(gson.toJson(orderArray));
+		return getUpdatedOrdersFromServer(gson.toJson(orderArray));
 	}
 
 	@Override
@@ -111,25 +108,6 @@ public class ServerLayer extends AbstractServerLayer {
 		Gson gsonOrder = new Gson();
 		BufferedReader reader = sendHttpPostRequest(gsonOrder.toJson(order));
 		// TODO: check if answer is SUCCESS.
-	}
-
-	/**
-	 * Update the local database.
-	 */
-	private void updateDatabase(Collection<Order> orders) {
-		IModel model = ModelHandler.getModel(context);
-		ILayer layer = ModelHandler.getLayer(context);
-		for (Order o : orders) {
-			try {
-				Order order = model.getOrderById(o.getId());
-				order.sync(o);
-				layer.updateDatabase(o);
-			} catch (NoSuchElementException e) {
-				o.addOrderListener(layer);
-				model.addOrder(o);
-				layer.updateDatabase(o);
-			}
-		}
 	}
 
 }
