@@ -1,9 +1,11 @@
 package se.chalmers.lidkopingsh.database;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -66,7 +68,7 @@ public class ServerLayer extends AbstractServerLayer {
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			reader = new BufferedReader(new InputStreamReader(httpResponse
 					.getEntity().getContent()));
-		} catch (Exception e) {
+		}catch (Exception e) {
 			Log.e("server_layer", "Error in HTTP post " + e.toString());
 		}
 		return reader;
