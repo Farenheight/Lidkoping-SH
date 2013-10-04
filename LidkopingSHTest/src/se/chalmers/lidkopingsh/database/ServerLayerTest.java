@@ -9,7 +9,7 @@ import android.test.AndroidTestCase;
 
 /**
  *  
- * @author Alexander Härenstam
+ * @author Alexander HÃ¤renstam
  * @author Olliver Mattsson
  */
 public class ServerLayerTest extends AndroidTestCase {
@@ -33,8 +33,7 @@ public class ServerLayerTest extends AndroidTestCase {
 		ServerLayer serverLayer = new ServerLayer(
 				"http://lidkopingsh.kimkling.net/api/", this.getContext());
 		Collection<Order> ordersBefore = dbStorage.query(null, null, null);
-		serverLayer.getUpdates();
-		Collection<Order> ordersAfter = dbStorage.query(null, null, null);
+		Collection<Order> ordersAfter = serverLayer.getUpdates();
 		
 		assertTrue(ordersBefore.size() < ordersAfter.size());
 	}
