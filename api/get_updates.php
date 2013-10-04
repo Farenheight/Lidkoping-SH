@@ -38,8 +38,7 @@ function getUpdates(){
 	$stmt = $GLOBALS['con']->prepare($select);
 	$stmt->execute();
 	
-	//echo print_r(produceOrders($stmt->get_result()));
-	echo json_encode(produceOrders($stmt->get_result()));
+	echo output(produceOrders($stmt->get_result()));
 }
 
 

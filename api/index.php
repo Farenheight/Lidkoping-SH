@@ -4,9 +4,9 @@ $start = microtime(true);
 
 header('Content-type: text/json; charset=utf-8');
 
+require_once 'output.php';
 require_once 'authentication.php';
 require_once 'db_config.php';
-require_once 'exceptions.php';
 require_once 'class/mySQLConnection.php';
 
 checkAuthenticated();
