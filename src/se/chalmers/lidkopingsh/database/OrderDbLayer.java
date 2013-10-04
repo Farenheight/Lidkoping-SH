@@ -41,7 +41,12 @@ public class OrderDbLayer implements ILayer {
 	public void changed(Order order) {
 		//TODO: Check if change was same as in DB.
 		serverLayer.sendUpdate(order);
-		updateDatabase(serverLayer.getUpdates());
+		Order[] orders = serverLayer.getUpdates();
+		if (orders == null) {
+			order.sync(null);
+		}else {
+			updateDatabase(serverLayer.getUpdates());			
+		}
 		
 	}
 
@@ -60,7 +65,7 @@ public class OrderDbLayer implements ILayer {
 	 * Updates local database with a collection of orders
 	 * @param orders The orders to update
 	 */
-	public void updateDatabase(Collection<Order> orders) {
+	public void updateDatabase(Order[] orders) {
 		IModel model = getModel();
 		for (Order o : orders) {
 			try {

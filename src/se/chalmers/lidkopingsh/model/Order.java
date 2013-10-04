@@ -271,6 +271,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				return true;
 			}
 		} else {
+			//TODO: Notify GUI that connection failed.
 			return false;
 		}
 	}

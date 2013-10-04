@@ -1,5 +1,7 @@
 package se.chalmers.lidkopingsh.database;
 
+import java.util.Collection;
+
 import se.chalmers.lidkopingsh.model.Order;
 
 /**
@@ -14,7 +16,7 @@ public abstract class AbstractServerLayer{
 	/**
 	 * Retrieve updates from server.
 	 */
-	public abstract Collection<Order> getUpdates();
+	public abstract Order[] getUpdates();
 	
 	/**
 	 * Send updates to server.
