@@ -10,6 +10,11 @@ class mySQLConnection {
 			errorSql("Failed to connect: ".$mysqli -> connect_error, $mysqli -> connect_errno);
 		}
 		$this -> con -> autocommit(FALSE);
+		
+		// Set encoding format for database, otherwise values are not retrieved correctly
+		$stmt = $this -> con -> prepare("SET NAMES 'utf8'");
+		$stmt -> execute();
+		$this -> con -> commit();
 	}
 
 	public function commit() {
