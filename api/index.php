@@ -12,19 +12,24 @@ require_once 'class/mySQLConnection.php';
 checkAuthenticated();
 $con = new mySQLConnection();
 
-// Set encoding format for database, otherwise values are not retrieved correctly
-$stmt = $GLOBALS['con']->prepare("SET NAMES 'utf8'");
-$stmt->execute();
-$GLOBALS['con']->commit();
-
-if (isset($_POST['getUpdates'])) {
-	require_once 'get_updates.php';
-	getUpdates();
+if (isset($_GET['action'])) {
+	if ($_GET['action'] === "getUpdates") {
+		require_once 'get_updates.php';
+		getUpdates();
+	} else if ($_GET['action'] === "postOrder") {
+		require_once 'post_order.php';
+		postOrder();
+	} else {
+		errorGeneric("No valid action: Provided action (". $_GET['action'] .") does not exist");
+	}
 } else if (isset($_POST['postOrder'])) {
 	require_once 'post_order.php';
 	postOrder();
+} else if (isset($_POST['getUpdates'])) {
+	require_once 'get_updates.php';
+	getUpdates();
 } else {
-	echo 'Empty respons.';
+	errorGeneric("Empty respons: No methods where triggered, try again");
 }
 //echo round((microtime(true)-$start)*1000, 2) . "ms";
 ?>
