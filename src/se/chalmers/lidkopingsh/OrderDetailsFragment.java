@@ -127,7 +127,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 					R.layout.od_product_task_cont, null);
 			// TODO Fix to actual type of Product
 			((TextView) productView.findViewById(R.id.task_name))
-					.setText("Stone");
+					.setText(p.getType().getName());
 			for (final Task task : p.getTasks()) {
 				productView.addView(initTaskView(inflater, task));
 			}

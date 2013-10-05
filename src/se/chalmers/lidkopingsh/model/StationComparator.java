@@ -20,11 +20,16 @@ public class StationComparator<T extends Order> implements Comparator<T> {
 
 	@Override
 	public int compare(T arg0, T arg1) {
-		if (getPriority(arg0) >= getPriority(arg1)) {
+		if(getPriority(arg0) == getPriority(arg1)){
+			if(arg0.getOrderDate() == arg1.getOrderDate()){
+				return arg0.getIdName().compareTo(arg1.getIdName());
+			}else{				
+				// prioritize older orders
+				return arg0.getOrderDate() < arg1.getOrderDate() ? 1 : -1;
+			}
+		}
+		if (getPriority(arg0) > getPriority(arg1)) {
 			return 1;
-		} else if (getPriority(arg0) == getPriority(arg1)) {
-			// prioritize older orders
-			return arg0.getOrderDate() < arg1.getOrderDate() ? 1 : -1;
 		} else {
 			return -1;
 		}
@@ -39,18 +44,9 @@ public class StationComparator<T extends Order> implements Comparator<T> {
 	 * @return
 	 */
 	private int getPriority(T o) {
-		for (Product p : o.getProducts()) {
-			int i = 0;
-			for (Task t : p.getTasks()) {
-				if (t.getStatus().equals(Status.NOT_DONE)) {
-					if (t.getStation().equals(station)) {
-						return i;
-					} else {
-						i++;
-					}
-				}
-			}
-		}
-		return Integer.MAX_VALUE;
+		return o.getNumOfStationsLeft(station);
+	}
+	public Station getStation() {
+		return station;
 	}
 }

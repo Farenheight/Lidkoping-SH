@@ -122,7 +122,7 @@ public class OrderListFragment extends ListFragment {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
 				Station station = (Station) parent.getItemAtPosition(pos);
-				mOrderAdapter.sort(new StationComparator<Order>(station));
+				mOrderAdapter.sort(new StationComparator<Order>(station),station);
 				mOrderAdapter.notifyDataSetChanged();
 				
 			}
@@ -142,6 +142,7 @@ public class OrderListFragment extends ListFragment {
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerStations.setAdapter(stationsAdapter);
 	}
+
 
 	private void initSearch() {
 		EditText fieldSearch = (EditText) getView().findViewById(
@@ -192,7 +193,7 @@ public class OrderListFragment extends ListFragment {
 		super.onListItemClick(listView, view, position, id);
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(mOrderList.get(position - 1).getId());
+		mCallbacks.onItemSelected(mOrderAdapter.getItem(position - 1).getId());
 	}
 
 	@Override
