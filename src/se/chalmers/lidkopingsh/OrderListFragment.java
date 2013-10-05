@@ -124,6 +124,7 @@ public class OrderListFragment extends ListFragment {
 				Station station = (Station) parent.getItemAtPosition(pos);
 				mOrderAdapter.sort(new StationComparator<Order>(station));
 				mOrderAdapter.notifyDataSetChanged();
+				
 			}
 
 			@Override
