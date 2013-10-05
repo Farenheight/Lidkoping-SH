@@ -133,13 +133,13 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * @return The number of stations left until station s.
 	 */
 	public int getNumOfStationsLeft(Station station) {
-		int i = 0;
+		int taskIndex = 0;
 		for (Task t : getTasks()) {
 			if (t.getStatus().equals(Status.NOT_DONE)) {
 				if (t.getStation().equals(station)) {
-					return i;
+					return taskIndex;
 				} else {
-					i++;
+					taskIndex++;
 				}
 			}
 		}

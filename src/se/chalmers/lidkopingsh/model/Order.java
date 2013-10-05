@@ -117,11 +117,11 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public List<Product> getProducts() {
 		return products;
 	}
-	
+
 	/**
 	 * Get the number of {@link Station}'s left until station. Returns
-	 * Integer.MAX_VALUE if Order doesn't have Product with a @ {@link Task} with
-	 * station or if station has already passed.
+	 * Integer.MAX_VALUE if Order doesn't have Product with a @ {@link Task}
+	 * with station or if station has already passed.
 	 * 
 	 * @param station
 	 *            The Station to check.
@@ -130,10 +130,32 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public int getNumOfStationsLeft(Station station) {
 		int min = Integer.MAX_VALUE;
 		for (Product p : getProducts()) {
-			int i = p.getNumOfStationsLeft(station);
-			min = min < i? min : i;
+			int stationsLeft = p.getNumOfStationsLeft(station);
+			if (stationsLeft < min) {
+				min = stationsLeft;
+			}
 		}
 		return min;
+	}
+
+	/**
+	 * Returns this order's progress in percentage of tasks done.
+	 * 
+	 * @return The percentage of tasks done. TODO: Test TODO: Save value as
+	 *         instance variable so loops is not required if nothing is changed
+	 */
+	public int getProgress() {
+		int taskCount = 0;
+		int doneTaskCount = 0;
+		for (Product product : getProducts()) {
+			for (Task task : product.getTasks()) {
+				taskCount++;
+				if (task.getStatus() == Status.DONE) {
+					doneTaskCount++;
+				}
+			}
+		}
+		return (doneTaskCount / taskCount) * 100;
 	}
 
 	/**
@@ -363,6 +385,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			return super.remove(object);
 		}
 	}
+
 	@Override
 	public String toString() {
 		return id + "";

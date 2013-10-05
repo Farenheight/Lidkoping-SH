@@ -46,7 +46,4 @@ public class StationComparator<T extends Order> implements Comparator<T> {
 	private int getPriority(T o) {
 		return o.getNumOfStationsLeft(station);
 	}
-	public Station getStation() {
-		return station;
-	}
 }

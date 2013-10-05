@@ -1,12 +1,15 @@
 package se.chalmers.lidkopingsh.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.junit.Test;
 
+/**
+ *TODO: Comments...
+ */
 public class TestStationComparator {
 
 	@Test
@@ -41,7 +44,6 @@ public class TestStationComparator {
 		assertTrue(Arrays.asList(orders).equals(Arrays.asList(new Order[]{order1,order0,order2})));
 		Arrays.sort(orders, new StationComparator<Order>(station2));
 		assertTrue(Arrays.asList(orders).equals(Arrays.asList(new Order[]{order2,order1,order0})));
-//		System.out.print(Arrays.asList(orders));
 		StationComparator<Order> comp = new StationComparator<Order>(station0);
 		assertFalse(comp.compare(order1, order0) == comp.compare(order0, order1));
 		

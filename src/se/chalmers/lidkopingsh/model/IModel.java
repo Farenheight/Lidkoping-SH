@@ -49,5 +49,7 @@ public interface IModel {
 	public Collection<Order> getOrders();
 
 	public Collection<Station> getStations();
+	
+	public Station getStationById(int id);
 
 }

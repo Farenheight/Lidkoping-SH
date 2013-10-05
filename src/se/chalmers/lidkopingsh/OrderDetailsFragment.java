@@ -34,15 +34,17 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	/** Used as a key when sending the object between activities and fragments */
 	public static final String ORDER_ID = "item_id";
 
-	private static final String DRAWING_TAB = "drawing tab";
+	private final String DRAWING_TAB = "drawing tab";
 
-	private static final String DETAIL_TAB = "DETAILS tab";
+	private final String DETAIL_TAB = "details tab";
 
 	/** The order displayed by this StoneDetailFragment */
 	private Order mOrder;
 
 	/** The root view that contains everything */
 	private ViewGroup rootView;
+
+	
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
