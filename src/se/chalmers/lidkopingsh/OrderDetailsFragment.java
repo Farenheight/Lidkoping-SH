@@ -72,7 +72,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		// Collects data from mOrder and initialize the views accordingly
 		initTabs();
 		initTaskCont();
-		
+
 		return rootView;
 	}
 
@@ -126,8 +126,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 			ViewGroup productView = (ViewGroup) inflater.inflate(
 					R.layout.od_product_task_cont, null);
 			// TODO Fix to actual type of Product
-			((TextView) productView.findViewById(R.id.task_name))
-					.setText(p.getType().getName());
+			((TextView) productView.findViewById(R.id.task_name)).setText(p
+					.getType().getName());
 			for (final Task task : p.getTasks()) {
 				productView.addView(initTaskView(inflater, task));
 			}
@@ -146,6 +146,9 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		// Set the task toggler
 		final ToggleButton btn = (ToggleButton) taskView
 				.findViewById(R.id.task_toggler);
+		// Prevents android from setting the toogle button to false on screen
+		// orientation change etc
+		btn.setSaveEnabled(false);
 		btn.setChecked(task.getStatus() == Status.DONE);
 		btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
@@ -224,7 +227,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 						"The changed object should be the one displayed in the GUI");
 			}
 		} else {
-			ViewGroup taskContainer = (ViewGroup) rootView.findViewById(R.id.root_task_cont);
+			ViewGroup taskContainer = (ViewGroup) rootView
+					.findViewById(R.id.root_task_cont);
 			taskContainer.removeAllViews();
 			initTaskCont();
 		}
