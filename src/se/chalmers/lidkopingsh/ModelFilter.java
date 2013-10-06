@@ -17,11 +17,12 @@ public class ModelFilter implements IModelFilter<Order> {
 		return idName.startsWith(constr);
 	}
 
-	public List<Order> getOrdersByFilter(String constraint, List<Order> orders,
+	public List<Order> getOrdersByFilter(CharSequence constraint, List<Order> orders,
 			List<Order> originalObjects) {
 		if (constraint == null || constraint.length() == 0) {
 			return new ArrayList<Order>(originalObjects);
 		} else {
+			constraint = constraint.toString();
 			ArrayList<Order> orderList = new ArrayList<Order>(originalObjects);
 			final ArrayList<Order> newValues = new ArrayList<Order>();
 

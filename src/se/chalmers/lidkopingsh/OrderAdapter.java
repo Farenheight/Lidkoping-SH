@@ -179,7 +179,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 			}
 
 			List<Order> filteredOrders = mModelFilter.getOrdersByFilter(
-					constraint.toString(), mOrders, mOriginalObjects);
+					constraint, mOrders, mOriginalObjects);
 			results.values = filteredOrders;
 			results.count = filteredOrders.size();
 
@@ -198,5 +198,9 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 			}
 		}
 
+	}
+
+	public int indexOf(Order order) {
+		return mOrders.indexOf(order);
 	}
 }

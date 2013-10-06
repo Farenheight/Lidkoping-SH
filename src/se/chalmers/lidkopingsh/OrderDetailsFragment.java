@@ -6,9 +6,11 @@ import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
+import se.chalmers.lidkopingsh.util.Listener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,20 +29,22 @@ import android.widget.ToggleButton;
  * in the {@link MainActivity}s two-pane layout if displayed on tablets.
  * 
  */
-public class OrderDetailsFragment extends Fragment {
+public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 	/** Used as a key when sending the object between activities and fragments */
 	public static final String ORDER_ID = "item_id";
 
-	private static final String DRAWING_TAB = "drawing tab";
+	private final String DRAWING_TAB = "drawing tab";
 
-	private static final String DETAIL_TAB = "DETAILS tab";
+	private final String DETAIL_TAB = "details tab";
 
 	/** The order displayed by this StoneDetailFragment */
 	private Order mOrder;
 
 	/** The root view that contains everything */
-	private View rootView;
+	private ViewGroup rootView;
+
+	
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -52,11 +56,11 @@ public class OrderDetailsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
-		
+
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
-		rootView = inflater.inflate(R.layout.od_root, container, false);
+		rootView = (ViewGroup) inflater.inflate(R.layout.od_root, container,
+				false);
 
 		// TODO:Consider include this again if bugs appear
 		// if (getArguments().containsKey(ORDER_ID)) {
@@ -64,19 +68,22 @@ public class OrderDetailsFragment extends Fragment {
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
-	
+
+		mOrder.addSyncOrderListener(this);
+
 		// Collects data from mOrder and initialize the views accordingly
 		initTabs();
-		initTasks(R.id.tab_info_container);
+		initTaskCont();
+
 		return rootView;
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
 
 	}
-	
+
 	/**
 	 * Sets up the tab host for this stone detail view with one drawing tab and
 	 * one details tab. Data is also collected from mOrder and added to the
@@ -113,7 +120,7 @@ public class OrderDetailsFragment extends Fragment {
 	/**
 	 * Setups a task container with all it's data.
 	 */
-	private View initTasks(int tabResource) {
+	private View initTaskCont() {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		LinearLayout rootTaskCont = (LinearLayout) rootView
 				.findViewById(R.id.root_task_cont);
@@ -121,8 +128,8 @@ public class OrderDetailsFragment extends Fragment {
 			ViewGroup productView = (ViewGroup) inflater.inflate(
 					R.layout.od_product_task_cont, null);
 			// TODO Fix to actual type of Product
-			((TextView) productView.findViewById(R.id.task_name))
-					.setText(p.getType().getName());
+			((TextView) productView.findViewById(R.id.task_name)).setText(p
+					.getType().getName());
 			for (final Task task : p.getTasks()) {
 				productView.addView(initTaskView(inflater, task));
 			}
@@ -141,6 +148,9 @@ public class OrderDetailsFragment extends Fragment {
 		// Set the task toggler
 		final ToggleButton btn = (ToggleButton) taskView
 				.findViewById(R.id.task_toggler);
+		// Prevents android from setting the toogle button to false on screen
+		// orientation change etc
+		btn.setSaveEnabled(false);
 		btn.setChecked(task.getStatus() == Status.DONE);
 		btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
@@ -206,6 +216,24 @@ public class OrderDetailsFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
 				.setText(stone.getTextStyle());
 
+	}
+
+	@Override
+	public void changed(Order order) {
+		if (order != mOrder) {
+			if (order == null) {
+				// TODO: Display error message to user
+				Log.d("DEBUG", "Server not updated");
+			} else {
+				throw new IllegalArgumentException(
+						"The changed object should be the one displayed in the GUI");
+			}
+		} else {
+			ViewGroup taskContainer = (ViewGroup) rootView
+					.findViewById(R.id.root_task_cont);
+			taskContainer.removeAllViews();
+			initTaskCont();
+		}
 	}
 
 }

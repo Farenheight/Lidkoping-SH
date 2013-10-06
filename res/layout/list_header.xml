@@ -8,7 +8,7 @@
     android:paddingRight="20dp" >
 
     <Spinner
-        android:id="@+id/spinnerStations"
+        android:id="@+id/station_spinner"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="15dp"
@@ -16,7 +16,7 @@
          />
 
     <EditText
-        android:id="@+id/fieldFilter"
+        android:id="@+id/search_field"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginBottom="16dp"

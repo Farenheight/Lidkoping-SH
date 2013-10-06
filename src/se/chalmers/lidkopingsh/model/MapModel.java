@@ -7,11 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import android.util.Log;
-
 public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
-	private Map<Integer, Product> products;
+	private Map<Integer, Product> products; 
 	private Collection<Station> stations;
 
 	public MapModel(Collection<Order> o, Collection<Station> s) {
@@ -28,14 +26,13 @@ public class MapModel implements IModel {
 
 	}
 
-
 	public int getFirstUncompletedIndex(List<Order> sortedList, Station station) {
 		int i = 0;
-		for(Order o : sortedList){
-			if(o.getNumOfStationsLeft(station) == Integer.MAX_VALUE) {
+		for (Order o : sortedList) {
+			if (o.getNumOfStationsLeft(station) == Integer.MAX_VALUE) {
 				return i;
 			}
-			i++;				
+			i++;
 		}
 		return i;
 	}
@@ -125,5 +122,16 @@ public class MapModel implements IModel {
 	@Override
 	public Collection<Station> getStations() {
 		return new ArrayList<Station>(stations);
+	}
+
+	@Override
+	public Station getStationById(int id) {
+		for (Station station : stations) {
+			if (station.getId() == id) {
+				return station;
+			}
+		}
+		throw new NoSuchElementException("No station with the id: " + id
+				+ "is found");
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.StationComparator;
@@ -31,6 +32,8 @@ import android.widget.Spinner;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  * 
+ * TODO: Consider splitting into SearchHandler, SortHandler etc...
+ * 
  */
 public class OrderListFragment extends ListFragment {
 
@@ -38,22 +41,45 @@ public class OrderListFragment extends ListFragment {
 	 * The serialization (saved instance state) Bundle key representing the
 	 * activated item position. Only used on tablets.
 	 */
-	private static final String STATE_ACTIVATED_POSITION = "activated_position";
+	private static final String ACTIVATED_ORDER_ID = "activated_position";
+
+	/**
+	 * The serialization (saved instance state) Bundle key representing the
+	 * search term.
+	 */
+	private final String SEARCH_TERM = "search_term_key";
+
+	/**
+	 * The serialization (saved instance state) Bundle key representing the
+	 * current station id.
+	 */
+	private final String CURRENT_STATION_POS = "current_station_pos_key";
 
 	/**
 	 * The fragment's current callback object, which is notified of list item
-	 * clicks.
+	 * clicks. Initialized
 	 */
 	private Callbacks mCallbacks = sDummyCallbacks;
-
-	/** The current activated item position. Only used on tablets. */
-	private int mActivatedPosition = ListView.INVALID_POSITION;
 
 	/** List containing all orders shown in the main order list. */
 	private List<Order> mOrderList;
 
 	/** Adapter responsible for the main order list view */
 	private OrderAdapter mOrderAdapter;
+
+	/** The current search term filtering out orders */
+	private CharSequence mSearchTerm;
+
+	/** The current station that is sorting the orders */
+	private Station mCurrentStation;
+
+	/** Data singelton keeping all data. */
+	private IModel mModel;
+
+	/** The current activated item. Only used on tablets. */
+	private Order mActivatedOrder;
+
+	private Spinner mStationSpinner;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -78,41 +104,58 @@ public class OrderListFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		mModel = ModelHandler.getModel(getActivity());
 		return LayoutInflater.from(getActivity()).inflate(
 				R.layout.list_root_inner, null);
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		// Restore the previously serialized activated item position.
-		if (savedInstanceState != null
-				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-			setActivatedPosition(savedInstanceState
-					.getInt(STATE_ACTIVATED_POSITION));
-		}
-
-		// Important that the header view gets initialized before the list
-		// adapter
-		initHeaderView();
-		initOrderListViewAdapter();
-	}
-
-	/**
-	 * Adds the header view to the main order list containing a the station
-	 * spinner and the search/filter field
-	 */
-	private void initHeaderView() {
 		getListView().addHeaderView(
 				LayoutInflater.from(getActivity()).inflate(
 						R.layout.list_header, null));
 		initStationSpinner();
 		initSearch();
+
+		mStationSpinner = ((Spinner) getView().findViewById(
+				R.id.station_spinner));
+
+		initOrderListViewAdapter();
+
+		// Restore the previously serialized state on screen orientation change
+		if (savedInstanceState != null) {
+			mSearchTerm = savedInstanceState.getCharSequence(SEARCH_TERM);
+			mStationSpinner.setSelection(savedInstanceState
+					.getInt(CURRENT_STATION_POS));
+
+			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
+				mActivatedOrder = mModel.getOrderById(savedInstanceState
+						.getInt(ACTIVATED_ORDER_ID));
+			}
+		}
+
+		// Set active order. Null if no orders have been viewed.
+		if (mActivatedOrder != null) {
+			getListView().setItemChecked(
+					mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
+		}
+
+		// Filter TODO: This is only needed on orientation change
+		mOrderAdapter.getFilter().filter(mSearchTerm);
+		((EditText) getView().findViewById(R.id.search_field))
+				.setText(mSearchTerm);
+
+		// Sorts the orders after
+		mCurrentStation = (Station) mStationSpinner.getSelectedItem();
+		mOrderAdapter.sort(new StationComparator<Order>(mCurrentStation),
+				mCurrentStation);
+		mOrderAdapter.notifyDataSetChanged();
 	}
 
 	private void initStationSpinner() {
 
 		Spinner spinnerStations = (Spinner) getView().findViewById(
-				R.id.spinnerStations);
+				R.id.station_spinner);
 
 		// When the user chooses an item in the stations spinner, sort the order
 		// list accordingly
@@ -121,8 +164,11 @@ public class OrderListFragment extends ListFragment {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
-				Station station = (Station) parent.getItemAtPosition(pos);
-				mOrderAdapter.sort(new StationComparator<Order>(station),station);
+
+				mCurrentStation = (Station) parent.getItemAtPosition(pos);
+				mOrderAdapter.sort(
+						new StationComparator<Order>(mCurrentStation),
+						mCurrentStation);
 				mOrderAdapter.notifyDataSetChanged();
 			}
 
@@ -131,21 +177,18 @@ public class OrderListFragment extends ListFragment {
 			}
 		});
 
-		// Sets up the Adapter and gets it data from the {@link ModelHandler}
-		ArrayList<Station> stationList = (ArrayList<Station>) ModelHandler
-				.getModel(getActivity()).getStations();
+		// Sets up the station spinner's adapter keeping it's data
 		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(
 				getActivity(), android.R.layout.simple_spinner_item,
-				stationList);
+				(ArrayList<Station>) mModel.getStations());
 		stationsAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerStations.setAdapter(stationsAdapter);
 	}
 
-
 	private void initSearch() {
 		EditText fieldSearch = (EditText) getView().findViewById(
-				R.id.fieldFilter);
+				R.id.search_field);
 
 		// When the user enters text in the search field, filter out relevant
 		// orders
@@ -154,7 +197,12 @@ public class OrderListFragment extends ListFragment {
 			@Override
 			public void onTextChanged(CharSequence currentText, int start,
 					int before, int count) {
-				mOrderAdapter.getFilter().filter(currentText);
+				mSearchTerm = currentText;
+				mOrderAdapter.getFilter().filter(mSearchTerm);
+				if (mActivatedOrder != null) {
+					getListView().setItemChecked(
+							mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
+				}
 			}
 
 			@Override
@@ -169,13 +217,12 @@ public class OrderListFragment extends ListFragment {
 	}
 
 	/**
-	 * Sets up the adapter responsible for keeping the list view's data
+	 * Sets up the adapter responsible for keeping the order list view's data
 	 */
 	private void initOrderListViewAdapter() {
 		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
 				.getOrders());
 		mOrderAdapter = new OrderAdapter(getActivity(), mOrderList);
-		// Important to use this method and not ListView.setAdapter()
 		setListAdapter(mOrderAdapter);
 	}
 
@@ -192,21 +239,30 @@ public class OrderListFragment extends ListFragment {
 		super.onListItemClick(listView, view, position, id);
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(mOrderAdapter.getItem(position - 1).getId());
+		mActivatedOrder = mModel.getOrderById(mOrderAdapter.getItem(
+				position - 1).getId());
+		mCallbacks.onItemSelected(mActivatedOrder.getId());
 	}
 
+	// Serialize and persist the activated item position, current search
+	// term and current choosen station
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		if (mActivatedPosition != ListView.INVALID_POSITION) {
-			// Serialize and persist the activated item position.
-			outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
+
+		if (mActivatedOrder != null) {
+			outState.putInt(ACTIVATED_ORDER_ID, mActivatedOrder.getId());
 		}
+
+		outState.putCharSequence(SEARCH_TERM, mSearchTerm);
+
+		outState.putInt(CURRENT_STATION_POS,
+				mStationSpinner.getSelectedItemPosition());
 	}
 
 	/**
 	 * Turns on activate-on-click mode. When this mode is on, list items will be
-	 * given the 'activated' state when touched.
+	 * given the 'activated' state when touched. Set to true on tablets.
 	 */
 	public void setActivateOnItemClick(boolean activateOnItemClick) {
 		// When setting CHOICE_MODE_SINGLE, ListView will automatically
@@ -214,15 +270,6 @@ public class OrderListFragment extends ListFragment {
 		getListView().setChoiceMode(
 				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
 						: ListView.CHOICE_MODE_NONE);
-	}
-
-	private void setActivatedPosition(int position) {
-		if (position == ListView.INVALID_POSITION) {
-			getListView().setItemChecked(mActivatedPosition, false);
-		} else {
-			getListView().setItemChecked(position, true);
-		}
-		mActivatedPosition = position;
 	}
 
 	/**

@@ -6,6 +6,7 @@
     android:baselineAligned="false" >
 
     <FrameLayout
+        android:id="@+id/cont_to_root_task_cont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/default_padding"
