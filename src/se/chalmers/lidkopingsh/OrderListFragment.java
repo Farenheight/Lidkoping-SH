@@ -33,7 +33,7 @@ import android.widget.Spinner;
  * interface.
  * 
  * TODO: Take look at if all of the instance variables are needed. TODO:
- * Consider refactoring out ModelHandler (mModel in this class)
+ * Consider refactor ModelHandler (mModel in this class)
  * 
  */
 public class OrderListFragment extends ListFragment {
@@ -54,7 +54,7 @@ public class OrderListFragment extends ListFragment {
 	 * The serialization (saved instance state) Bundle key representing the
 	 * current station id.
 	 */
-	private final String CURRENT_STATION_ID = "current_station_pos_key";
+	private final String CURRENT_STATION_POS = "current_station_pos_key";
 
 	/**
 	 * The fragment's current callback object, which is notified of list item
@@ -79,6 +79,8 @@ public class OrderListFragment extends ListFragment {
 
 	/** The current activated item. Only used on tablets. */
 	private Order mActivatedOrder;
+
+	private Spinner mStationSpinner;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -116,17 +118,17 @@ public class OrderListFragment extends ListFragment {
 		initStationSpinner();
 		initSearch();
 
-		Spinner stationSpinner = ((Spinner) getView().findViewById(
+		mStationSpinner = ((Spinner) getView().findViewById(
 				R.id.station_spinner));
-		mCurrentStation = (Station) stationSpinner.getSelectedItem();
 
 		initOrderListViewAdapter();
 
 		// Restore the previously serialized state on screen orientation change
 		if (savedInstanceState != null) {
 			mSearchTerm = savedInstanceState.getCharSequence(SEARCH_TERM);
-			mCurrentStation = mModel.getStationById(savedInstanceState
-					.getInt(CURRENT_STATION_ID));
+			mStationSpinner.setSelection(savedInstanceState
+					.getInt(CURRENT_STATION_POS));
+
 			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
 				mActivatedOrder = mModel.getOrderById(savedInstanceState
 						.getInt(ACTIVATED_ORDER_ID));
@@ -145,6 +147,7 @@ public class OrderListFragment extends ListFragment {
 				.setText(mSearchTerm);
 
 		// Sorts the orders after
+		mCurrentStation = (Station) mStationSpinner.getSelectedItem();
 		mOrderAdapter.sort(new StationComparator<Order>(mCurrentStation),
 				mCurrentStation);
 		mOrderAdapter.notifyDataSetChanged();
@@ -190,28 +193,28 @@ public class OrderListFragment extends ListFragment {
 
 		// When the user enters text in the search field, filter out relevant
 		// orders
-		fieldSearch.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void onTextChanged(CharSequence currentText, int start,
-					int before, int count) {
-				mSearchTerm = currentText;
-				mOrderAdapter.getFilter().filter(mSearchTerm);
-				if (mActivatedOrder != null) {
-					getListView().setItemChecked(
-							mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
-				}
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence currentText, int start,
-					int count, int after) {
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-			}
-		});
+//		fieldSearch.addTextChangedListener(new TextWatcher() {
+//
+//			@Override
+//			public void onTextChanged(CharSequence currentText, int start,
+//					int before, int count) {
+//				mSearchTerm = currentText;
+//				mOrderAdapter.getFilter().filter(mSearchTerm);
+//				if (mActivatedOrder != null) {
+//					getListView().setItemChecked(
+//							mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
+//				}
+//			}
+//
+//			@Override
+//			public void beforeTextChanged(CharSequence currentText, int start,
+//					int count, int after) {
+//			}
+//
+//			@Override
+//			public void afterTextChanged(Editable s) {
+//			}
+//		});
 	}
 
 	/**
@@ -254,7 +257,8 @@ public class OrderListFragment extends ListFragment {
 
 		outState.putCharSequence(SEARCH_TERM, mSearchTerm);
 
-		outState.putInt(CURRENT_STATION_ID, mCurrentStation.getId());
+		outState.putInt(CURRENT_STATION_POS,
+				mStationSpinner.getSelectedItemPosition());
 	}
 
 	/**
