@@ -5,8 +5,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import se.chalmers.lidkopingsh.util.Listener;
+import se.chalmers.lidkopingsh.util.Syncable;
+import se.chalmers.lidkopingsh.util.SyncableArrayList;
+import se.chalmers.lidkopingsh.util.SyncableList;
+
 /**
- * A product have different tasks that is needed to complete the product
+ * A product is something with different tasks that is needed to complete the
+ * product. A Product is something made of stone, so different fields like
+ * frontWork or materialColor is needed to describe how the Product should look
  * 
  * @author Robin Gronberg
  * 
@@ -16,6 +23,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	private String materialColor;
 	private String description;
 	private String frontWork;
+	private ProductType type;
 	/**
 	 * The {@link ProductListener}s that should listen when a task is changed on
 	 * this product.
@@ -33,7 +41,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The id of the Product (from the database). The id should be
 	 *            unique for each element
 	 * @param materialColor
-	 *            The matierial and color for this Product.
+	 *            The material and color for this Product.
 	 * @param description
 	 *            The description for this Product.
 	 * @param frontWork
@@ -43,13 +51,24 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            be completed.
 	 */
 	public Product(int id, String materialColor, String description,
-			String frontWork, List<Task> tasks) {
-		this(tasks);
+			String frontWork, List<Task> tasks, ProductType type) {
 		this.id = id;
-		this.materialColor = materialColor != null? materialColor : "";
-		this.description = description != null? description : "";
-		this.frontWork = frontWork != null? frontWork : "";
+		this.materialColor = materialColor != null ? materialColor : "";
+		this.description = description != null ? description : "";
+		this.frontWork = frontWork != null ? frontWork : "";
+		this.type = type;
+		this.materialColor = materialColor != null ? materialColor : "";
+		this.description = description != null ? description : "";
+		this.frontWork = frontWork != null ? frontWork : "";
+		this.listeners = new ArrayList<Listener<Product>>();
+		this.tasks = new SyncableTaskList(tasks);
+		if (tasks != null) {
+			for (Task t : tasks) {
+				t.addTaskListener(this);
+			}
+		}
 	}
+
 	/**
 	 * Create a new Product
 	 * 
@@ -64,9 +83,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The frontWork for this product
 	 */
 	public Product(int id, String materialColor, String description,
-			String frontWork){
-		this(id,materialColor,description,frontWork,new ArrayList<Task>());
+			String frontWork, ProductType type) {
+		this(id, materialColor, description, frontWork, new ArrayList<Task>(),
+				type);
 	}
+
 	/**
 	 * Create a new product with tasks
 	 * 
@@ -74,21 +95,11 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The tasks which is needed to complete this product.
 	 */
 	public Product(List<Task> tasks) {
-		this.listeners = new ArrayList<Listener<Product>>();
-		this.tasks = new SyncableTaskList(tasks);
-		if (tasks != null) {
-			for(Task t : tasks) {
-				t.addTaskListener(this);
-			}
-		}
+		this(0, "", "", "", tasks, new ProductType(0, ""));
 	}
 
-	/**
-	 * Create a new product no tasks and dummy data
-	 */
-	public Product() {
-		this(0, "Svart sten", "Den fulaste stenen i vi säljer",
-				"Mycket repor på framsidan", new ArrayList<Task>());
+	public ProductType getType() {
+		return type;
 	}
 
 	public int getId() {
@@ -110,6 +121,29 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	@Override
 	public void changed(Task task) {
 		notifyProductListeners();
+	}
+
+	/**
+	 * Get the number of {@link Station}'s left until station. Returns
+	 * Integer.MAX_VALUE if Product doesn't have a @ {@link Task} with station
+	 * or if station has already passed.
+	 * 
+	 * @param station
+	 *            The Station to check
+	 * @return The number of stations left until station s.
+	 */
+	public int getNumOfStationsLeft(Station station) {
+		int i = 0;
+		for (Task t : getTasks()) {
+			if (t.getStatus().equals(Status.NOT_DONE)) {
+				if (t.getStation().equals(station)) {
+					return i;
+				} else {
+					i++;
+				}
+			}
+		}
+		return Integer.MAX_VALUE;
 	}
 
 	/**
@@ -260,8 +294,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			Product p = ((Product) o);
 			return this.id == p.id
 					&& this.materialColor.equals(p.getMaterialColor())
-					&& ((this.description == null && p.getDescription() == null) 
-							|| (this.description != null && this.description
+					&& ((this.description == null && p.getDescription() == null) || (this.description != null && this.description
 							.equals(p.getDescription())))
 					&& this.frontWork.equals(p.getFrontWork())
 					&& this.tasks.equals(p.getTasks());
@@ -277,9 +310,6 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 */
 	private class SyncableTaskList extends SyncableArrayList<Task> {
 		private static final long serialVersionUID = 4082149811877348098L;
-
-		public SyncableTaskList() {
-		}
 
 		public SyncableTaskList(Collection<Task> collection) {
 			super(collection);

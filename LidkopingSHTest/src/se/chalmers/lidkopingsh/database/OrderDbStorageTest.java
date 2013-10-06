@@ -1,7 +1,9 @@
 package se.chalmers.lidkopingsh.database;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -77,11 +79,13 @@ public class OrderDbStorageTest extends AndroidTestCase {
 
 	@Test
 	public void testInsertSelectMultiple() {
+		List<Order> initOrders = new ArrayList<Order>();
 		Order order1 = OrderDbFiller.getOrderFullyPopulated("O.S.");
 		Order order2 = OrderDbFiller.getOrderWithoutTasks("O.T.");
+		initOrders.add(order1);
+		initOrders.add(order2);
 
-		dbStorage.insert(order1);
-		dbStorage.insert(order2);
+		dbStorage.insert(initOrders);
 		Collection<Order> orders = dbStorage.query(null, null, null);
 
 		assertTrue(orders.size() == 2);

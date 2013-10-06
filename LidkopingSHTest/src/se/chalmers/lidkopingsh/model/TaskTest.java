@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.util.Listener;
+
 public class TaskTest implements Listener<Task> {
 	private boolean synced = false;
 

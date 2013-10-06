@@ -24,11 +24,11 @@ public class StoneTest {
 		tasks3.add(new Task(new Station(1,"Station" + 1)));
 
 		Stone s1 = new Stone(0, "Red and BLue", "Description", "Fronstwork",
-				tasks1, "ST-90", "Side and back", "Textstyle", "Ornament");
+				tasks1, "ST-90", "Side and back", "Textstyle", "Ornament", null);
 		Stone s2 = new Stone(0, "Red and BLue", "Description", "Fronstwork",
-				tasks2, "ST-90", "Side and back", "Textstyle", "Ornament");
+				tasks2, "ST-90", "Side and back", "Textstyle", "Ornament", null);
 		Stone s3 = new Stone(1, "Red and BLue", "Description", "Fronstwork",
-				tasks3, "ST-90", "Side and back", "Textstyle", "Ornament");
+				tasks3, "ST-90", "Side and back", "Textstyle", "Ornament", null);
 		assertTrue(s1.equals(s2));
 		assertTrue(s2.equals(s1));
 		assertFalse(s2.equals(s3));

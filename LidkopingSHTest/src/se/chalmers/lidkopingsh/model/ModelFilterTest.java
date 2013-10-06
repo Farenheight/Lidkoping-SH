@@ -8,14 +8,18 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.ModelFilter;
+
 public class ModelFilterTest {
 	private List<Order> orders;
-	private IModelFilter<Order> filter;
+	private List<Order> originalOrders;
+	private ModelFilter filter;
 
 	@Before
 	public void setUp() {
 		filter = new ModelFilter();
 		orders = new ArrayList<Order>();
+		originalOrders = new ArrayList<Order>();
 	}
 
 	/**
@@ -27,15 +31,16 @@ public class ModelFilterTest {
 		String testConstraint = "Not a matching string";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer(), null));
+				0, new Customer("","","","","",0), null,null));
+		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
-				testConstraint, orders);
+				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 0, is:"
 				+ returnedOrderList.size();
 		assertTrue(assertMessage, returnedOrderList.size() == 0);
 	}
-	
+
 	/**
 	 * Filter should match part of constraint
 	 */
@@ -45,15 +50,16 @@ public class ModelFilterTest {
 		String testConstraint = "O";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer(), null));
+				0, new Customer("","","","","",0), null,null));
+		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
-				testConstraint, orders);
+				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 1, is:"
 				+ returnedOrderList.size();
 		assertTrue(assertMessage, returnedOrderList.size() == 1);
 	}
-	
+
 	/**
 	 * Filter should only match beginning of constraint
 	 */
@@ -63,9 +69,10 @@ public class ModelFilterTest {
 		String testConstraint = "SS";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer(), null));
+				0, new Customer("","","","","",0), null,null));
+		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
-				testConstraint, orders);
+				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 0, is:"
 				+ returnedOrderList.size();
@@ -81,9 +88,10 @@ public class ModelFilterTest {
 		String testConstraint = "o.r";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer(), null));
+				0, new Customer("","","","","",0), null,null));
+		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
-				testConstraint, orders);
+				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 1, is:"
 				+ returnedOrderList.size();
@@ -99,15 +107,16 @@ public class ModelFilterTest {
 		String testConstraint = "or";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer(), null));
+				0, new Customer("","","","","",0), null,null));
+		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
-				testConstraint, orders);
+				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 1, is:"
 				+ returnedOrderList.size();
 		assertTrue(assertMessage, returnedOrderList.size() == 1);
 	}
-	
+
 	/**
 	 * Empty string should match everything
 	 */
@@ -115,21 +124,23 @@ public class ModelFilterTest {
 	public void testEmptyString() {
 		String testConstraint = "";
 
-		orders.add(new Order(0, null, "O.R", 0, 0, null, null, null, null,
-				0, new Customer(), null));
-		orders.add(new Order(0, null, "O.S", 0, 0, null, null, null, null,
-				0, new Customer(), null));
-		orders.add(new Order(0, null, "S.S", 0, 0, null, null, null, null,
-				0, new Customer(), null));
+		orders.add(new Order(0, null, "O.R", 0, 0, null, null, null, null, 0,
+				new Customer("","","","","",0), null,null));
+		orders.add(new Order(0, null, "O.S", 0, 0, null, null, null, null, 0,
+				new Customer("","","","","",0), null,null));
+		orders.add(new Order(0, null, "S.S", 0, 0, null, null, null, null, 0,
+				new Customer("","","","","",0), null,null));
 		
+		originalOrders.addAll(orders);
+
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
-				testConstraint, orders);
+				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 3, is: "
 				+ returnedOrderList.size();
 		assertTrue(assertMessage, returnedOrderList.size() == 3);
 	}
-	
+
 	/**
 	 * Null should match everything
 	 */
@@ -137,21 +148,23 @@ public class ModelFilterTest {
 	public void testNull() {
 		String testConstraint = null;
 
-		orders.add(new Order(0, null, "O.R", 0, 0, null, null, null, null,
-				0, new Customer(), null));
-		orders.add(new Order(0, null, "O.S", 0, 0, null, null, null, null,
-				0, new Customer(), null));
-		orders.add(new Order(0, null, "S.S", 0, 0, null, null, null, null,
-				0, new Customer(), null));
+		orders.add(new Order(0, null, "O.R", 0, 0, null, null, null, null, 0,
+				new Customer("","","","","",0), null,null));
+		orders.add(new Order(0, null, "O.S", 0, 0, null, null, null, null, 0,
+				new Customer("","","","","",0), null,null));
+		orders.add(new Order(0, null, "S.S", 0, 0, null, null, null, null, 0,
+				new Customer("","","","","",0), null,null));
 		
+		originalOrders.addAll(orders);
+
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
-				testConstraint, orders);
+				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 3, is: "
 				+ returnedOrderList.size();
 		assertTrue(assertMessage, returnedOrderList.size() == 3);
 	}
-	
+
 	/**
 	 * Emty Order list should return nothing
 	 */
@@ -159,8 +172,10 @@ public class ModelFilterTest {
 	public void testEmptyOrderList() {
 		String testConstraint = null;
 		
+		originalOrders.addAll(orders);
+
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
-				testConstraint, orders);
+				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 0, is: "
 				+ returnedOrderList.size();

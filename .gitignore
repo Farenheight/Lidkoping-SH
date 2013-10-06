@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 # Misc
 .DS_Store
 local.properties
 # Directories
-/gen
-/bin
+gen/
+bin/
 *.log
 *.class
 *.metadata
+=======
+db_config.php
+api/lib/
+>>>>>>> dev-server

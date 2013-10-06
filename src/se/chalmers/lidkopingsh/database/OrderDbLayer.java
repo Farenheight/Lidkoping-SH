@@ -2,7 +2,6 @@ package se.chalmers.lidkopingsh.database;
 
 import java.util.Collection;
 
-import se.chalmers.lidkopingsh.model.ILayer;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
