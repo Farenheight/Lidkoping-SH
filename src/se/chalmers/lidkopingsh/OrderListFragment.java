@@ -32,8 +32,7 @@ import android.widget.Spinner;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  * 
- * TODO: Take look at if all of the instance variables are needed. TODO:
- * Consider refactor ModelHandler (mModel in this class)
+ * TODO: Consider splitting into SearchHandler, SortHandler etc...
  * 
  */
 public class OrderListFragment extends ListFragment {
@@ -193,28 +192,28 @@ public class OrderListFragment extends ListFragment {
 
 		// When the user enters text in the search field, filter out relevant
 		// orders
-//		fieldSearch.addTextChangedListener(new TextWatcher() {
-//
-//			@Override
-//			public void onTextChanged(CharSequence currentText, int start,
-//					int before, int count) {
-//				mSearchTerm = currentText;
-//				mOrderAdapter.getFilter().filter(mSearchTerm);
-//				if (mActivatedOrder != null) {
-//					getListView().setItemChecked(
-//							mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
-//				}
-//			}
-//
-//			@Override
-//			public void beforeTextChanged(CharSequence currentText, int start,
-//					int count, int after) {
-//			}
-//
-//			@Override
-//			public void afterTextChanged(Editable s) {
-//			}
-//		});
+		fieldSearch.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence currentText, int start,
+					int before, int count) {
+				mSearchTerm = currentText;
+				mOrderAdapter.getFilter().filter(mSearchTerm);
+				if (mActivatedOrder != null) {
+					getListView().setItemChecked(
+							mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
+				}
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence currentText, int start,
+					int count, int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
 	}
 
 	/**
