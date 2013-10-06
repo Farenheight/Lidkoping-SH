@@ -18,17 +18,27 @@ public class StationComparator<T extends Order> implements Comparator<T> {
 		this.station = station;
 	}
 
+	/**
+	 * Compares the two provided orders for their priority.
+	 * 
+	 * @param order
+	 * @param otherOrder
+	 * @return If order has higher priority than otherOrder, 1 is return. 0 if
+	 *         the same and -1 if otherOrder has higher priority.
+	 * 
+	 */
 	@Override
-	public int compare(T arg0, T arg1) {
-		if(getPriority(arg0) == getPriority(arg1)){
-			if(arg0.getOrderDate() == arg1.getOrderDate()){
-				return arg0.getIdName().compareTo(arg1.getIdName());
-			}else{				
+	public int compare(T order, T otherOrder) {
+		if (getPriority(order) == getPriority(otherOrder)) {
+			if (order.getOrderDate() == otherOrder.getOrderDate()) {
+				return order.getIdName().compareTo(otherOrder.getIdName());
+			} else {
 				// prioritize older orders
-				return arg0.getOrderDate() < arg1.getOrderDate() ? 1 : -1;
+				return order.getOrderDate() < otherOrder.getOrderDate() ? 1
+						: -1;
 			}
 		}
-		if (getPriority(arg0) > getPriority(arg1)) {
+		if (getPriority(order) > getPriority(otherOrder)) {
 			return 1;
 		} else {
 			return -1;
