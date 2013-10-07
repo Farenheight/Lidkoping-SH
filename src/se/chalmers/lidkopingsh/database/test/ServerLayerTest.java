@@ -22,7 +22,7 @@ public class ServerLayerTest extends AndroidTestCase{
 		ServerLayer serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", this.getContext());
 		Collection<Order> ordersBefore = dbStorage.query(null, null, null);
 		Order[] ordersAfter = serverLayer.getUpdates();
-		
+		 
 		assertTrue(ordersBefore.size() < ordersAfter.length);
 	}
 
