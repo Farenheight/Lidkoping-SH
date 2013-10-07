@@ -2,15 +2,12 @@ package se.chalmers.lidkopingsh;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 
-public class SearchHandler<T> implements TextWatcher {
+public class SearchHandler implements TextWatcher {
 
 	private EditText mSearchField;
-	private ListView mListView;
-	private ArrayAdapter mListAdapter;
+	private OrderAdapter mOrderAdapter;
 
 	/**
 	 * A class that handles the search feature
@@ -21,12 +18,21 @@ public class SearchHandler<T> implements TextWatcher {
 	 *            The list view with an ArrayAdapter containing the items to
 	 *            filter with a search
 	 */
-	public SearchHandler(EditText searchField, ListView listView) {
+	public SearchHandler(EditText searchField, OrderAdapter orderAdapter) {
 		mSearchField = searchField;
+		mOrderAdapter = orderAdapter;
 		mSearchField.addTextChangedListener(this);
-		mListView = listView;
-		mListAdapter = (ArrayAdapter) mListView.getAdapter();
 	}
+
+	public void restoreSearch(CharSequence searchTerm) {
+		mSearchField.setText(searchTerm);
+	}
+
+	public CharSequence getCurrentSearchTerm() {
+		return mSearchField.getText();
+	}
+
+	/* Text Watcher */
 
 	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count,
@@ -36,7 +42,7 @@ public class SearchHandler<T> implements TextWatcher {
 	@Override
 	public void onTextChanged(CharSequence currentText, int start, int before,
 			int count) {
-		mListAdapter.getFilter().filter(currentText);
+		mOrderAdapter.getFilter().filter(currentText);
 	}
 
 	@Override

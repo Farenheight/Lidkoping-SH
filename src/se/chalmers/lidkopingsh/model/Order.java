@@ -141,12 +141,14 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	/**
 	 * Returns this order's progress in percentage of tasks done.
 	 * 
-	 * @return The percentage of tasks done. TODO: Test TODO: Save value as
-	 *         instance variable so loops is not required if nothing is changed
+	 * @return The percentage of tasks done.
+	 * 
+	 *         TODO: Save value as instance variable so loops is not required if
+	 *         nothing is changed
 	 */
 	public int getProgress() {
-		int taskCount = 0;
-		int doneTaskCount = 0;
+		double taskCount = 0;
+		double doneTaskCount = 0;
 		for (Product product : getProducts()) {
 			for (Task task : product.getTasks()) {
 				taskCount++;
@@ -155,7 +157,13 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				}
 			}
 		}
-		return (doneTaskCount / taskCount) * 100;
+		if(taskCount > 0) {
+			return (int) Math.round((doneTaskCount / taskCount) * 100);
+		} 
+		// If no tasks, consider the order as done
+		else {
+			return 100;
+		}
 	}
 
 	/**
