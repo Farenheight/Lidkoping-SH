@@ -59,7 +59,6 @@ function sqlUpdateProduct($product){
 }
 
 function sqlUpdateCustomer($array){
-	// Update customer
 	$sql = "UPDATE `customer` SET
 		`title`=?,
 		`name`=?,
@@ -75,7 +74,6 @@ function sqlUpdateCustomer($array){
 }
 
 function sqlUpdateOrder($array, $su){
-		// Update order
 	$sql = "UPDATE `order` SET
 		`cemetery_board`=?,
 		`cemetery`=?,
