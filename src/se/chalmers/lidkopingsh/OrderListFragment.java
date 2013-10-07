@@ -1,6 +1,7 @@
 package se.chalmers.lidkopingsh;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.IModel;
@@ -60,6 +61,9 @@ public class OrderListFragment extends ListFragment {
 	 */
 	private Callbacks mCallbacks = sDummyCallbacks;
 
+	/** List containing all orders shown in the main order list. */
+	private List<Order> mOrderList;
+
 	/** Adapter responsible for the main order list view */
 	private OrderAdapter mOrderAdapter;
 
@@ -69,7 +73,7 @@ public class OrderListFragment extends ListFragment {
 	/** The current station that is sorting the orders */
 	private Station mCurrentStation;
 
-	/** Singleton keeping all data. */
+	/** Data singelton keeping all data. */
 	private IModel mModel;
 
 	/** The current activated item. Only used on tablets. */
@@ -216,8 +220,9 @@ public class OrderListFragment extends ListFragment {
 	 * Sets up the adapter responsible for keeping the order list view's data
 	 */
 	private void initOrderListViewAdapter() {
-		mOrderAdapter = new OrderAdapter(getActivity(), new ArrayList<Order>(
-				mModel.getOrders()));
+		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
+				.getOrders());
+		mOrderAdapter = new OrderAdapter(getActivity(), mOrderList);
 		setListAdapter(mOrderAdapter);
 	}
 

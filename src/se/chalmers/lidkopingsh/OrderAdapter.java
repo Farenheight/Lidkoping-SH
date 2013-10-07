@@ -40,7 +40,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	private Context mContext;
 
 	private int dividerIndex;
-	
+
 	private Station currentSortStation;
 
 	/**
@@ -54,6 +54,9 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mOrders = orders;
 		mContext = context;
+		// First time the filter is run, save the original values in a new
+		// list and create a new model filter
+		mOriginalObjects = new ArrayList<Order>(mOrders);
 	}
 
 	/**
@@ -63,12 +66,8 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 *            The comparator used to sort the objects contained in this
 	 *            adapter.
 	 */
-	public void sort(Comparator<? super Order> comparator,Station station) {
-		if (mOriginalObjects != null) {
-			Collections.sort(mOriginalObjects, comparator);
-		} else {
-			Collections.sort(mOrders, comparator);
-		}
+	public void sort(Comparator<? super Order> comparator, Station station) {
+		Collections.sort(mOrders, comparator);
 		dividerIndex = ModelHandler.getModel(mContext)
 				.getFirstUncompletedIndex(mOrders, station);
 		currentSortStation = station;
@@ -169,11 +168,6 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		protected FilterResults performFiltering(CharSequence constraint) {
 			FilterResults results = new FilterResults();
 
-			// First time the filter is run, save the original values in a new
-			// list and create a new model filter
-			if (mOriginalObjects == null) {
-				mOriginalObjects = new ArrayList<Order>(mOrders);
-			}
 			if (mModelFilter == null) {
 				mModelFilter = new ModelFilter();
 			}

@@ -2,6 +2,8 @@ package se.chalmers.lidkopingsh.model;
 
 import java.util.Comparator;
 
+import android.util.Log;
+
 /**
  * A Comparator that orders a list of {@link Order}'s depending on how far is
  * left to that station. If two {@link Order} are on the same station, the
@@ -21,24 +23,27 @@ public class StationComparator<T extends Order> implements Comparator<T> {
 	/**
 	 * Compares the two provided orders for their priority.
 	 * 
-	 * @param order
-	 * @param otherOrder
-	 * @return If order has higher priority than otherOrder, 1 is return. 0 if
-	 *         the same and -1 if otherOrder has higher priority.
+	 * @param firstOrder
+	 * @param secondOrder
+	 * @return If firstOrder has less stations left than secondOrder, -1 is return. 0 if
+	 *         the same and 1 if secodOrder has less stations left.
 	 * 
 	 */
 	@Override
-	public int compare(T order, T otherOrder) {
-		if (getPriority(order) == getPriority(otherOrder)) {
-			if (order.getOrderDate() == otherOrder.getOrderDate()) {
-				return order.getIdName().compareTo(otherOrder.getIdName());
+	public int compare(T firstOrder, T secondOrder) {
+		if (getNumOfStationsLeft(firstOrder) == getNumOfStationsLeft(secondOrder)) {
+			if (firstOrder.getOrderDate() == secondOrder.getOrderDate()) {
+				return firstOrder.getIdName()
+						.compareTo(secondOrder.getIdName());
 			} else {
 				// prioritize older orders
-				return order.getOrderDate() < otherOrder.getOrderDate() ? 1
+				return firstOrder.getOrderDate() < secondOrder.getOrderDate() ? 1
 						: -1;
 			}
 		}
-		if (getPriority(order) > getPriority(otherOrder)) {
+		System.out.println("First: " + getNumOfStationsLeft(firstOrder));
+		System.out.println("Second: " + getNumOfStationsLeft(secondOrder));
+		if (getNumOfStationsLeft(firstOrder) > getNumOfStationsLeft(secondOrder)) {
 			return 1;
 		} else {
 			return -1;
@@ -53,7 +58,7 @@ public class StationComparator<T extends Order> implements Comparator<T> {
 	 * 
 	 * @return
 	 */
-	private int getPriority(T o) {
+	private int getNumOfStationsLeft(T o) {
 		return o.getNumOfStationsLeft(station);
 	}
 }

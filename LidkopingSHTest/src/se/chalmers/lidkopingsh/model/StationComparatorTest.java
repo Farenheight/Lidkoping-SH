@@ -8,7 +8,7 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestStationComparator {
+public class StationComparatorTest {
 	
 	private Station firstStation;
 	private Station secondStation;
@@ -22,9 +22,9 @@ public class TestStationComparator {
 	public void setUp(){
 		// Three orders that has everything the same. Products with 
 		// different amount of tasks done added in test.
-		firstOrder = new Order(0,"","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);
-		secondOrder = new Order(0,"","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);
-		thirdOrder = new Order(0,"","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);		
+		firstOrder = new Order(0,"firstOrder","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);
+		secondOrder = new Order(0,"seconedOrder","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);
+		thirdOrder = new Order(0,"thirdOrder","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);		
 		
 		firstStation = new Station(0, "Station0");
 		secondStation = new Station(1, "Station1");
@@ -52,8 +52,9 @@ public class TestStationComparator {
 				new Task(thirdStation, Status.NOT_DONE)
 		})));
 		c = new StationComparator<Order>(thirdStation);
-		assertTrue("First order has already been to the station.", 
-				c.compare(firstOrder, secondOrder) == -1);
+		int result = c.compare(firstOrder, secondOrder);
+		assertTrue("First order has already been to the station, was: " + result, 
+				result == 1);
 		testMathematicalProperties(firstOrder, secondOrder, c);
 	}
 
@@ -117,7 +118,7 @@ public class TestStationComparator {
 		})));
 		c = new StationComparator<Order>(thirdStation);
 		assertTrue("Order closer to the station should have higher priority.", 
-				c.compare(firstOrder, secondOrder) == -1);
+				c.compare(firstOrder, secondOrder) == 1);
 		testMathematicalProperties(firstOrder, secondOrder, c);
 	}
 	
@@ -141,7 +142,7 @@ public class TestStationComparator {
 		})));
 		c = new StationComparator<Order>(firstStation);
 		assertTrue("No product should be lower priority than not done", 
-				c.compare(firstOrder, secondOrder) == -1);
+				c.compare(firstOrder, secondOrder) == 1);
 		testMathematicalProperties(firstOrder, secondOrder, c);
 		assertTrue("No product should have the same priority as done", 
 				c.compare(firstOrder, thirdOrder) == 0);
@@ -166,7 +167,7 @@ public class TestStationComparator {
 		c = new StationComparator<Order>(secondStation);
 		int result = c.compare(firstOrder, secondOrder);
 		assertTrue("No station should have lower priority than not done. Was: " + result, 
-				result == -1);
+				result == 1);
 		testMathematicalProperties(firstOrder, secondOrder, c);
 		
 		result = c.compare(firstOrder, thirdOrder);
@@ -194,7 +195,7 @@ public class TestStationComparator {
 		
 		c = new StationComparator<Order>(thirdStation);
 		assertTrue("One stations left should give higher priority than two", 
-				c.compare(firstOrder, secondOrder) == -1);
+				c.compare(firstOrder, secondOrder) == 1);
 		testMathematicalProperties(firstOrder, secondOrder, c);
 	}
 	
@@ -204,8 +205,13 @@ public class TestStationComparator {
 	private void testMathematicalProperties(Order firstOrder,
 			Order secondOrder, StationComparator<Order> c) {
 		// Symmetric
-		assertTrue("Should be symmetric", c.compare(firstOrder, secondOrder) == 
+		if(c.compare(firstOrder, secondOrder) == 0) {
+			assertTrue("Should be symmetric", c.compare(firstOrder, secondOrder) ==
+					c.compare(secondOrder, firstOrder));
+		} else {
+		assertTrue("Should be symmetric", c.compare(firstOrder, secondOrder) !=
 				c.compare(secondOrder, firstOrder));
+		}
 		// Reflexive
 		assertTrue("Should be reflexive", 
 				c.compare(firstOrder, firstOrder) == 0);
@@ -214,7 +220,7 @@ public class TestStationComparator {
 	}
 	
 	@Test
-	public void test() {
+	public void testSortArrayOfOrders() {
 		Station station0 = new Station(0, "Station0");
 		Station station1 = new Station(1, "Station1");
 		Station station2 = new Station(2, "Station2");
@@ -222,24 +228,25 @@ public class TestStationComparator {
 		
 		Order order0 = new Order(0,"","0",0,0,"","","","",0,new Customer("","","","","",0),null,null);
 		order0.addProduct(new Product(Arrays.asList(new Task[]{
-				new Task(station0),
-				new Task(station1),
-				new Task(station2)
+				new Task(station0,Status.NOT_DONE),
+				new Task(station1,Status.NOT_DONE),
+				new Task(station2,Status.NOT_DONE)
 				})));
-		Order order1 = new Order(0,"","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);
+		Order order1 = new Order(1,"","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);
 		order1.addProduct(new Product(Arrays.asList(new Task[]{
 				new Task(station0,Status.DONE),
-				new Task(station1),
-				new Task(station2)
+				new Task(station1,Status.NOT_DONE),
+				new Task(station2,Status.NOT_DONE)
 		})));
-		Order order2 = new Order(0,"","2",0,0,"","","","",0,new Customer("","","","","",0),null,null);
+		Order order2 = new Order(2,"","2",0,0,"","","","",0,new Customer("","","","","",0),null,null);
 		order2.addProduct(new Product(Arrays.asList(new Task[]{
 				new Task(station0,Status.DONE),
 				new Task(station1,Status.DONE),
-				new Task(station2)
+				new Task(station2,Status.NOT_DONE)
 		})));
 		Order[] orders = new Order[]{order0,order1,order2};
 		Arrays.sort(orders, new StationComparator<Order>(station0));
+		System.out.println(Arrays.asList(orders));
 		assertTrue(Arrays.asList(orders).equals(Arrays.asList(new Order[]{order0,order1,order2})));
 		Arrays.sort(orders, new StationComparator<Order>(station1));
 		assertTrue(Arrays.asList(orders).equals(Arrays.asList(new Order[]{order1,order0,order2})));
