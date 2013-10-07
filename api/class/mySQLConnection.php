@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Prepared statements using SELECT does not need to commit, an result set is obtained at execute.
+ * When INSERT'ing or UPDATE'ing, use bind_param and set data. Use commit when ready to send.
+ */
+
 class mySQLConnection {
 	private $con;
 	private $stmt;
