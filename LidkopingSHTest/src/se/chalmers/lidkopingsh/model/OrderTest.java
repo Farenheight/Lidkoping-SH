@@ -60,7 +60,36 @@ public class OrderTest {
 		stationsLeft = thirdOrder.getNumOfStationsLeft(thirdStation);
 		assertTrue("Should have infinit stations left, has: " + stationsLeft,
 				stationsLeft == Integer.MAX_VALUE);
+	}
 
+	@Test
+	public void testProgress() {
+		long time = System.currentTimeMillis();
+		Order firstOrder = new Order(1, "130001", "K.J", time, time,
+				"Goteborg", null, null, null, time, new Customer("", "", "",
+						"", "", 0), null, null);
+		Order secondOrder = new Order(1, "130001", "K.J", time, time,
+				"Goteborg", null, null, null, time, new Customer("", "", "",
+						"", "", 0), null, null);
+		Order thirdOrder = new Order(1, "130001", "K.J", time, time,
+				"Goteborg", null, null, null, time, new Customer("", "", "",
+						"", "", 0), null, null);
+
+		firstOrder.addProduct(new Product(Arrays.asList(new Task[] {
+				new Task(firstStation, Status.DONE),
+				new Task(secondStation, Status.DONE),
+				new Task(thirdStation, Status.DONE) })));
+		assertTrue("All done should equal 100 percent. Was: " + firstOrder.getProgress(),
+				firstOrder.getProgress() == 100);
+
+		secondOrder.addProduct(new Product(Arrays.asList(new Task[] {
+				new Task(firstStation, Status.DONE),
+				new Task(secondStation, Status.NOT_DONE) })));
+		assertTrue("Two of two done should equal 50 percent",
+				secondOrder.getProgress() == 50);
+		
+		assertTrue("No products should equal 100 percent",
+				thirdOrder.getProgress() == 100);
 	}
 
 	@Test

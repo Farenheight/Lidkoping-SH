@@ -35,7 +35,6 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	public static final String ORDER_ID = "item_id";
 
 	private final String DRAWING_TAB = "drawing tab";
-
 	private final String DETAIL_TAB = "details tab";
 
 	/** The order displayed by this StoneDetailFragment */
@@ -43,8 +42,6 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 	/** The root view that contains everything */
 	private ViewGroup rootView;
-
-	
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -61,9 +58,6 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		// all other static views displayed in the fragment.
 		rootView = (ViewGroup) inflater.inflate(R.layout.od_root, container,
 				false);
-
-		// TODO:Consider include this again if bugs appear
-		// if (getArguments().containsKey(ORDER_ID)) {
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
@@ -218,12 +212,16 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 	}
 
+	/**
+	 * TODO: Look in to this method and see if it really does what it should
+	 */
 	@Override
 	public void changed(Order order) {
 		if (order != mOrder) {
 			if (order == null) {
 				// TODO: Display error message to user
-				Log.d("DEBUG", "Server not updated");
+				// TODO: Consider a better way than sending null to let GUI know
+				Log.d("DEBUG", "Server not about changes!");
 			} else {
 				throw new IllegalArgumentException(
 						"The changed object should be the one displayed in the GUI");

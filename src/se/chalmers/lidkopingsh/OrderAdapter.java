@@ -70,7 +70,8 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		dividerIndex = ModelHandler.getModel(mContext)
 				.getFirstUncompletedIndex(mOrders, station);
 		currentSortStation = station;
-	}	
+		notifyDataSetChanged();
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -134,7 +135,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 
 		// Customer name TODO: Change to deceased's name if available later
 		tmpTextView = (TextView) listItemView.findViewById(R.id.deceased_name);
-		tmpTextView.setText("Avlidnes namn"); // TODO: add in model
+		tmpTextView.setText("Avlidnes namn");
 
 		// Other details
 		Calendar cal = Calendar.getInstance();
@@ -142,9 +143,9 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		String date = cal.get(Calendar.DAY_OF_MONTH) + "/"
 				+ cal.get(Calendar.MONTH);
 		tmpTextView = (TextView) listItemView.findViewById(R.id.other_details);
-		// TODO: implement getting current task in model + getting a percentage
-		// done
-		tmpTextView.setText(date + " - " + "Sågning - " + "75%");
+		// TODO: Implement percentage done in model
+		tmpTextView.setText(date + " - " + order.getCemetary() + " - "
+				+ order.getProgress() + "%");
 	}
 
 	/**
@@ -178,10 +179,10 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 			return results;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
-			// TODO: Check if values is a List<Order>
 			mOrders = (List<Order>) results.values;
 			if (results.count > 0) {
 				notifyDataSetChanged();

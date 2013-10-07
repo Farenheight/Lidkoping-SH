@@ -1,13 +1,11 @@
 package se.chalmers.lidkopingsh;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
-import se.chalmers.lidkopingsh.model.StationComparator;
 import android.app.Activity;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -16,8 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -29,56 +25,31 @@ import android.widget.Spinner;
  * selection. This helps indicate which item is currently being viewed in a
  * {@link OrderDetailsFragment}.
  * 
- * Activities containing this fragment MUST implement the
- * {@link OrderSelectedCallback} interface.
- * 
- * TODO: Consider splitting into SearchHandler and SortHandler
+ * Activities containing this fragment MUST implement the {@link OrderSelectedcks}
+ * interface.
  * 
  */
 public class OrderListFragment extends ListFragment {
 
-	/**
-	 * The serialization (saved instance state) Bundle key representing the
-	 * activated item position. Only used on tablets.
-	 */
+	/* Bundle keys representing the activated item position. */
 	private static final String ACTIVATED_ORDER_ID = "activated_position";
-
-	/**
-	 * The serialization (saved instance state) Bundle key representing the
-	 * search term.
-	 */
 	private final String SEARCH_TERM = "search_term_key";
-
-	/**
-	 * The serialization (saved instance state) Bundle key representing the
-	 * current station id.
-	 */
 	private final String CURRENT_STATION_POS = "current_station_pos_key";
 
-	/**
-	 * The fragment's current callback object, which is notified of list item
-	 * clicks. Initialized
-	 */
-	private OrderSelectedCallback mOrderSelectedCallbacks;
-
-	/** List containing all orders shown in the main order list. */
-	private List<Order> mOrderList;
+	/** The fragment's callback object, which is notified of list item clicks. */
+	private OrderSelectedCallbacks mOrderSelectedCallbacks;
 
 	/** Adapter responsible for the main order list view */
 	private OrderAdapter mOrderAdapter;
 
-	/** The current station that is sorting the orders */
-	private Station mCurrentStation;
-
-	/** Data singelton keeping all data. */
+	/** Instance of a model keeping all data. */
 	private IModel mModel;
 
 	/** The current activated item. Only used on tablets. */
 	private Order mActivatedOrder;
 
-	private Spinner mStationSpinner;
-
 	private SearchHandler mSearchHandler;
+	private SortHandler mSortHandler;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -91,14 +62,13 @@ public class OrderListFragment extends ListFragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		// Activities containing this fragment must implement its
-		// orderSelectedcallbacks.
-		if (!(activity instanceof OrderSelectedCallback)) {
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof OrderSelectedCallbacks)) {
 			throw new IllegalStateException(
 					"Activity must implement fragment's callbacks.");
 		}
 
-		mOrderSelectedCallbacks = (OrderSelectedCallback) activity;
+		mOrderSelectedCallbacks = (OrderSelectedCallbacks) activity;
 	}
 
 	@Override
@@ -114,73 +84,40 @@ public class OrderListFragment extends ListFragment {
 		getListView().addHeaderView(
 				LayoutInflater.from(getActivity()).inflate(
 						R.layout.list_header, null));
-		initStationSpinner();
 
-		mStationSpinner = ((Spinner) getView().findViewById(
-				R.id.station_spinner));
-
-		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
-				.getOrders());
-		mOrderAdapter = new OrderAdapter(getActivity(), mOrderList);
+		// Setup list view and it's adapter
+		mOrderAdapter = new OrderAdapter(getActivity(), new ArrayList<Order>(
+				ModelHandler.getModel(getActivity()).getOrders()));
 		setListAdapter(mOrderAdapter);
 		mOrderAdapter.registerDataSetObserver(new OrderListObserver());
 
-		mSearchHandler = new SearchHandler((EditText) getView().findViewById(
-				R.id.search_field), getListView());
-
-		// Restore the previously serialized state on screen orientation change
-		if (savedInstanceState != null) {
-			mSearchHandler.restoreSearch(savedInstanceState
-					.getCharSequence(SEARCH_TERM));
-			mStationSpinner.setSelection(savedInstanceState
-					.getInt(CURRENT_STATION_POS));
-
-			// Mark the current order if one is previously selected
-			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
-				mActivatedOrder = mModel.getOrderById(savedInstanceState
-						.getInt(ACTIVATED_ORDER_ID));
-			}
-		}
-
-		// Sorts the orders after
-		mCurrentStation = (Station) mStationSpinner.getSelectedItem();
-		mOrderAdapter.sort(new StationComparator<Order>(mCurrentStation),
-				mCurrentStation);
-		mOrderAdapter.notifyDataSetChanged();
-	}
-
-	private void initStationSpinner() {
-
-		Spinner spinnerStations = (Spinner) getView().findViewById(
+		// Sets up the station spinner and it's adapter
+		Spinner stationSpinner = (Spinner) getView().findViewById(
 				R.id.station_spinner);
-
-		// When the user chooses an item in the stations spinner, sort the order
-		// list accordingly
-		spinnerStations.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int pos, long id) {
-
-				mCurrentStation = (Station) parent.getItemAtPosition(pos);
-				mOrderAdapter.sort(
-						new StationComparator<Order>(mCurrentStation),
-						mCurrentStation);
-				mOrderAdapter.notifyDataSetChanged();
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-			}
-		});
-
-		// Sets up the station spinner's adapter keeping it's data
 		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(
 				getActivity(), android.R.layout.simple_spinner_item,
 				(ArrayList<Station>) mModel.getStations());
 		stationsAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinnerStations.setAdapter(stationsAdapter);
+		stationSpinner.setAdapter(stationsAdapter);
+
+		// Setup helper handlers to features in this fragment
+		mSortHandler = new SortHandler(stationSpinner, mOrderAdapter);
+		mSearchHandler = new SearchHandler((EditText) getView().findViewById(
+				R.id.search_field), mOrderAdapter);
+
+		// Restore the previously serialized state on screen orientation change
+		if (savedInstanceState != null) {
+			mSearchHandler.restoreSearch(savedInstanceState
+					.getCharSequence(SEARCH_TERM));
+			mSortHandler.restoreSort(savedInstanceState
+					.getInt(CURRENT_STATION_POS));
+
+			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
+				mActivatedOrder = mModel.getOrderById(savedInstanceState
+						.getInt(ACTIVATED_ORDER_ID));
+			}
+		}
 	}
 
 	@Override
@@ -191,7 +128,7 @@ public class OrderListFragment extends ListFragment {
 		// fragment is attached to one) that an item has been selected.
 		mActivatedOrder = mModel.getOrderById(mOrderAdapter.getItem(
 				position - 1).getId());
-		mOrderSelectedCallbacks.onOrderSelected(mActivatedOrder.getId());
+		mOrderSelectedCallbacks.onItemSelected(mActivatedOrder.getId());
 	}
 
 	// Serialize and persist the activated item position, current search
@@ -208,7 +145,7 @@ public class OrderListFragment extends ListFragment {
 				mSearchHandler.getCurrentSearchTerm());
 
 		outState.putInt(CURRENT_STATION_POS,
-				mStationSpinner.getSelectedItemPosition());
+				mSortHandler.getCurrentStationPos());
 	}
 
 	/**
@@ -224,7 +161,7 @@ public class OrderListFragment extends ListFragment {
 	}
 
 	private class OrderListObserver extends DataSetObserver {
-		
+
 		/**
 		 * When the order list's data has changed, reset the active order. Set
 		 * active order.
@@ -245,14 +182,14 @@ public class OrderListFragment extends ListFragment {
 	 * implement. This mechanism allows activities to be notified of item
 	 * selections.
 	 */
-	public interface OrderSelectedCallback {
+	public interface OrderSelectedCallbacks {
 
 		/**
 		 * Callback for when an order has been selected in the list.
 		 * 
 		 * @param orderId
-		 *            The id of the order that was selected.
+		 *            The id of the order that was clicked.
 		 */
-		public void onOrderSelected(int orderId);
+		public void onItemSelected(int orderId);
 	}
 }
