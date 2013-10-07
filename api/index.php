@@ -29,7 +29,8 @@ if (isset($_GET['action'])) {
 	require_once 'get_updates.php';
 	getUpdates();
 } else {
-	errorGeneric("Empty respons: No methods where triggered, try again");
+	errorGeneric("Empty respons: No methods where triggered, try again.
+		If you done everything right, check that header ContentType is application/x-www-form-urlencoded");
 }
 //echo round((microtime(true)-$start)*1000, 2) . "ms";
 ?>
