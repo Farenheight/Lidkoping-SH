@@ -9,10 +9,10 @@ import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.StationComparator;
 import android.app.Activity;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +29,10 @@ import android.widget.Spinner;
  * selection. This helps indicate which item is currently being viewed in a
  * {@link OrderDetailsFragment}.
  * 
- * Activities containing this fragment MUST implement the {@link Callbacks}
- * interface.
+ * Activities containing this fragment MUST implement the
+ * {@link OrderSelectedCallback} interface.
  * 
- * TODO: Consider splitting into SearchHandler, SortHandler etc...
+ * TODO: Consider splitting into SearchHandler and SortHandler
  * 
  */
 public class OrderListFragment extends ListFragment {
@@ -59,16 +59,13 @@ public class OrderListFragment extends ListFragment {
 	 * The fragment's current callback object, which is notified of list item
 	 * clicks. Initialized
 	 */
-	private Callbacks mCallbacks = sDummyCallbacks;
+	private OrderSelectedCallback mOrderSelectedCallbacks;
 
 	/** List containing all orders shown in the main order list. */
 	private List<Order> mOrderList;
 
 	/** Adapter responsible for the main order list view */
 	private OrderAdapter mOrderAdapter;
-
-	/** The current search term filtering out orders */
-	private CharSequence mSearchTerm;
 
 	/** The current station that is sorting the orders */
 	private Station mCurrentStation;
@@ -81,6 +78,8 @@ public class OrderListFragment extends ListFragment {
 
 	private Spinner mStationSpinner;
 
+	private SearchHandler mSearchHandler;
+
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -92,13 +91,14 @@ public class OrderListFragment extends ListFragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof Callbacks)) {
+		// Activities containing this fragment must implement its
+		// orderSelectedcallbacks.
+		if (!(activity instanceof OrderSelectedCallback)) {
 			throw new IllegalStateException(
 					"Activity must implement fragment's callbacks.");
 		}
 
-		mCallbacks = (Callbacks) activity;
+		mOrderSelectedCallbacks = (OrderSelectedCallback) activity;
 	}
 
 	@Override
@@ -115,35 +115,32 @@ public class OrderListFragment extends ListFragment {
 				LayoutInflater.from(getActivity()).inflate(
 						R.layout.list_header, null));
 		initStationSpinner();
-		initSearch();
 
 		mStationSpinner = ((Spinner) getView().findViewById(
 				R.id.station_spinner));
 
-		initOrderListViewAdapter();
+		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
+				.getOrders());
+		mOrderAdapter = new OrderAdapter(getActivity(), mOrderList);
+		setListAdapter(mOrderAdapter);
+		mOrderAdapter.registerDataSetObserver(new OrderListObserver());
+
+		mSearchHandler = new SearchHandler((EditText) getView().findViewById(
+				R.id.search_field), getListView());
 
 		// Restore the previously serialized state on screen orientation change
 		if (savedInstanceState != null) {
-			mSearchTerm = savedInstanceState.getCharSequence(SEARCH_TERM);
+			mSearchHandler.restoreSearch(savedInstanceState
+					.getCharSequence(SEARCH_TERM));
 			mStationSpinner.setSelection(savedInstanceState
 					.getInt(CURRENT_STATION_POS));
 
+			// Mark the current order if one is previously selected
 			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
 				mActivatedOrder = mModel.getOrderById(savedInstanceState
 						.getInt(ACTIVATED_ORDER_ID));
 			}
 		}
-
-		// Set active order. Null if no orders have been viewed.
-		if (mActivatedOrder != null) {
-			getListView().setItemChecked(
-					mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
-		}
-
-		// Filter TODO: This is only needed on orientation change
-		mOrderAdapter.getFilter().filter(mSearchTerm);
-		((EditText) getView().findViewById(R.id.search_field))
-				.setText(mSearchTerm);
 
 		// Sorts the orders after
 		mCurrentStation = (Station) mStationSpinner.getSelectedItem();
@@ -186,53 +183,6 @@ public class OrderListFragment extends ListFragment {
 		spinnerStations.setAdapter(stationsAdapter);
 	}
 
-	private void initSearch() {
-		EditText fieldSearch = (EditText) getView().findViewById(
-				R.id.search_field);
-
-		// When the user enters text in the search field, filter out relevant
-		// orders
-		fieldSearch.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void onTextChanged(CharSequence currentText, int start,
-					int before, int count) {
-				mSearchTerm = currentText;
-				mOrderAdapter.getFilter().filter(mSearchTerm);
-				if (mActivatedOrder != null) {
-					getListView().setItemChecked(
-							mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
-				}
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence currentText, int start,
-					int count, int after) {
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-			}
-		});
-	}
-
-	/**
-	 * Sets up the adapter responsible for keeping the order list view's data
-	 */
-	private void initOrderListViewAdapter() {
-		mOrderList = new ArrayList<Order>(ModelHandler.getModel(getActivity())
-				.getOrders());
-		mOrderAdapter = new OrderAdapter(getActivity(), mOrderList);
-		setListAdapter(mOrderAdapter);
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		// Reset the active callbacks interface to the dummy implementation.
-		mCallbacks = sDummyCallbacks;
-	}
-
 	@Override
 	public void onListItemClick(ListView listView, View view, int position,
 			long id) {
@@ -241,7 +191,7 @@ public class OrderListFragment extends ListFragment {
 		// fragment is attached to one) that an item has been selected.
 		mActivatedOrder = mModel.getOrderById(mOrderAdapter.getItem(
 				position - 1).getId());
-		mCallbacks.onItemSelected(mActivatedOrder.getId());
+		mOrderSelectedCallbacks.onOrderSelected(mActivatedOrder.getId());
 	}
 
 	// Serialize and persist the activated item position, current search
@@ -254,7 +204,8 @@ public class OrderListFragment extends ListFragment {
 			outState.putInt(ACTIVATED_ORDER_ID, mActivatedOrder.getId());
 		}
 
-		outState.putCharSequence(SEARCH_TERM, mSearchTerm);
+		outState.putCharSequence(SEARCH_TERM,
+				mSearchHandler.getCurrentSearchTerm());
 
 		outState.putInt(CURRENT_STATION_POS,
 				mStationSpinner.getSelectedItemPosition());
@@ -272,29 +223,36 @@ public class OrderListFragment extends ListFragment {
 						: ListView.CHOICE_MODE_NONE);
 	}
 
+	private class OrderListObserver extends DataSetObserver {
+		
+		/**
+		 * When the order list's data has changed, reset the active order. Set
+		 * active order.
+		 */
+		@Override
+		public void onChanged() {
+			Log.d("DEBUG", "Activated item set");
+			// Null if no orders have been viewed.
+			if (mActivatedOrder != null) {
+				getListView().setItemChecked(
+						mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
+			}
+		}
+	}
+
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
 	 * selections.
 	 */
-	public interface Callbacks {
+	public interface OrderSelectedCallback {
 
 		/**
 		 * Callback for when an order has been selected in the list.
 		 * 
 		 * @param orderId
-		 *            The id of the order that was clicked.
+		 *            The id of the order that was selected.
 		 */
-		public void onItemSelected(int orderId);
+		public void onOrderSelected(int orderId);
 	}
-
-	/**
-	 * A dummy implementation of the {@link Callbacks} interface that does
-	 * nothing. Used only when this fragment is not attached to an activity.
-	 */
-	private static Callbacks sDummyCallbacks = new Callbacks() {
-		@Override
-		public void onItemSelected(int orderId) {
-		}
-	};
 }

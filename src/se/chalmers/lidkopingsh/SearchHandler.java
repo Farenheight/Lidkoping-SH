@@ -2,15 +2,16 @@ package se.chalmers.lidkopingsh;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.ArrayAdapter;
+import android.util.Log;
 import android.widget.EditText;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 
-public class SearchHandler<T> implements TextWatcher {
+public class SearchHandler implements TextWatcher {
 
 	private EditText mSearchField;
 	private ListView mListView;
-	private ArrayAdapter mListAdapter;
+	private OrderAdapter mOrderAdapter;
 
 	/**
 	 * A class that handles the search feature
@@ -23,10 +24,39 @@ public class SearchHandler<T> implements TextWatcher {
 	 */
 	public SearchHandler(EditText searchField, ListView listView) {
 		mSearchField = searchField;
-		mSearchField.addTextChangedListener(this);
 		mListView = listView;
-		mListAdapter = (ArrayAdapter) mListView.getAdapter();
+
+		try {
+			HeaderViewListAdapter hvla = (HeaderViewListAdapter) mListView
+					.getAdapter();
+			mOrderAdapter = (OrderAdapter) hvla.getWrappedAdapter();
+		} catch (ClassCastException e) {
+			Log.e("DEBUG",
+					"The provided listView has to contain an OrderAdapter "
+							+ "wrapped in a HeaderViewListAdapter");
+			e.printStackTrace();
+		}
+
+		mSearchField.addTextChangedListener(this);
 	}
+
+	public void restoreSearch(CharSequence searchTerm) {
+		mSearchField.setText(searchTerm);
+	}
+
+	private void search(CharSequence searchTerm) {
+		mOrderAdapter.getFilter().filter(searchTerm);
+		// if (mActivatedOrder != null) {
+		// mListView.setItemChecked(
+		// mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
+		// }
+	}
+
+	public CharSequence getCurrentSearchTerm() {
+		return mSearchField.getText();
+	}
+
+	/* Text Watcher */
 
 	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count,
@@ -36,7 +66,7 @@ public class SearchHandler<T> implements TextWatcher {
 	@Override
 	public void onTextChanged(CharSequence currentText, int start, int before,
 			int count) {
-		mListAdapter.getFilter().filter(currentText);
+		search(currentText);
 	}
 
 	@Override

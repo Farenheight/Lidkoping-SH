@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
-import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
 import android.content.Context;
@@ -71,7 +70,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		dividerIndex = ModelHandler.getModel(mContext)
 				.getFirstUncompletedIndex(mOrders, station);
 		currentSortStation = station;
-	}
+	}	
 
 	/**
 	 * {@inheritDoc}
@@ -99,7 +98,6 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 */
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View listItemView;
-		IModel model = ModelHandler.getModel(mContext);
 		if (position == 0 && dividerIndex != 0) {
 			listItemView = mInflater.inflate(R.layout.list_item_header, parent,
 					false);

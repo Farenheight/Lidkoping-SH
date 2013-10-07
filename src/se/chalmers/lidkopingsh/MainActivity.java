@@ -9,11 +9,11 @@ import android.support.v4.app.FragmentActivity;
  * a {@link OrderDetailsFragment} on tablets.
  * 
  * This activity also implements the required
- * {@link OrderListFragment.Callbacks} interface to listen for item selections.
+ * {@link OrderListFragment.OrderSelectedCallback} interface to listen for item selections.
  * 
  */
 public class MainActivity extends FragmentActivity implements
-		OrderListFragment.Callbacks {
+		OrderListFragment.OrderSelectedCallback {
 
 	/** Whether or not the app is running on a tablet sized device */
 	private boolean mTabletSize;
@@ -35,11 +35,11 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	/**
-	 * Callback method from {@link OrderListFragment.Callbacks} indicating that
+	 * Callback method from {@link OrderListFragment.OrderSelectedCallback} indicating that
 	 * the order with the given ID was selected.
 	 */
 	@Override
-	public void onItemSelected(int orderId) {
+	public void onOrderSelected(int orderId) {
 		// On tablets, show the detail view in this activity by adding or
 		// replacing the detail fragment
 		// TODO: Explore the possibility of saving the created fragment/activity
