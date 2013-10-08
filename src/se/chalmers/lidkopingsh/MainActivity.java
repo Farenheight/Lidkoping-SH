@@ -76,7 +76,7 @@ public class MainActivity extends FragmentActivity implements
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
 		case R.id.action_start_map_view:
-			startActivity(new Intent(this, MapActivity.class));
+			startActivity(new Intent(this, OrderMapActivity.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
