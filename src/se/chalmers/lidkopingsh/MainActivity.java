@@ -3,6 +3,9 @@ package se.chalmers.lidkopingsh;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 /**
  * An activity containing only a {@link OrderListFragment} on handsets and also
@@ -57,6 +60,26 @@ public class MainActivity extends FragmentActivity implements
 					HandsetsDetailsActivity.class);
 			detailIntent.putExtra(OrderDetailsFragment.ORDER_ID, orderId);
 			startActivity(detailIntent);
+		}
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    // Inflate the menu items for use in the action bar
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.action_bar, menu);
+	    return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+		case R.id.action_start_map_view:
+			startActivity(new Intent(this, MapActivity.class));
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 }

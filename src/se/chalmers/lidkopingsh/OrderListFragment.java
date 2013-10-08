@@ -168,7 +168,6 @@ public class OrderListFragment extends ListFragment {
 		 */
 		@Override
 		public void onChanged() {
-			Log.d("DEBUG", "Activated item set");
 			// Null if no orders have been viewed.
 			if (mActivatedOrder != null) {
 				getListView().setItemChecked(
