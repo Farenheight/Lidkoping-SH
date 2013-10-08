@@ -47,15 +47,15 @@
             android:value="AIzaSyCbrkJgTajPLiV9N24mF7NW9yoahIS5A9Q" />
 
         <activity android:name=".OrderMapActivity" >
-        </activity>
-        <activity
-            android:name="se.chalmers.lidkopingsh.MainActivity"
-            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="se.chalmers.lidkopingsh.MainActivity"
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="se.chalmers.lidkopingsh.HandsetsDetailsActivity"
