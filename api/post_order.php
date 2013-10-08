@@ -49,7 +49,7 @@ function sqlUpdateProduct($product){
 		$product['materialColor'], $product['type']['id'], $product['id']);
 	$stmt->execute();
 
-	if($product['type']['name'] === "Sten" || $product['type']['name'] === "Gravsten"){
+	if(array_key_exists('stone_product_id', $product)){
 		$sql2 = "UPDATE `stone` SET `stone_model`=?, `side_back_work`=?, `textstyle`=?, `ornament`=?
 			WHERE `stone_product_id`=?";
 		$stmt2 = $GLOBALS['con']->prepare($sql2);
@@ -99,15 +99,67 @@ function sqlUpdateOrder($array, $su){
 }
 
 
-function insertOrder() {
+function insertOrder($jsonData) {
 	// Convert incoming data to array
-	if(!isset($_POST['data'])|| empty($_POST['data'])){
+	/*if(!isset($_POST['data'])|| empty($_POST['data'])){
 		die("No data provided");
 	}
 	$jsonData = json_decode($_POST['data'], true);
 	if(is_null($jsonData)){
 		die("Faulty json format");
-	}
+	}*/
+	
+	
+	$orderNrGen = new OrderNumberGenerator();
+	$customerId = sqlInsertCustomer($jsonData['customer']);
+	sqlInsertOrder($jsonData, $customerId , $orderNrGen);
+	
+	$GLOBALS['con']->commit();
+}
+
+/**
+ * Inserts customer and returns the id of the inserted row.
+ * @return int
+ */
+function sqlInsertCustomer($customer) {
+	$sql = "INSERT INTO `customer` (`address`, `name`, `email`, `title`,
+		`postal_address`) VALUES (?, ?, ?, ?, ?);";
+	
+	$stmt = $GLOBALS['con']->prepare($sql);
+	$stmt->bind_param("sssss", $customer['address'], $customer['name'], $customer['eMail'],
+		$customer['title'], $customer['postAddress']);
+	$stmt->execute();
+	return $stmt->insert_id;
+}
+
+function sqlInsertOrder($order, $customerId, $orderNrGen) {
+	$orderNr = $orderNrGen->newOrderNumber($order['orderDate']);
+	$idName = "CustomID";		// TODO: Generate id name
+	$time = getMilliseconds();
+	
+	$sql = "INSERT INTO `order` (`order_number`, `id_name`, `order_date`, `cemetery_board`,
+		`cemetery`, `cemetery_block`, `cemetery_number`, `customer_id`, `time_created`,
+		`time_last_update`, `cancelled`, `archived`)
+		VALUES (?, ?, ?, ?, ?, ?, ?, LAST_INSERT_ID(), ?, ?, ?, ?)";
+	$zero = 0;
+	
+	$stmt = $GLOBALS['con']->prepare($sql);
+	$stmt->bind_param("ssissssiiii", $orderNr, $idName, $order['orderDate'], $order['cemeteryBoard'],
+		$order['cemetery'], $order['cemeteryBlock'], $order['cemeteryNumber'],
+		$time, $time, $zero, $zero);
+	
+	$stmt->execute();
+}
+
+function getMilliseconds() {
+    $m = explode(' ', microtime());
+    return $m[1] . floor($m[0] * 1000);
+}
+
+
+// TODO: Remove...
+function insertOrderOld() {
+	
 	
 	// Process data and decide what should be accepted
 	

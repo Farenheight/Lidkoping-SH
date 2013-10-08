@@ -19,7 +19,7 @@ class OrderNumberGenerator {
 
 	public function newOrderNumber($date) {
 		$dateInSeconds = $date / 1000;
-		$year = intval(date("y", $dateInSeconds));
+		@$year = intval(date("y", $dateInSeconds));
 		$zeros = "";
 		if ($this -> numGenerated[$year] < 10) {
 			$zeros = "000";
