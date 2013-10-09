@@ -455,7 +455,7 @@ public class OrderDbStorage {
 		return new Image(imageId, imagePath);
 	}
 
-	private Collection<Image> getImages(int orderId) {
+	private List<Image> getImages(int orderId) {
 		String sqlImages = SELECT_FROM + ImageTable.TABLE_NAME + SPACE + IMAGE
 				+ JOIN + OrderTable.TABLE_NAME + SPACE + ORDER + ON + IMAGE
 				+ DOT + ImageTable.COLUMN_NAME_ORDER_ID + EQUALS + ORDER + DOT
@@ -464,7 +464,7 @@ public class OrderDbStorage {
 
 		Cursor c = db.rawQuery(sqlImages,
 				new String[] { Integer.toString(orderId) });
-		Collection<Image> images = new LinkedList<Image>();
+		List<Image> images = new LinkedList<Image>();
 
 		while (c.moveToNext()) {
 			images.add(getImage(c));
@@ -495,7 +495,7 @@ public class OrderDbStorage {
 		}
 	}
 
-	private Collection<Product> getProducts(int orderId) {
+	private List<Product> getProducts(int orderId) {
 		String sqlProducts = SELECT_FROM + ProductTable.TABLE_NAME + SPACE
 				+ PRODUCT + LEFT_JOIN + StoneTable.TABLE_NAME + SPACE + STONE
 				+ ON + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID
@@ -517,7 +517,7 @@ public class OrderDbStorage {
 
 		Cursor c = db.rawQuery(sqlProducts,
 				new String[] { Integer.toString(orderId) });
-		Collection<Product> products = new LinkedList<Product>();
+		List<Product> products = new LinkedList<Product>();
 
 		while (c.moveToNext()) {
 			products.add(getProduct(c));

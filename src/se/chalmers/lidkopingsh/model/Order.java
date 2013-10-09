@@ -32,7 +32,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private List<Listener<Order>> orderListeners;
 	private List<Listener<Order>> orderSyncedListeners;
 	private SyncableList<Product> products;
-	private Collection<Image> images;
+	private List<Image> images;
 
 	/**
 	 * Creates an Order with the specified properties. For unknown or not
@@ -41,8 +41,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Order(int id, String orderNumber, String idName, long timeCreated,
 			long lastTimeUpdated, String cemetary, String cemetaryBoard,
 			String cemetaryBlock, String cemetaryNumber, long orderDate,
-			Customer customer, Collection<Product> products,
-			Collection<Image> images) {
+			Customer customer, List<Product> products,
+			List<Image> images) {
 		this.id = id;
 		this.orderNumber = orderNumber != null ? orderNumber : "";
 		this.idName = idName != null ? idName : "";

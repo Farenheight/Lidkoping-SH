@@ -4,7 +4,8 @@ import java.util.Collection;
 
 import org.junit.Test;
 
-import se.chalmers.lidkopingsh.database.*;
+import se.chalmers.lidkopingsh.database.OrderDbStorage;
+import se.chalmers.lidkopingsh.database.ServerLayer;
 import se.chalmers.lidkopingsh.model.Order;
 import android.test.AndroidTestCase;
 

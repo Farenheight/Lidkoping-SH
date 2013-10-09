@@ -3,6 +3,8 @@ package se.chalmers.lidkopingsh.database;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -11,11 +13,15 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.model.DummyOrder;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 /**
  * Handling communication between remote server and local database.
@@ -54,11 +60,11 @@ public class ServerLayer extends AbstractServerLayer {
 	 */
 	private Response sendHttpPostRequest(String orderString) {
 		BufferedReader reader = null;
-		Gson gson = new Gson();
 		try {
 			httpPost.setEntity(new StringEntity(orderString));
 			httpPost.setHeader("LidkopingSH-Authentication",
-					"1234567890qwertyuiop");
+					"123456789qwertyuiop");
+			httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			reader = new BufferedReader(new InputStreamReader(httpResponse
 					.getEntity().getContent()));
@@ -66,7 +72,34 @@ public class ServerLayer extends AbstractServerLayer {
 		} catch (Exception e) {
 			Log.e("server_layer", "Error in HTTP post " + e.toString());
 		}
-		return gson.fromJson(reader, Response.class);
+		Response response = null;
+		try {
+			response  = parseToResponse(reader);
+		} catch (Exception e) {
+			Log.d("server_layer", "No data from server");
+		}
+		return response;
+	}
+
+	private Response parseToResponse(BufferedReader reader) {
+		JsonElement element =  new JsonParser().parse(reader);
+		Gson gson = new Gson();
+		boolean success = element.getAsJsonObject().get("success").getAsBoolean();
+		if(!success) {
+			int errorcode = element.getAsJsonObject().get("errorcode").getAsInt();
+			String message = element.getAsJsonObject().get("message").getAsString();
+			return new Response(success, errorcode, message, null);
+		}
+		JsonArray json = element.getAsJsonObject().get("results").getAsJsonArray();
+		List<DummyOrder> orders = new LinkedList<DummyOrder>();
+		
+		for(JsonElement j : json) {
+			DummyOrder order = gson.fromJson(j, DummyOrder.class);
+			orders.add(order);
+		}
+		
+		return null; //new Response(success, orders);
+		
 	}
 
 	/**
@@ -76,11 +109,15 @@ public class ServerLayer extends AbstractServerLayer {
 	 *            A JsonObject with the ids and timestamps for comparing orders
 	 */
 	private Order[] getUpdatedOrdersFromServer(String orderVerifiers) {
-		Response response = sendHttpPostRequest("getUpdates=1&data="
-				+ orderVerifiers);
+		Response response = sendHttpPostRequest("getUpdates=1&data=[[2,1380885442000]]");
 
 		if (response.isSuccess()) {
-			return (Order[]) response.getResults();
+			Order[] ord = new Order[2];
+			int i = 0;
+			for(Order o : response.getResults()) {
+				ord[i++] = o;
+			}
+			return ord;
 		}else{
 			printErrorLog(response);
 		}
@@ -123,8 +160,19 @@ public class ServerLayer extends AbstractServerLayer {
 		private boolean success;
 		private int errorcode;
 		private String message;
-		private Object[] results;
+		private List<Order> results;
 
+		public Response(boolean success, int errorcode, String message, List<Order> results) {
+			this(success, results);
+			this.errorcode = errorcode;
+			this.message = message;
+		}
+		
+		public Response(boolean success, List<Order> results) {
+			this.success = success;
+			this.results = results;
+		}
+		
 		public boolean isSuccess() {
 			return success;
 		}
@@ -137,7 +185,7 @@ public class ServerLayer extends AbstractServerLayer {
 			return message;
 		}
 
-		public Object[] getResults() {
+		public List<Order> getResults() {
 			return results;
 		}
 	}
