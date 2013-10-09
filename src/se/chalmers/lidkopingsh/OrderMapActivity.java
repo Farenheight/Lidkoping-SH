@@ -20,15 +20,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -110,41 +108,28 @@ public class OrderMapActivity extends FragmentActivity {
 	 * camera.
 	 */
 	private void setUpMap() {
-		initMapTypeSpinner();
+		initMapTypeToggleButton();
 		addMarkers();
 		addDebugMarkers();
 		zoomToMarkers(100);
 	}
 
-	private void initMapTypeSpinner() {
-		Spinner spinner = (Spinner) findViewById(R.id.layers_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				this, R.array.layers_array,
-				android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
+	private void initMapTypeToggleButton() {
+		ToggleButton toggleButton = (ToggleButton) findViewById(R.id.layers_toggle_button);
+		toggleButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-				setLayer((String) parent.getItemAtPosition(position));
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-			}
-
-			private void setLayer(String layerName) {
-				if (layerName.equals(getString(R.string.normal))) {
-					mMap.setMapType(MAP_TYPE_NORMAL);
-				} else if (layerName.equals(getString(R.string.satellite))) {
+			public void onCheckedChanged(CompoundButton source, boolean checked) {
+				if (checked) {
 					mMap.setMapType(MAP_TYPE_SATELLITE);
 				} else {
-					Log.i("LDA", "Error setting layer with name " + layerName);
-				}
+					mMap.setMapType(MAP_TYPE_NORMAL);
+				} 
 			}
-		});
+		}); 
+
+		
+
+			
 	}
 
 	// Adds ten markers in stockholm TODO: Remove

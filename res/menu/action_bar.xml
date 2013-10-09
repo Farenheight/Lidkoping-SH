@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/action_start_map_view"
-          android:title="Kart Vy"
-          android:showAsAction="ifRoom"/>
-    <item android:id="@+id/action_start_map_view"
-          android:title="Hjälp"/>
+
+    <item
+        android:id="@+id/action_start_map_view"
+        android:icon="@drawable/ic_action_map"
+        android:title="Se Kartvy"
+        android:titleCondensed=" Se Kartvy"
+        android:showAsAction="withText|ifRoom"
+        />
+    <item
+        android:id="@+id/action_overflow"
+        android:title="Hjälp"/>
+
 </menu>
