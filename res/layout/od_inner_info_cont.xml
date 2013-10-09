@@ -1,6 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
 
     <LinearLayout
         android:id="@+id/product_task_cont"
@@ -13,12 +13,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:background="#fff"
+            android:background="@drawable/card_border_shape"
             android:columnCount="2"
             android:padding="30dp"
             android:rowCount="5"
-            android:useDefaultMargins="true"
-             >
+            android:useDefaultMargins="true" >
 
             <TextView
                 android:id="@+id/task_name"
@@ -149,7 +148,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:background="#fff"
+            android:background="@drawable/card_border_shape"
             android:columnCount="1"
             android:padding="30dp"
             android:rowCount="10"
