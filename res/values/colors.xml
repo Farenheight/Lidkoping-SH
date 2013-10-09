@@ -3,10 +3,12 @@
 
     <drawable name="unfinished_task_color">#bbb</drawable>
     <drawable name="finished_task_color">#19FF19</drawable>
-    <drawable name="task_pressed">#3366FF</drawable>
+    <drawable name="task_pressed">#3366FF</drawable>   
     
     <color name="lsh_blue">#44c</color>
 
+    <color name="transparent">#00000000</color> 
+    
     <color name="white">#FFFFFF</color>
     <color name="yellow">#FFFF00</color>
     <color name="fuchsia">#FF00FF</color>

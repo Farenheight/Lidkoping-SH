@@ -43,6 +43,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	/** The root view that contains everything */
 	private ViewGroup rootView;
 
+	private TabHost mTabHost;
+
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -85,30 +87,40 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	 * 
 	 */
 	private void initTabs() {
-		final TabHost tabHost = (TabHost) rootView
+		mTabHost = (TabHost) rootView
 				.findViewById(R.id.orderTabHost);
-		tabHost.setup();
+		mTabHost.setup();
 
-		tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
 
 			@Override
 			public void onTabChanged(String tabId) {
 			}
 		});
 
-		// Add drawing tab
-		TabHost.TabSpec drawingTab = tabHost.newTabSpec(DRAWING_TAB);
-		drawingTab.setContent(R.id.tabDrawingContainer);
-		drawingTab.setIndicator("Ritning");
-		tabHost.addTab(drawingTab);
-		initDrawing();
 
+		// Add drawing tab
+		TabHost.TabSpec drawingTab = mTabHost.newTabSpec(DRAWING_TAB);
+		drawingTab.setContent(R.id.tabDrawingContainer);
+		drawingTab.setIndicator(getTabIndicator("Ritning"));
+		mTabHost.addTab(drawingTab);
+		initDrawing();
+		
 		// Add detail tab
-		TabHost.TabSpec detailTab = tabHost.newTabSpec(DETAIL_TAB);
+		TabHost.TabSpec detailTab = mTabHost.newTabSpec(DETAIL_TAB);
 		detailTab.setContent(R.id.tab_info_container);
-		detailTab.setIndicator("Detaljer");
-		tabHost.addTab(detailTab);
+		detailTab.setIndicator(getTabIndicator("Information"));
+		mTabHost.addTab(detailTab);
 		initDetails();
+	}
+
+	private View getTabIndicator(String tabTitle) {
+		View tabIndicator = LayoutInflater.from(getActivity()).inflate(
+				R.layout.tab_indicator_holo, mTabHost.getTabWidget(), false);
+		TextView title = (TextView) tabIndicator
+				.findViewById(android.R.id.title);
+		title.setText(tabTitle);
+		return tabIndicator;
 	}
 
 	/**
