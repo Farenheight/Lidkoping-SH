@@ -13,7 +13,7 @@
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
         android:label="Test"
-        android:targetPackage="com.example.lidkopingsh" >
+        android:targetPackage="se.chalmers.lidkopingsh" >
     </instrumentation>
 
     <application

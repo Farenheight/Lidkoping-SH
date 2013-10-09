@@ -97,7 +97,7 @@ public class ServerLayer extends AbstractServerLayer {
 			orders.add(order);
 		}
 		
-		return null; //new Response(success, orders);
+		return new Response(success, orders);
 		
 	}
 
