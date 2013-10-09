@@ -3,32 +3,41 @@
 
     <string name="app_name">Lidkopings Stenhuggeri</string>
     <string name="title_stone_detail">Stone Detail</string>
-    
+
     <string-array name="tasks_array">
         <item>Polering</item>
         <item>Sagning</item>
     </string-array>
-        <string name="cemetery_board">Kyrkogardsnämnd</string>
-        <string name="cemetery">Kyrkogard</string>
-        <string name="desc">Beskrivning</string>
-        <string name="model">Modell</string>
-        <string name="material_and_color">Material och färg</string>
-        <string name="front_processing">Bearbetning på framsidan</string>
-        <string name="back_and_side_processing">Bearbetning på bak och framsida</string>
-        <string name="text_style_and_processing">Textstil och bearbetning</string>
-        <string name="ornament">Ornament</string>
-        <string name="cemetery_number">Gravplatsbeteckning</string>
-        <string name="test">test string</string>
-        <string name="dynamic">dynamic</string>
-        <string name="base">Sockel</string>
-        <string name="long_test_string">This is a longer test string for testing longer strings suitability in lorem ipsum</string>
-        <string name="stoneModel">Stenmodell</string>
-        <string name="order_drawing">Order ritning</string>
-        <string name="workerNote">Anteckningar</string>
-        <string name="noteHint">Skriv här</string>
-        <string name="tablet_startup_hint">Klicka i listan till vänster för att visa en order</string>
-        <string name="dynamic_id_name">O.R.</string>
-        <string name="searchHint">Sök</string>
-        <string name="section_header">&lt;u>SECTION HEADER&lt;/u></string>
+
+    <string name="cemetery_board">Kyrkogardsnämnd</string>
+    <string name="cemetery">Kyrkogard</string>
+    <string name="desc">Beskrivning</string>
+    <string name="model">Modell</string>
+    <string name="material_and_color">Material och färg</string>
+    <string name="front_processing">Bearbetning på framsidan</string>
+    <string name="back_and_side_processing">Bearbetning på bak och framsida</string>
+    <string name="text_style_and_processing">Textstil och bearbetning</string>
+    <string name="ornament">Ornament</string>
+    <string name="cemetery_number">Gravplatsbeteckning</string>
+    <string name="test">test string</string>
+    <string name="dynamic">dynamic</string>
+    <string name="base">Sockel</string>
+    <string name="long_test_string">This is a longer test string for testing longer strings suitability in lorem ipsum</string>
+    <string name="stoneModel">Stenmodell</string>
+    <string name="order_drawing">Order ritning</string>
+    <string name="workerNote">Anteckningar</string>
+    <string name="noteHint">Skriv här</string>
+    <string name="tablet_startup_hint">Klicka i listan till vänster för att visa en order</string>
+    <string name="dynamic_id_name">O.R.</string>
+    <string name="searchHint">Sök</string>
+    <string name="section_header">&lt;u>SECTION HEADER&lt;/u></string>
+
+    <string-array name="layers_array">
+        <item>@string/normal</item>
+        <item>@string/satellite</item>
+    </string-array>
+    
+    <string name="satellite">Satellite</string>
+    <string name="normal">Normal</string>
 
 </resources>

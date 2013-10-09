@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/map"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    class="com.google.android.gms.maps.SupportMapFragment" />
+    android:layout_height="match_parent" >
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        tools:layout="@android:layout/activity_list_item" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginBottom="17dp"
+        android:layout_marginRight="63dp"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/map"
+        android:background="#cfff"
+        android:orientation="vertical"
+        android:padding="4dp" >
+
+        <Spinner
+            android:id="@+id/layers_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>
