@@ -12,7 +12,7 @@ import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.BubbleIconFactory;
 
 /**
  * Activity containing a map with all the orders positions marked.
@@ -52,6 +53,8 @@ public class OrderMapActivity extends FragmentActivity {
 	private IModel mModel;
 
 	private Geocoder mGeoCoder;
+
+	private BubbleIconFactory mIconFactory;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,18 +105,23 @@ public class OrderMapActivity extends FragmentActivity {
 	}
 
 	/**
-	 * Get markers
-	 */
-
-	/**
 	 * This is where we can add markers or lines, add listeners or move the
 	 * camera.
 	 */
 	private void setUpMap() {
 		initMapTypeToggleButton();
+		initBubbleFactory();
 		addMarkers();
 		addDebugMarkers();
 		zoomToMarkers(100);
+	}
+
+	private void initBubbleFactory() {
+		mIconFactory = new BubbleIconFactory(this);
+		Drawable d = getResources().getDrawable(R.drawable.stone);
+		mIconFactory.setTextAppearance(this, R.style.StoneIconText);
+		mIconFactory.setBackground(d);
+		mIconFactory.setContentPadding(5, 20, 0, 0);
 	}
 
 	private void initMapTypeToggleButton() {
@@ -125,13 +133,10 @@ public class OrderMapActivity extends FragmentActivity {
 					mMap.setMapType(MAP_TYPE_SATELLITE);
 				} else {
 					mMap.setMapType(MAP_TYPE_NORMAL);
-				} 
+				}
 			}
-		}); 
+		});
 
-		
-
-			
 	}
 
 	// Adds ten markers in stockholm TODO: Remove
@@ -139,10 +144,10 @@ public class OrderMapActivity extends FragmentActivity {
 		Address cAddress = getAddress("eggvena kyrka");
 		LatLng cLatLng = new LatLng(cAddress.getLatitude(),
 				cAddress.getLongitude());
+		Bitmap icon = mIconFactory.makeIcon("E.G.");
 		Marker cemeteryMarker = mMap.addMarker(new MarkerOptions().position(
 				cLatLng).title("Eggvena Kyrka!!"));
-		cemeteryMarker.setIcon(BitmapDescriptorFactory
-				.fromResource(R.drawable.stone));
+		cemeteryMarker.setIcon(BitmapDescriptorFactory.fromBitmap(icon));
 		mMarkers.add(cemeteryMarker);
 	}
 
@@ -160,10 +165,10 @@ public class OrderMapActivity extends FragmentActivity {
 			LatLng cLatLng = new LatLng(cAddress.getLatitude() + debugEps,
 					cAddress.getLongitude() + debugEps);
 			Marker cemeteryMarker = mMap.addMarker(new MarkerOptions()
-					.position(cLatLng).title(
-							order.getIdName() + " - " + order.getCemetary()));
+					.position(cLatLng).title(order.getCemetary()));
+			mIconFactory.makeIcon("E.G.");
 			cemeteryMarker.setIcon(BitmapDescriptorFactory
-					.fromResource(R.drawable.stone));
+					.fromBitmap(mIconFactory.makeIcon(order.getIdName())));
 			mMarkers.add(cemeteryMarker);
 			debugEps += 0.01;
 		}

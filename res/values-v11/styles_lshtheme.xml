@@ -6,6 +6,10 @@
   <style name="ButtonLSHTheme" parent="android:Widget.Holo.Light.Button">
 	  <item name="android:background">@drawable/btn_default_holo_light</item>
   </style>
+  
+  <style name="StoneIconText" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">#fff</item>
+  </style>
 
   <style name="ImageButtonLSHTheme" parent="android:Widget.Holo.Light.ImageButton">
 	  <item name="android:background">@drawable/btn_default_holo_light</item>
