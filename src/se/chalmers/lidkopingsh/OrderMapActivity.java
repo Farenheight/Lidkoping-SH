@@ -60,6 +60,7 @@ public class OrderMapActivity extends FragmentActivity {
 		mModel = ModelHandler.getModel(this);
 		mMarkers = new ArrayList<Marker>();
 		setUpMapIfNeeded();
+		mMap.setMyLocationEnabled(true);
 	}
 
 	@Override
