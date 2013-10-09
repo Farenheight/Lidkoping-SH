@@ -1,6 +1,7 @@
 package se.chalmers.lidkopingsh.database;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import se.chalmers.lidkopingsh.model.IModel;
@@ -31,17 +32,17 @@ public class OrderDbLayer implements ILayer {
 		db = new OrderDbStorage(context);
 		//TODO: Remove server path. Set it in settings. 
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", context);
-		/*if (db.query(null, null, null).isEmpty()) {
-			OrderDbFiller.fillDb(db);
-			Log.d("OrderdbLayer", "filled database with dummy data");
-		}*/
+		if(db.query(null, null, null).isEmpty()) {
+			updateDatabase(serverLayer.getUpdates());
+		}
+		//updateDatabase(serverLayer.getUpdates());
 	}
 
 	@Override
 	public void changed(Order order) {
 		//TODO: Check if change was same as in DB.
 		serverLayer.sendUpdate(order);
-		Order[] orders = serverLayer.getUpdates();
+		List<Order> orders = serverLayer.getUpdates();
 		if (orders == null) {
 			order.sync(null);
 		}else {
@@ -65,7 +66,7 @@ public class OrderDbLayer implements ILayer {
 	 * Updates local database with a collection of orders
 	 * @param orders The orders to update
 	 */
-	public void updateDatabase(Order[] orders) {
+	public void updateDatabase(List<Order> orders) {
 		IModel model = getModel();
 		for (Order o : orders) {
 			try {

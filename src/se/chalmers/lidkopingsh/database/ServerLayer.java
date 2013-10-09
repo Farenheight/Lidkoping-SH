@@ -107,14 +107,13 @@ public class ServerLayer extends AbstractServerLayer {
 	 * @param orderVerifiers
 	 *            A JsonObject with the ids and timestamps for comparing orders
 	 */
-	private Order[] getUpdatedOrdersFromServer(String orderVerifiers) {
+	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers) {
 		Response response = sendHttpPostRequest("getUpdates=1&data=[[2,1380885442000]]");
 
 		if (response.isSuccess()) {
-			Order[] ord = new Order[2];
-			int i = 0;
+			List <Order> ord = new LinkedList<Order>();
 			for(Order o : response.getResults()) {
-				ord[i++] = o;
+				ord.add(o);
 			}
 			return ord;
 		}else{
@@ -124,7 +123,7 @@ public class ServerLayer extends AbstractServerLayer {
 	}
 
 	@Override
-	public Order[] getUpdates() {
+	public List<Order> getUpdates() {
 		Collection<Order> orders = ModelHandler.getModel(context).getOrders();
 		long[][] orderArray = new long[orders.size()][2];
 		int i = 0;

@@ -1,6 +1,7 @@
 package se.chalmers.lidkopingsh.database.test;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -22,9 +23,9 @@ public class ServerLayerTest extends AndroidTestCase{
 	public void testGetUpdate(){
 		ServerLayer serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", this.getContext());
 		Collection<Order> ordersBefore = dbStorage.query(null, null, null);
-		Order[] ordersAfter = serverLayer.getUpdates();
+		List<Order> ordersAfter = serverLayer.getUpdates();
 		 
-		assertTrue(ordersBefore.size() < ordersAfter.length);
+		assertTrue(ordersBefore.size() < ordersAfter.size());
 	}
 
 }
