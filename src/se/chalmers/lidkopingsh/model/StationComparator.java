@@ -41,8 +41,6 @@ public class StationComparator<T extends Order> implements Comparator<T> {
 						: -1;
 			}
 		}
-		System.out.println("First: " + getNumOfStationsLeft(firstOrder));
-		System.out.println("Second: " + getNumOfStationsLeft(secondOrder));
 		if (getNumOfStationsLeft(firstOrder) > getNumOfStationsLeft(secondOrder)) {
 			return 1;
 		} else {

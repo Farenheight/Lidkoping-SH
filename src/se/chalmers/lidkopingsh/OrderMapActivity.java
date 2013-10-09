@@ -1,17 +1,7 @@
 package se.chalmers.lidkopingsh;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
-import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -85,7 +75,7 @@ public class OrderMapActivity extends FragmentActivity {
 	private void setUpMap() {
 		mMap.moveCamera(CameraUpdateFactory
 				.newCameraPosition(new CameraPosition.Builder()
-						.target(new LatLng(58, 15)).zoom(5).build()));
+						.target(new LatLng(58, 15)).zoom(6).build()));
 		mMap.getUiSettings().setZoomControlsEnabled(false);
 		mMap.addMarker(new MarkerOptions().position(new LatLng(58, 15)).title(
 				"Lidköpings Stenhuggeri"));

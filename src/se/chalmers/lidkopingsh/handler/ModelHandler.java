@@ -12,6 +12,7 @@ public class ModelHandler {
 
 	public static IModel getModel(Context context) {
 		if (model == null) {
+			System.out.println("Created new model from db.");
 			model = getLayer(context).getModel(); // Should be populated from DB
 		}
 		return model;
