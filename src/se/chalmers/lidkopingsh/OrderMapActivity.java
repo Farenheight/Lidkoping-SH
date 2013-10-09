@@ -153,7 +153,7 @@ public class OrderMapActivity extends FragmentActivity {
 		LatLng cLatLng = new LatLng(cAddress.getLatitude(),
 				cAddress.getLongitude());
 		Marker cemeteryMarker = mMap.addMarker(new MarkerOptions()
-				.position(cLatLng));
+				.position(cLatLng).title("Eggvena Kyrka!!"));
 		mMarkers.add(cemeteryMarker);
 	}
 
@@ -163,12 +163,15 @@ public class OrderMapActivity extends FragmentActivity {
 	private void addMarkers() {
 		double debugEps = 0; // TODO: Remove
 		for (Order order : mModel.getOrders()) {
+			if(debugEps > 0.05) {
+				break; 
+			}
 			Address cAddress = getAddress(formatCemeteryName(order
 					.getCemetary()));
 			LatLng cLatLng = new LatLng(cAddress.getLatitude() + debugEps,
 					cAddress.getLongitude() + debugEps);
 			Marker cemeteryMarker = mMap.addMarker(new MarkerOptions()
-					.position(cLatLng).title(order.getCemetary()));
+					.position(cLatLng).title(order.getIdName() + " - " + order.getCemetary()));
 			mMarkers.add(cemeteryMarker);
 			debugEps += 0.01;
 		}
