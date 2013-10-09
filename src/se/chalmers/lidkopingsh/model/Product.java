@@ -9,6 +9,7 @@ import se.chalmers.lidkopingsh.util.Listener;
 import se.chalmers.lidkopingsh.util.Syncable;
 import se.chalmers.lidkopingsh.util.SyncableArrayList;
 import se.chalmers.lidkopingsh.util.SyncableList;
+import se.chalmers.lidkopingsh.util.Syncher;
 
 /**
  * A product is something with different tasks that is needed to complete the
@@ -32,7 +33,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	/**
 	 * The {@link Task}s that this product has.
 	 */
-	private SyncableList<Task> tasks;
+	private List<Task> tasks;
 
 	/**
 	 * Create a new Product
@@ -61,7 +62,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		this.description = description != null ? description : "";
 		this.frontWork = frontWork != null ? frontWork : "";
 		this.listeners = new ArrayList<Listener<Product>>();
-		this.tasks = new SyncableTaskList(tasks);
+		this.tasks = new TaskList(tasks);
 		if (tasks != null) {
 			for (Task t : tasks) {
 				t.addTaskListener(this);
@@ -253,7 +254,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			this.description = newData.description;
 			this.frontWork = newData.frontWork;
 			this.materialColor = newData.materialColor;
-			tasks.sync(newData.getTasks());
+			Syncher.syncList(tasks, newData.getTasks());
 			return true;
 		} else {
 			return false;
@@ -284,10 +285,10 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * @author robin
 	 * 
 	 */
-	private class SyncableTaskList extends SyncableArrayList<Task> {
+	private class TaskList extends ArrayList<Task> {
 		private static final long serialVersionUID = 4082149811877348098L;
 
-		public SyncableTaskList(Collection<Task> collection) {
+		public TaskList(Collection<Task> collection) {
 			super(collection);
 		}
 

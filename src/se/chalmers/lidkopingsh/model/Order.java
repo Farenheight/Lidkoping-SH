@@ -8,6 +8,7 @@ import se.chalmers.lidkopingsh.util.Listener;
 import se.chalmers.lidkopingsh.util.Syncable;
 import se.chalmers.lidkopingsh.util.SyncableArrayList;
 import se.chalmers.lidkopingsh.util.SyncableList;
+import se.chalmers.lidkopingsh.util.Syncher;
 
 /**
  * A class representing an Order.
@@ -31,7 +32,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private Customer customer;
 	private List<Listener<Order>> orderListeners;
 	private List<Listener<Order>> orderSyncedListeners;
-	private SyncableList<Product> products;
+	private List<Product> products;
 	private List<Image> images;
 
 	/**
@@ -58,7 +59,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 
 		orderListeners = new ArrayList<Listener<Order>>();
 		orderSyncedListeners = new ArrayList<Listener<Order>>();
-		this.products = new SyncableProductList(products);
+		this.products = new ProductList(products);
 		if (products != null) {
 			for (Product p : products) {
 				p.addProductListener(this);
@@ -265,7 +266,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				this.orderDate = newData.orderDate;
 				this.orderNumber = newData.orderNumber;
 				this.idName = newData.idName;
-				products.sync(newData.getProducts());
+				Syncher.syncList(products, newData.getProducts());
 				this.lastTimeSync = newData.lastTimeUpdate;
 				notifySyncedListeners();
 				return true;
@@ -319,10 +320,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * @author robin
 	 * 
 	 */
-	private class SyncableProductList extends SyncableArrayList<Product> {
+	private class ProductList extends ArrayList<Product> {
 		private static final long serialVersionUID = 2154927418889429341L;
 
-		public SyncableProductList(Collection<Product> collection) {
+		public ProductList(Collection<Product> collection) {
 			super(collection);
 		}
 

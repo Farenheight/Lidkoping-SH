@@ -11,6 +11,7 @@ import java.util.ListIterator;
  *
  * @param <T>
  */
+@Deprecated
 public class SyncableArrayList<T extends Syncable<? super T>> implements SyncableList<T> {
 	private static final long serialVersionUID = 8556149278420032244L;
 	private List<T> data;

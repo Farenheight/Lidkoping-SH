@@ -13,7 +13,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
-import se.chalmers.lidkopingsh.model.DummyOrder;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
 import android.util.Log;
@@ -91,10 +90,10 @@ public class ServerLayer extends AbstractServerLayer {
 			return new Response(success, errorcode, message, null);
 		}
 		JsonArray json = element.getAsJsonObject().get("results").getAsJsonArray();
-		List<DummyOrder> orders = new LinkedList<DummyOrder>();
+		List<Order> orders = new LinkedList<Order>();
 		
 		for(JsonElement j : json) {
-			DummyOrder order = gson.fromJson(j, DummyOrder.class);
+			Order order = gson.fromJson(j, Order.class);
 			orders.add(order);
 		}
 		

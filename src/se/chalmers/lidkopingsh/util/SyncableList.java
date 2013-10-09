@@ -7,6 +7,7 @@ import java.util.List;
  *
  * @param <T> The type of objects within the list.
  */
+@Deprecated
 public interface SyncableList<T extends Syncable<? super T>> extends Syncable<List<T>>, List<T> {
 
 }
