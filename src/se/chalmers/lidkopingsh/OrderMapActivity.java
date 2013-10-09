@@ -11,6 +11,8 @@ import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
@@ -19,7 +21,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
@@ -27,6 +28,7 @@ import android.widget.ToggleButton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -137,8 +139,10 @@ public class OrderMapActivity extends FragmentActivity {
 		Address cAddress = getAddress("eggvena kyrka");
 		LatLng cLatLng = new LatLng(cAddress.getLatitude(),
 				cAddress.getLongitude());
-		Marker cemeteryMarker = mMap.addMarker(new MarkerOptions()
-				.position(cLatLng).title("Eggvena Kyrka!!"));
+		Marker cemeteryMarker = mMap.addMarker(new MarkerOptions().position(
+				cLatLng).title("Eggvena Kyrka!!"));
+		cemeteryMarker.setIcon(BitmapDescriptorFactory
+				.fromResource(R.drawable.stone));
 		mMarkers.add(cemeteryMarker);
 	}
 
@@ -148,15 +152,18 @@ public class OrderMapActivity extends FragmentActivity {
 	private void addMarkers() {
 		double debugEps = 0; // TODO: Remove
 		for (Order order : mModel.getOrders()) {
-			if(debugEps > 0.05) {
-				break; 
+			if (debugEps > 0.05) {
+				break;
 			}
 			Address cAddress = getAddress(formatCemeteryName(order
 					.getCemetary()));
 			LatLng cLatLng = new LatLng(cAddress.getLatitude() + debugEps,
 					cAddress.getLongitude() + debugEps);
 			Marker cemeteryMarker = mMap.addMarker(new MarkerOptions()
-					.position(cLatLng).title(order.getIdName() + " - " + order.getCemetary()));
+					.position(cLatLng).title(
+							order.getIdName() + " - " + order.getCemetary()));
+			cemeteryMarker.setIcon(BitmapDescriptorFactory
+					.fromResource(R.drawable.stone));
 			mMarkers.add(cemeteryMarker);
 			debugEps += 0.01;
 		}
