@@ -18,7 +18,7 @@
         android:layout_marginRight="63dp"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/map"
-        android:background="#cfff"
+        android:background="@drawable/border_shape"
         android:orientation="vertical" 
         android:padding="1dp">
 
