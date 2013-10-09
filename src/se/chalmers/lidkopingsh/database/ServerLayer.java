@@ -18,9 +18,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 /**
  * Handling communication between remote server and local database.
@@ -73,32 +70,11 @@ public class ServerLayer extends AbstractServerLayer {
 		}
 		Response response = null;
 		try {
-			response  = parseToResponse(reader);
+			response  = new Gson().fromJson(reader, Response.class);
 		} catch (Exception e) {
 			Log.d("server_layer", "No data from server");
 		}
 		return response;
-	}
-
-	private Response parseToResponse(BufferedReader reader) {
-		JsonElement element =  new JsonParser().parse(reader);
-		Gson gson = new Gson();
-		boolean success = element.getAsJsonObject().get("success").getAsBoolean();
-		if(!success) {
-			int errorcode = element.getAsJsonObject().get("errorcode").getAsInt();
-			String message = element.getAsJsonObject().get("message").getAsString();
-			return new Response(success, errorcode, message, null);
-		}
-		JsonArray json = element.getAsJsonObject().get("results").getAsJsonArray();
-		List<Order> orders = new LinkedList<Order>();
-		
-		for(JsonElement j : json) {
-			Order order = gson.fromJson(j, Order.class);
-			orders.add(order);
-		}
-		
-		return new Response(success, orders);
-		
 	}
 
 	/**
@@ -159,17 +135,6 @@ public class ServerLayer extends AbstractServerLayer {
 		private int errorcode;
 		private String message;
 		private List<Order> results;
-
-		public Response(boolean success, int errorcode, String message, List<Order> results) {
-			this(success, results);
-			this.errorcode = errorcode;
-			this.message = message;
-		}
-		
-		public Response(boolean success, List<Order> results) {
-			this.success = success;
-			this.results = results;
-		}
 		
 		public boolean isSuccess() {
 			return success;
