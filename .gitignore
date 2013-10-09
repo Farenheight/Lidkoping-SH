@@ -1,2 +1,3 @@
 db_config.php
 api/lib/
+api/authentication.php
