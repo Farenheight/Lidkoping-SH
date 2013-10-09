@@ -1,7 +1,13 @@
 package se.chalmers.lidkopingsh;
 
+import java.io.IOException;
+import java.util.List;
+
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -73,11 +79,23 @@ public class OrderMapActivity extends FragmentActivity {
 	 * camera.
 	 */
 	private void setUpMap() {
+		Geocoder gc = new Geocoder(this);
+		List<Address> aList = null;
+		try {
+			aList = gc.getFromLocationName("Örslösa kyrkogård", 5);
+		} catch (IOException e) {
+			Log.e("DEBUG", "Error reading Google Maps locations....");
+			e.printStackTrace();
+		}
+		Address a = aList.get(0);
 		mMap.moveCamera(CameraUpdateFactory
 				.newCameraPosition(new CameraPosition.Builder()
 						.target(new LatLng(58, 15)).zoom(6).build()));
+		mMap.moveCamera(CameraUpdateFactory
+				.newCameraPosition(new CameraPosition.Builder()
+						.target(new LatLng(52, 15)).zoom(6).build()));
 		mMap.getUiSettings().setZoomControlsEnabled(false);
-		mMap.addMarker(new MarkerOptions().position(new LatLng(58, 15)).title(
+		mMap.addMarker(new MarkerOptions().position(new LatLng(a.getLatitude(), a.getLongitude())).title(
 				"Lidköpings Stenhuggeri"));
 	}
 }
