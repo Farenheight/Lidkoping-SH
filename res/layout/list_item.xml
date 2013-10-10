@@ -9,13 +9,12 @@
     android:background="@drawable/list_selector_holo_light">
 
     <TextView
-        style="@drawable/list_item_text_selector"
         android:id="@+id/id_name"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="O.M."  
-        android:textColor="#888"
+        android:textColor="@color/list_item_text_color_selector"
         android:textSize="50sp"
         android:textStyle="normal|bold"
         tools:ignore="HardcodedText" />
@@ -32,7 +31,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="17dp"
             android:text="Olle Bengtsson"
-            android:textColor="#777"
+            android:textColor="@color/list_item_text_color_selector"
             android:textSize="20sp"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
@@ -42,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12/09 - Kyrkogård"
-            android:textColor="#777"
+            android:textColor="@color/list_item_text_color_selector"
             android:textSize="16sp"
             tools:ignore="HardcodedText" />
 

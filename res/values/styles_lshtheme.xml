@@ -8,7 +8,7 @@
 
     <style name="list_item_text_selector" parent="android:Widget.TextView">
         <item name="android:textColor">#fff</item>
-    </style>
+    </style> 
 
     <style name="CheckBoxLSHTheme" parent="android:Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/btn_check_holo_light</item>
