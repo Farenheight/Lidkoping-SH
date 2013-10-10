@@ -8,6 +8,7 @@ require_once 'output.php';
 require_once 'authentication.php';
 require_once 'db_config.php';
 require_once 'class/mySQLConnection.php';
+require_once 'util.php';
 
 checkAuthenticated();
 $con = new mySQLConnection();
@@ -18,7 +19,7 @@ if (isset($_GET['action'])) {
 		getUpdates();
 	} else if ($_GET['action'] === "postOrder") {
 		require_once 'post_order.php';
-		postOrder();
+		updateOrder();
 	} else {
 		errorGeneric("No valid action: Provided action (". $_GET['action'] .") does not exist");
 	}

@@ -1,64 +1,46 @@
 <?php
+function insertOrder() {
+	$jsonData = getValidInput();
 
-function updateOrder(){
+	$orderNrGen = new OrderNumberGenerator();
+	$orderId = sqlInsertOrder($jsonData, $orderNrGen);
+
+	$orderNrGen->saveChanges();
+	$GLOBALS['con'] -> commit();	//TODO Response. Where are we notified if the sql returns error?
+
+	output(true);
+}
+
+function updateOrder() {
 	$su = true;
-	
-	if(!isset($_POST['data']) || empty($_POST['data'])){
+
+	$jsonData = getValidInput();
+
+	sqlUpdateOrder($jsonData, $su);
+
+	$GLOBALS['con'] -> commit();	//TODO Response. Where are we notified if the sql returns error?
+	output(true);
+}
+
+/**
+ * Validates and returns the POST input if it is valid.
+ * Otherwise, kills the process and returns the error.
+ * @return The input data as an object, if it is valid.
+ */
+function getValidInput() {
+	if (!isset($_POST['data']) || empty($_POST['data'])) {
 		errorGeneric("No data provided");
 	}
 	$jsonData = json_decode($_POST['data'], true);
-	if(is_null($jsonData)){
+	if (is_null($jsonData)) {
 		errorGeneric("Invalid JSON data provided");
 	}
-	
-	sqlUpdateOrder($jsonData, $su);
-	sqlUpdateCustomer($jsonData['customer']);
-	
-	$countProducts = count($jsonData['products']);
-	for($i=0; $i<$countProducts; $i++){ // Go through all products
-		$product = $jsonData['products'][$i];
-		sqlUpdateProduct($product);
-		
-		$countTasks = count($product['tasks']);
-		for($j=0; $j<$countTasks; $j++){ // Go through all products tasks
-			$task = $product['tasks'][$j];
-			sqlUpdateTask($task, $product['id']);
-		}
-	}
-	$GLOBALS['con']->commit();
-	//TODO Response. Where are we notified if the sql returns error?
+	return $jsonData;
 }
 
-function sqlUpdateTask($task, $productId){
-	$sql = "UPDATE `task` SET `status`=? WHERE `station_id`=? AND `product_id`=?"; //TODO No indexes?
-	$stmt = $GLOBALS['con']->prepare($sql);
-	@$stmt->bind_param("iii", $task['status'], $task['station']['id'], $task['station']['name']);
-	$stmt->execute();
-	
-	$sql2 = "INSERT INTO `station` (`station_id`, `name`) VALUES (?, ?)";
-	$stmt2 = $GLOBALS['con']->prepare($sql2);
-	@$stmt2->bind_param("is", $task['station']['id'], $task['station']['name']);
-	$stmt2->execute();
-}
+// SQL UPDATE METHODS
 
-function sqlUpdateProduct($product){
-	$sql = "UPDATE `product` SET `description`=?, `frontwork`=?, `material_color`=?, `product_type_id`=?
-		WHERE `product_id`=?";
-	$stmt = $GLOBALS['con']->prepare($sql);
-	@$stmt->bind_param("sssii", $product['description'], $product['frontWork'],
-		$product['materialColor'], $product['type']['id'], $product['id']);
-	$stmt->execute();
-
-	if(array_key_exists('stone_product_id', $product)){
-		$sql2 = "UPDATE `stone` SET `stone_model`=?, `side_back_work`=?, `textstyle`=?, `ornament`=?
-			WHERE `stone_product_id`=?";
-		$stmt2 = $GLOBALS['con']->prepare($sql2);
-		@$stmt2->bind_param("ssssi", $product['stoneModel'], $product['sideBackWork'],
-			$product['textStyle'], $product['ornament'], $product['id']);
-	}
-}
-
-function sqlUpdateCustomer($array){
+function sqlUpdateCustomer($jsonData) {
 	$sql = "UPDATE `customer` SET
 		`title`=?,
 		`name`=?,
@@ -66,56 +48,94 @@ function sqlUpdateCustomer($array){
 		`postal_address`=?,
 		`email`=?
 		WHERE `customer_id`=?";
-	$stmt = $GLOBALS['con']->prepare($sql);
-	@$stmt->bind_param("sssssi", $jsonData['title'], $jsonData['name'],
-		$jsonData['address'], $jsonData['postAddress'], $jsonData['eMail'],
-		$jsonData['id']);
-	$stmt->execute();
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$stmt -> bind_param("sssssi", $jsonData['title'], $jsonData['name'], $jsonData['address'],
+		$jsonData['postAddress'], $jsonData['eMail'], $jsonData['id']);
+	$stmt -> execute();
 }
 
-function sqlUpdateOrder($array, $su){
+function sqlUpdateImage($image) {
+	$sql = "UPDATE `image` SET `file_name`=? WHERE `image_id`=?";
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$stmt -> bind_param("si", $image['imagePath'], $image['id']);
+	$stmt -> execute();
+}
+
+function sqlUpdateOrder($array, $su) {
+	// Update the order
 	$sql = "UPDATE `order` SET
 		`cemetery_board`=?,
 		`cemetery`=?,
 		`cemetery_block`=?,
 		`cemetery_number`=?,
 		`time_last_update`=?";
-	
-	if($su){
+
+	if ($su) {
 		$sql .= ", `cancelled`=?, `archived`=?";
 	}
 	$sql .= " WHERE `order_id`=? AND `time_last_update` < ?";
-	$stmt = $GLOBALS['con']->prepare($sql);
-	if($su){
-		@$stmt->bind_param("ssssiiiii", $array['cemeteryBoard'], $array['cemetery'],
-			$array['cemeteryBlock'], $array['cemeteryNumber'], $array['lastTimeUpdate'],
-			$array['cancelled'], $array['archived'], $array['id'], $array['lastTimeUpdate']);
-	}else{
-		@$stmt->bind_param("ssssiii", $array['cemeteryBoard'], $array['cemetery'],
-			$array['cemeteryBlock'], $array['cemeteryNumber'], $array['lastTimeUpdate'],
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$currentTime = getMilliseconds();
+	if ($su) {
+		$stmt -> bind_param("ssssiiiii", $array['cemeteryBoard'], $array['cemetery'], $array['cemeteryBlock'],
+			$array['cemeteryNumber'], $currentTime, $array['cancelled'], $array['archived'],
 			$array['id'], $array['lastTimeUpdate']);
+	} else {
+		$stmt -> bind_param("ssssiii", $array['cemeteryBoard'], $array['cemetery'], $array['cemeteryBlock'],
+			$array['cemeteryNumber'], $currentTime, $array['id'], $array['lastTimeUpdate']);
 	}
-	$stmt->execute();
+	$stmt -> execute();
+	
+	if ($stmt -> affected_rows) {
+		// Update the customer
+		sqlUpdateCustomer($array['customer']);
+		
+		// Update images for this order
+		if (array_key_exists('images', $array)) {
+			foreach ($array['images'] as $image) {
+				sqlUpdateImage($image);
+			}
+		}
+	
+		// Update products
+		if (array_key_exists('products', $array)) {
+			$countProducts = count($array['products']);
+			for ($i = 0; $i < $countProducts; $i++) {// Go through all products
+				sqlUpdateProduct($array['products'][$i]);
+			}
+		}
+	} else {
+		die(output(false, "Order was not updated. Order has been changed after sent 'lastTimeUpdate'."));
+	}
 }
 
+function sqlUpdateProduct($product) {
+	$sql = "UPDATE `product` SET `description`=?, `frontwork`=?, `material_color`=?, `product_type_id`=?
+		WHERE `product_id`=?";
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$stmt -> bind_param("sssii", $product['description'], $product['frontWork'], $product['materialColor'],
+		$product['type']['id'], $product['id']);
+	$stmt -> execute();
 
-function insertOrder($jsonData) {
-	// Convert incoming data to array
-	/*if(!isset($_POST['data'])|| empty($_POST['data'])){
-		die("No data provided");
+	if (array_key_exists('stoneModel', $product)) {
+		$sql2 = "UPDATE `stone` SET `stone_model`=?, `side_back_work`=?, `textstyle`=?, `ornament`=?
+			WHERE `stone_product_id`=?";
+		$stmt2 = $GLOBALS['con'] -> prepare($sql2);
+		$stmt2 -> bind_param("ssssi", $product['stoneModel'], $product['sideBackWork'], $product['textStyle'],
+			$product['ornament'], $product['id']);
+		$stmt2 -> execute();
 	}
-	$jsonData = json_decode($_POST['data'], true);
-	if(is_null($jsonData)){
-		die("Faulty json format");
-	}*/
-	
-	
-	$orderNrGen = new OrderNumberGenerator();
-	$customerId = sqlInsertCustomer($jsonData['customer']);
-	sqlInsertOrder($jsonData, $customerId , $orderNrGen);
-	
-	$GLOBALS['con']->commit();
+
+	if (array_key_exists('tasks', $product)) {
+		$countTasks = count($product['tasks']);
+		for ($j = 0; $j < $countTasks; $j++) {// Go through all products tasks
+			$task = $product['tasks'][$j];
+			sqlProcessTask($task, $product['id'], $j);
+		}
+	}
 }
+
+// SQL INSERT METHODS
 
 /**
  * Inserts customer and returns the id of the inserted row.
@@ -124,95 +144,126 @@ function insertOrder($jsonData) {
 function sqlInsertCustomer($customer) {
 	$sql = "INSERT INTO `customer` (`address`, `name`, `email`, `title`,
 		`postal_address`) VALUES (?, ?, ?, ?, ?);";
-	
-	$stmt = $GLOBALS['con']->prepare($sql);
-	$stmt->bind_param("sssss", $customer['address'], $customer['name'], $customer['eMail'],
-		$customer['title'], $customer['postAddress']);
-	$stmt->execute();
-	return $stmt->insert_id;
+
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$stmt -> bind_param("sssss", $customer['address'], $customer['name'], $customer['eMail'], $customer['title'],
+		$customer['postAddress']);
+	$stmt -> execute();
+	return $stmt -> insert_id;
 }
 
-function sqlInsertOrder($order, $customerId, $orderNrGen) {
-	$orderNr = $orderNrGen->newOrderNumber($order['orderDate']);
-	$idName = "CustomID";		// TODO: Generate id name
+function sqlInsertImage($image, $orderId) {
+	$sql = "INSERT INTO `image` (`order_id`, `file_name`) VALUES (?, ?)";
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$stmt -> bind_param("is", $orderId, $image['imagePath']);
+	$stmt -> execute();
+}
+
+function sqlInsertOrder($order, $orderNrGen) {
+	$customerId = sqlInsertCustomer($order['customer']);
+
+	$orderNr = $orderNrGen -> newOrderNumber($order['orderDate']);
+	$idName = "CustomID";
+	// TODO: Generate id name
 	$time = getMilliseconds();
-	
+
 	$sql = "INSERT INTO `order` (`order_number`, `id_name`, `order_date`, `cemetery_board`,
 		`cemetery`, `cemetery_block`, `cemetery_number`, `customer_id`, `time_created`,
 		`time_last_update`, `cancelled`, `archived`)
-		VALUES (?, ?, ?, ?, ?, ?, ?, LAST_INSERT_ID(), ?, ?, ?, ?)";
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	$zero = 0;
+
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$stmt -> bind_param("ssissssiiiii", $orderNr, $idName, $order['orderDate'], $order['cemeteryBoard'],
+		$order['cemetery'], $order['cemeteryBlock'], $order['cemeteryNumber'], $customerId, $time, $time,
+		$zero, $zero);
+
+	$stmt -> execute();
+	$orderId = $stmt -> insert_id;
 	
-	$stmt = $GLOBALS['con']->prepare($sql);
-	$stmt->bind_param("ssissssiiii", $orderNr, $idName, $order['orderDate'], $order['cemeteryBoard'],
-		$order['cemetery'], $order['cemeteryBlock'], $order['cemeteryNumber'],
-		$time, $time, $zero, $zero);
+	// Add images for this order
+	if (array_key_exists('images', $order)) {
+		foreach ($order['images'] as $image) {
+			sqlInsertImage($image, $orderId);
+		}
+	}
+
+	// Add all products for this order
+	if (array_key_exists('products', $order)) {
+		$countProducts = count($order['products']);
+		for ($i = 0; $i < $countProducts; $i++) {// Go through all products
+			sqlInsertProduct($order['products'][$i], $orderId);
+		}
+	}
+}
+
+function sqlInsertProduct($product, $orderId) {
+	// Add product type if not exist
+	if (!$product['type']['id']) {
+		$sql = "INSERT INTO `product_type` (`name`) VALUES (?)";
+		$stmt = $GLOBALS['con'] -> prepare($sql);
+		$stmt -> bind_param("s", $product['type']['name']);
+		$stmt -> execute();
+		$product['type']['id'] = $stmt -> insert_id;
+	}
+
+	// Add product
+	$sql = "INSERT INTO `product` (`order_id`, `description`, `frontwork`, `material_color`,
+		`product_type_id`) VALUES (?, ?, ?, ?, ?)";
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$stmt -> bind_param("isssi", $orderId, $product['description'], $product['frontWork'], 
+		$product['materialColor'], $product['type']['id']);
+	$stmt -> execute();
 	
-	$stmt->execute();
+	$productId = $stmt -> insert_id;
+	
+	// Add stone details
+	if (array_key_exists('stoneModel', $product)) {
+		$sqlStone = "INSERT INTO `stone` (`stone_product_id`, `stone_model`, `side_back_work`, `textstyle`,
+			`ornament`) VALUES (?, ?, ?, ?, ?)";
+		$stmtStone = $GLOBALS['con'] -> prepare($sqlStone);
+		$stmtStone -> bind_param("issss", $productId, $product['stoneModel'], $product['sideBackWork'], 
+			$product['textStyle'], $product['ornament']);
+		$stmtStone -> execute();
+	}
+
+	// Add tasks for this product
+	if (array_key_exists('tasks', $product)) {
+		$countTasks = count($product['tasks']);
+		for ($j = 0; $j < $countTasks; $j++) {// Go through all products tasks
+			sqlProcessTask($product['tasks'][$j], $productId, $j);
+		}
+	}
+}
+
+/**
+ * @return the id of the inserted station.
+ */
+function sqlInsertStation($station) {
+	$sql = "INSERT INTO `station` (`name`) VALUES (?)";
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$stmt -> bind_param("s", $station['name']);
+	$stmt -> execute();
+	return $stmt -> insert_id;
+}
+
+/**
+ * Updates a task or insert if not exists.
+ */
+function sqlProcessTask($task, $productId, $sortOrder) {
+	// Add station if not exist
+	if (!array_key_exists('id', $task['station'])) {
+		$task['station']['id'] = sqlInsertStation($task['station']);
+	}
+
+	$sql = "INSERT INTO `task` (`station_id`, `product_id`, `status`, `sort_order`) VALUES (?, ?, ?, ?)
+		ON DUPLICATE KEY UPDATE `status` = VALUES(`status`), `sort_order` = VALUES(`sort_order`)";
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$stmt -> bind_param("iiii", $task['station']['id'], $productId, $task['status'], $sortOrder);
+	$stmt -> execute();
 }
 
 function getMilliseconds() {
-    $m = explode(' ', microtime());
-    return $m[1] . floor($m[0] * 1000);
-}
-
-
-// TODO: Remove...
-function insertOrderOld() {
-	
-	
-	// Process data and decide what should be accepted
-	
-	/*
-	 * Search for the id in db, if it exists, update it.
-	 * If it doesnt't exist, insert it.
-	 */
-	
-	$jsonData['id'];
-	$jsonData['timeCreated'];
-	$jsonData['lastTimeUpdate'];
-	$jsonData['cemetery'];
-	$jsonData['orderDate'];
-	$jsonData['orderNumber'];
-	$jsonData['idName'];
-	$jsonData['cemeteryBoard'];
-	$jsonData['cemeteryBlock'];
-	$jsonData['cemeteryNumber'];
-	$jsonData['customer']['title'];
-	$jsonData['customer']['name'];
-	$jsonData['customer']['address'];
-	$jsonData['customer']['postAddress'];
-	$jsonData['customer']['eMail'];
-	$jsonData['customer']['id'];
-	
-	for($i=0; $i<count($jsonData['products']); $i++){ // Go through all products
-		$product = $jsonData['products'][$i];
-		
-		// Stone
-		$product['stoneModel'];
-		$product['sideBackWork'];
-		$product['textStyle'];
-		$product['ornament'];
-		
-		// Product
-		$product['id'];
-		$product['materialColor'];
-		$product['description'];
-		$product['frontWork'];
-		
-		for($j=0; $j<count($product['tasks']); $j++){ // Go through all products tasks
-			$task = $product['tasks'][$j];
-			
-			$task['status'];
-			$task['station']['id'];
-			$task['station']['name'];
-		}
-	}
-	
-	// Update or insert data into the database
-	
-	$query = "INSERT INTO `order` (`order_id`, `order_number`) 
-	VALUES (?, ?) ON DUPLICATE KEY UPDATE 
-	`order_id`=values(`order_id`), `order_number`=values(`order_number`);";
+	return time() * 1000;
 }
 ?>
