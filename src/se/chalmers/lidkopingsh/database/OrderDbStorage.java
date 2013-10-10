@@ -216,9 +216,11 @@ public class OrderDbStorage {
 		}
 
 		int i = 0;
-		for (Task t : p.getTasks()) {
-			insertTask(t, p.getId(), i);
-			i++;
+		if (p.getTasks() != null) {
+			for (Task t : p.getTasks()) {
+				insertTask(t, p.getId(), i);
+				i++;
+			}
 		}
 	}
 

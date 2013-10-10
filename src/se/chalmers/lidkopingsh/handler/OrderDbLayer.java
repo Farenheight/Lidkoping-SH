@@ -10,7 +10,6 @@ import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
-import android.os.AsyncTask;
 
 /**
  * Handles communication between Model and Order database.
@@ -34,10 +33,7 @@ public class OrderDbLayer implements ILayer {
 		// TODO: Remove server path. Set it in settings.
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/",
 				context);
-		if (db.query(null, null, null).isEmpty()) {
-			getUpdates();
-		}
-		// updateDatabase(serverLayer.getUpdates());
+		getUpdates();
 	}
 
 	@Override
@@ -87,13 +83,12 @@ public class OrderDbLayer implements ILayer {
 		for (Order o : orders) {
 			try {
 				Order order = model.getOrderById(o.getId());
-				order.sync(o);
+				order.sync(o); //TODO: null här
 				db.update(o);
 			} catch (NoSuchElementException e) {
-				Order order = new Order(o);
-				order.addOrderListener(this);
-				model.addOrder(order);
-				db.update(order);
+				o.addOrderListener(this);
+				model.addOrder(o);
+				db.insert(o);
 			}
 		}
 	}

@@ -84,6 +84,9 @@ public class Task implements Syncable<Task> {
 	 *            {@link Task}
 	 */
 	public void addTaskListener(Listener<Task> listener) {
+		if(listeners == null) {
+			listeners = new ArrayList<Listener<Task>>();
+		}
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}

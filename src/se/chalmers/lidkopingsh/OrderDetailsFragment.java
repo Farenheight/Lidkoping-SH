@@ -193,18 +193,20 @@ public class OrderDetailsFragment extends Fragment {
 				.getCemetary());
 
 		Stone stone = mOrder.getStone();
-		((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
-				.getStoneModel());
-		((TextView) rootView.findViewById(R.id.materialAndColor)).setText(stone
-				.getMaterialColor());
-		((TextView) rootView.findViewById(R.id.ornament)).setText(stone
-				.getOrnament());
-		((TextView) rootView.findViewById(R.id.desc)).setText(stone
-				.getDescription());
-		((TextView) rootView.findViewById(R.id.frontProcessing)).setText(stone
-				.getFrontWork());
-		((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
-				.setText(stone.getTextStyle());
+		if (stone != null) {
+			((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
+					.getStoneModel());
+			((TextView) rootView.findViewById(R.id.materialAndColor)).setText(stone
+					.getMaterialColor());
+			((TextView) rootView.findViewById(R.id.ornament)).setText(stone
+					.getOrnament());
+			((TextView) rootView.findViewById(R.id.desc)).setText(stone
+					.getDescription());
+			((TextView) rootView.findViewById(R.id.frontProcessing)).setText(stone
+					.getFrontWork());
+			((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
+					.setText(stone.getTextStyle());
+		}
 
 	}
 

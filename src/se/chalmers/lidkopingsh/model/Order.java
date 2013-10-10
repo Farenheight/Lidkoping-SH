@@ -23,7 +23,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private final long timeCreated;
 	private long lastTimeUpdate;
 	private long lastTimeSync;
-	private String cemetary;
+	private String cemetery;
 	private long orderDate;
 	private String orderNumber;
 	private String idName;
@@ -41,7 +41,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * existing properties, use null.
 	 */
 	public Order(int id, String orderNumber, String idName, long timeCreated,
-			long lastTimeUpdated, String cemetary, String cemeteryBoard,
+			long lastTimeUpdated, String cemetery, String cemeteryBoard,
 			String cemeteryBlock, String cemeteryNumber, long orderDate,
 			Customer customer, List<Product> products, List<Image> images) {
 		this.id = id;
@@ -49,23 +49,17 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.idName = idName != null ? idName : "";
 		this.timeCreated = timeCreated;
 		this.lastTimeUpdate = lastTimeUpdated;
-		this.cemetary = cemetary != null ? cemetary : "";
+		this.cemetery = cemetery != null ? cemetery : "";
 		this.cemeteryBoard = cemeteryBoard != null ? cemeteryBoard : "";
 		this.cemeteryBlock = cemeteryBlock != null ? cemeteryBlock : "";
 		this.cemeteryNumber = cemeteryNumber != null ? cemeteryNumber : "";
 		this.orderDate = orderDate;
 		this.customer = customer.clone();
 		this.images = images;
-
 		orderListeners = new ArrayList<Listener<Order>>();
 		orderSyncedListeners = new ArrayList<Listener<Order>>();
-		List<Product> productList = new LinkedList<Product>();
+		this.products = new ProductList(products);
 		
-		for (Product p : products) {
-			productList.add(new Product(p));
-		}
-		
-		this.products = new ProductList(productList);
 		if (products != null) {
 			for (Product p : products) {
 				p.addProductListener(this);
@@ -80,7 +74,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 */
 	public Order(Order o) {
 		this(o.id, o.orderNumber, o.idName, o.timeCreated, o.lastTimeUpdate,
-				o.cemetary, o.cemeteryBoard, o.cemeteryBlock, o.cemeteryNumber,
+				o.cemetery, o.cemeteryBoard, o.cemeteryBlock, o.cemeteryNumber,
 				o.orderDate, o.customer, o.products, o.images);
 	}
 
@@ -109,7 +103,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	}
 
 	public String getCemetary() {
-		return cemetary;
+		return cemetery;
 	}
 
 	public long getOrderDate() {
@@ -213,6 +207,9 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 *            the interested listener for this object
 	 */
 	public void addOrderListener(Listener<Order> listener) {
+		if (orderListeners == null) {
+			orderListeners = new ArrayList<Listener<Order>>();
+		}
 		orderListeners.add(listener);
 	}
 
@@ -277,7 +274,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			if (this.lastTimeUpdate > newData.lastTimeUpdate) {
 				return newData.sync(this);
 			} else {
-				this.cemetary = newData.cemetary;
+				this.cemetery = newData.cemetery;
 				this.customer = newData.customer;
 				this.lastTimeUpdate = newData.lastTimeUpdate;
 				this.orderDate = newData.orderDate;
@@ -304,7 +301,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			Order or = (Order) o;
 			return this.id == or.id && this.timeCreated == or.getTimeCreated()
 					&& this.lastTimeUpdate == or.getLastTimeUpdate()
-					&& this.cemetary.equals(or.getCemetary())
+					&& this.cemetery.equals(or.getCemetary())
 					&& this.cemeteryBoard.equals(or.getCemeteryBoard())
 					&& this.cemeteryBlock.equals(or.getCemetaryBlock())
 					&& this.cemeteryNumber.equals(or.getCemetaryNumber())

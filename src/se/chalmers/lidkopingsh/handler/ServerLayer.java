@@ -60,7 +60,8 @@ public class ServerLayer extends AbstractServerLayer {
 			httpPost.setEntity(new StringEntity(orderString));
 			httpPost.setHeader("LidkopingSH-Authentication",
 					"123456789qwertyuiop");
-			httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+			httpPost.setHeader("Content-Type",
+					"application/x-www-form-urlencoded");
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			reader = new BufferedReader(new InputStreamReader(httpResponse
 					.getEntity().getContent()));
@@ -70,7 +71,7 @@ public class ServerLayer extends AbstractServerLayer {
 		}
 		Response response = null;
 		try {
-			response  = new Gson().fromJson(reader, Response.class);
+			response = new Gson().fromJson(reader, Response.class);
 		} catch (Exception e) {
 			Log.d("server_layer", "No data from server");
 		}
@@ -84,15 +85,16 @@ public class ServerLayer extends AbstractServerLayer {
 	 *            A JsonObject with the ids and timestamps for comparing orders
 	 */
 	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers) {
-		Response response = sendHttpPostRequest("getUpdates=1&data=[[2,1380885442000]]");
+		Response response = sendHttpPostRequest("getUpdates=1&data="
+				+ orderVerifiers);
 
 		if (response.isSuccess()) {
-			List <Order> ord = new LinkedList<Order>();
-			for(Order o : response.getResults()) {
+			List<Order> ord = new LinkedList<Order>();
+			for (Order o : response.getResults()) {
 				ord.add(o);
 			}
 			return ord;
-		}else{
+		} else {
 			printErrorLog(response);
 		}
 		return null;
@@ -100,9 +102,10 @@ public class ServerLayer extends AbstractServerLayer {
 
 	@Override
 	public List<Order> getUpdates() {
-		if(first) {
+		Gson gson = new Gson();
+		if (first) {
 			first = false;
-			return getUpdatedOrdersFromServer(null);
+			return getUpdatedOrdersFromServer("");
 		}
 		Collection<Order> orders = ModelHandler.getModel(context).getOrders();
 		long[][] orderArray = new long[orders.size()][2];
@@ -112,7 +115,6 @@ public class ServerLayer extends AbstractServerLayer {
 			orderArray[i][1] = (long) o.getLastTimeUpdate();
 			i++;
 		}
-		Gson gson = new Gson();
 		return getUpdatedOrdersFromServer(gson.toJson(orderArray));
 	}
 
@@ -126,12 +128,10 @@ public class ServerLayer extends AbstractServerLayer {
 			printErrorLog(response);
 		}
 	}
-	
+
 	private void printErrorLog(Response response) {
-		Log.d("server_layer",
-				"Error code: "
-						+ response.getErrorcode() + " Message: "
-						+ response.getMessage());
+		Log.d("server_layer", "Error code: " + response.getErrorcode()
+				+ " Message: " + response.getMessage());
 	}
 
 	private class Response {
@@ -139,7 +139,7 @@ public class ServerLayer extends AbstractServerLayer {
 		private int errorcode;
 		private String message;
 		private List<Order> results;
-		
+
 		public boolean isSuccess() {
 			return success;
 		}
