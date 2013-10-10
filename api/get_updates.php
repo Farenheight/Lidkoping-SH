@@ -44,7 +44,7 @@ function getUpdates(){
 	$stmt = $GLOBALS['con']->prepare($select);
 	$stmt->execute();
 	
-	echo output(true, produceOrders($stmt->get_result()));
+	output(true, produceOrders($stmt->get_result()));
 }
 
 function checkInputFormat($jsonarray) {
