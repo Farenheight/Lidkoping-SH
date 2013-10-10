@@ -3,6 +3,7 @@ package se.chalmers.lidkopingsh.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.util.Listener;
@@ -54,15 +55,21 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	public Product(int id, String materialColor, String description,
 			String frontWork, List<Task> tasks, ProductType type) {
 		this.id = id;
-		this.materialColor = materialColor != null? materialColor : "";
-		this.description = description != null? description : "";
-		this.frontWork = frontWork != null? frontWork : "";
+		this.materialColor = materialColor != null ? materialColor : "";
+		this.description = description != null ? description : "";
+		this.frontWork = frontWork != null ? frontWork : "";
 		this.type = type;
 		this.materialColor = materialColor != null ? materialColor : "";
 		this.description = description != null ? description : "";
 		this.frontWork = frontWork != null ? frontWork : "";
 		this.listeners = new ArrayList<Listener<Product>>();
-		this.tasks = new TaskList(tasks);
+		List<Task> taskList = new LinkedList<Task>();
+		
+		for (Task t : tasks) {
+			taskList.add(new Task(t));
+		}
+		
+		this.tasks = new TaskList(taskList);
 		if (tasks != null) {
 			for (Task t : tasks) {
 				t.addTaskListener(this);
@@ -84,8 +91,9 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The frontWork for this product
 	 */
 	public Product(int id, String materialColor, String description,
-			String frontWork, ProductType type){
-		this(id,materialColor,description,frontWork,new ArrayList<Task>(), type);
+			String frontWork, ProductType type) {
+		this(id, materialColor, description, frontWork, new ArrayList<Task>(),
+				type);
 	}
 
 	/**
@@ -95,7 +103,18 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            The tasks which is needed to complete this product.
 	 */
 	public Product(List<Task> tasks) {
-		this(0, "", "", "", tasks,new ProductType(0, ""));
+		this(0, "", "", "", tasks, new ProductType(0, ""));
+	}
+
+	/**
+	 * Create a new product with a product.
+	 * 
+	 * @param product
+	 *            the product to use values from.
+	 */
+	public Product(Product product) {
+		this(product.id, product.materialColor, product.description,
+				product.frontWork, product.tasks, product.type);
 	}
 
 	public ProductType getType() {

@@ -42,6 +42,15 @@ public class Task implements Syncable<Task> {
 	}
 
 	/**
+	 * Creates a new task with a task.
+	 * 
+	 * @param task to use values from.
+	 */
+	public Task(Task task) {
+		this(task.station, task.status);
+	}
+
+	/**
 	 * Get whenever this Task is finished
 	 * 
 	 * @return true if Task is finished, false otherwise.
