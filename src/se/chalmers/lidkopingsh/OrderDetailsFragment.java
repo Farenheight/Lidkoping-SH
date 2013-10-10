@@ -6,11 +6,9 @@ import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
-import se.chalmers.lidkopingsh.util.Listener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,22 +26,23 @@ import android.widget.ToggleButton;
  * contained in the {@link HandsetsDetailsActivity} on handsets or to the right
  * in the {@link MainActivity}s two-pane layout if displayed on tablets.
  * 
+ * @author Simon Bengtsson
+ * 
  */
-public class OrderDetailsFragment extends Fragment implements Listener<Order> {
+public class OrderDetailsFragment extends Fragment {
 
 	/** Used as a key when sending the object between activities and fragments */
 	public static final String ORDER_ID = "item_id";
 
-	private final String DRAWING_TAB = "drawing tab";
-	private final String DETAIL_TAB = "details tab";
+	private static final String DRAWING_TAB = "drawing tab";
+
+	private static final String DETAIL_TAB = "DETAILS tab";
 
 	/** The order displayed by this StoneDetailFragment */
 	private Order mOrder;
 
 	/** The root view that contains everything */
-	private ViewGroup rootView;
-
-	private TabHost mTabHost;
+	private View rootView;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -58,19 +57,18 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
-		rootView = (ViewGroup) inflater.inflate(R.layout.od_root, container,
-				false);
+		rootView = inflater.inflate(R.layout.od_root, container, false);
+
+		// TODO:Consider include this again if bugs appear
+		// if (getArguments().containsKey(ORDER_ID)) {
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
 
-		mOrder.addSyncOrderListener(this);
-
 		// Collects data from mOrder and initialize the views accordingly
 		initTabs();
-		initTaskCont();
-
+		initTasks(R.id.tab_info_container);
 		return rootView;
 	}
 
@@ -87,46 +85,36 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	 * 
 	 */
 	private void initTabs() {
-		mTabHost = (TabHost) rootView
+		final TabHost tabHost = (TabHost) rootView
 				.findViewById(R.id.orderTabHost);
-		mTabHost.setup();
+		tabHost.setup();
 
-		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
+		tabHost.setOnTabChangedListener(new OnTabChangeListener() {
 
 			@Override
 			public void onTabChanged(String tabId) {
 			}
 		});
 
-
 		// Add drawing tab
-		TabHost.TabSpec drawingTab = mTabHost.newTabSpec(DRAWING_TAB);
+		TabHost.TabSpec drawingTab = tabHost.newTabSpec(DRAWING_TAB);
 		drawingTab.setContent(R.id.tabDrawingContainer);
-		drawingTab.setIndicator(getTabIndicator("Ritning"));
-		mTabHost.addTab(drawingTab);
+		drawingTab.setIndicator("Ritning");
+		tabHost.addTab(drawingTab);
 		initDrawing();
-		
-		// Add detail tab
-		TabHost.TabSpec detailTab = mTabHost.newTabSpec(DETAIL_TAB);
-		detailTab.setContent(R.id.tab_info_container);
-		detailTab.setIndicator(getTabIndicator("Information"));
-		mTabHost.addTab(detailTab);
-		initDetails();
-	}
 
-	private View getTabIndicator(String tabTitle) {
-		View tabIndicator = LayoutInflater.from(getActivity()).inflate(
-				R.layout.tab_indicator_holo, mTabHost.getTabWidget(), false);
-		TextView title = (TextView) tabIndicator
-				.findViewById(android.R.id.title);
-		title.setText(tabTitle);
-		return tabIndicator;
+		// Add detail tab
+		TabHost.TabSpec detailTab = tabHost.newTabSpec(DETAIL_TAB);
+		detailTab.setContent(R.id.tab_info_container);
+		detailTab.setIndicator("Detaljer");
+		tabHost.addTab(detailTab);
+		initDetails();
 	}
 
 	/**
 	 * Setups a task container with all it's data.
 	 */
-	private View initTaskCont() {
+	private View initTasks(int tabResource) {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		LinearLayout rootTaskCont = (LinearLayout) rootView
 				.findViewById(R.id.root_task_cont);
@@ -134,8 +122,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 			ViewGroup productView = (ViewGroup) inflater.inflate(
 					R.layout.od_product_task_cont, null);
 			// TODO Fix to actual type of Product
-			((TextView) productView.findViewById(R.id.task_name)).setText(p
-					.getType().getName());
+			((TextView) productView.findViewById(R.id.task_name))
+					.setText("Stone");
 			for (final Task task : p.getTasks()) {
 				productView.addView(initTaskView(inflater, task));
 			}
@@ -154,9 +142,6 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		// Set the task toggler
 		final ToggleButton btn = (ToggleButton) taskView
 				.findViewById(R.id.task_toggler);
-		// Prevents android from setting the toogle button to false on screen
-		// orientation change etc
-		btn.setSaveEnabled(false);
 		btn.setChecked(task.getStatus() == Status.DONE);
 		btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
@@ -208,41 +193,33 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
 
+		// Product info
+		StringBuilder desc = new StringBuilder();
+		StringBuilder frontWork = new StringBuilder();
+		StringBuilder materialColor = new StringBuilder();
+
+		for (Product product : mOrder.getProducts()) {
+			desc.append(product.getDescription());
+			frontWork.append(product.getFrontWork());
+			materialColor.append(product.getMaterialColor());
+		}
+
+		((TextView) rootView.findViewById(R.id.desc)).setText(desc);
+		((TextView) rootView.findViewById(R.id.frontProcessing))
+				.setText(frontWork);
+		((TextView) rootView.findViewById(R.id.materialAndColor))
+				.setText(materialColor);
+
+		// Stone specific
 		Stone stone = mOrder.getStone();
-		((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
-				.getStoneModel());
-		((TextView) rootView.findViewById(R.id.materialAndColor)).setText(stone
-				.getMaterialColor());
-		((TextView) rootView.findViewById(R.id.ornament)).setText(stone
-				.getOrnament());
-		((TextView) rootView.findViewById(R.id.desc)).setText(stone
-				.getDescription());
-		((TextView) rootView.findViewById(R.id.frontProcessing)).setText(stone
-				.getFrontWork());
-		((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
-				.setText(stone.getTextStyle());
+		if (stone != null) {
+			((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
+					.getStoneModel());
 
-	}
-
-	/**
-	 * TODO: Look in to this method and see if it really does what it should
-	 */
-	@Override
-	public void changed(Order order) {
-		if (order != mOrder) {
-			if (order == null) {
-				// TODO: Display error message to user
-				// TODO: Consider a better way than sending null to let GUI know
-				Log.d("DEBUG", "Server not about changes!");
-			} else {
-				throw new IllegalArgumentException(
-						"The changed object should be the one displayed in the GUI");
-			}
-		} else {
-			ViewGroup taskContainer = (ViewGroup) rootView
-					.findViewById(R.id.root_task_cont);
-			taskContainer.removeAllViews();
-			initTaskCont();
+			((TextView) rootView.findViewById(R.id.ornament)).setText(stone
+					.getOrnament());
+			((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
+					.setText(stone.getTextStyle());
 		}
 	}
 

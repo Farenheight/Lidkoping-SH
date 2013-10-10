@@ -14,6 +14,8 @@ import android.view.MenuItem;
  * This activity also implements the required
  * {@link OrderListFragment.Callbacks} interface to listen for item selections.
  * 
+ * @author Simon Bengtsson
+ * 
  */
 public class MainActivity extends FragmentActivity implements
 		OrderListFragment.OrderSelectedCallbacks {
@@ -62,13 +64,13 @@ public class MainActivity extends FragmentActivity implements
 			startActivity(detailIntent);
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    // Inflate the menu items for use in the action bar
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.action_bar, menu);
-	    return super.onCreateOptionsMenu(menu);
+		// Inflate the menu items for use in the action bar
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.action_bar, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
