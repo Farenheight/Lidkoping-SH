@@ -44,7 +44,6 @@ class OrderNumberGenerator {
 				$stmt->execute();
 			}
 		}
-		$GLOBALS['con']->commit();
 	}
 
 }
