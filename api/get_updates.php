@@ -6,7 +6,6 @@ function getUpdates(){
 		$data = $_POST['data'];
 	}
 	
-	
 	$select = "SELECT *, o.order_id AS order_table_id, c.name AS customer_name,
 		p.product_id AS p_product_id, pt.name AS type_name
 		FROM `order` o
@@ -48,15 +47,15 @@ function getUpdates(){
 }
 
 function checkInputFormat($jsonarray) {
-	if(is_null($jsonarray)){
+	if (is_null($jsonarray)) {
 			errorGeneric("JSON data was not valid, when trying to decode request data", 20);
 	}
 	
 	$size = sizeof($jsonarray);
-	if ($size <= 0) {
-		errorGeneric("Input array is empty.", 21);
-	}
 	for ($i = 0; $i < $size; $i++) {
+		if (sizeof($jsonarray[$i]) != 2) {
+			errorGeneric("Argument element at index $i does not contain two values.", 21);
+		}
 		if (empty($jsonarray[$i][0]) || empty($jsonarray[$i][1])) {
 			errorGeneric("First occurence of missing or invalid argument(s) for order at index $i.", 22);
 		}
