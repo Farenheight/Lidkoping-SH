@@ -3,20 +3,30 @@
     android:id="@+id/list_header_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-     >
+    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/list_item_header_text"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ccc"
-        android:padding="10dp"
-        android:textColor="#555"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-    
-   <include layout="@layout/list_item"
-       />
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp"
+        android:paddingTop="20dp"
+        android:background="#eee" >
+
+        <TextView
+            android:id="@+id/list_item_header_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/border_bottom_top"
+            android:padding="10dp"
+            android:paddingTop="30dp"
+            android:textAllCaps="true"
+            android:textColor="#333"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <include layout="@layout/list_item" />
 
 </LinearLayout>

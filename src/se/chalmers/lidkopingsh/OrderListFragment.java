@@ -95,7 +95,7 @@ public class OrderListFragment extends ListFragment {
 		Spinner stationSpinner = (Spinner) getView().findViewById(
 				R.id.station_spinner);
 		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(
-				getActivity(), android.R.layout.simple_spinner_item,
+				getActivity(), R.layout.spinner_white_text,
 				(ArrayList<Station>) mModel.getStations());
 		stationsAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -1,28 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <style name="LSHTheme" parent="android:Theme.Light">
-
-    <item name="android:editTextStyle">@style/EditTextLSHTheme</item>
-
-    <item name="android:checkboxStyle">@style/CheckBoxLSHTheme</item>
-
-    <item name="android:radioButtonStyle">@style/RadioButtonLSHTheme</item>
-
-    <item name="android:buttonStyle">@style/ButtonLSHTheme</item>
-
-    <item name="android:imageButtonStyle">@style/ImageButtonLSHTheme</item>
-
-    <item name="android:spinnerStyle">@style/SpinnerLSHTheme</item>
-
-    <item name="android:dropDownSpinnerStyle">@style/SpinnerLSHTheme.DropDown</item>
-
-    <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemLSHTheme</item>
-
-    <item name="android:buttonStyleToggle">@style/ToggleLSHTheme</item>
-
-  </style>
+    <style name="LSHTheme" parent="android:Theme.Light">
+        <item name="android:editTextStyle">@style/EditTextLSHTheme</item>
+        <item name="android:checkboxStyle">@style/CheckBoxLSHTheme</item>
+        <item name="android:radioButtonStyle">@style/RadioButtonLSHTheme</item>
+        <item name="android:buttonStyle">@style/ButtonLSHTheme</item>
+        <item name="android:imageButtonStyle">@style/ImageButtonLSHTheme</item>
+        <item name="android:spinnerStyle">@style/SpinnerLSHTheme</item>
+        <item name="android:dropDownSpinnerStyle">@style/SpinnerLSHTheme.DropDown</item>
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemLSHTheme</item>
+        <item name="android:buttonStyleToggle">@style/ToggleLSHTheme</item>
+    </style>
 
 </resources>

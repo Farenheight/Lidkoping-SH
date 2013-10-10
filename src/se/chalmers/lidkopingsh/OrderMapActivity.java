@@ -40,8 +40,6 @@ import com.google.maps.android.ui.BubbleIconFactory;
  */
 public class OrderMapActivity extends FragmentActivity {
 
-	private final static String TAG = "Debug tag";
-
 	/**
 	 * Note that this may be null if the Google Play services APK is not
 	 * available.

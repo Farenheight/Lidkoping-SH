@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
   <style name="ButtonLSHTheme" parent="android:Widget.Holo.Light.Button">
 	  <item name="android:background">@drawable/btn_default_holo_light</item>
   </style>
-  
+   
   <style name="StoneIconText" parent="@android:style/TextAppearance.Small">
         <item name="android:textColor">#fff</item>
   </style>
@@ -18,6 +17,10 @@
   <style name="SpinnerLSHTheme" parent="android:Widget.Holo.Light.Spinner">
       <item name="android:background">@drawable/spinner_background_holo_light</item>
       <item name="android:dropDownSelector">@drawable/list_selector_holo_light</item>
+  </style>
+  
+  <style name="SpinnerDarkLSHTheme" parent="android:Widget.Holo.Light.Spinner">
+      <item name="android:background">@drawable/spinner_background_holo_dark</item>
   </style>
 
   <style name="TabWidgetLSHTheme" parent="@android:style/Widget.TabWidget">
