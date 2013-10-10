@@ -83,8 +83,10 @@ public class OrderDbLayer implements ILayer {
 		for (Order o : orders) {
 			try {
 				Order order = model.getOrderById(o.getId());
-				order.sync(o); //TODO: null här
-				db.update(o);
+				if(order != null){
+					order.sync(o);
+					db.update(o);
+				}
 			} catch (NoSuchElementException e) {
 				o.addOrderListener(this);
 				model.addOrder(o);

@@ -2,13 +2,10 @@ package se.chalmers.lidkopingsh.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.util.Listener;
 import se.chalmers.lidkopingsh.util.Syncable;
-import se.chalmers.lidkopingsh.util.SyncableArrayList;
-import se.chalmers.lidkopingsh.util.SyncableList;
 import se.chalmers.lidkopingsh.util.Syncher;
 
 /**
@@ -280,7 +277,9 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				this.orderDate = newData.orderDate;
 				this.orderNumber = newData.orderNumber;
 				this.idName = newData.idName;
-				Syncher.syncList(products, newData.getProducts());
+				if(newData.getProducts() != null && products != null) {
+					Syncher.syncList(products, newData.getProducts());
+				}
 				this.lastTimeSync = newData.lastTimeUpdate;
 				notifySyncedListeners();
 				return true;

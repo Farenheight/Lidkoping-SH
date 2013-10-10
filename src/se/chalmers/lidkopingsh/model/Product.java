@@ -3,13 +3,10 @@ package se.chalmers.lidkopingsh.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.util.Listener;
 import se.chalmers.lidkopingsh.util.Syncable;
-import se.chalmers.lidkopingsh.util.SyncableArrayList;
-import se.chalmers.lidkopingsh.util.SyncableList;
 import se.chalmers.lidkopingsh.util.Syncher;
 
 /**
