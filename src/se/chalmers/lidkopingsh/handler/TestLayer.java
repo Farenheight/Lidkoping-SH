@@ -8,6 +8,7 @@ import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
+import se.chalmers.lidkopingsh.model.ProductType;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
@@ -30,6 +31,8 @@ import se.chalmers.lidkopingsh.model.Task;
  */
 public class TestLayer implements ILayer {
 
+	private static String[] cemeteries = { "Lidköping", "Eggvena", "Örslösa", "Naum", "Kvänum", "Floby", "Larv", "Vårgårda", "Nossebro"};
+	
 	private static int TASK_COUNT = 4; // And station count
 	private static int ORDER_COUNT = 10;
 
@@ -56,8 +59,8 @@ public class TestLayer implements ILayer {
 
 	private Order generateOrder(List<Station> stations) {
 		ArrayList<Product> pList = new ArrayList<Product>();
-		Product p = new Stone(1, null, null, null, null, null, null, null,
-				null, null);
+		Product p = new Stone(0, "Svart", "beskrivning", "Slipning", null, "", "", "", "",
+				new ProductType(1, "Sten"));
 		// The tasks is going to be
 		int doneCount = count % (TASK_COUNT + 1);
 		p.addTasks(genTasks(stations, doneCount));
@@ -66,13 +69,13 @@ public class TestLayer implements ILayer {
 		Order order = new Order(count, "1200", "O."
 				+ String.valueOf((char) (count + 65)),
 				System.currentTimeMillis(), System.currentTimeMillis(),
-				"Kyrkogard", "Kyrkonamnd", "Kyrkogardsblock",
+				cemeteries[(int) (Math.random() * cemeteries.length)], "Kyrkonamnd", "Kyrkogardsblock",
 				"Kyrkogardsnummer", Long.parseLong("1371679200000"),
 				new Customer("Mr", "Olle Bengtsson", "Testvagen 52",
 						"416 72 Goteborg", "olle.bengtsson@testuser.com",
 						(int) System.currentTimeMillis()), pList, null);
-		pList.add(new Stone(1, null, null, null, null, null, null, null, null,
-				null));
+		pList.add(new Stone(1, "Svart", "beskrivning", "Slipning", null, "", "", "", "",
+				new ProductType(0, "Sten")));
 		++count;
 
 		return order;

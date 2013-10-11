@@ -168,11 +168,13 @@ public class OrderMapActivity extends FragmentActivity {
 			for (Order order : mModel.getOrders()) {
 				Address cAddress = getAddress(formatCemeteryName(order
 						.getCemetary()));
-				LatLng cLatLng = new LatLng(cAddress.getLatitude(),
-						cAddress.getLongitude());
-				markers.put(
-						new MarkerOptions().position(cLatLng).title(
-								order.getCemetary()), order);
+				if(cAddress != null){
+					LatLng cLatLng = new LatLng(cAddress.getLatitude(),
+							cAddress.getLongitude());
+					markers.put(
+							new MarkerOptions().position(cLatLng).title(
+									order.getCemetary()), order);					
+				}
 			}
 			return markers;
 		}
@@ -215,7 +217,7 @@ public class OrderMapActivity extends FragmentActivity {
 			try {
 				List<Address> aList = mGeoCoder.getFromLocationName(searchTerm,
 						1);
-				return aList.get(0);
+				return aList.size() == 0? null : aList.get(0);
 			} catch (IOException e) {
 				Log.e("DEBUG",
 						"Network error in getting lat and long from cemetery name");
