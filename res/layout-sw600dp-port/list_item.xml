@@ -3,7 +3,7 @@
     android:id="@+id/list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/activatedBackgroundIndicator"
+    android:background="@drawable/list_selector_holo_light"
     android:orientation="vertical"
     android:padding="10dp" >
 
@@ -12,7 +12,7 @@
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:text="O.M."
-        android:textColor="#888"
+        android:textColor="@color/list_item_text_color_selector"
         android:textSize="50sp"
         android:textStyle="normal|bold"
         tools:ignore="HardcodedText" />
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
             android:text="Olle Bengtsson"
-            android:textColor="#777"
+            android:textColor="@color/list_item_text_color_selector"
             android:textSize="20sp"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
@@ -37,10 +37,10 @@
             android:id="@+id/other_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
             android:paddingBottom="5dp"
+            android:paddingTop="5dp"
             android:text="12/09 - Kyrkogård"
-            android:textColor="#777"
+            android:textColor="@color/list_item_text_color_selector"
             android:textSize="16sp"
             tools:ignore="HardcodedText" />
     </LinearLayout>
