@@ -252,9 +252,9 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	/**
 	 * Notify syncedListeners when synced.
 	 */
-	public void notifySyncedListeners() {
+	public void notifySyncedListeners(Order order) {
 		for (Listener<Order> listener : orderSyncedListeners) {
-			listener.changed(this);
+			listener.changed(order);
 		}
 	}
 
@@ -281,11 +281,11 @@ public class Order implements Listener<Product>, Syncable<Order> {
 					Syncher.syncList(products, newData.getProducts());
 				}
 				this.lastTimeSync = newData.lastTimeUpdate;
-				notifySyncedListeners();
+				notifySyncedListeners(this);
 				return true;
 			}
 		} else {
-			// TODO: Notify GUI that connection failed.
+			notifySyncedListeners(null);
 			return false;
 		}
 	}

@@ -21,7 +21,7 @@ public abstract class AbstractServerLayer {
 	/**
 	 * Send updates to server.
 	 */
-	public abstract void sendUpdate(Order order);
+	public abstract boolean sendUpdate(Order order);
 	
 	/**
 	 * Get path to server.

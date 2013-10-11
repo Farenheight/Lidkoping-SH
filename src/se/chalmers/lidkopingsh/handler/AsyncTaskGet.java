@@ -7,7 +7,7 @@ import android.util.Log;
 
 import se.chalmers.lidkopingsh.model.Order;
 
-public class AsyncTaskGet extends AsyncTask<ServerLayer, Order, List<Order>> {
+public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 
 	@Override
 	protected List<Order> doInBackground(ServerLayer... serverLayer) {

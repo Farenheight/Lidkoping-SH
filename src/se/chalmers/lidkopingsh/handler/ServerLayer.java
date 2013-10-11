@@ -119,14 +119,16 @@ public class ServerLayer extends AbstractServerLayer {
 	}
 
 	@Override
-	public void sendUpdate(Order order) {
+	public boolean sendUpdate(Order order) {
 		Gson gsonOrder = new Gson();
 		Response response = sendHttpPostRequest(gsonOrder.toJson(order));
 
 		if (!response.isSuccess()) {
 			order.sync(null); // Informing that no data has been able to change.
 			printErrorLog(response);
+			return response.isSuccess();
 		}
+		return response.isSuccess();
 	}
 
 	private void printErrorLog(Response response) {

@@ -39,19 +39,35 @@ public class OrderDbLayer implements ILayer {
 	@Override
 	public void changed(Order order) {
 		// TODO: Check if change was same as in DB.
-		serverLayer.sendUpdate(order);
-		List<Order> orders = serverLayer.getUpdates();
+		boolean success = sendUpdate(order);
+		List<Order> orders = getUpdates();
+		if (!success) { //TODO: While here?
+			sendUpdate(order);
+		}
+		orders = getUpdates();
 		if (orders == null) {
 			order.sync(null);
 		} else {
-			getUpdates();
+			updateDatabase(orders);
 		}
 
 	}
 
-	public void getUpdates() {
+	private boolean sendUpdate(Order order) {
 		try {
-			updateDatabase(new AsyncTaskGet().execute(serverLayer).get());
+			return new AsyncTaskSend().execute(new SendHelper(order, serverLayer)).get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return false;
+		
+	}
+
+	public List<Order> getUpdates() {
+		try {
+			return new AsyncTaskGet().execute(serverLayer).get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -59,6 +75,7 @@ public class OrderDbLayer implements ILayer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	@Override
