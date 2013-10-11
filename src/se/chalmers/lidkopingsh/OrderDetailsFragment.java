@@ -156,6 +156,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 		final ToggleButton btn = (ToggleButton) taskView
 				.findViewById(R.id.task_toggler);
 		btn.setChecked(task.getStatus() == Status.DONE);
+		btn.setSaveEnabled(false);
 		btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton toggleButton,
