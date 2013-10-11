@@ -19,6 +19,9 @@ if (isset($_GET['action'])) {
 	} else if ($_GET['action'] === "postOrder") {
 		require_once 'post_order.php';
 		updateOrder();
+	} else if ($_GET['action'] === "insertOrder") {
+		require_once 'post_order.php';
+		insertOrder();
 	} else {
 		errorGeneric("No valid action: Provided action (". $_GET['action'] .") does not exist");
 	}
