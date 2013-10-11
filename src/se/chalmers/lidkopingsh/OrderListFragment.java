@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +41,6 @@ public class OrderListFragment extends ListFragment {
 	/** Adapter responsible for the main order list view */
 	private OrderAdapter mOrderAdapter;
 
-	/** Instance of a model keeping all data. */
-	private IModel mModel;
-
 	/** The current activated item. Only used on tablets. */
 	private Order mActivatedOrder;
 
@@ -74,7 +70,6 @@ public class OrderListFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mModel = ModelHandler.getModel(getActivity());
 		return LayoutInflater.from(getActivity()).inflate(
 				R.layout.list_root_inner, null);
 	}
@@ -96,7 +91,7 @@ public class OrderListFragment extends ListFragment {
 				R.id.station_spinner);
 		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(
 				getActivity(), R.layout.spinner_white_text,
-				(ArrayList<Station>) mModel.getStations());
+				(ArrayList<Station>) ModelHandler.getModel(getActivity()).getStations());
 		stationsAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		stationSpinner.setAdapter(stationsAdapter);
@@ -114,7 +109,7 @@ public class OrderListFragment extends ListFragment {
 					.getInt(CURRENT_STATION_POS));
 
 			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
-				mActivatedOrder = mModel.getOrderById(savedInstanceState
+				mActivatedOrder = ModelHandler.getModel(getActivity()).getOrderById(savedInstanceState
 						.getInt(ACTIVATED_ORDER_ID));
 			}
 		}
@@ -126,7 +121,7 @@ public class OrderListFragment extends ListFragment {
 		super.onListItemClick(listView, view, position, id);
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mActivatedOrder = mModel.getOrderById(mOrderAdapter.getItem(
+		mActivatedOrder = ModelHandler.getModel(getActivity()).getOrderById(mOrderAdapter.getItem(
 				position - 1).getId());
 		mOrderSelectedCallbacks.onItemSelected(mActivatedOrder.getId());
 	}

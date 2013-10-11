@@ -6,9 +6,11 @@ import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
+import se.chalmers.lidkopingsh.util.Listener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +32,7 @@ import android.widget.ToggleButton;
  * @author Simon Bengtsson
  * 
  */
-public class OrderDetailsFragment extends Fragment {
+public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 
 	/** Used as a key when sending the object between activities and fragments */
 	public static final String ORDER_ID = "item_id";
@@ -70,7 +72,7 @@ public class OrderDetailsFragment extends Fragment {
 
 		// Collects data from mOrder and initialize the views accordingly
 		initTabs();
-		initTasks(R.id.tab_info_container);
+		initTasks();
 		return rootView;
 	}
 
@@ -127,7 +129,7 @@ public class OrderDetailsFragment extends Fragment {
 	/**
 	 * Setups a task container with all it's data.
 	 */
-	private void initTasks(int tabResource) {
+	private void initTasks() {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		LinearLayout rootTaskCont = (LinearLayout) rootView
 				.findViewById(R.id.root_task_cont);
@@ -233,5 +235,25 @@ public class OrderDetailsFragment extends Fragment {
 					.setText(stone.getTextStyle());
 		}
 	}
+
+    @Override
+    public void changed(Order order) {
+            if (order != mOrder) {
+                    if (order == null) {
+                            // TODO: Display error message to user
+                            // TODO: Consider a better way than sending null to let GUI know
+                            Log.d("DEBUG", "Server not about changes!");
+                    } else {
+                            throw new IllegalArgumentException(
+                                            "The changed object should be the one displayed in the GUI");
+                    }
+            } else {
+            		Log.d("DEBUG", "Updated GUI");
+                    ViewGroup taskContainer = (ViewGroup) rootView
+                                    .findViewById(R.id.root_task_cont);
+                    taskContainer.removeAllViews();
+                    initTasks();
+            }
+    }
 
 }
