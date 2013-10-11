@@ -2,7 +2,7 @@
 /**
  * Formats the output correctly into a JSON string. All output is sent via this method.
  */
-function output($success, $results = null, $message = null, $errorCode = null) {
+function output($success, $results = null, $message = null, $errorCode = 0) {
 	$output = array(
 		"success" => $success
 	);
