@@ -1,5 +1,6 @@
 package se.chalmers.lidkopingsh;
 
+import se.chalmers.lidkopingsh.handler.ModelHandler;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -79,6 +80,9 @@ public class MainActivity extends FragmentActivity implements
 		switch (item.getItemId()) {
 		case R.id.action_start_map_view:
 			startActivity(new Intent(this, OrderMapActivity.class));
+			return true;
+		case R.id.action_update:
+			// Update
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
