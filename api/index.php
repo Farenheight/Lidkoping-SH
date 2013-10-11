@@ -20,12 +20,18 @@ if (isset($_GET['action'])) {
 	} else if ($_GET['action'] === "postOrder") {
 		require_once 'post_order.php';
 		updateOrder();
+	} else if ($_GET['action'] === "insertOrder") {
+		require_once 'post_order.php';
+		insertOrder();
 	} else {
 		errorGeneric("No valid action: Provided action (". $_GET['action'] .") does not exist");
 	}
 } else if (isset($_POST['postOrder'])) {
 	require_once 'post_order.php';
 	postOrder();
+} else if (isset($_POST['insertOrder'])) {
+	require_once 'post_order.php';
+	insertOrder();
 } else if (isset($_POST['getUpdates'])) {
 	require_once 'get_updates.php';
 	getUpdates();

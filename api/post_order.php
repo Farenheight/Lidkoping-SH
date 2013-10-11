@@ -1,7 +1,8 @@
 <?php
 function insertOrder() {
 	$jsonData = getValidInput();
-
+	
+	prepareSql();
 	$orderNrGen = new OrderNumberGenerator();
 	$orderId = sqlInsertOrder($jsonData, $orderNrGen);
 
@@ -16,6 +17,7 @@ function updateOrder() {
 
 	$jsonData = getValidInput();
 
+	prepareSql();
 	sqlUpdateOrder($jsonData, $su);
 
 	$GLOBALS['con'] -> commit();	//TODO Response. Where are we notified if the sql returns error?
@@ -29,13 +31,73 @@ function updateOrder() {
  */
 function getValidInput() {
 	if (!isset($_POST['data']) || empty($_POST['data'])) {
-		errorGeneric("No data provided");
+		errorGeneric("No data provided. Check that header ContentType is 'application/x-www-form-urlencoded'.");
 	}
-	$jsonData = json_decode($_POST['data'], true);
-	if (is_null($jsonData)) {
+	$array = json_decode($_POST['data'], true);
+	if (is_null($array)) {
 		errorGeneric("Invalid JSON data provided");
 	}
-	return $jsonData;
+	
+	// Verify that JSON data contains an order.
+	requiredField("cemetery", $array);
+	requiredField("cemeteryBoard", $array);
+	requiredField("orderDate", $array);
+	requiredField("name", $array["customer"], "customer");
+	requiredField("address", $array["customer"], "customer");
+	requiredField("postAddress", $array["customer"], "customer");
+	// Check products
+	if (array_key_exists("products", $array)) {
+		foreach ($array["products"] as $index => $product) {
+			requiredField("type", $product, "product at index $index");
+			requiredField("id", $product["type"], "product[type] at index $index");
+			requiredField("frontWork", $product, "product at index $index");
+			requiredField("materialColor", $product, "product at index $index");
+			// Check stone details
+			if (array_key_exists("stoneModel", $product)) {
+				requiredField("stoneModel", $product, "product (stone) at index $index");
+				requiredField("sideBackWork", $product, "product (stone) at index $index");
+				requiredField("textStyle", $product, "product (stone) at index $index");
+				requiredField("ornament", $product, "product (stone) at index $index");
+			}
+			// Check tasks and stations
+			if (array_key_exists("tasks", $product)) {
+				foreach ($product["tasks"] as $tIndex => $task) {
+					requiredField("station", $task, "product at index $index, task at index $tIndex");
+					requiredField("name", $task["station"], "product at index $index, 
+						task at index $tIndex, station name");
+				}
+			}
+		}
+	}
+	
+	return $array;
+}
+
+/**
+ * Validates a field that should be required. Generates
+ * an error if the field is missing or empty.
+ */
+function requiredField($fieldName, $array, $moreInfo = "") {
+	if (!array_key_exists($fieldName, $array)) {
+		errorGeneric("Missing required field: $fieldName ($moreInfo)");
+	}
+	if (empty($array[$fieldName])) {
+		errorGeneric("Empty required field: $fieldName ($moreInfo)");
+	}
+}
+
+
+// SQL COMMON METHODS
+
+function prepareSql() {
+	// Store all stations
+	$sql = "SELECT * FROM `station`";
+	$stmt = $GLOBALS['con'] -> prepare($sql);
+	$stmt -> execute();
+	$res = $stmt -> get_result();
+	while ($row = $res -> fetch_assoc()) {
+		$GLOBALS['stations'][$row['name']] = $row['station_id'];
+	}
 }
 
 // SQL UPDATE METHODS
@@ -248,18 +310,33 @@ function sqlInsertStation($station) {
 }
 
 /**
+ * @return the id of the station
+ */
+function getStationId($station) {
+	if (array_key_exists('id', $station)) {
+		return $station['id'];
+	} else if (array_key_exists($station['name'], $GLOBALS['stations'])) {
+		return $GLOBALS['stations'][$station['name']];
+	} else {
+		// Insert station into database. It does not exist
+		return sqlInsertStation($station);
+	}
+}
+
+/**
  * Updates a task or insert if not exists.
  */
 function sqlProcessTask($task, $productId, $sortOrder) {
-	// Add station if not exist
-	if (!array_key_exists('id', $task['station'])) {
-		$task['station']['id'] = sqlInsertStation($task['station']);
+	$stationId = getStationId($task['station']);
+	
+	if (!array_key_exists("status", $task)) {
+		$task['status'] = 0;
 	}
 
 	$sql = "INSERT INTO `task` (`station_id`, `product_id`, `status`, `sort_order`) VALUES (?, ?, ?, ?)
 		ON DUPLICATE KEY UPDATE `status` = VALUES(`status`), `sort_order` = VALUES(`sort_order`)";
 	$stmt = $GLOBALS['con'] -> prepare($sql);
-	$stmt -> bind_param("iiii", $task['station']['id'], $productId, $task['status'], $sortOrder);
+	$stmt -> bind_param("iiii", $stationId, $productId, $task['status'], $sortOrder);
 	$stmt -> execute();
 }
 
