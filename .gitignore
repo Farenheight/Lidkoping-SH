@@ -9,4 +9,5 @@ bin/
 *.metadata
 db_config.php
 api/lib/
-
+api/db_config.php
+LidkopingSHTest/gen/

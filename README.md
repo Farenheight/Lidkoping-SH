@@ -1,15 +1,8 @@
-Lidkoping-SH
-============
+# Lidköpings Stenhuggeri
+Android application for Lidköpings Stenhuggeri AB. Software Engineering Project course (DAT255), Chalmers.
 
-App for Lidkoping SH, project course Chalmers.
+## Development
+Import the following project into Eclipse: https://github.com/Farenheight/Lidkoping-SH.git
 
-Develop
-============
-
-https://github.com/Farenheight/Lidkoping-SH.git
-Import project into Eclipse.
-
-Install and run
-============
-
-Find binary Lidkoping-SH.apk file in the /bin directory. Install on device.
+## Install and run
+Locate the `Lidkoping-SH.apk` file in the `/dist/` directory. Install on device.
