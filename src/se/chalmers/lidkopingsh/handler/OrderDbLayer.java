@@ -3,6 +3,7 @@ package se.chalmers.lidkopingsh.handler;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Timer;
 import java.util.concurrent.ExecutionException;
 
 import se.chalmers.lidkopingsh.database.OrderDbStorage;
@@ -19,8 +20,10 @@ import android.content.Context;
  */
 public class OrderDbLayer implements ILayer {
 
+	private final Timer timer;
 	private final OrderDbStorage db;
 	private final ServerLayer serverLayer;
+	private final long UPDATE_INTERVAL = 300000;
 
 	/**
 	 * Creates a layer for communication between model and Order database.
@@ -33,18 +36,20 @@ public class OrderDbLayer implements ILayer {
 		// TODO: Remove server path. Set it in settings.
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/",
 				context);
-		getUpdates();
+		updateDatabase(getUpdates(true));
+		timer = new Timer();
+		timer.scheduleAtFixedRate(new UpdateTimerTask(this), 0, UPDATE_INTERVAL);
 	}
 
 	@Override
 	public void changed(Order order) {
 		// TODO: Check if change was same as in DB.
 		boolean success = sendUpdate(order);
-		List<Order> orders = getUpdates();
+		List<Order> orders = getUpdates(false);
 		if (!success) { //TODO: While here?
 			sendUpdate(order);
 		}
-		orders = getUpdates();
+		orders = getUpdates(false);
 		if (orders == null) {
 			order.sync(null);
 		} else {
@@ -55,7 +60,7 @@ public class OrderDbLayer implements ILayer {
 
 	private boolean sendUpdate(Order order) {
 		try {
-			return new AsyncTaskSend().execute(new SendHelper(order, serverLayer)).get();
+			return new AsyncTaskSend(order).execute(serverLayer).get();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
@@ -65,9 +70,9 @@ public class OrderDbLayer implements ILayer {
 		
 	}
 
-	public List<Order> getUpdates() {
+	public List<Order> getUpdates(boolean getAll) {
 		try {
-			return new AsyncTaskGet().execute(serverLayer).get();
+			return new AsyncTaskGet(getAll).execute(serverLayer).get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -110,6 +115,10 @@ public class OrderDbLayer implements ILayer {
 				db.insert(o);
 			}
 		}
+	}
+	
+	public void update(boolean getAll) {
+		updateDatabase(getUpdates(getAll));
 	}
 
 }

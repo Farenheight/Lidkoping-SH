@@ -7,7 +7,7 @@ public class Syncher {
 	public static <T extends Syncable<? super T>> List<T> syncList(
 			List<T> oldList, List<T> newList) {
 		List<T> returnedList = new ArrayList<T>();
-		boolean listModified = false, objectModified = false;
+		boolean objectModified = false;
 		int i = 0;
 		if (newList != null) {
 			for (T newObject : newList) { // TODO: null här, follow the
@@ -15,7 +15,7 @@ public class Syncher {
 				objectModified = false;
 				for (T oldObject : oldList) {
 					if (oldObject.sync(newObject)) {
-						listModified = objectModified = true;
+						objectModified = true;
 						returnedList.add(i++, oldObject);
 						break;
 					}
@@ -24,9 +24,6 @@ public class Syncher {
 					returnedList.add(i++, newObject);
 				}
 			}
-		}
-		else{
-			returnedList = null;
 		}
 
 		// Removes data that doesn't exist in new list

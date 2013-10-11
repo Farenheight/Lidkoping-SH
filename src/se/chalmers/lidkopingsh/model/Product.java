@@ -294,7 +294,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			this.description = newData.description;
 			this.frontWork = newData.frontWork;
 			this.materialColor = newData.materialColor;
-			Syncher.syncList(tasks, newData.getTasks());
+			tasks = Syncher.syncList(tasks, newData.getTasks());
 			return true;
 		} else {
 			return false;

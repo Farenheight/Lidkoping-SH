@@ -290,7 +290,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	/**
 	 * Notify listeners on change.
 	 */
-	public void notifyOrderListeners() {
+	public void notifyOrderListeners () {
 		lastTimeUpdate = System.currentTimeMillis();
 		for (Listener<Order> listener : orderListeners) {
 			listener.changed(this);
@@ -301,8 +301,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * Notify syncedListeners when synced.
 	 */
 	public void notifySyncedListeners(Order order) {
-		for (Listener<Order> listener : orderSyncedListeners) {
-			listener.changed(order);
+		if (orderSyncedListeners != null) {
+			for (Listener<Order> listener : orderSyncedListeners) {
+				listener.changed(order);
+			}
 		}
 	}
 
@@ -326,7 +328,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 				this.orderNumber = newData.orderNumber;
 				this.idName = newData.idName;
 				if(newData.getProducts() != null && products != null) {
-					Syncher.syncList(products, newData.getProducts());
+					products = Syncher.syncList(products, newData.getProducts());
 				}
 				this.lastTimeSync = newData.lastTimeUpdate;
 				notifySyncedListeners(this);

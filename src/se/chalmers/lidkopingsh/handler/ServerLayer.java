@@ -7,11 +7,13 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
@@ -28,9 +30,7 @@ import com.google.gson.Gson;
  */
 public class ServerLayer extends AbstractServerLayer {
 	private HttpClient httpClient;
-	private HttpPost httpPost;
 	private final Context context;
-	private static boolean first = true;
 
 	/**
 	 * Creates a new ServerLayer with a set server path.
@@ -57,8 +57,8 @@ public class ServerLayer extends AbstractServerLayer {
 	private BufferedReader sendHttpPostRequest(String orderString, String action) {
 		BufferedReader reader = null;
 		try {
-			httpPost = new HttpPost(serverPath + action);
-			httpPost.setEntity(new StringEntity(orderString));
+			HttpPost httpPost = new HttpPost(serverPath + action);
+			httpPost.setEntity(new StringEntity(orderString, HTTP.UTF_8));
 			httpPost.setHeader("LidkopingSH-Authentication",
 					"123456789qwertyuiop");
 			httpPost.setHeader("Content-Type",
@@ -102,10 +102,9 @@ public class ServerLayer extends AbstractServerLayer {
 	}
 
 	@Override
-	public List<Order> getUpdates() {
+	public List<Order> getUpdates(boolean getAll) {
 		Gson gson = new Gson();
-		if (first) {
-			first = false;
+		if (getAll) {
 			return getUpdatedOrdersFromServer("");
 		}
 		Collection<Order> orders = ModelHandler.getModel(context).getOrders();
@@ -122,14 +121,8 @@ public class ServerLayer extends AbstractServerLayer {
 	@Override
 	public boolean sendUpdate(Order order) {
 		Gson gsonOrder = new Gson();
-		BufferedReader reader = sendHttpPostRequest("data=" + gsonOrder.toJson(order), "postOrder");
-		String line = "";
-		try {
-			line = reader.readLine();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		String json = "data=" + gsonOrder.toJson(order);
+		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
 		
 		ResponseSend response = null;
 		try {

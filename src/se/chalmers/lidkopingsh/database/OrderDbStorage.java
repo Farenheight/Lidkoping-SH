@@ -283,40 +283,42 @@ public class OrderDbStorage {
 	 * @param order The order to be deleted
 	 */
 	public void deleteOrder(Order order){
-		for (Product p : order.getProducts()) {
-			//checks if there are any products with the given type left if not the type is removed
-			Cursor cursor = db.query(ProductTable.TABLE_NAME, null,
-					ProductTable.COLUMN_NAME_PRODUCT_TYPE_ID + EQUALS
-							+ QUESTION_MARK, new String[] { String
-							.valueOf(p.getType().getId()) },
-					null, null, null);
-			if(!cursor.moveToNext()){
-				db.delete(ProductTypeTable.TABLE_NAME,
-						ProductTypeTable.COLUMN_NAME_PRODUCT_TYPE_ID + EQUALS
+		if (order.getProducts() != null) {
+			for (Product p : order.getProducts()) {
+				//checks if there are any products with the given type left if not the type is removed
+				Cursor cursor = db.query(ProductTable.TABLE_NAME, null,
+						ProductTable.COLUMN_NAME_PRODUCT_TYPE_ID + EQUALS
 								+ QUESTION_MARK, new String[] { String
-								.valueOf(p.getType().getId()) });
-				productTypeIds.remove(p.getType().getId());
-			}
-			db.delete(TaskTable.TABLE_NAME, TaskTable.COLUMN_NAME_PRODUCT_ID
-					+ EQUALS + QUESTION_MARK,
-					new String[] { String.valueOf(p.getId()) });
-			db.delete(StoneTable.TABLE_NAME, StoneTable.COLUMN_NAME_PRODUCT_ID
-					+ EQUALS + QUESTION_MARK,
-					new String[] { String.valueOf(p.getId()) });
-			if(p.getTasks() != null) {
-				for (Task t : p.getTasks()) {
-					Cursor c = db//checks if there are any tasks with the given station if not the station is removed
-						.query(TaskTable.TABLE_NAME, null,
-								TaskTable.COLUMN_NAME_STATION_ID + EQUALS
-										+ QUESTION_MARK, new String[] { String
-										.valueOf(t.getStation().getId()) },
-								null, null, null);
-					if (!c.moveToNext()) {
-						db.delete(StationTable.TABLE_NAME,
-							StationTable.COLUMN_NAME_STATION_ID + EQUALS
+								.valueOf(p.getType().getId()) },
+						null, null, null);
+				if(!cursor.moveToNext()){
+					db.delete(ProductTypeTable.TABLE_NAME,
+							ProductTypeTable.COLUMN_NAME_PRODUCT_TYPE_ID + EQUALS
 									+ QUESTION_MARK, new String[] { String
-									.valueOf(t.getStation().getId()) });
-						stationIds.remove(t.getStation().getId());
+									.valueOf(p.getType().getId()) });
+					productTypeIds.remove(p.getType().getId());
+				}
+				db.delete(TaskTable.TABLE_NAME, TaskTable.COLUMN_NAME_PRODUCT_ID
+						+ EQUALS + QUESTION_MARK,
+						new String[] { String.valueOf(p.getId()) });
+				db.delete(StoneTable.TABLE_NAME, StoneTable.COLUMN_NAME_PRODUCT_ID
+						+ EQUALS + QUESTION_MARK,
+						new String[] { String.valueOf(p.getId()) });
+				if(p.getTasks() != null) {
+					for (Task t : p.getTasks()) {
+						Cursor c = db//checks if there are any tasks with the given station if not the station is removed
+							.query(TaskTable.TABLE_NAME, null,
+									TaskTable.COLUMN_NAME_STATION_ID + EQUALS
+											+ QUESTION_MARK, new String[] { String
+											.valueOf(t.getStation().getId()) },
+									null, null, null);
+						if (!c.moveToNext()) {
+							db.delete(StationTable.TABLE_NAME,
+								StationTable.COLUMN_NAME_STATION_ID + EQUALS
+										+ QUESTION_MARK, new String[] { String
+										.valueOf(t.getStation().getId()) });
+							stationIds.remove(t.getStation().getId());
+						}
 					}
 				}
 			}

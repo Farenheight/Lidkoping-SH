@@ -16,7 +16,7 @@ public abstract class AbstractServerLayer {
 	/**
 	 * Retrieve updates from server.
 	 */
-	public abstract List<Order> getUpdates();
+	public abstract List<Order> getUpdates(boolean getAll);
 	
 	/**
 	 * Send updates to server.

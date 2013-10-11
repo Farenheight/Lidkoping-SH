@@ -109,8 +109,10 @@ public class Task implements Syncable<Task> {
 	 * Notify listeners that this task have been changed
 	 */
 	private void notifyTaskListeners() {
-		for (Listener<Task> l : listeners) {
-			l.changed(this);
+		if (listeners != null) {
+			for (Listener<Task> l : listeners) {
+				l.changed(this);
+			}
 		}
 	}
 
@@ -131,7 +133,7 @@ public class Task implements Syncable<Task> {
 	public boolean sync(Task newData) {
 		if (newData != null && getClass() == newData.getClass()
 				&& this.station.equals(((Task) newData).station)) {
-			this.setStatus(newData.getStatus());
+			this.status = newData.getStatus();
 			return true;
 		} else {
 			return false;
