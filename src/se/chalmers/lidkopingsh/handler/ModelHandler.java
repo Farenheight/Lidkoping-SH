@@ -17,11 +17,10 @@ public class ModelHandler {
 		return model;
 	}
 
-	public static ILayer getLayer(Context context) {
+	private static ILayer getLayer(Context context) {
 		if (layer == null) {
 			layer = new TestLayer();
 		}
 		return layer;
-	}
-	
+	}	
 }
