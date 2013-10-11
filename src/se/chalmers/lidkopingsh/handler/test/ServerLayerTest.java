@@ -1,10 +1,14 @@
 package se.chalmers.lidkopingsh.handler.test;
 
+import static org.junit.Assert.*;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
+
+import android.test.AndroidTestCase;
 
 import se.chalmers.lidkopingsh.database.OrderDbStorage;
 import se.chalmers.lidkopingsh.handler.ServerLayer;
@@ -12,7 +16,6 @@ import se.chalmers.lidkopingsh.model.Customer;
 import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
-import android.test.AndroidTestCase;
 
 public class ServerLayerTest extends AndroidTestCase{
 	OrderDbStorage dbStorage;
