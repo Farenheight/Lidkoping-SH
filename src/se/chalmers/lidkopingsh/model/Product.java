@@ -107,6 +107,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	public Product(Product product) {
 		this(product.id, product.materialColor, product.description,
 				product.frontWork, product.tasks, product.type);
+	}
 
 	public ProductType getType() {
 		return type;

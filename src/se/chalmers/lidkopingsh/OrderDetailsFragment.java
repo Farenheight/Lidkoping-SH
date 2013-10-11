@@ -204,28 +204,10 @@ public class OrderDetailsFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
 
-<<<<<<< HEAD
 		// Product info
 		StringBuilder desc = new StringBuilder();
 		StringBuilder frontWork = new StringBuilder();
 		StringBuilder materialColor = new StringBuilder();
-=======
-		Stone stone = mOrder.getStone();
-		if (stone != null) {
-			((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
-					.getStoneModel());
-			((TextView) rootView.findViewById(R.id.materialAndColor)).setText(stone
-					.getMaterialColor());
-			((TextView) rootView.findViewById(R.id.ornament)).setText(stone
-					.getOrnament());
-			((TextView) rootView.findViewById(R.id.desc)).setText(stone
-					.getDescription());
-			((TextView) rootView.findViewById(R.id.frontProcessing)).setText(stone
-					.getFrontWork());
-			((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
-					.setText(stone.getTextStyle());
-		}
->>>>>>> refs/heads/dev-serverlayer
 
 		for (Product product : mOrder.getProducts()) {
 			desc.append(product.getDescription());
