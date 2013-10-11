@@ -6,7 +6,7 @@ package se.chalmers.lidkopingsh.model;
  * @author Kim
  * 
  */
-public class Customer{
+public class Customer implements Cloneable{
 
 	private String title;
 	private String name;

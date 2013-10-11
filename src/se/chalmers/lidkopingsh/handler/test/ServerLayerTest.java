@@ -15,6 +15,7 @@ public class ServerLayerTest extends AndroidTestCase{
 
 	@Override
 	protected void setUp() throws Exception {
+		super.setUp();
 		dbStorage = new OrderDbStorage(this.getContext());
 		dbStorage.clear();
 	}
