@@ -1,6 +1,7 @@
 package se.chalmers.lidkopingsh.handler;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -54,7 +55,7 @@ public class ServerLayer extends AbstractServerLayer {
 	 * 
 	 * @param orderString
 	 */
-	private Response sendHttpPostRequest(String orderString) {
+	private BufferedReader sendHttpPostRequest(String orderString) {
 		BufferedReader reader = null;
 		try {
 			httpPost.setEntity(new StringEntity(orderString));
@@ -69,13 +70,7 @@ public class ServerLayer extends AbstractServerLayer {
 		} catch (Exception e) {
 			Log.e("server_layer", "Error in HTTP post " + e.toString());
 		}
-		Response response = null;
-		try {
-			response = new Gson().fromJson(reader, Response.class);
-		} catch (Exception e) {
-			Log.d("server_layer", "No data from server");
-		}
-		return response;
+		return reader;
 	}
 
 	/**
@@ -85,9 +80,16 @@ public class ServerLayer extends AbstractServerLayer {
 	 *            A JsonObject with the ids and timestamps for comparing orders
 	 */
 	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers) {
-		Response response = sendHttpPostRequest("getUpdates=1&data="
+		BufferedReader reader = sendHttpPostRequest("getUpdates=1&data="
 				+ orderVerifiers);
 
+		ResponseGet response = null;
+		try {
+			response = new Gson().fromJson(reader, ResponseGet.class);
+		} catch (Exception e) {
+			Log.d("server_layer", "No data from server");
+		}
+		
 		if (response.isSuccess()) {
 			List<Order> ord = new LinkedList<Order>();
 			for (Order o : response.getResults()) {
@@ -121,7 +123,21 @@ public class ServerLayer extends AbstractServerLayer {
 	@Override
 	public boolean sendUpdate(Order order) {
 		Gson gsonOrder = new Gson();
-		Response response = sendHttpPostRequest(gsonOrder.toJson(order));
+		BufferedReader reader = sendHttpPostRequest("postOrder=1&data=" + gsonOrder.toJson(order));
+		String line = "";
+		try {
+			line = reader.readLine();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		ResponseSend response = null;
+		try {
+			response = new Gson().fromJson(reader, ResponseSend.class);
+		} catch (Exception e) {
+			Log.d("server_layer", "No data from server");
+		}
 
 		if (!response.isSuccess()) {
 			order.sync(null); // Informing that no data has been able to change.
@@ -131,17 +147,24 @@ public class ServerLayer extends AbstractServerLayer {
 		return response.isSuccess();
 	}
 
-	private void printErrorLog(Response response) {
+	private void printErrorLog(ResponseSend response) {
 		Log.d("server_layer", "Error code: " + response.getErrorcode()
 				+ " Message: " + response.getMessage());
 	}
 
-	private class Response {
+	private class ResponseGet extends ResponseSend {
+		private List<Order> results;
+		
+		public List<Order> getResults() {
+			return results;
+		}
+	}
+	
+	private class ResponseSend {
 		private boolean success;
 		private int errorcode;
 		private String message;
-		private List<Order> results;
-
+		
 		public boolean isSuccess() {
 			return success;
 		}
@@ -152,10 +175,6 @@ public class ServerLayer extends AbstractServerLayer {
 
 		public String getMessage() {
 			return message;
-		}
-
-		public List<Order> getResults() {
-			return results;
 		}
 	}
 

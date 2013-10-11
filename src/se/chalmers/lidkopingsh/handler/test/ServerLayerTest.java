@@ -1,13 +1,17 @@
 package se.chalmers.lidkopingsh.handler.test;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
 
 import se.chalmers.lidkopingsh.database.OrderDbStorage;
 import se.chalmers.lidkopingsh.handler.ServerLayer;
+import se.chalmers.lidkopingsh.model.Customer;
+import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.Product;
 import android.test.AndroidTestCase;
 
 public class ServerLayerTest extends AndroidTestCase{
@@ -21,12 +25,23 @@ public class ServerLayerTest extends AndroidTestCase{
 	}
 	
 	@Test
-	public void testGetUpdate(){
+	public void testGetUpdate() {
 		ServerLayer serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", this.getContext());
 		Collection<Order> ordersBefore = dbStorage.query(null, null, null);
 		List<Order> ordersAfter = serverLayer.getUpdates();
 		 
 		assertTrue(ordersBefore.size() < ordersAfter.size());
+	}
+	
+	public void testSendUpdate() {
+		ServerLayer serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", this.getContext());
+		boolean success = serverLayer.sendUpdate(new Order(1000000, "1300002",
+				"F,F", System.currentTimeMillis(), System.currentTimeMillis(),
+				"Kyrka", "Board", "blocket", "nummer", (long) 1312300,
+				new Customer("titel", "name", "address", "postAddress",
+						"email", 1000300), new LinkedList<Product>(),
+				new LinkedList<Image>()));
+		assertTrue(success);
 	}
 
 }

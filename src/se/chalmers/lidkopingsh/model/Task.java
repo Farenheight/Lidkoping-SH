@@ -13,7 +13,7 @@ import se.chalmers.lidkopingsh.util.Syncable;
  * 
  */
 public class Task implements Syncable<Task> {
-	private List<Listener<Task>> listeners;
+	private transient List<Listener<Task>> listeners;
 	private Status status;
 	private Station station;
 

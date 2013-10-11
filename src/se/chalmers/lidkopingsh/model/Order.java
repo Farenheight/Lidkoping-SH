@@ -28,8 +28,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private String cemeteryBlock;
 	private String cemeteryNumber;
 	private Customer customer;
-	private List<Listener<Order>> orderListeners;
-	private List<Listener<Order>> orderSyncedListeners;
+	private transient List<Listener<Order>> orderListeners;
+	private transient List<Listener<Order>> orderSyncedListeners;
 	private List<Product> products;
 	private List<Image> images;
 

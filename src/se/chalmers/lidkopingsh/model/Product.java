@@ -27,7 +27,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * The {@link ProductListener}s that should listen when a task is changed on
 	 * this product.
 	 */
-	private List<Listener<Product>> listeners;
+	private transient List<Listener<Product>> listeners;
 	/**
 	 * The {@link Task}s that this product has.
 	 */
