@@ -3,7 +3,7 @@
 	<name>LidkopingSHTest</name>
 	<comment></comment>
 	<projects>
-		<project>LidkopingSH</project>
+		<project>Lidkoping-SH</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

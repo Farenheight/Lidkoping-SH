@@ -13,7 +13,7 @@ import se.chalmers.lidkopingsh.util.Syncable;
  * 
  */
 public class Task implements Syncable<Task> {
-	private List<Listener<Task>> listeners;
+	private transient List<Listener<Task>> listeners;
 	private Status status;
 	private Station station;
 
@@ -39,6 +39,15 @@ public class Task implements Syncable<Task> {
 	 */
 	public Task(Station station) {
 		this(station, Status.NOT_DONE);
+	}
+
+	/**
+	 * Creates a new task with a task.
+	 * 
+	 * @param task to use values from.
+	 */
+	public Task(Task task) {
+		this(task.station, task.status);
 	}
 
 	/**
@@ -75,6 +84,9 @@ public class Task implements Syncable<Task> {
 	 *            {@link Task}
 	 */
 	public void addTaskListener(Listener<Task> listener) {
+		if(listeners == null) {
+			listeners = new ArrayList<Listener<Task>>();
+		}
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}

@@ -84,8 +84,10 @@ public class MapModel implements IModel {
 			removeOrder(o);
 		}
 		orders.put(o.getId(), o);
-		for (Product p : o.getProducts()) {
-			products.put(p.getId(), p);
+		if (o.getProducts() != null) {
+			for (Product p : o.getProducts()) {
+				products.put(p.getId(), p);
+			}
 		}
 
 		// TODO When adding orders, check if the order have tasks that
