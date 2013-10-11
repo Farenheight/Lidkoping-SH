@@ -1,10 +1,8 @@
-package tempLayer;
-
+package se.chalmers.lidkopingsh.handler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import se.chalmers.lidkopingsh.database.ILayer;
 import se.chalmers.lidkopingsh.model.Customer;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
@@ -30,7 +28,7 @@ import se.chalmers.lidkopingsh.model.Task;
  * @author Simon
  * 
  */
-public class SortTestLayer implements ILayer {
+public class TestLayer implements ILayer {
 
 	private static int TASK_COUNT = 4; // And station count
 	private static int ORDER_COUNT = 10;
@@ -97,7 +95,7 @@ public class SortTestLayer implements ILayer {
 	}
 
 	public static void main(String[] args) {
-		new SortTestLayer().getModel();
+		new TestLayer().getModel();
 	}
 
 }
