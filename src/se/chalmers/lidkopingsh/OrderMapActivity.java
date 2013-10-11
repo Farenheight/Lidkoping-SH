@@ -12,18 +12,15 @@ import java.util.Map;
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
@@ -32,7 +29,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPositionCreator;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -69,7 +65,6 @@ public class OrderMapActivity extends FragmentActivity {
 		mModel = ModelHandler.getModel(this);
 		mMarkers = new ArrayList<Marker>();
 		setUpMapIfNeeded();
-		mMap.setMyLocationEnabled(true);
 	}
 
 	@Override
@@ -119,7 +114,7 @@ public class OrderMapActivity extends FragmentActivity {
 		initBubbleFactory();
 		zoomToStandardLocation();
 		new MapLoader().execute(mMap); // Setup map
-
+		mMap.setMyLocationEnabled(true);
 	}
 
 	private void initBubbleFactory() {
