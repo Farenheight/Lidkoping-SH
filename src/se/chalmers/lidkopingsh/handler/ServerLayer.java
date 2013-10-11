@@ -42,7 +42,6 @@ public class ServerLayer extends AbstractServerLayer {
 		this.context = context;
 		try {
 			httpClient = new DefaultHttpClient();
-			httpPost = new HttpPost(serverPath);
 		} catch (Exception e) {
 			Log.e("server_layer",
 					"Error in HTTP Server Connection" + e.toString());
@@ -55,9 +54,10 @@ public class ServerLayer extends AbstractServerLayer {
 	 * 
 	 * @param orderString
 	 */
-	private BufferedReader sendHttpPostRequest(String orderString) {
+	private BufferedReader sendHttpPostRequest(String orderString, String action) {
 		BufferedReader reader = null;
 		try {
+			httpPost = new HttpPost(serverPath + action);
 			httpPost.setEntity(new StringEntity(orderString));
 			httpPost.setHeader("LidkopingSH-Authentication",
 					"123456789qwertyuiop");
@@ -80,8 +80,7 @@ public class ServerLayer extends AbstractServerLayer {
 	 *            A JsonObject with the ids and timestamps for comparing orders
 	 */
 	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers) {
-		BufferedReader reader = sendHttpPostRequest("getUpdates=1&data="
-				+ orderVerifiers);
+		BufferedReader reader = sendHttpPostRequest("data=" + orderVerifiers, "getUpdates");
 
 		ResponseGet response = null;
 		try {
@@ -123,7 +122,7 @@ public class ServerLayer extends AbstractServerLayer {
 	@Override
 	public boolean sendUpdate(Order order) {
 		Gson gsonOrder = new Gson();
-		BufferedReader reader = sendHttpPostRequest("postOrder=1&data=" + gsonOrder.toJson(order));
+		BufferedReader reader = sendHttpPostRequest("data=" + gsonOrder.toJson(order), "postOrder");
 		String line = "";
 		try {
 			line = reader.readLine();
