@@ -251,13 +251,19 @@ public class OrderMapActivity extends FragmentActivity {
 			final View mapView = getSupportFragmentManager().findFragmentById(
 					R.id.map).getView();
 			if (mapView.getViewTreeObserver().isAlive()) {
-				LatLngBounds.Builder bld = new LatLngBounds.Builder();
-				for (int i = 0; i < mMarkers.size(); i++) {
-					bld.include(mMarkers.get(i).getPosition());
+				if(mMarkers.size() > 1){
+					LatLngBounds.Builder bld = new LatLngBounds.Builder();
+					for (int i = 0; i < mMarkers.size(); i++) {
+						bld.include(mMarkers.get(i).getPosition());
+					}
+					LatLngBounds bounds = bld.build();
+					mMap.animateCamera(CameraUpdateFactory
+							.newLatLngBounds(bounds, padding));					
+				}else if (mMarkers.size() == 1){
+					
+					mMap.animateCamera(CameraUpdateFactory
+							.newLatLng(mMarkers.get(0).getPosition()));					
 				}
-				LatLngBounds bounds = bld.build();
-				mMap.animateCamera(CameraUpdateFactory
-						.newLatLngBounds(bounds, padding));
 			}
 		}
 
