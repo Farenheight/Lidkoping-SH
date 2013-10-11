@@ -11,6 +11,7 @@ import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
+import android.util.Log;
 
 /**
  * Handles communication between Model and Order database.
@@ -101,6 +102,7 @@ public class OrderDbLayer implements ILayer {
 	 *            The orders to update
 	 */
 	public void updateDatabase(List<Order> orders) {
+		Log.d("update_database", "updates database");
 		IModel model = getModel();
 		for (Order o : orders) {
 			try {

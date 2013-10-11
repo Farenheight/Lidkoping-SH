@@ -101,4 +101,10 @@ public class TestLayer implements ILayer {
 		new TestLayer().getModel();
 	}
 
+	@Override
+	public void update(boolean getAll) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

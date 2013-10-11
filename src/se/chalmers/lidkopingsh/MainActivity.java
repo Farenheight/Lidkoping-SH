@@ -82,7 +82,7 @@ public class MainActivity extends FragmentActivity implements
 			startActivity(new Intent(this, OrderMapActivity.class));
 			return true;
 		case R.id.action_update:
-			// Update
+			ModelHandler.update(false);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

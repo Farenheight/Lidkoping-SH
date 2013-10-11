@@ -19,8 +19,12 @@ public class ModelHandler {
 
 	private static ILayer getLayer(Context context) {
 		if (layer == null) {
-			layer = new TestLayer();
+			layer = new OrderDbLayer(context);
 		}
 		return layer;
 	}	
+	
+	public static void update(boolean getAll) {
+		layer.update(getAll);
+	}
 }
