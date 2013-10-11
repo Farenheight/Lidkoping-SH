@@ -329,7 +329,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		private static final long serialVersionUID = 4082149811877348098L;
 
 		public TaskList(Collection<Task> collection) {
-			super(collection);
+			super(collection == null? new ArrayList<Task>() : collection);
 		}
 
 		@Override

@@ -21,6 +21,7 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+
 /**
  * A fragment representing a single Stone detail screen. This fragment is either
  * contained in the {@link HandsetsDetailsActivity} on handsets or to the right
@@ -45,6 +46,8 @@ public class OrderDetailsFragment extends Fragment {
 	private View rootView;
 
 	private TabHost mTabHost;
+	
+	private String mCurrentTabTag;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -60,9 +63,6 @@ public class OrderDetailsFragment extends Fragment {
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
 		rootView = inflater.inflate(R.layout.od_root, container, false);
-
-		// TODO:Consider include this again if bugs appear
-		// if (getArguments().containsKey(ORDER_ID)) {
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
@@ -95,6 +95,7 @@ public class OrderDetailsFragment extends Fragment {
 
 			@Override
 			public void onTabChanged(String tabId) {
+				mCurrentTabTag = tabId;
 			}
 		}); 
 
@@ -111,6 +112,7 @@ public class OrderDetailsFragment extends Fragment {
 		detailTab.setIndicator(getTabIndicator("Information"));
 		mTabHost.addTab(detailTab);
 		initDetails();
+		
 	}
 
 	private View getTabIndicator(String tabTitle) {
@@ -125,22 +127,20 @@ public class OrderDetailsFragment extends Fragment {
 	/**
 	 * Setups a task container with all it's data.
 	 */
-	private View initTasks(int tabResource) {
+	private void initTasks(int tabResource) {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		LinearLayout rootTaskCont = (LinearLayout) rootView
 				.findViewById(R.id.root_task_cont);
 		for (Product p : mOrder.getProducts()) {
 			ViewGroup productView = (ViewGroup) inflater.inflate(
 					R.layout.od_product_task_cont, null);
-			// TODO Fix to actual type of Product
 			((TextView) productView.findViewById(R.id.task_name))
-					.setText("Stone");
+					.setText(p.getType().getName());
 			for (final Task task : p.getTasks()) {
 				productView.addView(initTaskView(inflater, task));
 			}
 			rootTaskCont.addView(productView);
 		}
-		return rootTaskCont;
 	}
 
 	private View initTaskView(LayoutInflater inflater, final Task task) {

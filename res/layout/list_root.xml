@@ -9,7 +9,8 @@
         android:name="se.chalmers.lidkopingsh.OrderListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@android:layout/list_content" >
+        tools:layout="@android:layout/list_content" 
+       	>
     </fragment>
 
 </LinearLayout>

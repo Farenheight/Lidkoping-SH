@@ -1,6 +1,7 @@
 package se.chalmers.lidkopingsh.handler;
 
 import se.chalmers.lidkopingsh.model.IModel;
+import se.chalmers.lidkopingsh.model.IModel;
 import android.content.Context;
 
 
@@ -16,11 +17,10 @@ public class ModelHandler {
 		return model;
 	}
 
-	public static ILayer getLayer(Context context) {
+	private static ILayer getLayer(Context context) {
 		if (layer == null) {
-			layer = new OrderDbLayer(context);
+			layer = new TestLayer();
 		}
 		return layer;
-	}
-	
+	}	
 }

@@ -9,6 +9,12 @@
         android:showAsAction="withText|ifRoom"
         />
     <item
+        android:id="@+id/action_update"
+        android:icon="@drawable/ic_action_refresh"
+        android:title="Uppdatera"
+        android:showAsAction="ifRoom"
+        />
+    <item
         android:id="@+id/action_overflow"
         android:title="Hjälp"/>
 
