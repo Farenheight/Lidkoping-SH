@@ -85,8 +85,8 @@ public class OrderDbFiller {
 				System.currentTimeMillis(), customer, null, getImages());
 	}
 
-	private static Collection<Image> getImages() {
-		Collection<Image> images = new LinkedList<Image>();
+	private static List<Image> getImages() {
+		List<Image> images = new LinkedList<Image>();
 		images.add(new Image(imageId++, "/path"));
 		return images;
 	}

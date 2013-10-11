@@ -1,7 +1,12 @@
 package se.chalmers.lidkopingsh.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum Status {
-	NOT_DONE(0), DONE(1);
+	@SerializedName("0")
+	NOT_DONE(0),
+	@SerializedName("1")
+	DONE(1);
 	
 	private final int id;
 	

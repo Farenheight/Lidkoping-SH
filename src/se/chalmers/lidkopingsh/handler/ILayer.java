@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.database;
+package se.chalmers.lidkopingsh.handler;
 
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;

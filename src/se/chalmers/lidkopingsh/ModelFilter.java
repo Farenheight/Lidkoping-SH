@@ -6,9 +6,8 @@ import java.util.Locale;
 
 import se.chalmers.lidkopingsh.model.Order;
 
-public class ModelFilter implements IModelFilter<Order> {
+public class ModelFilter {
 
-	@Override
 	public boolean passesFilter(Order order, String constraint) {
 		String idName = order.getIdName().toUpperCase(Locale.getDefault());
 		String constr = constraint.toString().toUpperCase(Locale.getDefault());

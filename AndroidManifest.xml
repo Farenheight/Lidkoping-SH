@@ -8,6 +8,7 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
 
+<<<<<<< HEAD
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
@@ -28,10 +29,14 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+=======
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+>>>>>>> refs/heads/dev-serverlayer
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
         android:label="Test"
-        android:targetPackage="com.example.lidkopingsh" >
+        android:targetPackage="se.chalmers.lidkopingsh" >
     </instrumentation>
 
     <application

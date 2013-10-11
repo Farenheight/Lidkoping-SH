@@ -37,7 +37,7 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Olliver Mattsson
  * 
  */
-class OrderDbStorage {
+public class OrderDbStorage {
 
 	private static final String CUSTOMER = "c";
 	private static final String IMAGE = "i";
@@ -152,12 +152,16 @@ class OrderDbStorage {
 				order.getLastTimeUpdate());
 
 		insertCustomer(order.getCustomer());
-		for (Image i : order.getImages()) {
-			insertImage(i, order.getId());
+		if (order.getImages() != null) {
+			for (Image i : order.getImages()) {
+				insertImage(i, order.getId());
+			}
 		}
 
-		for (Product p : order.getProducts()) {
-			insertProduct(p, order.getId());
+		if (order.getProducts() != null) {
+			for (Product p : order.getProducts()) {
+				insertProduct(p, order.getId());
+			}
 		}
 
 		db.insert(OrderTable.TABLE_NAME, null, values);
@@ -216,9 +220,11 @@ class OrderDbStorage {
 		}
 
 		int i = 0;
-		for (Task t : p.getTasks()) {
-			insertTask(t, p.getId(), i);
-			i++;
+		if (p.getTasks() != null) {
+			for (Task t : p.getTasks()) {
+				insertTask(t, p.getId(), i);
+				i++;
+			}
 		}
 	}
 
@@ -297,23 +303,23 @@ class OrderDbStorage {
 			db.delete(StoneTable.TABLE_NAME, StoneTable.COLUMN_NAME_PRODUCT_ID
 					+ EQUALS + QUESTION_MARK,
 					new String[] { String.valueOf(p.getId()) });
-
-			for (Task t : p.getTasks()) {
-				Cursor c = db//checks if there are any tasks with the given station if not the station is removed
+			if(p.getTasks() != null) {
+				for (Task t : p.getTasks()) {
+					Cursor c = db//checks if there are any tasks with the given station if not the station is removed
 						.query(TaskTable.TABLE_NAME, null,
 								TaskTable.COLUMN_NAME_STATION_ID + EQUALS
 										+ QUESTION_MARK, new String[] { String
 										.valueOf(t.getStation().getId()) },
 								null, null, null);
-				if (!c.moveToNext()) {
-					db.delete(StationTable.TABLE_NAME,
+					if (!c.moveToNext()) {
+						db.delete(StationTable.TABLE_NAME,
 							StationTable.COLUMN_NAME_STATION_ID + EQUALS
 									+ QUESTION_MARK, new String[] { String
 									.valueOf(t.getStation().getId()) });
-					stationIds.remove(t.getStation().getId());
+						stationIds.remove(t.getStation().getId());
+					}
 				}
 			}
-
 		}
 
 		db.delete(ImageTable.TABLE_NAME, ImageTable.COLUMN_NAME_ORDER_ID
@@ -455,7 +461,7 @@ class OrderDbStorage {
 		return new Image(imageId, imagePath);
 	}
 
-	private Collection<Image> getImages(int orderId) {
+	private List<Image> getImages(int orderId) {
 		String sqlImages = SELECT_FROM + ImageTable.TABLE_NAME + SPACE + IMAGE
 				+ JOIN + OrderTable.TABLE_NAME + SPACE + ORDER + ON + IMAGE
 				+ DOT + ImageTable.COLUMN_NAME_ORDER_ID + EQUALS + ORDER + DOT
@@ -464,7 +470,7 @@ class OrderDbStorage {
 
 		Cursor c = db.rawQuery(sqlImages,
 				new String[] { Integer.toString(orderId) });
-		Collection<Image> images = new LinkedList<Image>();
+		List<Image> images = new LinkedList<Image>();
 
 		while (c.moveToNext()) {
 			images.add(getImage(c));
@@ -495,7 +501,7 @@ class OrderDbStorage {
 		}
 	}
 
-	private Collection<Product> getProducts(int orderId) {
+	private List<Product> getProducts(int orderId) {
 		String sqlProducts = SELECT_FROM + ProductTable.TABLE_NAME + SPACE
 				+ PRODUCT + LEFT_JOIN + StoneTable.TABLE_NAME + SPACE + STONE
 				+ ON + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID
@@ -517,7 +523,7 @@ class OrderDbStorage {
 
 		Cursor c = db.rawQuery(sqlProducts,
 				new String[] { Integer.toString(orderId) });
-		Collection<Product> products = new LinkedList<Product>();
+		List<Product> products = new LinkedList<Product>();
 
 		while (c.moveToNext()) {
 			products.add(getProduct(c));
