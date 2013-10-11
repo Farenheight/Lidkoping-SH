@@ -6,7 +6,8 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".HandsetsDetailsActivity" >
+    tools:context=".HandsetsDetailsActivity"
+    android:background="#555" >
 
     <include layout="@layout/list_root" 
         android:layout_weight="2"
