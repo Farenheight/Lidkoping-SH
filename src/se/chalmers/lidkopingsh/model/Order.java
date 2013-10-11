@@ -291,7 +291,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * Notify listeners on change.
 	 */
 	public void notifyOrderListeners () {
-		lastTimeUpdate = System.currentTimeMillis();
+		lastTimeUpdate += 1000;
 		for (Listener<Order> listener : orderListeners) {
 			listener.changed(this);
 		}
