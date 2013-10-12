@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.model.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,10 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.model.Product;
+import se.chalmers.lidkopingsh.model.Station;
+import se.chalmers.lidkopingsh.model.Status;
+import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.util.Listener;
 
 public class ProductTest extends TestCase implements Listener<Product> {
