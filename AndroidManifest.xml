@@ -43,7 +43,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCbrkJgTajPLiV9N24mF7NW9yoahIS5A9Q" />
+            android:value="AIzaSyDl4-m8fdiUqdoseRNj5p4psGG1yH6SQfI" />
 
         <activity
             android:name=".OrderMapActivity"
