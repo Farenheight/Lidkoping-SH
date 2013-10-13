@@ -18,11 +18,11 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
 
 /**
  * A fragment representing a single Stone detail screen. This fragment is either
@@ -32,10 +32,12 @@ import android.widget.ToggleButton;
  * @author Simon Bengtsson
  * 
  */
-public class OrderDetailsFragment extends Fragment implements Listener<Order>{
+public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 	/** Used as a key when sending the object between activities and fragments */
 	public static final String ORDER_ID = "item_id";
+
+	public static final String CURRENT_TAB_KEY = "current_tab_key";
 
 	private static final String DRAWING_TAB = "drawing tab";
 
@@ -48,7 +50,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 	private View rootView;
 
 	private TabHost mTabHost;
-	
+
 	private String mCurrentTabTag;
 
 	/**
@@ -60,7 +62,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+			Bundle savedState) {
 
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
@@ -71,8 +73,19 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 				getArguments().getInt(ORDER_ID));
 
 		// Collects data from mOrder and initialize the views accordingly
-		initTabs();
+		initTabs(savedState == null ? null : savedState.getString(CURRENT_TAB_KEY));
 		initTasks();
+
+		// Hack to make the scroll view on the details tab not scroll to the
+		// buttom when changing tabs programatically
+		final ScrollView innerInfoScrollView = (ScrollView) rootView
+				.findViewById(R.id.scrollview_inner_info);
+		innerInfoScrollView.post(new Runnable() {
+			public void run() {
+				innerInfoScrollView.scrollTo(0, 0);
+			}
+		});
+
 		return rootView;
 	}
 
@@ -88,9 +101,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 	 * tab's views.
 	 * 
 	 */
-	private void initTabs() {
-		mTabHost = (TabHost) rootView
-				.findViewById(R.id.orderTabHost);
+	private void initTabs(String currentTab) {
+		mTabHost = (TabHost) rootView.findViewById(R.id.orderTabHost);
 		mTabHost.setup();
 
 		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
@@ -99,22 +111,27 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 			public void onTabChanged(String tabId) {
 				mCurrentTabTag = tabId;
 			}
-		}); 
+		});
 
-		// Add drawing tab 
+		// Add drawing tab
 		TabHost.TabSpec drawingTab = mTabHost.newTabSpec(DRAWING_TAB);
 		drawingTab.setContent(R.id.tabDrawingContainer);
 		drawingTab.setIndicator(getTabIndicator("Ritning"));
 		mTabHost.addTab(drawingTab);
 		initDrawing();
-		
+
 		// Add detail tab
 		TabHost.TabSpec detailTab = mTabHost.newTabSpec(DETAIL_TAB);
 		detailTab.setContent(R.id.tab_info_container);
 		detailTab.setIndicator(getTabIndicator("Information"));
 		mTabHost.addTab(detailTab);
 		initDetails();
-		
+
+		// Sets the current tab if saved
+		if (currentTab != null) {
+			mTabHost.setCurrentTabByTag(DETAIL_TAB);
+		}
+
 	}
 
 	private View getTabIndicator(String tabTitle) {
@@ -136,8 +153,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 		for (Product p : mOrder.getProducts()) {
 			ViewGroup productView = (ViewGroup) inflater.inflate(
 					R.layout.od_product_task_cont, null);
-			((TextView) productView.findViewById(R.id.task_name))
-					.setText(p.getType().getName());
+			((TextView) productView.findViewById(R.id.task_name)).setText(p
+					.getType().getName());
 			for (final Task task : p.getTasks()) {
 				productView.addView(initTaskView(inflater, task));
 			}
@@ -237,24 +254,30 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 		}
 	}
 
-    @Override
-    public void changed(Order order) {
-            if (order != mOrder) {
-                    if (order == null) {
-                            // TODO: Display error message to user
-                            // TODO: Consider a better way than sending null to let GUI know
-                            Log.d("DEBUG", "Server not about changes!");
-                    } else {
-                            throw new IllegalArgumentException(
-                                            "The changed object should be the one displayed in the GUI");
-                    }
-            } else {
-            		Log.d("DEBUG", "Updated GUI");
-                    ViewGroup taskContainer = (ViewGroup) rootView
-                                    .findViewById(R.id.root_task_cont);
-                    taskContainer.removeAllViews();
-                    initTasks();
-            }
-    }
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putString(CURRENT_TAB_KEY, mTabHost.getCurrentTabTag());
+	}
+
+	@Override
+	public void changed(Order order) {
+		if (order != mOrder) {
+			if (order == null) {
+				// TODO: Display error message to user
+				// TODO: Consider a better way than sending null to let GUI know
+				Log.d("DEBUG", "Server not about changes!");
+			} else {
+				throw new IllegalArgumentException(
+						"The changed object should be the one displayed in the GUI");
+			}
+		} else {
+			Log.d("DEBUG", "Updated GUI");
+			ViewGroup taskContainer = (ViewGroup) rootView
+					.findViewById(R.id.root_task_cont);
+			taskContainer.removeAllViews();
+			initTasks();
+		}
+	}
 
 }
