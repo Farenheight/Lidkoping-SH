@@ -18,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
@@ -35,6 +36,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 	/** Used as a key when sending the object between activities and fragments */
 	public static final String ORDER_ID = "item_id";
+
+	public static final String CURRENT_TAB_KEY = "current_tab_key";
 
 	private static final String DRAWING_TAB = "drawing tab";
 
@@ -63,7 +66,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+			Bundle savedState) {
 
 		mTabletSize = getArguments().getBoolean(MainActivity.IS_TABLET_SIZE);
 
@@ -75,9 +78,20 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
 
-		// Collects data from mOrder and initialize the views accordingly.
-		initTabs();
+		// Collects data from mOrder and initialize the views accordingly
+		initTabs(savedState == null ? null : savedState.getString(CURRENT_TAB_KEY));
 		initTasks();
+
+		// Hack to make the scroll view on the details tab not scroll to the
+		// buttom when changing tabs programatically
+		final ScrollView innerInfoScrollView = (ScrollView) rootView
+				.findViewById(R.id.scrollview_inner_info);
+		innerInfoScrollView.post(new Runnable() {
+			public void run() {
+				innerInfoScrollView.scrollTo(0, 0);
+			}
+		});
+
 		return rootView;
 	}
 
@@ -93,7 +107,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	 * tab's views.
 	 * 
 	 */
-	private void initTabs() {
+
+	private void initTabs(String currentTab) {
 		mTabHost = (TabHost) rootView.findViewById(R.id.orderTabHost);
 		mTabHost.setup();
 
@@ -128,6 +143,11 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		mTabHost.addTab(detailTab);
 		initDetails();
 
+		// Sets the current tab if saved
+		if (currentTab != null) {
+			mTabHost.setCurrentTabByTag(DETAIL_TAB);
+		}
+
 	}
 
 	// Only changing the look of the tabs
@@ -150,6 +170,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		for (Product p : mOrder.getProducts()) {
 			ViewGroup productView = (ViewGroup) inflater.inflate(
 					R.layout.od_producttask_cont, null);
+
 			((TextView) productView.findViewById(R.id.task_name)).setText(p
 					.getType().getName());
 			for (final Task task : p.getTasks()) {
@@ -252,6 +273,11 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	}
 
 	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putString(CURRENT_TAB_KEY, mTabHost.getCurrentTabTag());
+	}
+	
 	public void changed(Order order) {
 		if (order != mOrder) {
 			if (order == null) {

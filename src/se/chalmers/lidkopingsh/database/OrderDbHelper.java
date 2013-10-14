@@ -11,6 +11,7 @@ import se.chalmers.lidkopingsh.database.DataContract.TaskTable;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 
 /**
@@ -128,6 +129,7 @@ class OrderDbHelper extends SQLiteOpenHelper {
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		Log.d("OrderDbHelper", "Creating database");
 		db.execSQL(ORDER_TABLE_CREATE);
 		db.execSQL(IMAGE_TABLE_CREATE);
 		db.execSQL(PRODUCT_TABLE_CREATE);

@@ -41,8 +41,10 @@ public class OrderDbLayer implements ILayer {
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/",
 				context);
 		updateDatabase(getUpdates(true));
+		Log.d("OrderDbLayer", "Constructor");
 		timer = new Timer();
-		timer.scheduleAtFixedRate(new UpdateTimerTask(this), 0, UPDATE_INTERVAL);
+		timer.scheduleAtFixedRate(new UpdateTimerTask(this), UPDATE_INTERVAL,
+				UPDATE_INTERVAL);
 	}
 
 	@Override
