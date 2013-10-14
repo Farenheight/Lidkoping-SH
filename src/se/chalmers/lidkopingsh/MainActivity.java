@@ -3,6 +3,7 @@ package se.chalmers.lidkopingsh;
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
@@ -21,7 +22,7 @@ import android.view.MenuItem;
  */
 public class MainActivity extends FragmentActivity implements
 		OrderListFragment.OrderSelectedCallbacks {
-	
+
 	public static final String IS_TABLET_SIZE = "is_tablet_size";
 	private OrderDetailsFragment mCurrentOrderDetailsFragment;
 	private Order mCurrentOrder;
@@ -54,21 +55,24 @@ public class MainActivity extends FragmentActivity implements
 		// On tablets, show the detail view in this activity by adding or
 		// replacing the detail fragment
 		if (mTabletSize) {
-			if(mCurrentOrderDetailsFragment != null && mCurrentOrder != null){
-				mCurrentOrder.removeSyncOrderListener(mCurrentOrderDetailsFragment);
+			if (mCurrentOrderDetailsFragment != null && mCurrentOrder != null) {
+				mCurrentOrder
+						.removeSyncOrderListener(mCurrentOrderDetailsFragment);
 			}
 			Bundle arguments = new Bundle();
 			arguments.putInt(OrderDetailsFragment.ORDER_ID, orderId);
 			arguments.putBoolean(IS_TABLET_SIZE, mTabletSize);
-				
+
 			mCurrentOrder = ModelHandler.getModel(this).getOrderById(orderId);
 			mCurrentOrderDetailsFragment = new OrderDetailsFragment();
 			mCurrentOrderDetailsFragment.setArguments(arguments);
-			
+
 			mCurrentOrder.addSyncOrderListener(mCurrentOrderDetailsFragment);
-			
-			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.tablet_hint_container, mCurrentOrderDetailsFragment).commit();
+
+			getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.tablet_hint_container,
+							mCurrentOrderDetailsFragment).commit();
 		}
 		// On handsets, start the detail activity for the selected item ID
 		else {
@@ -99,6 +103,10 @@ public class MainActivity extends FragmentActivity implements
 			item.setActionView(R.layout.progress_indicator);
 			ModelHandler.update(false);
 			return true;
+		case R.id.action_help:
+			Uri url = Uri.parse("http://simonbengtsson.se/userguide.pdf");
+			Intent intent = new Intent(Intent.ACTION_VIEW, url);
+			startActivity(intent);
 		default:
 			return super.onOptionsItemSelected(item);
 		}
