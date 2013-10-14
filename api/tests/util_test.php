@@ -53,6 +53,10 @@ class UtilTest extends UnitTestCase {
 		$cName = $util->getIdName($c);
 		//echo $cName . "<br>";
 		$this->assertTrue($cName === "X.Ö.");
+		
+		// Test with faulty object
+		$array = array('cemetery' => "Örlösa");
+		$this->assertFalse($util->getIdName($array));
 	}
 }
 ?>

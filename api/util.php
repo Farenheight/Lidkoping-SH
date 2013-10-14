@@ -70,7 +70,6 @@ class Util {
 		$randomCount = 0;
 		$crysisArrayCount = sizeof($crysis);
 		$deceasedNameCount = strlen($order['deceased']);
-		echo $deceasedNameCount . "<br>";
 		while(in_array($proposal, $this->idNames)){ // If ID name is taken
 			if($i < $deceasedNameCount){
 				if(substr($deceased, $i, 1) != " "){
