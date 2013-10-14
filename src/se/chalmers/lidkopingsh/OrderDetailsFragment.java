@@ -23,7 +23,6 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-
 /**
  * A fragment representing a single Stone detail screen. This fragment is either
  * contained in the {@link HandsetsDetailsActivity} on handsets or to the right
@@ -32,7 +31,7 @@ import android.widget.ToggleButton;
  * @author Simon Bengtsson
  * 
  */
-public class OrderDetailsFragment extends Fragment implements Listener<Order>{
+public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 	/** Used as a key when sending the object between activities and fragments */
 	public static final String ORDER_ID = "item_id";
@@ -50,7 +49,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 	private View rootView;
 
 	private TabHost mTabHost;
-	
+
 	private String mCurrentTabTag;
 
 	private boolean mTabletSize;
@@ -65,7 +64,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
+
 		mTabletSize = getArguments().getBoolean(MainActivity.IS_TABLET_SIZE);
 
 		// Inflate the root view for the fragment. The rootView should contain
@@ -76,7 +75,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
 
-		// Collects data from mOrder and initialize the views accordingly. 
+		// Collects data from mOrder and initialize the views accordingly.
 		initTabs();
 		initTasks();
 		return rootView;
@@ -95,8 +94,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 	 * 
 	 */
 	private void initTabs() {
-		mTabHost = (TabHost) rootView
-				.findViewById(R.id.orderTabHost);
+		mTabHost = (TabHost) rootView.findViewById(R.id.orderTabHost);
 		mTabHost.setup();
 
 		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
@@ -105,30 +103,31 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 			public void onTabChanged(String tabId) {
 				mCurrentTabTag = tabId;
 			}
-		}); 
+		});
+		
+		// On phones, put the task container in a new tab
+		if (!mTabletSize) {
+			TabHost.TabSpec taskTab = mTabHost.newTabSpec(TASK_TAB);
+			taskTab.setContent(R.id.task_cont_wrapper);
+			taskTab.setIndicator(getTabIndicator("Moment"));
+			mTabHost.addTab(taskTab);
+		}
 
-		// Add drawing tab 
+		// Add drawing tab
 		TabHost.TabSpec drawingTab = mTabHost.newTabSpec(DRAWING_TAB);
 		drawingTab.setContent(R.id.tabDrawingContainer);
 		drawingTab.setIndicator(getTabIndicator("Ritning"));
 		mTabHost.addTab(drawingTab);
 		initDrawing();
-		
+
 		// Add detail tab
 		TabHost.TabSpec detailTab = mTabHost.newTabSpec(DETAIL_TAB);
 		detailTab.setContent(R.id.tab_info_container);
-		detailTab.setIndicator(getTabIndicator("Information"));
+		detailTab.setIndicator(getTabIndicator(mTabletSize ? "Information"
+				: "Info"));
 		mTabHost.addTab(detailTab);
 		initDetails();
-		
-		// On phones, put the task container in a new tab
-		if(!mTabletSize) {
-			TabHost.TabSpec taskTab = mTabHost.newTabSpec(TASK_TAB);
-			taskTab.setContent(R.id.tab_info_container);
-			taskTab.setIndicator(getTabIndicator("Moment"));
-			mTabHost.addTab(taskTab);
-		}
-		
+
 	}
 
 	// Only changing the look of the tabs
@@ -151,8 +150,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 		for (Product p : mOrder.getProducts()) {
 			ViewGroup productView = (ViewGroup) inflater.inflate(
 					R.layout.od_product_task_cont, null);
-			((TextView) productView.findViewById(R.id.task_name))
-					.setText(p.getType().getName());
+			((TextView) productView.findViewById(R.id.task_name)).setText(p
+					.getType().getName());
 			for (final Task task : p.getTasks()) {
 				productView.addView(initTaskView(inflater, task));
 			}
@@ -161,7 +160,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 	}
 
 	private View initTaskView(LayoutInflater inflater, final Task task) {
-		View taskView = inflater.inflate(R.layout.od_task_cont, null);
+		View taskView = inflater.inflate(R.layout.od_task, null);
 
 		// Set task name
 		((TextView) taskView.findViewById(R.id.task_name)).setText(task
@@ -252,24 +251,24 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 		}
 	}
 
-    @Override
-    public void changed(Order order) {
-            if (order != mOrder) {
-                    if (order == null) {
-                            // TODO: Display error message to user
-                            // TODO: Consider a better way than sending null to let GUI know
-                            Log.d("DEBUG", "Server not about changes!");
-                    } else {
-                            throw new IllegalArgumentException(
-                                            "The changed object should be the one displayed in the GUI");
-                    }
-            } else {
-            		Log.d("DEBUG", "Updated GUI");
-                    ViewGroup taskContainer = (ViewGroup) rootView
-                                    .findViewById(R.id.root_task_cont);
-                    taskContainer.removeAllViews();
-                    initTasks();
-            }
-    }
+	@Override
+	public void changed(Order order) {
+		if (order != mOrder) {
+			if (order == null) {
+				// TODO: Display error message to user
+				// TODO: Consider a better way than sending null to let GUI know
+				Log.d("DEBUG", "Server not about changes!");
+			} else {
+				throw new IllegalArgumentException(
+						"The changed object should be the one displayed in the GUI");
+			}
+		} else {
+			Log.d("DEBUG", "Updated GUI");
+			ViewGroup taskContainer = (ViewGroup) rootView
+					.findViewById(R.id.root_task_cont);
+			taskContainer.removeAllViews();
+			initTasks();
+		}
+	}
 
 }
