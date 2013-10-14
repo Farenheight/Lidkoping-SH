@@ -21,7 +21,8 @@
 
     <EditText
         android:id="@+id/search_field"
-        android:textColor="#bbb"
+        android:textColor="#ccc"
+        android:textCursorDrawable="@null"
         android:textSize="20sp"
         android:background="@drawable/edit_text_holo_dark"
         android:layout_width="match_parent"
