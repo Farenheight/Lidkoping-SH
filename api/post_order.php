@@ -3,8 +3,7 @@ function insertOrder() {
 	$jsonData = getValidInput();
 	
 	prepareSql();
-	$orderNrGen = new OrderNumberGenerator();
-	$orderId = sqlInsertOrder($jsonData, $orderNrGen);
+	$orderId = sqlInsertOrder($jsonData);
 
 	$orderNrGen->saveChanges();
 	$GLOBALS['con'] -> commit();	//TODO Response. Where are we notified if the sql returns error?
@@ -221,12 +220,11 @@ function sqlInsertImage($image, $orderId) {
 	$stmt -> execute();
 }
 
-function sqlInsertOrder($order, $orderNrGen) {
+function sqlInsertOrder($order) {
 	$customerId = sqlInsertCustomer($order['customer']);
 
-	$orderNr = $orderNrGen -> newOrderNumber($order['orderDate']);
-	$idName = "CustomID";
-	// TODO: Generate id name
+	$orderNr = $GLOBALS['util'] -> newOrderNumber($order['orderDate']);
+	$idName = $GLOBALS['util']->getIdName($order);
 	$time = getMilliseconds();
 
 	$sql = "INSERT INTO `order` (`order_number`, `id_name`, `order_date`, `cemetery_board`,

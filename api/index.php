@@ -9,6 +9,7 @@ require_once 'authentication.php';
 require_once 'db_config.php';
 require_once 'class/mySQLConnection.php';
 require_once 'util.php';
+$util = new Util();
 $con = new mySQLConnection();
 checkAuthenticated();
 
