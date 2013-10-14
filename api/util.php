@@ -17,6 +17,7 @@ class Util {
 			$this->numGenerated[$row['year']] = $row['count'];
 		}
 		
+		$this->idNames = array();
 		$stmt2 = $GLOBALS['con']->prepare("SELECT `id_name` FROM `order` WHERE `cancelled`=0 AND `archived`=0");
 		$stmt2->execute();
 		$res2 = $stmt2->get_result();
@@ -42,8 +43,14 @@ class Util {
 		return $toReturn;
 	}
 	
+	/**
+	 * Return false if something went wrong (e.g. argument was not an order)
+	 * or an string containing the id name on success.
+	 */
 	public function getIdName($order){
-		// Use while. Create a suggestion and check with array. 
+		if(!array_key_exists("cemetery", $order) || !array_key_exists("deceased", $order)){
+			return false;
+		}
 		$cemetery = $order['cemetery'];
 		$deceased = $order['deceased'];
 		
@@ -62,7 +69,8 @@ class Util {
 		$secLetterNum = 0;
 		$randomCount = 0;
 		$crysisArrayCount = sizeof($crysis);
-		$deceasedNameCount = sizeof($order['deceased']);
+		$deceasedNameCount = strlen($order['deceased']);
+		echo $deceasedNameCount . "<br>";
 		while(in_array($proposal, $this->idNames)){ // If ID name is taken
 			if($i < $deceasedNameCount){
 				if(substr($deceased, $i, 1) != " "){
@@ -95,7 +103,6 @@ class Util {
 				}
 				$randomCount++;
 			}
-			
 			$i++;
 		}
 		$this->idNames[] = $proposal;
