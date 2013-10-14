@@ -5,7 +5,6 @@ import se.chalmers.lidkopingsh.model.Order;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +22,7 @@ import android.view.MenuItem;
 public class MainActivity extends FragmentActivity implements
 		OrderListFragment.OrderSelectedCallbacks {
 	
+	public static final String IS_TABLET_SIZE = "is_tablet_size";
 	private OrderDetailsFragment mCurrentOrderDetailsFragment;
 	private Order mCurrentOrder;
 
@@ -34,7 +34,6 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
-		mTabletSize = true;
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
@@ -53,21 +52,19 @@ public class MainActivity extends FragmentActivity implements
 	public void onItemSelected(int orderId) {
 		// On tablets, show the detail view in this activity by adding or
 		// replacing the detail fragment
-		// TODO: Explore the possibility of saving the created fragment/activity
-		// instead of creating a new each time the user chooses a stone
 		if (mTabletSize) {
 			if(mCurrentOrderDetailsFragment != null && mCurrentOrder != null){
 				mCurrentOrder.removeSyncOrderListener(mCurrentOrderDetailsFragment);
-				Log.d("DEBUG", "Removed OrderSyncListeners to " + mCurrentOrder);
 			}
 			Bundle arguments = new Bundle();
 			arguments.putInt(OrderDetailsFragment.ORDER_ID, orderId);
+			arguments.putBoolean(IS_TABLET_SIZE, mTabletSize);
+				
 			mCurrentOrder = ModelHandler.getModel(this).getOrderById(orderId);
 			mCurrentOrderDetailsFragment = new OrderDetailsFragment();
 			mCurrentOrderDetailsFragment.setArguments(arguments);
 			
 			mCurrentOrder.addSyncOrderListener(mCurrentOrderDetailsFragment);
-			Log.d("DEBUG", "Added OrderSyncListeners to " + mCurrentOrder);
 			
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.tablet_hint_container, mCurrentOrderDetailsFragment).commit();
@@ -77,6 +74,7 @@ public class MainActivity extends FragmentActivity implements
 			Intent detailIntent = new Intent(this,
 					HandsetsDetailsActivity.class);
 			detailIntent.putExtra(OrderDetailsFragment.ORDER_ID, orderId);
+			detailIntent.putExtra(IS_TABLET_SIZE, mTabletSize);
 			startActivity(detailIntent);
 		}
 	}

@@ -41,6 +41,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 
 	private static final String DETAIL_TAB = "DETAILS tab";
 
+	private static final String TASK_TAB = "task_tab";
+
 	/** The order displayed by this StoneDetailFragment */
 	private Order mOrder;
 
@@ -50,6 +52,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 	private TabHost mTabHost;
 	
 	private String mCurrentTabTag;
+
+	private boolean mTabletSize;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -61,6 +65,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		mTabletSize = getArguments().getBoolean(MainActivity.IS_TABLET_SIZE);
 
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
@@ -70,7 +76,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
 
-		// Collects data from mOrder and initialize the views accordingly
+		// Collects data from mOrder and initialize the views accordingly. 
 		initTabs();
 		initTasks();
 		return rootView;
@@ -115,8 +121,17 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order>{
 		mTabHost.addTab(detailTab);
 		initDetails();
 		
+		// On phones, put the task container in a new tab
+		if(!mTabletSize) {
+			TabHost.TabSpec taskTab = mTabHost.newTabSpec(TASK_TAB);
+			taskTab.setContent(R.id.tab_info_container);
+			taskTab.setIndicator(getTabIndicator("Moment"));
+			mTabHost.addTab(taskTab);
+		}
+		
 	}
 
+	// Only changing the look of the tabs
 	private View getTabIndicator(String tabTitle) {
 		View tabIndicator = LayoutInflater.from(getActivity()).inflate(
 				R.layout.tab_indicator_holo, mTabHost.getTabWidget(), false);

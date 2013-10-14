@@ -32,8 +32,12 @@ public class HandsetsDetailsActivity extends FragmentActivity {
 		// a saved fragment, create it below.
 		if (savedInstanceState == null) {
 			Bundle arguments = new Bundle();
+			// Send current order id
 			arguments.putInt(OrderDetailsFragment.ORDER_ID, getIntent()
 					.getIntExtra(OrderDetailsFragment.ORDER_ID, -1));
+			// Send if running on tabelt
+			arguments.putBoolean(MainActivity.IS_TABLET_SIZE, getIntent()
+					.getBooleanExtra(MainActivity.IS_TABLET_SIZE, false));
 			OrderDetailsFragment fragment = new OrderDetailsFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
