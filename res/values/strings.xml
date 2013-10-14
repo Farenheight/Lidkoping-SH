@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Lidkopings Stenhuggeri</string>
-    <string name="title_stone_detail">Stone Detail</string>
+    <string name="title_stone_detail">Order detaljer</string>
 
     <string-array name="tasks_array">
         <item>Polering</item>
