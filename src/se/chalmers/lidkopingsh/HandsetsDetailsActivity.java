@@ -1,9 +1,12 @@
 package se.chalmers.lidkopingsh;
 
+import se.chalmers.lidkopingsh.handler.ModelHandler;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 /**
@@ -44,6 +47,14 @@ public class HandsetsDetailsActivity extends FragmentActivity {
 					.add(R.id.tablet_hint_container, fragment).commit();
 		}
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu items for use in the action bar
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.action_bar_details_activity, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
 
 	// Called when a button in the action bar is clicked
 	@Override
@@ -54,7 +65,12 @@ public class HandsetsDetailsActivity extends FragmentActivity {
 			// Navigates up one level in the application structure.
 			NavUtils.navigateUpTo(this, new Intent(this, MainActivity.class));
 			return true;
+		case R.id.action_update:
+			item.setActionView(R.layout.progress_indicator);
+			ModelHandler.update(false);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 }

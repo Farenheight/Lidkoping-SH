@@ -83,7 +83,7 @@ public class MainActivity extends FragmentActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu items for use in the action bar
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.action_bar, menu);
+		inflater.inflate(R.menu.action_bar_main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -95,6 +95,7 @@ public class MainActivity extends FragmentActivity implements
 			startActivity(new Intent(this, OrderMapActivity.class));
 			return true;
 		case R.id.action_update:
+			item.setActionView(R.layout.progress_indicator);
 			ModelHandler.update(false);
 			return true;
 		default:

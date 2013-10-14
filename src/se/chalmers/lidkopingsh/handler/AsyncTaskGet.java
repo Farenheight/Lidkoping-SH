@@ -17,6 +17,11 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 	@Override
 	protected List<Order> doInBackground(ServerLayer... serverLayer) {
 		Log.d("AsyncTaskGet", "doInBackground");
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		return serverLayer[0].getUpdates(getAll);
 	}
 	

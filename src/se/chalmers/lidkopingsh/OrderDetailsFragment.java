@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -79,7 +80,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 				getArguments().getInt(ORDER_ID));
 
 		// Collects data from mOrder and initialize the views accordingly
-		initTabs(savedState == null ? null : savedState.getString(CURRENT_TAB_KEY));
+		initTabs(savedState == null ? null : savedState
+				.getString(CURRENT_TAB_KEY));
 		initTasks();
 
 		// Hack to make the scroll view on the details tab not scroll to the
@@ -119,7 +121,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 				mCurrentTabTag = tabId;
 			}
 		});
-		
+
 		// On phones, put the task container in a new tab
 		if (!mTabletSize) {
 			TabHost.TabSpec taskTab = mTabHost.newTabSpec(TASK_TAB);
@@ -277,8 +279,16 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		super.onSaveInstanceState(outState);
 		outState.putString(CURRENT_TAB_KEY, mTabHost.getCurrentTabTag());
 	}
-	
+
+	@Override
 	public void changed(Order order) {
+		Log.d("DEBUG", "In changed()");
+
+		// Resets refresh button to refresh icon
+		MenuItem refreshBtn = (MenuItem) getActivity().findViewById(
+				R.id.action_update);
+		refreshBtn.setActionView(null);
+		
 		if (order != mOrder) {
 			if (order == null) {
 				// TODO: Display error message to user
