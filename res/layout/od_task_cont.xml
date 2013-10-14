@@ -7,7 +7,6 @@
     android:baselineAligned="false" >
 
     <FrameLayout
-        android:id="@+id/cont_to_root_task_cont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/default_padding"
@@ -15,12 +14,9 @@
         android:paddingTop="@dimen/default_padding" >
 
         <LinearLayout
-            android:id="@+id/root_task_cont"
+            android:id="@+id/task_cont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/default_margin"
-            android:layout_marginRight="@dimen/default_margin"
-            android:layout_marginTop="@dimen/default_margin"
             android:background="@drawable/card_border_shape"
             android:orientation="vertical"
             android:padding="10dp" >

@@ -31,9 +31,9 @@
                 android:layout_weight="1"
                 android:background="#d0d0da" >
 
-                <include layout="@layout/od_outer_info_cont" />
+                <include layout="@layout/od_info_cont" />
 
-                <include layout="@layout/od_outer_drawing_cont" />
+                <include layout="@layout/od_drawing" />
             </FrameLayout>
         </LinearLayout>
     </TabHost>

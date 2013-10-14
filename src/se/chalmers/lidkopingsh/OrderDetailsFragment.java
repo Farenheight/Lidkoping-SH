@@ -146,10 +146,10 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	private void initTasks() {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		LinearLayout rootTaskCont = (LinearLayout) rootView
-				.findViewById(R.id.root_task_cont);
+				.findViewById(R.id.task_cont);
 		for (Product p : mOrder.getProducts()) {
 			ViewGroup productView = (ViewGroup) inflater.inflate(
-					R.layout.od_product_task_cont, null);
+					R.layout.od_producttask_cont, null);
 			((TextView) productView.findViewById(R.id.task_name)).setText(p
 					.getType().getName());
 			for (final Task task : p.getTasks()) {
@@ -265,7 +265,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		} else {
 			Log.d("DEBUG", "Updated GUI");
 			ViewGroup taskContainer = (ViewGroup) rootView
-					.findViewById(R.id.root_task_cont);
+					.findViewById(R.id.task_cont);
 			taskContainer.removeAllViews();
 			initTasks();
 		}

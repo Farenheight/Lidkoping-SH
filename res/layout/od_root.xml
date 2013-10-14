@@ -31,11 +31,30 @@
                 android:layout_weight="1"
                 android:background="#d0d0da" >
 
-                <include layout="@layout/od_outer_info_cont" />
+                <include layout="@layout/od_info_cont" />
 
-                <include layout="@layout/od_outer_drawing_cont" />
+                <include layout="@layout/od_drawing" />
 
-                <include layout="@layout/od_task_cont" />
+                <ScrollView
+                    android:id="@+id/task_cont_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/default_padding" >
+
+                        <LinearLayout
+                            android:id="@+id/task_cont"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/card_border_shape"
+                            android:orientation="vertical"
+                            android:padding="15dp" >
+                        </LinearLayout>
+                    </FrameLayout>
+                </ScrollView>
             </FrameLayout>
         </LinearLayout>
     </TabHost>
