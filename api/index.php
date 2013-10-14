@@ -23,6 +23,9 @@ if (isset($_GET['action'])) {
 	} else if ($_GET['action'] === "insertOrder") {
 		require_once 'post_order.php';
 		insertOrder();
+	} else if($_GET['action'] === "getApikey"){
+		require_once 'getApikey.php';
+		getApikey();
 	} else {
 		errorGeneric("No valid action: Provided action (". $_GET['action'] .") does not exist");
 	}
