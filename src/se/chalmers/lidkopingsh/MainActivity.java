@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,7 +44,7 @@ public class MainActivity extends FragmentActivity implements
 		} else {
 			setContentView(R.layout.list_root);
 		}
-
+		
 	}
 
 	/**
@@ -102,7 +103,7 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.action_start_map_view:
 			startActivity(new Intent(this, OrderMapActivity.class));
 			return true;
-		case R.id.action_update:
+		case R.id.action_update: 
 			item.setActionView(R.layout.progress_indicator);
 			ModelHandler.update(false);
 			return true;
@@ -117,6 +118,7 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void startUpdate() {
+		Log.d("MainActivity", "Update started");
 		mItem.setActionView(R.layout.progress_indicator);
 		
 	}
@@ -124,12 +126,11 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void endUpdate() {
 		mItem.setActionView(null);
-		
+		Log.d("MainActivity", "Update finished");
 	}
 
 	@Override
 	public void noNetwork(String message) {
-		// TODO Auto-generated method stub
-		
+		Log.d("MainActivity", "Network error");
 	}
 }

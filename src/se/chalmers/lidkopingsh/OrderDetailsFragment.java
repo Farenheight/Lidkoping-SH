@@ -7,6 +7,7 @@ import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.util.Listener;
+import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -50,7 +51,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	private Order mOrder;
 
 	/** The root view that contains everything */
-	private View rootView;
+	private View mRootView;
 
 	private TabHost mTabHost;
 
@@ -67,11 +68,13 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedState) {
 
+		ModelHandler.getLayer(getActivity()).addNetworkListener(
+				new NetworkWatcher());
 		mTabletSize = getArguments().getBoolean(MainActivity.IS_TABLET_SIZE);
 
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
-		rootView = inflater.inflate(R.layout.od_root, container, false);
+		mRootView = inflater.inflate(R.layout.od_root, container, false);
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
@@ -84,7 +87,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 		// Hack to make the scroll view on the details tab not scroll to the
 		// buttom when changing tabs programatically
-		final ScrollView innerInfoScrollView = (ScrollView) rootView
+		final ScrollView innerInfoScrollView = (ScrollView) mRootView
 				.findViewById(R.id.scrollview_inner_info);
 		innerInfoScrollView.post(new Runnable() {
 			public void run() {
@@ -92,7 +95,29 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 			}
 		});
 
-		return rootView;
+		return mRootView;
+	}
+
+	private class NetworkWatcher implements NetworkUpdateListener {
+
+		@Override
+		public void startUpdate() {
+			// Do nothing
+		}
+
+		@Override
+		public void endUpdate() {
+			ViewGroup taskCont = (ViewGroup) mRootView
+					.findViewById(R.id.task_cont);
+			for (int i = 0; i < taskCont.getChildCount(); i++) {
+			}
+		}
+
+		@Override
+		public void noNetwork(String message) {
+			// Do nothing here
+		}
+
 	}
 
 	@Override
@@ -109,7 +134,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	 */
 
 	private void initTabs(String currentTab) {
-		mTabHost = (TabHost) rootView.findViewById(R.id.orderTabHost);
+		mTabHost = (TabHost) mRootView.findViewById(R.id.orderTabHost);
 		mTabHost.setup();
 
 		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
@@ -164,7 +189,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	 */
 	private void initTasks() {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		LinearLayout rootTaskCont = (LinearLayout) rootView
+		LinearLayout rootTaskCont = (LinearLayout) mRootView
 				.findViewById(R.id.task_cont);
 		for (Product p : mOrder.getProducts()) {
 			ViewGroup productView = (ViewGroup) inflater.inflate(
@@ -214,7 +239,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	 * to zoom and pan it smoothly
 	 */
 	private void initDrawing() {
-		ImageView orderDrawing = (ImageView) rootView
+		ImageView orderDrawing = (ImageView) mRootView
 				.findViewById(R.id.orderDrawing);
 
 		// Set the image displayed TODO: get from model
@@ -232,17 +257,17 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	 */
 	private void initDetails() {
 		// Header
-		((TextView) rootView.findViewById(R.id.task_name)).setText(mOrder
+		((TextView) mRootView.findViewById(R.id.task_name)).setText(mOrder
 				.getIdName());
-		((TextView) rootView.findViewById(R.id.orderNumber)).setText(mOrder
+		((TextView) mRootView.findViewById(R.id.orderNumber)).setText(mOrder
 				.getOrderNumber());
 
 		// General
-		((TextView) rootView.findViewById(R.id.cemetery_number)).setText(mOrder
-				.getCemetaryNumber());
-		((TextView) rootView.findViewById(R.id.cemeteryBoard)).setText(mOrder
+		((TextView) mRootView.findViewById(R.id.cemetery_number))
+				.setText(mOrder.getCemetaryNumber());
+		((TextView) mRootView.findViewById(R.id.cemeteryBoard)).setText(mOrder
 				.getCemeteryBoard());
-		((TextView) rootView.findViewById(R.id.cemetery)).setText(mOrder
+		((TextView) mRootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
 
 		// Product info
@@ -256,21 +281,21 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 			materialColor.append(product.getMaterialColor());
 		}
 
-		((TextView) rootView.findViewById(R.id.desc)).setText(desc);
-		((TextView) rootView.findViewById(R.id.frontProcessing))
+		((TextView) mRootView.findViewById(R.id.desc)).setText(desc);
+		((TextView) mRootView.findViewById(R.id.frontProcessing))
 				.setText(frontWork);
-		((TextView) rootView.findViewById(R.id.materialAndColor))
+		((TextView) mRootView.findViewById(R.id.materialAndColor))
 				.setText(materialColor);
 
 		// Stone specific
 		Stone stone = mOrder.getStone();
 		if (stone != null) {
-			((TextView) rootView.findViewById(R.id.stoneModel)).setText(stone
+			((TextView) mRootView.findViewById(R.id.stoneModel)).setText(stone
 					.getStoneModel());
 
-			((TextView) rootView.findViewById(R.id.ornament)).setText(stone
+			((TextView) mRootView.findViewById(R.id.ornament)).setText(stone
 					.getOrnament());
-			((TextView) rootView.findViewById(R.id.textStyleAndProcessing))
+			((TextView) mRootView.findViewById(R.id.textStyleAndProcessing))
 					.setText(stone.getTextStyle());
 		}
 	}
@@ -296,7 +321,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 			}
 		} else {
 			Log.d("DEBUG", "Updated GUI");
-			ViewGroup taskContainer = (ViewGroup) rootView
+			ViewGroup taskContainer = (ViewGroup) mRootView
 					.findViewById(R.id.task_cont);
 			taskContainer.removeAllViews();
 			initTasks();

@@ -1,5 +1,6 @@
 package se.chalmers.lidkopingsh.handler;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,7 +30,7 @@ public class OrderDbLayer implements ILayer {
 	private final Context context;
 	private static boolean first = true;
 	private OrderChangedEvent event;
-	private NetworkUpdateListener listener;
+	private List<NetworkUpdateListener> networkListeners;
 
 	/**
 	 * Creates a layer for communication between model and Order database.
@@ -39,6 +40,7 @@ public class OrderDbLayer implements ILayer {
 	 */
 	public OrderDbLayer(Context context) {
 		this.context = context;
+		networkListeners = new ArrayList<NetworkUpdateListener>();
 		db = new OrderDbStorage(context);
 		// TODO: Remove server path. Set it in settings.
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/",
@@ -122,23 +124,25 @@ public class OrderDbLayer implements ILayer {
 	}
 	
 	public void addNetworkListener(NetworkUpdateListener listener) {
-		this.listener = listener;
-	}
-	
-	public NetworkUpdateListener getNetworkListener() {
-		return listener;
+		networkListeners.add(listener);
 	}
 	
 	public void startUpdate() {
-		listener.startUpdate();
+		for(NetworkUpdateListener l : networkListeners) {
+			l.startUpdate();
+		}
 	}
 	
 	public void endUpdate() {
-		listener.endUpdate();
+		for(NetworkUpdateListener l : networkListeners) {
+			l.endUpdate();
+		}
 	}
 	
 	public void noNetwork(String message) {
-		listener.noNetwork(message);
+		for(NetworkUpdateListener l : networkListeners) {
+			l.noNetwork(message);
+		}
 	}
 
 }
