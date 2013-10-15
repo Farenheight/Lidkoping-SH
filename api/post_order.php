@@ -1,13 +1,8 @@
 <?php
 function insertOrder() {
 	$jsonData = getValidInput();
-	
 	prepareSql();
 	$orderId = sqlInsertOrder($jsonData);
-
-	$orderNrGen->saveChanges();
-	$GLOBALS['con'] -> commit();	//TODO Response. Where are we notified if the sql returns error?
-
 	doDie(output(true));
 }
 

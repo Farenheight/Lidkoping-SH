@@ -236,7 +236,7 @@ function generateStoneDetails() {
 						<li id="li_10" >
 							<label class="description" for="element_10">Bild </label>
 							<div>
-								<input id="element_10" name="images[][file]" class="element file" type="file"/>
+								<input id="element_10" name="image1" class="element file" type="file"/>
 							</div>
 						</li>
 					</ul>
