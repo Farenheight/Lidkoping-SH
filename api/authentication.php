@@ -29,14 +29,15 @@ function validateApikey($apikey, $deviceID){
 	return $valid;
 }
 
-function logAccess($success, $authorizationType, $user){	
+function logAccess($success, $authorizationType, $user){		
 	$sql = "INSERT INTO `logging` (`ip`, `timestamp`, `success`, `authorization_type`, `authorization_id`)
 		VALUES(?, ?, ?, ?, ?)";
 	$stmt = $GLOBALS['con']->prepare($sql);
-	$stmt->bind_param("siiii", $ip, $timestamp, $success, $authorizationType, $id);
+	$stmt->bind_param("siiii", $ip, $timestamp, $success, $authorizationType, $user);
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$timestamp = time()*1000;	
-	
+	$timestamp = time()*1000;
 	$stmt->execute();
+	$GLOBALS['con']->commit();
+	var_dump($stmt);
 }
 ?>
