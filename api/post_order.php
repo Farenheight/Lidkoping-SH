@@ -8,19 +8,16 @@ function insertOrder() {
 	$orderNrGen->saveChanges();
 	$GLOBALS['con'] -> commit();	//TODO Response. Where are we notified if the sql returns error?
 
-	output(true);
+	doDie(output(true));
 }
 
 function updateOrder() {
-	$su = true;
-
+	$su = true; //TODO ?
 	$jsonData = getValidInput();
-
+	requiredField("id", $jsonData);
 	prepareSql();
 	sqlUpdateOrder($jsonData, $su);
-
-	$GLOBALS['con'] -> commit();	//TODO Response. Where are we notified if the sql returns error?
-	output(true);
+	doDie(output(true));
 }
 
 /**
@@ -30,11 +27,11 @@ function updateOrder() {
  */
 function getValidInput() {
 	if (!isset($_POST['data']) || empty($_POST['data'])) {
-		errorGeneric("No data provided. Check that header ContentType is 'application/x-www-form-urlencoded'.");
+		errorGeneric("No data provided.", 12);
 	}
 	$array = json_decode($_POST['data'], true);
 	if (is_null($array)) {
-		errorGeneric("Invalid JSON data provided");
+		errorGeneric("JSON data was not valid, when trying to decode request data.", 20);
 	}
 	
 	// Verify that JSON data contains an order.
@@ -78,7 +75,7 @@ function getValidInput() {
  */
 function requiredField($fieldName, $array, $moreInfo = "") {
 	if (!array_key_exists($fieldName, $array)) {
-		errorGeneric("Missing required field: $fieldName ($moreInfo)");
+		errorGeneric("Missing required field: $fieldName ($moreInfo)"); //TODO Add error code and documentation
 	}
 	if (empty($array[$fieldName])) {
 		errorGeneric("Empty required field: $fieldName ($moreInfo)");

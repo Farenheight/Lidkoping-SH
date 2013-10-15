@@ -43,7 +43,7 @@ function getUpdates(){
 	$stmt = $GLOBALS['con']->prepare($select);
 	$stmt->execute();
 	
-	output(true, produceOrders($stmt->get_result()));
+	doDie(output(true, produceOrders($stmt->get_result())));
 }
 
 function checkInputFormat($jsonarray) {
@@ -54,13 +54,13 @@ function checkInputFormat($jsonarray) {
 	$size = sizeof($jsonarray);
 	for ($i = 0; $i < $size; $i++) {
 		if (sizeof($jsonarray[$i]) != 2) {
-			errorGeneric("Argument element at index $i does not contain two values.", 21);
+			errorGeneric("Array element at index $i does not contain two values.", 21);
 		}
 		if (empty($jsonarray[$i][0]) || empty($jsonarray[$i][1])) {
-			errorGeneric("First occurence of missing or invalid argument(s) for order at index $i.", 22);
+			errorGeneric("Missing or invalid argument(s) for order at index $i.", 22);
 		}
 		if (!is_numeric($jsonarray[$i][0]) || !is_numeric($jsonarray[$i][1])) {
-			errorGeneric("First occurence of not numeric argument(s) for order at index $i.", 23);
+			errorGeneric("Not numeric argument(s) for order at index $i.", 23);
 		}
 	}
 }

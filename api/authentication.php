@@ -8,7 +8,7 @@ function checkAuthenticated(){
 			errorGeneric("Apikey is not valid, try again. Please honor the exponential back off.", 41);
 		}
 	}else{
-		errorGeneric("No apikey specified, try again. Please honor the exponential back off.", 42);
+		errorGeneric("No apikey specified, try again.", 42);
 	}
 }
 

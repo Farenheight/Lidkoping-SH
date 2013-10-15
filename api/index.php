@@ -30,10 +30,10 @@ if (isset($_GET['action'])) {
 		require_once 'post_order.php';
 		insertOrder();
 	} else {
-		errorGeneric("No valid action: Provided action (". $_GET['action'] .") does not exist");
+		errorGeneric("Provided action (". $_GET['action'] .") does not exist", 10);
 	}
 } else {
-	errorGeneric("Empty respons: Specify your action in the URL.");
+	errorGeneric("Specify your action in the URL.", 11);
 }
 //echo round((microtime(true)-$start)*1000, 2) . "ms";
 ?>
