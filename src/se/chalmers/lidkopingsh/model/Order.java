@@ -296,17 +296,10 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	/**
 	 * Notify listeners on change.
 	 */
-<<<<<<< HEAD
 	public void notifyOrderListeners (OrderChangedEvent event) {
-		lastTimeUpdate = System.currentTimeMillis();
+		lastTimeUpdate += 1000;
 		for (Listener<OrderChangedEvent> listener : orderListeners) {
 			listener.changed(event);
-=======
-	public void notifyOrderListeners () {
-		lastTimeUpdate += 1000;
-		for (Listener<Order> listener : orderListeners) {
-			listener.changed(this);
->>>>>>> refs/heads/master
 		}
 	}
 

@@ -1,18 +1,45 @@
 package se.chalmers.lidkopingsh.handler;
 
+import java.util.List;
+
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.OrderChangedEvent;
 import android.os.AsyncTask;
 
-public class AsyncTaskSend extends AsyncTask<ServerLayer, Void, Boolean> {
-	private Order order;
+public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
+	private final ServerLayer serverLayer;
+	private final OrderChangedEvent event;
+	private final OrderDbLayer layer;
+	private boolean success;
 	
-	public AsyncTaskSend(Order order) {
-		this.order = order;
+	public AsyncTaskSend(OrderChangedEvent event, ServerLayer serverLayer, OrderDbLayer layer) {
+		this.serverLayer = serverLayer;
+		this.event = event;
+		this.layer = layer;
 	}
 	
 	@Override
-	protected Boolean doInBackground(ServerLayer... serverLayer) {
-		return serverLayer[0].sendUpdate(order);
+	protected List<Order> doInBackground(Void... none) {
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		success = serverLayer.sendUpdate(event.getOrder());
+		List<Order> orders = serverLayer.getUpdates(false);
+		return orders;
+	}
+	protected void onPostExecute(List<Order> orders) {
+		se.chalmers.lidkopingsh.model.Status status = event.getTask().getStatus();
+		if (orders == null) {
+			event.getOrder().sync(null);
+		} else {
+			layer.updateDatabase(orders);
+		}
+		if (!success) {
+			event.getTask().setStatus(status);
+		}
 	}
 
 }

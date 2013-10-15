@@ -11,7 +11,9 @@ import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
+import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
+import se.chalmers.lidkopingsh.model.Task;
 import android.content.Context;
 import android.util.Log;
 
@@ -29,6 +31,7 @@ public class OrderDbLayer implements ILayer {
 	private final long UPDATE_INTERVAL = 300000;
 	private final Context context;
 	private static boolean first = true;
+	private OrderChangedEvent event;
 
 	/**
 	 * Creates a layer for communication between model and Order database.
@@ -42,53 +45,19 @@ public class OrderDbLayer implements ILayer {
 		// TODO: Remove server path. Set it in settings.
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/",
 				context);
-		updateDatabase(getUpdates(true));
+		update(true);
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new UpdateTimerTask(this), 0, UPDATE_INTERVAL);
 	}
 
 	@Override
 	public void changed(OrderChangedEvent event) {
-		// TODO: Check if change was same as in DB.
-		Status status = event.getTask().getStatus();
-		boolean success = sendUpdate(event.getOrder());
-		List<Order> orders = getUpdates(false);
-		orders = getUpdates(false);
-		if (orders == null) {
-			event.getOrder().sync(null);
-		} else {
-			updateDatabase(orders);
-		}
-		if (!success) {
-			event.getTask().setStatus(status);
-		}
-
+		sendUpdate(event);
 	}
 
-	private boolean sendUpdate(Order order) {
-		try {
-			return new AsyncTaskSend(order).execute(serverLayer).get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-		return false;
+	private void sendUpdate(OrderChangedEvent event) {
+		new AsyncTaskSend(event,serverLayer, this).execute();
 		
-	}
-
-	public List<Order> getUpdates(boolean getAll) {
-		try {
-			//TODO: freezes main-thread during asynctask.
-			return new AsyncTaskGet(getAll).execute(serverLayer).get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	@Override
@@ -134,7 +103,15 @@ public class OrderDbLayer implements ILayer {
 	}
 	
 	public void update(boolean getAll) {
-		updateDatabase(getUpdates(getAll));
+		new AsyncTaskGet(getAll, this).execute(serverLayer);
+	}
+
+	public OrderChangedEvent getEvent() {
+		return event;
+	}
+
+	public ServerLayer getServerLayer() {
+		return serverLayer;
 	}
 
 }

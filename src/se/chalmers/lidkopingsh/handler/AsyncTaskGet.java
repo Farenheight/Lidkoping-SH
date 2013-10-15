@@ -8,10 +8,12 @@ import android.util.Log;
 import se.chalmers.lidkopingsh.model.Order;
 
 public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
-	private boolean getAll;
+	private final boolean getAll;
+	private final OrderDbLayer layer;
 	
-	public AsyncTaskGet(boolean getAll) {
+	public AsyncTaskGet(boolean getAll, OrderDbLayer layer) {
 		this.getAll = getAll;
+		this.layer = layer;
 	}
 	
 	@Override
@@ -19,7 +21,7 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 		return serverLayer[0].getUpdates(getAll);
 	}
 	
-	public void onPostExecute(List<Order> results) {
-		Log.e("AsyncTaskGet", results.toString());
+	public void onPostExecute(List<Order> orders) {
+		layer.updateDatabase(orders);
 	}
 }
