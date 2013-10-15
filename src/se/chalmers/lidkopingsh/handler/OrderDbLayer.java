@@ -4,16 +4,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Timer;
-import java.util.concurrent.ExecutionException;
 
 import se.chalmers.lidkopingsh.database.OrderDbStorage;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
-import se.chalmers.lidkopingsh.model.Product;
-import se.chalmers.lidkopingsh.model.Status;
-import se.chalmers.lidkopingsh.model.Task;
+import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import android.content.Context;
 import android.util.Log;
 
@@ -32,6 +29,7 @@ public class OrderDbLayer implements ILayer {
 	private final Context context;
 	private static boolean first = true;
 	private OrderChangedEvent event;
+	private NetworkUpdateListener listener;
 
 	/**
 	 * Creates a layer for communication between model and Order database.
@@ -45,12 +43,7 @@ public class OrderDbLayer implements ILayer {
 		// TODO: Remove server path. Set it in settings.
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/",
 				context);
-<<<<<<< HEAD
 		update(true);
-=======
-		updateDatabase(getUpdates(true));
-		Log.d("OrderDbLayer", "Constructor");
->>>>>>> refs/remotes/origin/dev-gui
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new UpdateTimerTask(this), UPDATE_INTERVAL,
 				UPDATE_INTERVAL);
@@ -126,6 +119,22 @@ public class OrderDbLayer implements ILayer {
 
 	public ServerLayer getServerLayer() {
 		return serverLayer;
+	}
+	
+	public void addNetworkListener(NetworkUpdateListener listener) {
+		this.listener = listener;
+	}
+	
+	public NetworkUpdateListener getNetworkListener() {
+		return listener;
+	}
+	
+	public void startUpdate() {
+		listener.startUpdate();
+	}
+	
+	public void endUpdate() {
+		listener.endUpdate();
 	}
 
 }

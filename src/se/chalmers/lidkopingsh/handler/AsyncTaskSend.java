@@ -25,6 +25,12 @@ public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 		this.layer = layer;
 	}
 	
+	protected void onPreExecute() {
+		if (layer.getNetworkListener() != null) {
+			layer.startUpdate();
+		}
+	}
+	
 	@Override
 	protected List<Order> doInBackground(Void... none) {
 		try {
@@ -52,6 +58,9 @@ public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 		}
 		if (!success) {
 			event.getTask().setStatus(status);
+		}
+		if (layer.getNetworkListener() != null) {
+			layer.endUpdate();
 		}
 	}
 

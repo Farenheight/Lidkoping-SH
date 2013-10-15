@@ -1,6 +1,6 @@
 package se.chalmers.lidkopingsh.util;
 
-public interface NetworkListener {
+public interface NetworkUpdateListener {
 	
 	public void startUpdate();
 	public void endUpdate();

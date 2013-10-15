@@ -21,9 +21,14 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 		this.layer = layer;
 	}
 	
+	protected void onPreExecute() {
+		if (layer.getNetworkListener() != null) {
+			layer.startUpdate();
+		}
+	}
+	
 	@Override
 	protected List<Order> doInBackground(ServerLayer... serverLayer) {
-		Log.d("AsyncTaskGet", "doInBackground");
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
@@ -32,17 +37,15 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 		return serverLayer[0].getUpdates(getAll);
 	}
 	
-<<<<<<< HEAD
 	/**
 	 * Method is run automatically after the doInBackground method and updates database in GUI thread.
 	 * 
 	 * @param orders The orders returned from the database
 	 */
-	public void onPostExecute(List<Order> orders) {
+	protected void onPostExecute(List<Order> orders) {
 		layer.updateDatabase(orders);
-=======
-	public void onPostExecute(List<Order> results) {
-		Log.d("AsyncTaskGet", results.toString());
->>>>>>> refs/remotes/origin/dev-gui
+		if (layer.getNetworkListener() != null) {
+			layer.endUpdate();
+		}
 	}
 }

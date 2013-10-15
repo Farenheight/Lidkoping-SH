@@ -14,6 +14,7 @@ import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
+import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 
 /**
  * Creates a dummy model mainly for sort tests. Containing orders with tasks by
@@ -104,6 +105,12 @@ public class TestLayer implements ILayer {
 
 	@Override
 	public void update(boolean getAll) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addNetworkListener(NetworkUpdateListener listener) {
 		// TODO Auto-generated method stub
 		
 	}

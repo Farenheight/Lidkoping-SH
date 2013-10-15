@@ -11,14 +11,10 @@ public class UpdateTimerTask extends TimerTask{
 	public UpdateTimerTask(OrderDbLayer layer) {
 		this.layer = layer;
 	}
+	
 	@Override
 	public void run() {
-<<<<<<< HEAD
 		layer.update(false);
-=======
-		Log.d("UpdateTimeTask", "run()");
-		layer.updateDatabase(layer.getUpdates(false));
->>>>>>> refs/remotes/origin/dev-gui
 	}
 	
 }

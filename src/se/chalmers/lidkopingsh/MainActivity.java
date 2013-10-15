@@ -2,6 +2,7 @@ package se.chalmers.lidkopingsh;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -20,11 +21,12 @@ import android.view.MenuItem;
  * 
  */
 public class MainActivity extends FragmentActivity implements
-		OrderListFragment.OrderSelectedCallbacks {
+		OrderListFragment.OrderSelectedCallbacks, NetworkUpdateListener {
 	
 	public static final String IS_TABLET_SIZE = "is_tablet_size";
 	private OrderDetailsFragment mCurrentOrderDetailsFragment;
 	private Order mCurrentOrder;
+	private MenuItem mItem;
 
 	/** Whether or not the app is running on a tablet sized device */
 	private boolean mTabletSize;
@@ -32,7 +34,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		ModelHandler.getLayer(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
@@ -84,6 +86,7 @@ public class MainActivity extends FragmentActivity implements
 		// Inflate the menu items for use in the action bar
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.action_bar_main, menu);
+		mItem = menu.findItem(R.id.action_update);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -101,5 +104,17 @@ public class MainActivity extends FragmentActivity implements
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public void startUpdate() {
+		mItem.setActionView(R.layout.progress_indicator);
+		
+	}
+
+	@Override
+	public void endUpdate() {
+		mItem.setActionView(null);
+		
 	}
 }
