@@ -1,9 +1,11 @@
 package se.chalmers.lidkopingsh;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.model.Order;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +22,9 @@ import android.view.MenuItem;
  */
 public class MainActivity extends FragmentActivity implements
 		OrderListFragment.OrderSelectedCallbacks {
+	
+	private OrderDetailsFragment mCurrentOrderDetailsFragment;
+	private Order mCurrentOrder;
 
 	/** Whether or not the app is running on a tablet sized device */
 	private boolean mTabletSize;
@@ -29,6 +34,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
+		mTabletSize = true;
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
@@ -50,12 +56,21 @@ public class MainActivity extends FragmentActivity implements
 		// TODO: Explore the possibility of saving the created fragment/activity
 		// instead of creating a new each time the user chooses a stone
 		if (mTabletSize) {
+			if(mCurrentOrderDetailsFragment != null && mCurrentOrder != null){
+				mCurrentOrder.removeSyncOrderListener(mCurrentOrderDetailsFragment);
+				Log.d("DEBUG", "Removed OrderSyncListeners to " + mCurrentOrder);
+			}
 			Bundle arguments = new Bundle();
 			arguments.putInt(OrderDetailsFragment.ORDER_ID, orderId);
-			OrderDetailsFragment fragment = new OrderDetailsFragment();
-			fragment.setArguments(arguments);
+			mCurrentOrder = ModelHandler.getModel(this).getOrderById(orderId);
+			mCurrentOrderDetailsFragment = new OrderDetailsFragment();
+			mCurrentOrderDetailsFragment.setArguments(arguments);
+			
+			mCurrentOrder.addSyncOrderListener(mCurrentOrderDetailsFragment);
+			Log.d("DEBUG", "Added OrderSyncListeners to " + mCurrentOrder);
+			
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.tablet_hint_container, fragment).commit();
+					.replace(R.id.tablet_hint_container, mCurrentOrderDetailsFragment).commit();
 		}
 		// On handsets, start the detail activity for the selected item ID
 		else {

@@ -27,6 +27,8 @@ public class OrderDbLayer implements ILayer {
 	private final OrderDbStorage db;
 	private final ServerLayer serverLayer;
 	private final long UPDATE_INTERVAL = 300000;
+	private final Context context;
+	private static boolean first = true;
 
 	/**
 	 * Creates a layer for communication between model and Order database.
@@ -35,6 +37,7 @@ public class OrderDbLayer implements ILayer {
 	 *            to use to open or create the database
 	 */
 	public OrderDbLayer(Context context) {
+		this.context = context;
 		db = new OrderDbStorage(context);
 		// TODO: Remove server path. Set it in settings.
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/",
@@ -106,19 +109,26 @@ public class OrderDbLayer implements ILayer {
 	 *            The orders to update
 	 */
 	public void updateDatabase(List<Order> orders) {
-		Log.d("update_database", "updates database");
-		IModel model = getModel();
-		for (Order o : orders) {
-			try {
-				Order order = model.getOrderById(o.getId());
-				if(order != null){
-					order.sync(o);
-					db.update(o);
+		if(first) {
+			for (Order o : orders) {
+				db.update(o);
+			}
+			first = false;
+		}else {
+			Log.d("update_database", "updates database");
+			IModel model = ModelHandler.getModel(context);
+			for (Order o : orders) {
+				try {
+					Order order = model.getOrderById(o.getId());
+					if(order != null){
+						order.sync(o);
+						db.update(o);
+					}
+				} catch (NoSuchElementException e) {
+					o.addOrderListener(this);
+					model.addOrder(o);
+					db.insert(o);
 				}
-			} catch (NoSuchElementException e) {
-				o.addOrderListener(this);
-				model.addOrder(o);
-				db.insert(o);
 			}
 		}
 	}

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Prepared statements using SELECT does not need to commit, an result set is obtained at execute.
+ * When INSERT'ing or UPDATE'ing, use bind_param and set data. Use commit when ready to send.
+ */
+
 class mySQLConnection {
 	private $con;
 	private $stmt;
@@ -10,6 +15,11 @@ class mySQLConnection {
 			errorSql("Failed to connect: ".$mysqli -> connect_error, $mysqli -> connect_errno);
 		}
 		$this -> con -> autocommit(FALSE);
+		
+		// Set encoding format for database, otherwise values are not retrieved correctly
+		$stmt = $this -> con -> prepare("SET NAMES 'utf8'");
+		$stmt -> execute();
+		$this -> con -> commit();
 	}
 
 	public function commit() {
