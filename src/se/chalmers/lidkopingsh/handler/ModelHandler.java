@@ -1,7 +1,7 @@
 package se.chalmers.lidkopingsh.handler;
 
 import se.chalmers.lidkopingsh.model.IModel;
-import se.chalmers.lidkopingsh.model.IModel;
+import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import android.content.Context;
 
 
@@ -17,7 +17,7 @@ public class ModelHandler {
 		return model;
 	}
 
-	private static ILayer getLayer(Context context) {
+	public static ILayer getLayer(Context context) {
 		if (layer == null) {
 			layer = new OrderDbLayer(context);
 		}

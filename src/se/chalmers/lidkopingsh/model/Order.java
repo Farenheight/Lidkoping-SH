@@ -11,11 +11,11 @@ import se.chalmers.lidkopingsh.util.Syncher;
 /**
  * A class representing an Order.
  * 
- * @author Kim
+ * @author Kim Kling
  * @author Robin Gronberg
  * 
  */
-public class Order implements Listener<Product>, Syncable<Order> {
+public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	private int id;
 	private final long timeCreated;
 	private long lastTimeUpdate;
@@ -28,10 +28,11 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private String cemeteryBlock;
 	private String cemeteryNumber;
 	private Customer customer;
-	private transient List<Listener<Order>> orderListeners;
+	private transient List<Listener<OrderChangedEvent>> orderListeners;
 	private transient List<Listener<Order>> orderSyncedListeners;
 	private List<Product> products;
 	private List<Image> images;
+	private String deceased;
 
 	/**
 	 * Creates an Order with the specified properties. For unknown or not
@@ -40,7 +41,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Order(int id, String orderNumber, String idName, long timeCreated,
 			long lastTimeUpdated, String cemetery, String cemeteryBoard,
 			String cemeteryBlock, String cemeteryNumber, long orderDate,
-			Customer customer, List<Product> products, List<Image> images) {
+			Customer customer, List<Product> products, List<Image> images, String deceased) {
 		this.id = id;
 		this.orderNumber = orderNumber != null ? orderNumber : "";
 		this.idName = idName != null ? idName : "";
@@ -53,7 +54,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.orderDate = orderDate;
 		this.customer = customer.clone();
 		this.images = images;
-		orderListeners = new ArrayList<Listener<Order>>();
+		this.deceased = deceased;
+		orderListeners = new ArrayList<Listener<OrderChangedEvent>>();
 		orderSyncedListeners = new ArrayList<Listener<Order>>();
 		this.products = new ProductList(products);
 		
@@ -72,7 +74,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Order(Order o) {
 		this(o.id, o.orderNumber, o.idName, o.timeCreated, o.lastTimeUpdate,
 				o.cemetery, o.cemeteryBoard, o.cemeteryBlock, o.cemeteryNumber,
-				o.orderDate, o.customer, o.products, o.images);
+				o.orderDate, o.customer, o.products, o.images, o.getDeceased());
 	}
 
 	public int getId() {
@@ -125,6 +127,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 
 	public List<Product> getProducts() {
 		return products;
+	}
+	
+	public String getDeceased() {
+		return deceased;
 	}
 
 	/**
@@ -201,7 +207,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 			}
 		}
 		products.add(product);
-		notifyOrderListeners();
+		notifyOrderListeners(new OrderChangedEvent(this, product, null));
 	}
 
 	/**
@@ -227,7 +233,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 */
 	public void removeProduct(Product p) {
 		if (products.contains(p)) {
-			notifyOrderListeners();
+			notifyOrderListeners(new OrderChangedEvent(this, p, null));
 			products.remove(p);
 		}
 	}
@@ -251,9 +257,9 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	 * @param listener
 	 *            the interested listener for this object
 	 */
-	public void addOrderListener(Listener<Order> listener) {
+	public void addOrderListener(Listener<OrderChangedEvent> listener) {
 		if (orderListeners == null) {
-			orderListeners = new ArrayList<Listener<Order>>();
+			orderListeners = new ArrayList<Listener<OrderChangedEvent>>();
 		}
 		orderListeners.add(listener);
 	}
@@ -290,10 +296,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	/**
 	 * Notify listeners on change.
 	 */
-	public void notifyOrderListeners () {
+	public void notifyOrderListeners (OrderChangedEvent event) {
 		lastTimeUpdate += 1000;
-		for (Listener<Order> listener : orderListeners) {
-			listener.changed(this);
+		for (Listener<OrderChangedEvent> listener : orderListeners) {
+			listener.changed(event);
 		}
 	}
 
@@ -309,8 +315,8 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	}
 
 	@Override
-	public void changed(Product product) {
-		notifyOrderListeners();
+	public void changed(OrderChangedEvent event) {
+		notifyOrderListeners(new OrderChangedEvent(this, event.getProduct(), event.getTask()));
 	}
 
 	@Override
@@ -405,7 +411,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		@Override
 		public boolean remove(Object object) {
 			if (object instanceof Product) {
-				((Product) object).removeProductListener(Order.this);
+				((Product) object).removeEventListener(Order.this);
 			}
 			return super.remove(object);
 		}

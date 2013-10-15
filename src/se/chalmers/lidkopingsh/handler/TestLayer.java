@@ -7,12 +7,14 @@ import se.chalmers.lidkopingsh.model.Customer;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.OrderChangedEvent;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.ProductType;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
+import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 
 /**
  * Creates a dummy model mainly for sort tests. Containing orders with tasks by
@@ -37,7 +39,7 @@ public class TestLayer implements ILayer {
 	private static int ORDER_COUNT = 10;
 
 	@Override
-	public void changed(Order object) {
+	public void changed(OrderChangedEvent object) {
 		// Does nothing
 	}
 
@@ -73,7 +75,7 @@ public class TestLayer implements ILayer {
 				"Kyrkogardsnummer", Long.parseLong("1371679200000"),
 				new Customer("Mr", "Olle Bengtsson", "Testvagen 52",
 						"416 72 Goteborg", "olle.bengtsson@testuser.com",
-						(int) System.currentTimeMillis()), pList, null);
+						(int) System.currentTimeMillis()), pList, null, "död");
 		pList.add(new Stone(1, "Svart", "beskrivning", "Slipning", null, "", "", "", "",
 				new ProductType(0, "Sten")));
 		++count;
@@ -103,6 +105,12 @@ public class TestLayer implements ILayer {
 
 	@Override
 	public void update(boolean getAll) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addNetworkListener(NetworkUpdateListener listener) {
 		// TODO Auto-generated method stub
 		
 	}

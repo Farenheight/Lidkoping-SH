@@ -4,12 +4,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Timer;
-import java.util.concurrent.ExecutionException;
 
 import se.chalmers.lidkopingsh.database.OrderDbStorage;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.OrderChangedEvent;
+import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import android.content.Context;
 import android.util.Log;
 
@@ -27,6 +28,8 @@ public class OrderDbLayer implements ILayer {
 	private final long UPDATE_INTERVAL = 300000;
 	private final Context context;
 	private static boolean first = true;
+	private OrderChangedEvent event;
+	private NetworkUpdateListener listener;
 
 	/**
 	 * Creates a layer for communication between model and Order database.
@@ -40,53 +43,24 @@ public class OrderDbLayer implements ILayer {
 		// TODO: Remove server path. Set it in settings.
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/",
 				context);
-		updateDatabase(getUpdates(true));
-		Log.d("OrderDbLayer", "Constructor");
+		update(true);
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new UpdateTimerTask(this), UPDATE_INTERVAL,
 				UPDATE_INTERVAL);
 	}
 
 	@Override
-	public void changed(Order order) {
-		// TODO: Check if change was same as in DB.
-		boolean success = sendUpdate(order);
-		List<Order> orders = getUpdates(false);
-		if (!success) { //TODO: While here?
-			sendUpdate(order);
-		}
-		orders = getUpdates(false);
-		if (orders == null) {
-			order.sync(null);
-		} else {
-			updateDatabase(orders);
-		}
-
+	public void changed(OrderChangedEvent event) {
+		sendUpdate(event);
 	}
 
-	private boolean sendUpdate(Order order) {
-		try {
-			return new AsyncTaskSend(order).execute(serverLayer).get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-		return false;
+	/**
+	 * Creates an asynctask that will send an update and then update the local database
+	 * @param event The event which holds what has changed
+	 */
+	private void sendUpdate(OrderChangedEvent event) {
+		new AsyncTaskSend(event,serverLayer, this).execute();
 		
-	}
-
-	public List<Order> getUpdates(boolean getAll) {
-		try {
-			return new AsyncTaskGet(getAll).execute(serverLayer).get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	@Override
@@ -131,8 +105,36 @@ public class OrderDbLayer implements ILayer {
 		}
 	}
 	
+	/**
+	 * Updates the local database with data from server. Runs in a different thread because of asynctask.
+	 * @param getAll True if everything should be fetched false otherwise
+	 */
 	public void update(boolean getAll) {
-		updateDatabase(getUpdates(getAll));
+		new AsyncTaskGet(getAll, this).execute(serverLayer);
+	}
+
+	public OrderChangedEvent getEvent() {
+		return event;
+	}
+
+	public ServerLayer getServerLayer() {
+		return serverLayer;
+	}
+	
+	public void addNetworkListener(NetworkUpdateListener listener) {
+		this.listener = listener;
+	}
+	
+	public NetworkUpdateListener getNetworkListener() {
+		return listener;
+	}
+	
+	public void startUpdate() {
+		listener.startUpdate();
+	}
+	
+	public void endUpdate() {
+		listener.endUpdate();
 	}
 
 }

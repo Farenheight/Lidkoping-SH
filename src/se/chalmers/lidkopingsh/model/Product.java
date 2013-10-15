@@ -27,7 +27,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * The {@link ProductListener}s that should listen when a task is changed on
 	 * this product.
 	 */
-	private transient List<Listener<Product>> listeners;
+	private transient List<Listener<OrderChangedEvent>> listeners;
 	/**
 	 * The {@link Task}s that this product has.
 	 */
@@ -59,7 +59,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		this.materialColor = materialColor != null ? materialColor : "";
 		this.description = description != null ? description : "";
 		this.frontWork = frontWork != null ? frontWork : "";
-		this.listeners = new ArrayList<Listener<Product>>();
+		this.listeners = new ArrayList<Listener<OrderChangedEvent>>();
 		this.tasks = new TaskList(tasks);
 		
 		if (tasks != null) {
@@ -131,7 +131,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 
 	@Override
 	public void changed(Task task) {
-		notifyProductListeners();
+		notifyProductListeners(task);
 	}
 
 	/**
@@ -160,9 +160,9 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	/**
 	 * Notify listeners that tasks have been changed
 	 */
-	private void notifyProductListeners() {
-		for (Listener<Product> l : listeners) {
-			l.changed(this);
+	private void notifyProductListeners(Task t) {
+		for (Listener<OrderChangedEvent> l : listeners) {
+			l.changed(new OrderChangedEvent(null, this, t));
 		}
 	}
 
@@ -201,7 +201,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 			} else {
 				tasks.add(index, task);
 			}
-			notifyProductListeners();
+			notifyProductListeners(task);
 		}
 	}
 
@@ -235,7 +235,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 */
 	public void removeTask(Task task) {
 		if (tasks.remove(task)) {
-			notifyProductListeners();
+			notifyProductListeners(task);
 		}
 	}
 
@@ -260,9 +260,9 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            {@link Product}
 	 * @return true if listeners was modified, false otherwise.
 	 */
-	public boolean addProductListener(Listener<Product> listener) {
+	public boolean addProductListener(Listener<OrderChangedEvent> listener) {
 		if (listeners == null) {
-			listeners = new ArrayList<Listener<Product>>();
+			listeners = new ArrayList<Listener<OrderChangedEvent>>();
 		}
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
@@ -279,7 +279,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 *            {@link Product}
 	 * @return true if listeners was modified, false otherwise.
 	 */
-	public boolean removeProductListener(Listener<Product> listener) {
+	public boolean removeEventListener(Listener<OrderChangedEvent> listener) {
 		if (listeners.contains(listener)) {
 			listeners.remove(listener);
 			return true;
