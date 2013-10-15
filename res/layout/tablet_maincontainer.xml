@@ -2,24 +2,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f0f"
     android:baselineAligned="false"
-    android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".HandsetsDetailsActivity"
-    android:background="#555" >
+    tools:context=".HandsetsDetailsActivity" >
 
-    <include layout="@layout/list_root" 
-        android:layout_weight="2"
+    <include
         android:layout_width="0dp"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        layout="@layout/list_root" />
 
     <FrameLayout
         android:id="@+id/tablet_hint_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="5"
-        android:background="#ddd" >
+        android:background="@color/lsh_detail_background" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,7 +29,6 @@
             android:text="@string/tablet_startup_hint"
             android:textColor="#777"
             android:textSize="40sp" />
-
     </FrameLayout>
 
 </LinearLayout>

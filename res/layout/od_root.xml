@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="#d0d0da" >
+                android:background="@color/lsh_detail_background" >
 
                 <include layout="@layout/od_info_cont" />
 
@@ -45,14 +45,14 @@
                         android:layout_height="wrap_content"
                         android:padding="15dp" >
 
-                        <LinearLayout
-                            android:id="@+id/task_cont"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/card_border_shape"
-                            android:orientation="vertical"
-                            android:padding="15dp" >
-                        </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/task_cont"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/card_border_shape"
+                                android:orientation="vertical"
+                                android:padding="15dp" >
+                            </LinearLayout>
                     </FrameLayout>
                 </ScrollView>
             </FrameLayout>

@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:paddingBottom="10dp"
         android:paddingTop="20dp"
-        android:background="#eee" >
+        android:background="@color/lsh_list_background" >
 
         <TextView
             android:id="@+id/list_item_header_text"
@@ -22,7 +22,7 @@
             android:padding="10dp"
             android:paddingTop="30dp"
             android:textAllCaps="true"
-            android:textColor="#333"
+            android:textColor="#666"
             android:textSize="16sp"
             android:textStyle="bold" />
     </FrameLayout>

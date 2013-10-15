@@ -15,7 +15,7 @@
         android:showAsAction="ifRoom"
         />
     <item
-        android:id="@+id/action_overflow"
+        android:id="@+id/action_help"
         android:title="Hjälp"/>
 
 </menu>

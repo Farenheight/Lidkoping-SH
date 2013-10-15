@@ -5,17 +5,13 @@
         <shape android:shape="rectangle" >
             <stroke
                 android:width="5dp"
-                android:color="#333" />
+                android:color="#777" />
             <solid android:color="#fddd" />
         </shape>
     </item>
     <item android:bottom="3dp">
         <shape android:shape="rectangle" >
-            <stroke
-                android:width="0dp"
-                android:color="#fddd" />
-
-            <solid android:color="#eee" />
+            <solid android:color="@color/lsh_list_background" />
         </shape>
     </item>
 
