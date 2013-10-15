@@ -3,10 +3,10 @@ function insertOrder() {
 	$jsonData = getValidInput();
 	
 	prepareSql();
-	$orderNrGen = new OrderNumberGenerator();
-	$orderId = sqlInsertOrder($jsonData, $orderNrGen);
+	$util = new Util();
+	$orderId = sqlInsertOrder($jsonData, $util);
 
-	$orderNrGen->saveChanges();
+	$util->saveChanges();
 	$GLOBALS['con'] -> commit();	//TODO Response. Where are we notified if the sql returns error?
 
 	output(true);
@@ -130,6 +130,7 @@ function sqlUpdateOrder($array, $su) {
 		`cemetery`=?,
 		`cemetery_block`=?,
 		`cemetery_number`=?,
+		`deceased`=?,
 		`time_last_update`=?";
 
 	if ($su) {
@@ -139,12 +140,12 @@ function sqlUpdateOrder($array, $su) {
 	$stmt = $GLOBALS['con'] -> prepare($sql);
 	$currentTime = getMilliseconds();
 	if ($su) {
-		$stmt -> bind_param("ssssiiiii", $array['cemeteryBoard'], $array['cemetery'], $array['cemeteryBlock'],
-			$array['cemeteryNumber'], $currentTime, $array['cancelled'], $array['archived'],
+		$stmt -> bind_param("sssssiiiii", $array['cemeteryBoard'], $array['cemetery'], $array['cemeteryBlock'],
+			$array['cemeteryNumber'], $array['deceased'], $currentTime, $array['cancelled'], $array['archived'],
 			$array['id'], $array['lastTimeUpdate']);
 	} else {
-		$stmt -> bind_param("ssssiii", $array['cemeteryBoard'], $array['cemetery'], $array['cemeteryBlock'],
-			$array['cemeteryNumber'], $currentTime, $array['id'], $array['lastTimeUpdate']);
+		$stmt -> bind_param("sssssiii", $array['cemeteryBoard'], $array['cemetery'], $array['cemeteryBlock'],
+			$array['cemeteryNumber'], $array['deceased'], $currentTime, $array['id'], $array['lastTimeUpdate']);
 	}
 	$stmt -> execute();
 	
@@ -221,24 +222,23 @@ function sqlInsertImage($image, $orderId) {
 	$stmt -> execute();
 }
 
-function sqlInsertOrder($order, $orderNrGen) {
+function sqlInsertOrder($order, $util) {
 	$customerId = sqlInsertCustomer($order['customer']);
 
-	$orderNr = $orderNrGen -> newOrderNumber($order['orderDate']);
-	$idName = "CustomID";
-	// TODO: Generate id name
+	$orderNr = $util -> newOrderNumber($order['orderDate']);
+	$idName = $util -> getIdName($order);
 	$time = getMilliseconds();
 
-	$sql = "INSERT INTO `order` (`order_number`, `id_name`, `order_date`, `cemetery_board`,
+	$sql = "INSERT INTO `order` (`order_number`, `id_name`, `deceaaed`, `order_date`, `cemetery_board`,
 		`cemetery`, `cemetery_block`, `cemetery_number`, `customer_id`, `time_created`,
 		`time_last_update`, `cancelled`, `archived`)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	$zero = 0;
 
 	$stmt = $GLOBALS['con'] -> prepare($sql);
-	$stmt -> bind_param("ssissssiiiii", $orderNr, $idName, $order['orderDate'], $order['cemeteryBoard'],
-		$order['cemetery'], $order['cemeteryBlock'], $order['cemeteryNumber'], $customerId, $time, $time,
-		$zero, $zero);
+	$stmt -> bind_param("sssissssiiiii", $orderNr, $idName, $order['deceased'], $order['orderDate'],
+		$order['cemeteryBoard'], $order['cemetery'], $order['cemeteryBlock'], $order['cemeteryNumber'],
+		$customerId, $time, $time, $zero, $zero);
 
 	$stmt -> execute();
 	$orderId = $stmt -> insert_id;

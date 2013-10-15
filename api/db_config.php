@@ -1,10 +1,10 @@
 <?php
 // Database
-$db_host = "";
-$db_database = "";
-$db_username = "";
-$db_password = "";
+$db_host = "localhost";
+$db_database = "lidkopingsh";
+$db_username = "root";
+$db_password = "usbw";
 
 // API key, for testing
-$test_apiKey = "";
+$test_apiKey = "123456789qwertyuiop";
 ?>
