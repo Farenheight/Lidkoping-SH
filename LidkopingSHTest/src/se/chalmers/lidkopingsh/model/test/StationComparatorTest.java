@@ -30,9 +30,9 @@ public class StationComparatorTest {
 	public void setUp(){
 		// Three orders that has everything the same. Products with 
 		// different amount of tasks done added in test.
-		firstOrder = new Order(0,"firstOrder","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);
-		secondOrder = new Order(0,"seconedOrder","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);
-		thirdOrder = new Order(0,"thirdOrder","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);		
+		firstOrder = new Order(0,"firstOrder","1",0,0,"","","","",0,new Customer("","","","","",0),null,null,null);
+		secondOrder = new Order(0,"seconedOrder","1",0,0,"","","","",0,new Customer("","","","","",0),null,null,null);
+		thirdOrder = new Order(0,"thirdOrder","1",0,0,"","","","",0,new Customer("","","","","",0),null,null,null);		
 		
 		firstStation = new Station(0, "Station0");
 		secondStation = new Station(1, "Station1");
@@ -234,19 +234,19 @@ public class StationComparatorTest {
 		Station station2 = new Station(2, "Station2");
 		
 		
-		Order order0 = new Order(0,"","0",0,0,"","","","",0,new Customer("","","","","",0),null,null);
+		Order order0 = new Order(0,"","0",0,0,"","","","",0,new Customer("","","","","",0),null,null,null);
 		order0.addProduct(new Product(Arrays.asList(new Task[]{
 				new Task(station0,Status.NOT_DONE),
 				new Task(station1,Status.NOT_DONE),
 				new Task(station2,Status.NOT_DONE)
 				})));
-		Order order1 = new Order(1,"","1",0,0,"","","","",0,new Customer("","","","","",0),null,null);
+		Order order1 = new Order(1,"","1",0,0,"","","","",0,new Customer("","","","","",0),null,null,null);
 		order1.addProduct(new Product(Arrays.asList(new Task[]{
 				new Task(station0,Status.DONE),
 				new Task(station1,Status.NOT_DONE),
 				new Task(station2,Status.NOT_DONE)
 		})));
-		Order order2 = new Order(2,"","2",0,0,"","","","",0,new Customer("","","","","",0),null,null);
+		Order order2 = new Order(2,"","2",0,0,"","","","",0,new Customer("","","","","",0),null,null,null);
 		order2.addProduct(new Product(Arrays.asList(new Task[]{
 				new Task(station0,Status.DONE),
 				new Task(station1,Status.DONE),

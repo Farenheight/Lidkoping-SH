@@ -7,13 +7,14 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.model.OrderChangedEvent;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.util.Listener;
 
-public class ProductTest extends TestCase implements Listener<Product> {
+public class ProductTest extends TestCase implements Listener<OrderChangedEvent> {
 
 	@Test
 	public void testAddTask() {
@@ -99,7 +100,7 @@ public class ProductTest extends TestCase implements Listener<Product> {
 	}
 
 	@Override
-	public void changed(Product product) {
+	public void changed(OrderChangedEvent event) {
 		hasBeenNotified = true;
 	}
 
