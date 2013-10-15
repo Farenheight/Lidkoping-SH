@@ -7,6 +7,7 @@ import se.chalmers.lidkopingsh.model.Customer;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.OrderChangedEvent;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.ProductType;
 import se.chalmers.lidkopingsh.model.Station;
@@ -37,7 +38,7 @@ public class TestLayer implements ILayer {
 	private static int ORDER_COUNT = 10;
 
 	@Override
-	public void changed(Order object) {
+	public void changed(OrderChangedEvent object) {
 		// Does nothing
 	}
 

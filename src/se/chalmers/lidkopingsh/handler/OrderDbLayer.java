@@ -10,6 +10,8 @@ import se.chalmers.lidkopingsh.database.OrderDbStorage;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.OrderChangedEvent;
+import se.chalmers.lidkopingsh.model.Status;
 import android.content.Context;
 import android.util.Log;
 
@@ -43,18 +45,19 @@ public class OrderDbLayer implements ILayer {
 	}
 
 	@Override
-	public void changed(Order order) {
+	public void changed(OrderChangedEvent event) {
 		// TODO: Check if change was same as in DB.
-		boolean success = sendUpdate(order);
+		Status status = event.getTask().getStatus();
+		boolean success = sendUpdate(event.getOrder());
 		List<Order> orders = getUpdates(false);
-		if (!success) { //TODO: While here?
-			sendUpdate(order);
-		}
 		orders = getUpdates(false);
 		if (orders == null) {
-			order.sync(null);
+			event.getOrder().sync(null);
 		} else {
 			updateDatabase(orders);
+		}
+		if (!success) {
+			event.getTask().setStatus(status);
 		}
 
 	}
@@ -73,6 +76,7 @@ public class OrderDbLayer implements ILayer {
 
 	public List<Order> getUpdates(boolean getAll) {
 		try {
+			//TODO: freezes main-thread during asynctask.
 			return new AsyncTaskGet(getAll).execute(serverLayer).get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
