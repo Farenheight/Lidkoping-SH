@@ -6,6 +6,7 @@ $data = $_POST;
 $orderYear = $data['orderDateYear']%1000;
 $orderMonth = $data['orderDateMonth'];
 $orderDay = $data['orderDateDay'];
+$imagePath = "";
 
 $data['orderDate'] = $timestamp;
 unset($data['orderDateDay']);
@@ -23,6 +24,7 @@ if ($_FILES["image1"]["error"] > 0) {
 	if(in_array($_FILES["image1"]["type"], $allowedHeaderType) && in_array($extension, $allowedExts) && ($_FILES["image1"]["size"] < (1024*1024*10))){
 		if(!file_exists("../api/pics/$orderYear/" . $orderMonth . $orderDay . "-" . time() . "." . $extension)){ //TODO Get ordernumber
 			move_uploaded_file($_FILES["image1"]["tmp_name"], "../api/pics/$orderYear/" . $orderMonth . $orderDay . "-" . time() . "." . $extension);
+			$imagePath = "$orderYear/$orderMonth" . "$orderDay-" . time() . ".$extension";
 		}else{
 			echo "File already exist.";
 		}
@@ -30,6 +32,14 @@ if ($_FILES["image1"]["error"] > 0) {
 		echo "Invalid file";
 	}
 }
+if($imagePath !== ""){
+	$data['images'] = array(
+		array(
+			"imagePath" => $imagePath
+		)
+	);
+}
+
 
 // Send JSON object to web api
 echo "Skickar: " . json_encode($data) . "<br />";

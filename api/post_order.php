@@ -211,6 +211,7 @@ function sqlInsertImage($image, $orderId) {
 	$stmt = $GLOBALS['con'] -> prepare($sql);
 	$stmt -> bind_param("is", $orderId, $image['imagePath']);
 	$stmt -> execute();
+	echo "Inserted image";
 }
 
 function sqlInsertOrder($order) {
@@ -219,7 +220,7 @@ function sqlInsertOrder($order) {
 	$idName = $GLOBALS['util']->getIdName($order);
 	$time = getMilliseconds();
 
-	$sql = "INSERT INTO `order` (`order_number`, `id_name`, `deceaaed`, `order_date`, `cemetery_board`,
+	$sql = "INSERT INTO `order` (`order_number`, `id_name`, `deceased`, `order_date`, `cemetery_board`,
 		`cemetery`, `cemetery_block`, `cemetery_number`, `customer_id`, `time_created`,
 		`time_last_update`, `cancelled`, `archived`)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

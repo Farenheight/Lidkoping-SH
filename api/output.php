@@ -20,6 +20,7 @@ function output($success, $results = null, $message = null, $errorCode = 0) {
 }
 
 function errorSql($message, $number) {
+	debug_print_backtrace();
 	die(output(false, null, $message, $number));
 }
 
