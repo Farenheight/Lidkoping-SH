@@ -55,6 +55,10 @@ public class OrderDbLayer implements ILayer {
 		sendUpdate(event);
 	}
 
+	/**
+	 * Creates an asynctask that will send an update and then update the local database
+	 * @param event The event which holds what has changed
+	 */
 	private void sendUpdate(OrderChangedEvent event) {
 		new AsyncTaskSend(event,serverLayer, this).execute();
 		
@@ -102,6 +106,10 @@ public class OrderDbLayer implements ILayer {
 		}
 	}
 	
+	/**
+	 * Updates the local database with data from server. Runs in a different thread because of asynctask.
+	 * @param getAll True if everything should be fetched false otherwise
+	 */
 	public void update(boolean getAll) {
 		new AsyncTaskGet(getAll, this).execute(serverLayer);
 	}

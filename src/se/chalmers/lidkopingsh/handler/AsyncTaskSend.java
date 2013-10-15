@@ -6,6 +6,13 @@ import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
 import android.os.AsyncTask;
 
+/**
+ * Handles the sending of updates and the updating of the local database afterwards. Is run in a new thread.
+ * 
+ * @author Olliver Mattsson
+ * @author Alexander Härenstam
+ */
+
 public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	private final ServerLayer serverLayer;
 	private final OrderChangedEvent event;
@@ -30,6 +37,12 @@ public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 		List<Order> orders = serverLayer.getUpdates(false);
 		return orders;
 	}
+	
+	/**
+	 * Method is run automatically after the doInBackground method and updates database in GUI thread.
+	 * 
+	 * @param orders The orders returned from the database
+	 */
 	protected void onPostExecute(List<Order> orders) {
 		se.chalmers.lidkopingsh.model.Status status = event.getTask().getStatus();
 		if (orders == null) {
