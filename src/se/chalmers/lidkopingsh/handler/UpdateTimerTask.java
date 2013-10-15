@@ -11,7 +11,7 @@ public class UpdateTimerTask extends TimerTask{
 	}
 	@Override
 	public void run() {
-		layer.updateDatabase(layer.getUpdates(false));
+		layer.update(false);
 	}
 	
 }
