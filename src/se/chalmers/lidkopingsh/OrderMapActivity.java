@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
@@ -230,7 +231,7 @@ public class OrderMapActivity extends FragmentActivity {
 
 		private String formatCemeteryName(String cemeteryName) {
 			// TODO: Handle if cemetery is null
-			cemeteryName = cemeteryName.toLowerCase();
+			cemeteryName = cemeteryName.toLowerCase(new Locale("Swedish"));
 			if (cemeteryName.contains("kyrkogård")
 					|| cemeteryName.contains("kyrka")) {
 				return cemeteryName;
