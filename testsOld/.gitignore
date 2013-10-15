@@ -1,9 +1,0 @@
-# Misc
-.DS_Store
-local.properties
-# Directories
-/gen
-/bin
-*.log
-*.class
-*.metadata
