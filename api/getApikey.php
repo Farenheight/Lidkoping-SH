@@ -5,24 +5,27 @@ function getApikey(){
 		if(validateLogin($_SERVER['HTTP_LIDKOPINGSH_USERNAME'], $_SERVER['HTTP_LIDKOPINGSH_PASSWORD'])){
 			$sql = "SELECT `user_id` FROM `user` WHERE `username`=?";
 			$stmt = $GLOBALS['con']->prepare($sql);
-			$stmt->bind_param("s", $user);
+			$stmt->bind_param("s", $_SERVER['HTTP_LIDKOPINGSH_USERNAME']);
 			$stmt->execute();
 			$res = $stmt->get_result();
 			$row = $res->fetch_assoc();
+			
 			$userID = $row['user_id'];
 			$deviceID = "asdf";
+			
 			$apikey = genrerateApikey($userID, $deviceID);
 			doDie(output(true, null, $apikey));
 		}else{
 			errorGeneric("Your credentials are not valid, please try again. Please honor the exponential back off.", 43);
 		}
 	}else{
-		errorGeneric("Your credentials are not valid, please try again. Please honor the exponential back off.", 44);
+		errorGeneric("You havn't specified any credentials, please try again.", 44);
 	}
 }
 
 function validateLogin($user, $pw){
 	$returning = false;
+	$dbUserID = "";
 	
 	$sql = "SELECT `hash`, `salt`, `user_id` FROM `user` WHERE `username`=?";
 	$stmt = $GLOBALS['con']->prepare($sql);
@@ -40,7 +43,7 @@ function validateLogin($user, $pw){
 		$hash = substr($hashWithPrefix, 7);
 		$returning = ($hash === $dbHash);
 	}
-	logAccess($returning, LOGIN, (isset($dbUserID) ? $dbUserID : "0"));
+	logAccess($returning, LOGIN, ($dbUserID ?: "0"));
 	return $returning;
 }
 
