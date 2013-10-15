@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.model.test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import se.chalmers.lidkopingsh.ModelFilter;
+import se.chalmers.lidkopingsh.model.Customer;
+import se.chalmers.lidkopingsh.model.Order;
 
 public class ModelFilterTest {
 	private List<Order> orders;

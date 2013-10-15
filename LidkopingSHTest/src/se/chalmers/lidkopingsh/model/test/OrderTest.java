@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.model.test;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -9,6 +9,13 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.model.Customer;
+import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.Product;
+import se.chalmers.lidkopingsh.model.Station;
+import se.chalmers.lidkopingsh.model.Status;
+import se.chalmers.lidkopingsh.model.Stone;
+import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.util.Listener;
 
 public class OrderTest {
