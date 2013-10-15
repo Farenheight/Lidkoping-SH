@@ -33,6 +33,7 @@ class DataContract {
 		public static final String COLUMN_NAME_CUSTOMER_ID = "customer_id";
 		public static final String COLUMN_NAME_TIME_CREATED = "time_created";
 		public static final String COLUMN_NAME_TIME_LAST_UPDATE = "time_last_update";
+		public static final String COLUMN_NAME_DECEASED = "deceased";
 	}
 
 	/**

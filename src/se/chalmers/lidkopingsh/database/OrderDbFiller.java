@@ -82,7 +82,7 @@ public class OrderDbFiller {
 		return new Order(orderId++, String.valueOf(orderNumber++), idName,
 				System.currentTimeMillis(), System.currentTimeMillis(),
 				"Kyrkogård", "Kyrkogårdsnämnd", "Kvarter", "Nummer",
-				System.currentTimeMillis(), customer, null, getImages());
+				System.currentTimeMillis(), customer, null, getImages(), "död");
 	}
 
 	private static List<Image> getImages() {

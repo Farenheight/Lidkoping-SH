@@ -32,6 +32,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	private transient List<Listener<Order>> orderSyncedListeners;
 	private List<Product> products;
 	private List<Image> images;
+	private String deceased;
 
 	/**
 	 * Creates an Order with the specified properties. For unknown or not
@@ -40,7 +41,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Order(int id, String orderNumber, String idName, long timeCreated,
 			long lastTimeUpdated, String cemetery, String cemeteryBoard,
 			String cemeteryBlock, String cemeteryNumber, long orderDate,
-			Customer customer, List<Product> products, List<Image> images) {
+			Customer customer, List<Product> products, List<Image> images, String deceased) {
 		this.id = id;
 		this.orderNumber = orderNumber != null ? orderNumber : "";
 		this.idName = idName != null ? idName : "";
@@ -53,6 +54,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 		this.orderDate = orderDate;
 		this.customer = customer.clone();
 		this.images = images;
+		this.deceased = deceased;
 		orderListeners = new ArrayList<Listener<Order>>();
 		orderSyncedListeners = new ArrayList<Listener<Order>>();
 		this.products = new ProductList(products);
@@ -72,7 +74,7 @@ public class Order implements Listener<Product>, Syncable<Order> {
 	public Order(Order o) {
 		this(o.id, o.orderNumber, o.idName, o.timeCreated, o.lastTimeUpdate,
 				o.cemetery, o.cemeteryBoard, o.cemeteryBlock, o.cemeteryNumber,
-				o.orderDate, o.customer, o.products, o.images);
+				o.orderDate, o.customer, o.products, o.images, o.getDeceased());
 	}
 
 	public int getId() {
@@ -125,6 +127,10 @@ public class Order implements Listener<Product>, Syncable<Order> {
 
 	public List<Product> getProducts() {
 		return products;
+	}
+	
+	public String getDeceased() {
+		return deceased;
 	}
 
 	/**

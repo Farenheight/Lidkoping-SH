@@ -73,7 +73,7 @@ public class TestLayer implements ILayer {
 				"Kyrkogardsnummer", Long.parseLong("1371679200000"),
 				new Customer("Mr", "Olle Bengtsson", "Testvagen 52",
 						"416 72 Goteborg", "olle.bengtsson@testuser.com",
-						(int) System.currentTimeMillis()), pList, null);
+						(int) System.currentTimeMillis()), pList, null, "död");
 		pList.add(new Stone(1, "Svart", "beskrivning", "Slipning", null, "", "", "", "",
 				new ProductType(0, "Sten")));
 		++count;

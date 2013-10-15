@@ -150,6 +150,7 @@ public class OrderDbStorage {
 		values.put(OrderTable.COLUMN_NAME_TIME_CREATED, order.getTimeCreated());
 		values.put(OrderTable.COLUMN_NAME_TIME_LAST_UPDATE,
 				order.getLastTimeUpdate());
+		values.put(OrderTable.COLUMN_NAME_DECEASED, order.getDeceased());
 
 		insertCustomer(order.getCustomer());
 		if (order.getImages() != null) {
@@ -447,11 +448,12 @@ public class OrderDbStorage {
 		long timeCreated = getLongColumn(c, OrderTable.COLUMN_NAME_TIME_CREATED);
 		long timeLastUpdate = getLongColumn(c,
 				OrderTable.COLUMN_NAME_TIME_LAST_UPDATE);
+		String deceased = getStringColumn(c, OrderTable.COLUMN_NAME_DECEASED);
 
 		Order order = new Order(orderId, orderNumber, idName, timeCreated,
 				timeLastUpdate, cemetery, cemeteryBoard, cemeteryBlock,
 				cemeteryNumber, orderDate, getCustomer(c),
-				getProducts(orderId), getImages(orderId));
+				getProducts(orderId), getImages(orderId),deceased);
 
 		return order;
 	}
