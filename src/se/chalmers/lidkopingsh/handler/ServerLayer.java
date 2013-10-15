@@ -159,7 +159,7 @@ public class ServerLayer {
 	/**
 	 * Send updates to server.
 	 */
-	public boolean sendUpdate(Order order) {
+	public ResponseSend sendUpdate(Order order) {
 		Gson gsonOrder = new Gson();
 		String json = "data=" + gsonOrder.toJson(order);
 		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
@@ -170,10 +170,9 @@ public class ServerLayer {
 			if (!response.isSuccess()) {
 				order.sync(null); // Informing that no data has been able to change.
 				printErrorLog(response);
-				return response.isSuccess();
 			}
 		}
-		return response.isSuccess();
+		return response;
 	}
 	
 	private ResponseGet getResponseGet(Reader reader) {

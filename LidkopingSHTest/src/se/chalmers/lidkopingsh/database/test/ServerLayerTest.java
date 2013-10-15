@@ -1,9 +1,7 @@
-package se.chalmers.lidkopingsh.handler.test;
+package se.chalmers.lidkopingsh.database.test;
 
 import java.util.Collection;
 import java.util.List;
-
-import org.junit.Test;
 
 import se.chalmers.lidkopingsh.database.OrderDbStorage;
 import se.chalmers.lidkopingsh.handler.ServerLayer;
@@ -24,12 +22,10 @@ public class ServerLayerTest extends AndroidTestCase{
 		dbStorage.clear();
 	}
 	
-	@Test
 	public void testGetUpdate() {
 		ServerLayer serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", this.getContext());
 		Collection<Order> ordersBefore = dbStorage.query(null, null, null);
 		orders = serverLayer.getUpdates(true);
-		 
 		assertTrue(ordersBefore.size() < orders.size());
 	}
 	

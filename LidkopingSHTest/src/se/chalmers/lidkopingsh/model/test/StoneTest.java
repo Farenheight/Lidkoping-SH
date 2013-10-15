@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.model.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+
+import se.chalmers.lidkopingsh.model.Station;
+import se.chalmers.lidkopingsh.model.Stone;
+import se.chalmers.lidkopingsh.model.Task;
 
 public class StoneTest {
 	@Test

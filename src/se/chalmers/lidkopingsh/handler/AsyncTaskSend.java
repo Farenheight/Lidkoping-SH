@@ -2,6 +2,7 @@ package se.chalmers.lidkopingsh.handler;
 
 import java.util.List;
 
+import se.chalmers.lidkopingsh.handler.ServerLayer.ResponseSend;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
 import android.os.AsyncTask;
@@ -17,7 +18,7 @@ public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	private final ServerLayer serverLayer;
 	private final OrderChangedEvent event;
 	private final OrderDbLayer layer;
-	private boolean success;
+	private ResponseSend response;
 	
 	public AsyncTaskSend(OrderChangedEvent event, ServerLayer serverLayer, OrderDbLayer layer) {
 		this.serverLayer = serverLayer;
@@ -33,14 +34,8 @@ public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	
 	@Override
 	protected List<Order> doInBackground(Void... none) {
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		success = serverLayer.sendUpdate(event.getOrder());
-		List<Order> orders = serverLayer.getUpdates(false);
+		response = serverLayer.sendUpdate(event.getOrder());
+		List<Order>	orders = serverLayer.getUpdates(false);
 		return orders;
 	}
 	
@@ -51,12 +46,13 @@ public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	 */
 	protected void onPostExecute(List<Order> orders) {
 		se.chalmers.lidkopingsh.model.Status status = event.getTask().getStatus();
-		if (orders == null) {
-			event.getOrder().sync(null);
-		} else {
+		if (orders != null) {
 			layer.updateDatabase(orders);
 		}
-		if (!success) {
+		if (response == null) {
+			layer.noNetwork("Kunde inte koppla upp sig mot servern");
+		}
+		if (response != null && !response.isSuccess()) {
 			event.getTask().setStatus(status);
 		}
 		if (layer.getNetworkListener() != null) {

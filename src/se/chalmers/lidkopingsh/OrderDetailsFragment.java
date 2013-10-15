@@ -283,11 +283,6 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	@Override
 	public void changed(Order order) {
 		Log.d("DEBUG", "In changed()");
-
-		// Resets refresh button to refresh icon
-		MenuItem refreshBtn = (MenuItem) getActivity().findViewById(
-				R.id.action_update);
-		refreshBtn.setActionView(null);
 		
 		if (order != mOrder) {
 			if (order == null) {

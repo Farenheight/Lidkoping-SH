@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.model.test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import se.chalmers.lidkopingsh.ModelFilter;
+import se.chalmers.lidkopingsh.model.Customer;
+import se.chalmers.lidkopingsh.model.Order;
 
 public class ModelFilterTest {
 	private List<Order> orders;
@@ -31,7 +33,7 @@ public class ModelFilterTest {
 		String testConstraint = "Not a matching string";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null,null));
+				0, new Customer("","","","","",0), null,null,null));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -50,7 +52,7 @@ public class ModelFilterTest {
 		String testConstraint = "O";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null,null));
+				0, new Customer("","","","","",0), null,null,null));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -69,7 +71,7 @@ public class ModelFilterTest {
 		String testConstraint = "SS";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null,null));
+				0, new Customer("","","","","",0), null,null,null));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -88,7 +90,7 @@ public class ModelFilterTest {
 		String testConstraint = "o.r";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null,null));
+				0, new Customer("","","","","",0), null,null,null));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -107,7 +109,7 @@ public class ModelFilterTest {
 		String testConstraint = "or";
 
 		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null,null));
+				0, new Customer("","","","","",0), null,null,null));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -125,11 +127,11 @@ public class ModelFilterTest {
 		String testConstraint = "";
 
 		orders.add(new Order(0, null, "O.R", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null));
+				new Customer("","","","","",0), null,null,null));
 		orders.add(new Order(0, null, "O.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null));
+				new Customer("","","","","",0), null,null,null));
 		orders.add(new Order(0, null, "S.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null));
+				new Customer("","","","","",0), null,null,null));
 		
 		originalOrders.addAll(orders);
 
@@ -149,11 +151,11 @@ public class ModelFilterTest {
 		String testConstraint = null;
 
 		orders.add(new Order(0, null, "O.R", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null));
+				new Customer("","","","","",0), null,null,null));
 		orders.add(new Order(0, null, "O.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null));
+				new Customer("","","","","",0), null,null,null));
 		orders.add(new Order(0, null, "S.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null));
+				new Customer("","","","","",0), null,null,null));
 		
 		originalOrders.addAll(orders);
 

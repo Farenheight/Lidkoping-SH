@@ -1,8 +1,10 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.model.test;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import se.chalmers.lidkopingsh.model.Customer;
 
 public class CustomerTest {
 

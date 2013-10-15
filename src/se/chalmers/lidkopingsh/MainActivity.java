@@ -117,4 +117,10 @@ public class MainActivity extends FragmentActivity implements
 		mItem.setActionView(null);
 		
 	}
+
+	@Override
+	public void noNetwork(String message) {
+		// TODO Auto-generated method stub
+		
+	}
 }
