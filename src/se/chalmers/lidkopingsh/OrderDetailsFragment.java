@@ -19,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -192,12 +193,16 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		// Set the task toggler
 		final ToggleButton btn = (ToggleButton) taskView
 				.findViewById(R.id.task_toggler);
+		final ProgressBar bar = (ProgressBar) taskView
+				.findViewById(R.id.task_toggler_progress_indicator);
 		btn.setChecked(task.getStatus() == Status.DONE);
 		btn.setSaveEnabled(false);
 		btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton toggleButton,
 					boolean isChecked) {
+				bar.setVisibility(View.VISIBLE);
+				btn.setVisibility(View.GONE);
 				if (task.getStatus() == Status.DONE) {
 					task.setStatus(Status.NOT_DONE);
 				} else {
@@ -288,7 +293,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		MenuItem refreshBtn = (MenuItem) getActivity().findViewById(
 				R.id.action_update);
 		refreshBtn.setActionView(null);
-		
+
 		if (order != mOrder) {
 			if (order == null) {
 				// TODO: Display error message to user
