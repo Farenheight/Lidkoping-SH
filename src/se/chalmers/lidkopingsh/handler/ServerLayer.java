@@ -28,9 +28,10 @@ import com.google.gson.Gson;
  * @author Olliver Mattsson
  * 
  */
-public class ServerLayer extends AbstractServerLayer {
+public class ServerLayer {
 	private HttpClient httpClient;
 	private final Context context;
+	private final String serverPath;
 
 	/**
 	 * Creates a new ServerLayer with a set server path.
@@ -103,7 +104,6 @@ public class ServerLayer extends AbstractServerLayer {
 		return null;
 	}
 
-	@Override
 	public List<Order> getUpdates(boolean getAll) {
 		Gson gson = new Gson();
 		if (getAll) {
@@ -120,8 +120,7 @@ public class ServerLayer extends AbstractServerLayer {
 		return getUpdatedOrdersFromServer(gson.toJson(orderArray));
 	}
 
-	@Override
-	public boolean sendUpdate(Order order) {
+	public ResponseSend sendUpdate(Order order) {
 		Gson gsonOrder = new Gson();
 		String json = "data=" + gsonOrder.toJson(order);
 		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
@@ -136,9 +135,9 @@ public class ServerLayer extends AbstractServerLayer {
 		if (!response.isSuccess()) {
 			order.sync(null); // Informing that no data has been able to change.
 			printErrorLog(response);
-			return response.isSuccess();
+			return response;
 		}
-		return response.isSuccess();
+		return response;
 	}
 
 	private void printErrorLog(ResponseSend response) {
@@ -161,7 +160,7 @@ public class ServerLayer extends AbstractServerLayer {
 		return true;
 	}
 
-	private class ResponseGet extends ResponseSend {
+	public class ResponseGet extends ResponseSend {
 		private List<Order> results;
 		
 		public List<Order> getResults() {
@@ -169,7 +168,7 @@ public class ServerLayer extends AbstractServerLayer {
 		}
 	}
 	
-	private class ResponseSend {
+	public class ResponseSend {
 		private boolean success;
 		private int errorcode;
 		private String message;

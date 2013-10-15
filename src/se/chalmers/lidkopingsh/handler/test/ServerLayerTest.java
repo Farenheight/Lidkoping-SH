@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import se.chalmers.lidkopingsh.database.OrderDbStorage;
 import se.chalmers.lidkopingsh.handler.ServerLayer;
+import se.chalmers.lidkopingsh.handler.ServerLayer.ResponseSend;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
@@ -44,9 +45,9 @@ public class ServerLayerTest extends AndroidTestCase{
 			}
 		}
 		order.sync(order);
-		boolean success = serverLayer.sendUpdate(order);
+		ResponseSend response = serverLayer.sendUpdate(order);
 		
-		assertTrue(success);
+		assertTrue(response.isSuccess());
 	}
 
 }

@@ -29,12 +29,7 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 	
 	@Override
 	protected List<Order> doInBackground(ServerLayer... serverLayer) {
-		ServerLayer serverL = serverLayer[0];
-		List<Order> orders = null;
-		if (serverL.isServerAvailable()) {
-			orders = serverL.getUpdates(getAll);
-		}
-		return orders;
+		return serverLayer[0].getUpdates(getAll);
 	}
 	
 	/**
@@ -50,7 +45,7 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 			layer.endUpdate();
 		}
 		if(orders == null) {
-			layer.noNetwork();
+			layer.noNetwork("Kunde inte koppla upp mot server");
 		}
 	}
 }
