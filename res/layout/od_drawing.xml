@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tabDrawingContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:layout_margin="15dp"
+    android:baselineAligned="false"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/orderDrawing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/order_drawing"
+        android:src="@drawable/test_headstone_drawing" />
+
+</LinearLayout>

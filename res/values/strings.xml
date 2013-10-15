@@ -39,5 +39,6 @@
     
     <string name="satellite">Satellite</string>
     <string name="normal">Normal</string>
+    <string name="update">Uppdatera</string>
 
 </resources>

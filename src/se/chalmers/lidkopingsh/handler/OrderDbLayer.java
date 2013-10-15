@@ -45,9 +45,15 @@ public class OrderDbLayer implements ILayer {
 		// TODO: Remove server path. Set it in settings.
 		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/",
 				context);
+<<<<<<< HEAD
 		update(true);
+=======
+		updateDatabase(getUpdates(true));
+		Log.d("OrderDbLayer", "Constructor");
+>>>>>>> refs/remotes/origin/dev-gui
 		timer = new Timer();
-		timer.scheduleAtFixedRate(new UpdateTimerTask(this), 0, UPDATE_INTERVAL);
+		timer.scheduleAtFixedRate(new UpdateTimerTask(this), UPDATE_INTERVAL,
+				UPDATE_INTERVAL);
 	}
 
 	@Override
