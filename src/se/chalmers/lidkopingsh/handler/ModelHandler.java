@@ -1,7 +1,6 @@
 package se.chalmers.lidkopingsh.handler;
 
 import se.chalmers.lidkopingsh.model.IModel;
-import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import android.content.Context;
 
 

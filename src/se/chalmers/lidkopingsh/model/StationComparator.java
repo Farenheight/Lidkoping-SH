@@ -2,8 +2,6 @@ package se.chalmers.lidkopingsh.model;
 
 import java.util.Comparator;
 
-import android.util.Log;
-
 /**
  * A Comparator that orders a list of {@link Order}'s depending on how far is
  * left to that station. If two {@link Order} are on the same station, the

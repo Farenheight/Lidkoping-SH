@@ -32,9 +32,10 @@ import com.google.gson.Gson;
  * @author Anton Jansson
  * 
  */
-public class ServerLayer extends AbstractServerLayer {
+public class ServerLayer {
 	private HttpClient httpClient;
 	private final Context context;
+	private final String serverPath;
 
 	/**
 	 * Creates a new ServerLayer with a set server path.
@@ -101,19 +102,30 @@ public class ServerLayer extends AbstractServerLayer {
 
 		ResponseGet response = getResponseGet(reader);
 
-		if (response.isSuccess()) {
-			List<Order> ord = new LinkedList<Order>();
-			for (Order o : response.getResults()) {
-				ord.add(o);
+		if (response != null) {
+			if (response.isSuccess()) {
+				List<Order> ord = new LinkedList<Order>();
+				for (Order o : response.getResults()) {
+					ord.add(o);
+				}
+				return ord;
+			} else {
+				printErrorLog(response);
 			}
-			return ord;
-		} else {
-			printErrorLog(response);
 		}
 		return null;
 	}
 
-	@Override
+	/**
+	 * Tries to authenticate and retrieve an API key for this device.
+	 * 
+	 * @param username
+	 * @param password
+	 * @param deviceId
+	 *            Unique device id.
+	 * @return Response with success status, error code and message. API key is
+	 *         returned in message if it exists.
+	 */
 	public ResponseSend getApikey(String username, String password,
 			String deviceId) {
 		Collection<Header> headers = new ArrayList<Header>();
@@ -125,7 +137,9 @@ public class ServerLayer extends AbstractServerLayer {
 		return getResponseGet(reader);
 	}
 
-	@Override
+	/**
+	 * Retrieve updates from server.
+	 */
 	public List<Order> getUpdates(boolean getAll) {
 		Gson gson = new Gson();
 		if (getAll) {
@@ -142,7 +156,9 @@ public class ServerLayer extends AbstractServerLayer {
 		return getUpdatedOrdersFromServer(gson.toJson(orderArray));
 	}
 
-	@Override
+	/**
+	 * Send updates to server.
+	 */
 	public boolean sendUpdate(Order order) {
 		Gson gsonOrder = new Gson();
 		String json = "data=" + gsonOrder.toJson(order);
@@ -151,9 +167,11 @@ public class ServerLayer extends AbstractServerLayer {
 		ResponseSend response = getResponseSend(reader);
 
 		if (!response.isSuccess()) {
-			order.sync(null); // Informing that no data has been able to change.
-			printErrorLog(response);
-			return response.isSuccess();
+			if (!response.isSuccess()) {
+				order.sync(null); // Informing that no data has been able to change.
+				printErrorLog(response);
+				return response.isSuccess();
+			}
 		}
 		return response.isSuccess();
 	}
@@ -182,10 +200,25 @@ public class ServerLayer extends AbstractServerLayer {
 		Log.d("server_layer", "Error code: " + response.getErrorcode()
 				+ " Message: " + response.getMessage());
 	}
+	
+	public boolean isServerAvailable() {
+		try {
+			HttpPost httpPost = new HttpPost(serverPath);
+			httpPost.setEntity(new StringEntity(""));
+			httpPost.setHeader("LidkopingSH-Authentication",
+					"123456789qwertyuiop");
+			httpPost.setHeader("Content-Type",
+					"application/x-www-form-urlencoded");
+			httpClient.execute(httpPost);
+		} catch(Exception e) {
+			return false;
+		}
+		return true;
+	}
 
-	private class ResponseGet extends ResponseSend {
+	public class ResponseGet extends ResponseSend {
 		private List<Order> results;
-
+		
 		public List<Order> getResults() {
 			return results;
 		}
