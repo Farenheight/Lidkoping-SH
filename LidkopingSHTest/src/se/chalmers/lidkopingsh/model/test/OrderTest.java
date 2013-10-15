@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.model;
+package se.chalmers.lidkopingsh.model.test;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -9,6 +9,14 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
+import se.chalmers.lidkopingsh.model.Customer;
+import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.OrderChangedEvent;
+import se.chalmers.lidkopingsh.model.Product;
+import se.chalmers.lidkopingsh.model.Station;
+import se.chalmers.lidkopingsh.model.Status;
+import se.chalmers.lidkopingsh.model.Stone;
+import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.util.Listener;
 
 public class OrderTest {
@@ -29,13 +37,13 @@ public class OrderTest {
 		long time = System.currentTimeMillis();
 		Order firstOrder = new Order(1, "130001", "K.J", time, time,
 				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null);
+						"", "", 0), null, null,null);
 		Order secondOrder = new Order(1, "130001", "K.J", time, time,
 				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null);
+						"", "", 0), null, null,null);
 		Order thirdOrder = new Order(1, "130001", "K.J", time, time,
 				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null);
+						"", "", 0), null, null,null);
 
 		firstOrder.addProduct(new Product(Arrays.asList(new Task[] {
 				new Task(firstStation, Status.DONE),
@@ -67,13 +75,13 @@ public class OrderTest {
 		long time = System.currentTimeMillis();
 		Order firstOrder = new Order(1, "130001", "K.J", time, time,
 				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null);
+						"", "", 0), null, null,null);
 		Order secondOrder = new Order(1, "130001", "K.J", time, time,
 				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null);
+						"", "", 0), null, null,null);
 		Order thirdOrder = new Order(1, "130001", "K.J", time, time,
 				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null);
+						"", "", 0), null, null,null);
 
 		firstOrder.addProduct(new Product(Arrays.asList(new Task[] {
 				new Task(firstStation, Status.DONE),
@@ -99,10 +107,10 @@ public class OrderTest {
 
 		Order o1 = new Order(1, "130001", "K.J", time, time, "Goteborg", null,
 				null, null, time, new Customer("", "", "", "", "", 0), null,
-				null);
+				null,null);
 		Order o2 = new Order(1, "130001", "K.J", time, time, "Goteborg", null,
 				null, null, time, new Customer("", "", "", "", "", 0), null,
-				null);
+				null,null);
 		assertTrue(o1.equals(o2));
 
 		Product p = new Product(new ArrayList<Task>());
@@ -125,13 +133,13 @@ public class OrderTest {
 		// TODO filled with null to avoid compilation errors
 		Order o0 = new Order(0, "2", "OM", 2837203547257l,
 				System.currentTimeMillis(), "Kvanum", null, null, null, 0l,
-				new Customer("", "", "", "", "", 0), null, null);
+				new Customer("", "", "", "", "", 0), null, null,null);
 		Order o1 = new Order(0, "3", "OK", 2837203547257l,
 				System.currentTimeMillis(), "Lish", null, null, null, 2l,
-				new Customer("", "", "", "", "", 0), null, null);
+				new Customer("", "", "", "", "", 0), null, null,null);
 		Order o2 = new Order(0, "3", "OK", 2837203547257l,
 				System.currentTimeMillis(), "Lish", null, null, null, 2l,
-				new Customer("", "", "", "", "", 0), null, null);
+				new Customer("", "", "", "", "", 0), null, null,null);
 		assertFalse(o0.equals(o1));
 		assertTrue(o1.equals(o2));
 
@@ -174,7 +182,7 @@ public class OrderTest {
 		Order order0 = new Order(0, "13555", "OV", System.currentTimeMillis(),
 				System.currentTimeMillis(), "Kvanum", null, "", "",
 				System.currentTimeMillis(),
-				new Customer("", "", "", "", "", 0), null, null);
+				new Customer("", "", "", "", "", 0), null, null,null);
 
 		order0.addOrderListener(listener);
 
@@ -198,7 +206,7 @@ public class OrderTest {
 		Order order1 = new Order(0, "", "", System.currentTimeMillis(),
 				System.currentTimeMillis(), null, "", "", "",
 				System.currentTimeMillis(),
-				new Customer("", "", "", "", "", 0), null, null);
+				new Customer("", "", "", "", "", 0), null, null,null);
 
 		Product product2 = new Product(0, "", "", "", null);
 		Task task4 = new Task(new Station(0, "Task0"));
@@ -224,11 +232,11 @@ public class OrderTest {
 		assertTrue(listener.getchanged);
 	}
 
-	private class OrderListener implements Listener<Order> {
+	private class OrderListener implements Listener<OrderChangedEvent> {
 		public boolean getchanged = false;
 
 		@Override
-		public void changed(Order object) {
+		public void changed(OrderChangedEvent event) {
 			getchanged = true;
 		}
 	};

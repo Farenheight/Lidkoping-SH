@@ -1,3 +1,4 @@
+
 package se.chalmers.lidkopingsh.handler;
 
 import java.util.List;
@@ -30,12 +31,6 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 	
 	@Override
 	protected List<Order> doInBackground(ServerLayer... serverLayer) {
-		Log.d("AsyncTaskGet", "doInBackground");
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		return serverLayer[0].getUpdates(getAll);
 	}
 	
@@ -45,9 +40,14 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 	 * @param orders The orders returned from the database
 	 */
 	protected void onPostExecute(List<Order> orders) {
-		layer.updateDatabase(orders);
+		if (orders != null) {
+			layer.updateDatabase(orders);
+		}
 		if (layer.getNetworkListener() != null) {
 			layer.endUpdate();
+		}
+		if(orders == null) {
+			layer.noNetwork("Kunde inte koppla upp mot server");
 		}
 	}
 }

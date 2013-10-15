@@ -3,7 +3,6 @@ package se.chalmers.lidkopingsh;
 import java.util.ArrayList;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
-import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
 import android.app.Activity;

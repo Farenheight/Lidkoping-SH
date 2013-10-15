@@ -44,9 +44,9 @@ public class OrderDbStorage {
 	private static final String ORDER = "o";
 	private static final String PRODUCT = "p";
 	private static final String PRODUCT_TYPE = "pt";
+	private static final String STATION = "st";
 	private static final String STONE = "s";
 	private static final String TASK = "t";
-	private static final String TASK_TO_PRODUCT = "ttp";
 
 	private static final String COMMA_SEP = ", ";
 	private static final String DOT = ".";
@@ -398,6 +398,7 @@ public class OrderDbStorage {
 	 */
 	public Collection<Order> query(String sqlSelection,
 			String[] sqlSelectionArgs, String sqlOrderBy) {
+		// Select all orders, joining respective customer
 		String sqlQuery = SELECT_FROM + OrderTable.TABLE_NAME + SPACE + ORDER
 				+ SPACE + JOIN + CustomerTable.TABLE_NAME + SPACE + CUSTOMER
 				+ ON + CUSTOMER + DOT + CustomerTable.COLUMN_NAME_CUSTOMER_ID
@@ -466,6 +467,7 @@ public class OrderDbStorage {
 	}
 
 	private List<Image> getImages(int orderId) {
+		// Select all images for an order.
 		String sqlImages = SELECT_FROM + ImageTable.TABLE_NAME + SPACE + IMAGE
 				+ JOIN + OrderTable.TABLE_NAME + SPACE + ORDER + ON + IMAGE
 				+ DOT + ImageTable.COLUMN_NAME_ORDER_ID + EQUALS + ORDER + DOT
@@ -506,24 +508,26 @@ public class OrderDbStorage {
 	}
 
 	private List<Product> getProducts(int orderId) {
+		// Select all products for an order. Join stone details, tasks
+		// and respective station for each task.
 		String sqlProducts = SELECT_FROM + ProductTable.TABLE_NAME + SPACE
 				+ PRODUCT + LEFT_JOIN + StoneTable.TABLE_NAME + SPACE + STONE
 				+ ON + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID
 				+ EQUALS + STONE + DOT + StoneTable.COLUMN_NAME_PRODUCT_ID
-				+ LEFT_JOIN + TaskTable.TABLE_NAME + SPACE + TASK_TO_PRODUCT
+				+ LEFT_JOIN + TaskTable.TABLE_NAME + SPACE + TASK
 				+ ON + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_ID
-				+ EQUALS + TASK_TO_PRODUCT + DOT
+				+ EQUALS + TASK + DOT
 				+ TaskTable.COLUMN_NAME_PRODUCT_ID 
 				+ LEFT_JOIN + ProductTypeTable.TABLE_NAME + SPACE + PRODUCT_TYPE
 				+ ON + PRODUCT + DOT + ProductTable.COLUMN_NAME_PRODUCT_TYPE_ID 
 				+ EQUALS + PRODUCT_TYPE + DOT + ProductTypeTable.COLUMN_NAME_PRODUCT_TYPE_ID
-				+ LEFT_JOIN + StationTable.TABLE_NAME + SPACE + TASK + ON + TASK_TO_PRODUCT
-				+ DOT + TaskTable.COLUMN_NAME_STATION_ID + EQUALS + TASK + DOT
+				+ LEFT_JOIN + StationTable.TABLE_NAME + SPACE + STATION + ON + TASK
+				+ DOT + TaskTable.COLUMN_NAME_STATION_ID + EQUALS + STATION + DOT
 				+ StationTable.COLUMN_NAME_STATION_ID + WHERE + PRODUCT + DOT
 				+ ProductTable.COLUMN_NAME_ORDER_ID + EQUALS + QUESTION_MARK
 				+ ORDER_BY + PRODUCT + DOT
 				+ ProductTable.COLUMN_NAME_PRODUCT_ID + COMMA_SEP
-				+ TASK_TO_PRODUCT + DOT + TaskTable.COLUMN_NAME_SORT_ORDER;
+				+ TASK + DOT + TaskTable.COLUMN_NAME_SORT_ORDER;
 
 		Cursor c = db.rawQuery(sqlProducts,
 				new String[] { Integer.toString(orderId) });

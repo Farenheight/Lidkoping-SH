@@ -4,5 +4,6 @@ public interface NetworkUpdateListener {
 	
 	public void startUpdate();
 	public void endUpdate();
+	public void noNetwork(String message);
 	
 }

@@ -136,5 +136,9 @@ public class OrderDbLayer implements ILayer {
 	public void endUpdate() {
 		listener.endUpdate();
 	}
+	
+	public void noNetwork(String message) {
+		listener.noNetwork(message);
+	}
 
 }

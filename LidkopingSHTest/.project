@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>LidkopingSHTest</name>
+	<name>LidkopingSHTests</name>
 	<comment></comment>
 	<projects>
-		<project>Lidkoping-SH</project>
+		<project>LidkopingSH</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

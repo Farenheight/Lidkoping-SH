@@ -2,8 +2,6 @@ package se.chalmers.lidkopingsh.handler;
 
 import java.util.TimerTask;
 
-import android.util.Log;
-
 public class UpdateTimerTask extends TimerTask{
 
 	private OrderDbLayer layer;

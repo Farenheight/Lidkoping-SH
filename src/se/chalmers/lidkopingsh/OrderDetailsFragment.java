@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -54,8 +53,6 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	private View rootView;
 
 	private TabHost mTabHost;
-
-	private String mCurrentTabTag;
 
 	private boolean mTabletSize;
 
@@ -119,7 +116,6 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 			@Override
 			public void onTabChanged(String tabId) {
-				mCurrentTabTag = tabId;
 			}
 		});
 
@@ -148,7 +144,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 		// Sets the current tab if saved
 		if (currentTab != null) {
-			mTabHost.setCurrentTabByTag(DETAIL_TAB);
+			mTabHost.setCurrentTabByTag(currentTab);
 		}
 
 	}
@@ -288,11 +284,6 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	@Override
 	public void changed(Order order) {
 		Log.d("DEBUG", "In changed()");
-
-		// Resets refresh button to refresh icon
-		MenuItem refreshBtn = (MenuItem) getActivity().findViewById(
-				R.id.action_update);
-		refreshBtn.setActionView(null);
 
 		if (order != mOrder) {
 			if (order == null) {
