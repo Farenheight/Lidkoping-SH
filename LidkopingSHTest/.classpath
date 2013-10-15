@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="se/chalmers/lidkopingsh/model/ModelFilterTest.java|se/chalmers/lidkopingsh/model/OrderTest.java|se/chalmers/lidkopingsh/model/ProductTest.java|se/chalmers/lidkopingsh/model/StationComparatorTest.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry exported="true" kind="lib" path="libs/gson-2.2.4-javadoc.jar"/>

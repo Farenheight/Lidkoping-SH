@@ -29,12 +29,12 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 	
 	@Override
 	protected List<Order> doInBackground(ServerLayer... serverLayer) {
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		ServerLayer serverL = serverLayer[0];
+		List<Order> orders = null;
+		if (serverL.isServerAvailable()) {
+			orders = serverL.getUpdates(getAll);
 		}
-		return serverLayer[0].getUpdates(getAll);
+		return orders;
 	}
 	
 	/**
@@ -43,9 +43,14 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 	 * @param orders The orders returned from the database
 	 */
 	protected void onPostExecute(List<Order> orders) {
-		layer.updateDatabase(orders);
+		if (orders != null) {
+			layer.updateDatabase(orders);
+		}
 		if (layer.getNetworkListener() != null) {
 			layer.endUpdate();
+		}
+		if(orders == null) {
+			layer.noNetwork();
 		}
 	}
 }

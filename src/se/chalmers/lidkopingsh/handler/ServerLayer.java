@@ -89,14 +89,16 @@ public class ServerLayer extends AbstractServerLayer {
 			Log.d("server_layer", "No data from server");
 		}
 		
-		if (response.isSuccess()) {
-			List<Order> ord = new LinkedList<Order>();
-			for (Order o : response.getResults()) {
-				ord.add(o);
+		if (response != null) {
+			if (response.isSuccess()) {
+				List<Order> ord = new LinkedList<Order>();
+				for (Order o : response.getResults()) {
+					ord.add(o);
+				}
+				return ord;
+			} else {
+				printErrorLog(response);
 			}
-			return ord;
-		} else {
-			printErrorLog(response);
 		}
 		return null;
 	}
@@ -130,7 +132,7 @@ public class ServerLayer extends AbstractServerLayer {
 		} catch (Exception e) {
 			Log.d("server_layer", "No data from server");
 		}
-
+		
 		if (!response.isSuccess()) {
 			order.sync(null); // Informing that no data has been able to change.
 			printErrorLog(response);
@@ -142,6 +144,21 @@ public class ServerLayer extends AbstractServerLayer {
 	private void printErrorLog(ResponseSend response) {
 		Log.d("server_layer", "Error code: " + response.getErrorcode()
 				+ " Message: " + response.getMessage());
+	}
+	
+	public boolean isServerAvailable() {
+		try {
+			HttpPost httpPost = new HttpPost(serverPath);
+			httpPost.setEntity(new StringEntity(""));
+			httpPost.setHeader("LidkopingSH-Authentication",
+					"123456789qwertyuiop");
+			httpPost.setHeader("Content-Type",
+					"application/x-www-form-urlencoded");
+			httpClient.execute(httpPost);
+		} catch(Exception e) {
+			return false;
+		}
+		return true;
 	}
 
 	private class ResponseGet extends ResponseSend {

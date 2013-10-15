@@ -7,7 +7,7 @@
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="com.example.lidkopingsh" />
+        android:targetPackage="se.chalmers.lidkopingsh" />
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application

@@ -33,14 +33,11 @@ public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	
 	@Override
 	protected List<Order> doInBackground(Void... none) {
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		List<Order> orders = null;
+		if (serverLayer.isServerAvailable()) {
+			success = serverLayer.sendUpdate(event.getOrder());
+			orders = serverLayer.getUpdates(false);
 		}
-		success = serverLayer.sendUpdate(event.getOrder());
-		List<Order> orders = serverLayer.getUpdates(false);
 		return orders;
 	}
 	
@@ -52,11 +49,11 @@ public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	protected void onPostExecute(List<Order> orders) {
 		se.chalmers.lidkopingsh.model.Status status = event.getTask().getStatus();
 		if (orders == null) {
-			event.getOrder().sync(null);
+			layer.noNetwork();
 		} else {
 			layer.updateDatabase(orders);
 		}
-		if (!success) {
+		if (!success && orders != null) {
 			event.getTask().setStatus(status);
 		}
 		if (layer.getNetworkListener() != null) {
