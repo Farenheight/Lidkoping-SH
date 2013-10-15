@@ -9,8 +9,14 @@ require_once 'authentication.php';
 require_once 'db_config.php';
 require_once 'class/mySQLConnection.php';
 require_once 'util.php';
-$util = new Util();
+
 $con = new mySQLConnection();
+$util = new Util();
+
+if(isset($_GET['action']) && $_GET['action'] === "getApikey"){
+	require_once 'getApikey.php';
+	getApikey();
+}
 checkAuthenticated();
 
 if (isset($_GET['action'])) {
@@ -23,9 +29,6 @@ if (isset($_GET['action'])) {
 	} else if ($_GET['action'] === "insertOrder") {
 		require_once 'post_order.php';
 		insertOrder();
-	} else if($_GET['action'] === "getApikey"){
-		require_once 'getApikey.php';
-		getApikey();
 	} else {
 		errorGeneric("No valid action: Provided action (". $_GET['action'] .") does not exist");
 	}

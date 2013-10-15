@@ -1,15 +1,23 @@
 <?php
 
-require_once 'output.php';
-require_once 'authentication.php';
-require_once 'db_config.php';
-require_once 'class/mySQLConnection.php';
-$con = new mySQLConnection();
-
 function getApikey(){
-	if(isset($_SERVER['HTTP_LIDKOPINGSH_USERNAME']) && isset($_SERVER['HTTP_LIDKOPINGSH_USERNAME'])){
-		
-		
+	if(isset($_SERVER['HTTP_LIDKOPINGSH_USERNAME']) && isset($_SERVER['HTTP_LIDKOPINGSH_PASSWORD'])){
+		if(validateLogin($_SERVER['HTTP_LIDKOPINGSH_USERNAME'], $_SERVER['HTTP_LIDKOPINGSH_PASSWORD'])){
+			$sql = "SELECT `user_id` FROM `user` WHERE `username`=?";
+			$stmt = $GLOBALS['con']->prepare($sql);
+			$stmt->bind_param("s", $user);
+			$stmt->execute();
+			$res = $stmt->get_result();
+			$row = $res->fetch_assoc();
+			$userID = $row['user_id'];
+			$deviceID = "asdf";
+			$apikey = genrerateApikey($userID, $deviceID);
+			doDie(output(true, null, $apikey));
+		}else{
+			errorGeneric("Your credentials are not valid, please try again. Please honor the exponential back off.", 43);
+		}
+	}else{
+		errorGeneric("Your credentials are not valid, please try again. Please honor the exponential back off.", 44);
 	}
 }
 
@@ -20,9 +28,8 @@ function validateLogin($user, $pw){
 	$stmt = $GLOBALS['con']->prepare($sql);
 	$stmt->bind_param("s", $user);
 	$stmt->execute();
-	
-	if($stmt->num_rows === 1){
-		$res = $stmt->get_result();
+	$res = $stmt->get_result();
+	if($res->num_rows === 1){
 		$row = $res->fetch_assoc();
 		$dbHash = $row['hash'];
 		$dbSalt = $row['salt'];
@@ -34,7 +41,7 @@ function validateLogin($user, $pw){
 		$returning = ($hash === $dbHash);
 	}
 	logAccess($returning, LOGIN, (isset($dbUserID) ? $dbUserID : "0"));
-	return returning;
+	return $returning;
 }
 
 function genrerateApikey($userID, $deviceID, $expires = null){	

@@ -16,7 +16,7 @@ function output($success, $results = null, $message = null, $errorCode = 0) {
 		$output['errorCode'] = $errorCode;
 	}
 	
-	echo json_encode($output);
+	return json_encode($output);
 }
 
 function errorSql($message, $number) {
@@ -24,6 +24,12 @@ function errorSql($message, $number) {
 }
 
 function errorGeneric($message, $number = null) {
-	die(output(false, null, $message, $number));
+	doDie(output(false, null, $message, $number));
+}
+
+function doDie($string = null){
+	$GLOBALS['util']->saveChanges();
+	$GLOBALS['con']->commit();
+	die($string);
 }
 ?>

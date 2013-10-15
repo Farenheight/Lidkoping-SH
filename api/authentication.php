@@ -3,15 +3,17 @@ define("LOGIN", 1);
 define("APIKEY", 2);
 
 function checkAuthenticated(){
-	if(isset($_SERVER['HTTP_LIDKOPINGSH_APIKEY'])){
-		// Trying to make an api request
-
+	if(isset($_SERVER['HTTP_LIDKOPINGSH_APIKEY']) && isset($_SERVER['HTTP_LIDKOPINGSH_DEVICEID'])){
+		if(!validateApikey($_SERVER['HTTP_LIDKOPINGSH_APIKEY'], $_SERVER['HTTP_LIDKOPINGSH_DEVICEID'])){
+			errorGeneric("Apikey is not valid, try again. Please honor the exponential back off.", 41);
+		}
+	}else{
+		errorGeneric("No apikey specified, try again. Please honor the exponential back off.", 42);
 	}
 }
 
 function validateApikey($apikey, $deviceID){
-	$pepper = "unique";
-	$hash = md5($pepper . $apikey);
+	$hash = md5($GLOBALS['apikeyPepper'] . $apikey);
 	
 	$sql = "SELECT `apikey_id` FROM `apikey` WHERE `hashed_apikey`=? AND `device_id`=?";
 	$stmt = $GLOBALS['con']->prepare($sql);

@@ -166,7 +166,7 @@ function sqlUpdateOrder($array, $su) {
 			}
 		}
 	} else {
-		die(output(false, "Order was not updated. Order has been changed after sent 'lastTimeUpdate'."));
+		doDie(output(false, "Order was not updated. Order has been changed after sent 'lastTimeUpdate'."));
 	}
 }
 
