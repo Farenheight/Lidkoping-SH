@@ -162,6 +162,12 @@ function generateStoneDetails() {
 
 						</li>
 						<li id="li_1" >
+							<label class="description" for="element_deceased">Avlidnes namn</label>
+							<div>
+								<input id="element_deceased" name="deceased" class="element text medium" type="text" maxlength="255" value=""/>
+							</div>
+						</li>
+						<li id="li_1" >
 							<label class="description" for="element_1">Kyrkogårdsnämnd </label>
 							<div>
 								<input id="element_1" name="cemeteryBoard" class="element text medium" type="text" maxlength="255" value=""/>

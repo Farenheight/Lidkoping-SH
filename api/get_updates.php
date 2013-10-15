@@ -76,6 +76,7 @@ function produceOrders($res){
 			   "timeCreated" => $row['time_created'],
 			   "lastTimeUpdate" => $row['time_last_update'],
 			   "cemetery" => $row['cemetery'],
+			   "deceased" => $row['deceased'],
 			   "orderDate" => $row['order_date'],
 			   "orderNumber" => $row['order_number'],
 			   "idName" => $row['id_name'],

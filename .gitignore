@@ -1,3 +1,21 @@
+# Misc
+.DS_Store
+local.properties
+
+# Directories
+gen/
+bin/
+
+# Files
+*.log
+*.class
+*.metadata
+
+# Server
 db_config.php
 api/lib/
-api/authentication.php
+api/db_config.php
+
+# Test
+LidkopingSHTest/gen/
+LidkopingSHTest/bin/
