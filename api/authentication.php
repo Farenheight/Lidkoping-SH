@@ -37,7 +37,5 @@ function logAccess($success, $authorizationType, $user){
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$timestamp = time()*1000;
 	$stmt->execute();
-	$GLOBALS['con']->commit();
-	var_dump($stmt);
 }
 ?>
