@@ -6,6 +6,12 @@ import java.util.Locale;
 
 import se.chalmers.lidkopingsh.model.Order;
 
+/**
+ * 
+ * TODO: Refactor into an android Filter
+ * @author Simon Bengtsson
+ *
+ */
 public class ModelFilter {
 
 	public boolean passesFilter(Order order, String constraint) {

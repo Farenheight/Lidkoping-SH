@@ -1,0 +1,13 @@
+<resources>
+
+    <string name="title_activity_login">Logga in</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Lösenord</string>
+    <string name="action_sign_in"><b>Logga in</b></string>
+    <string name="login_progress_signing_in">Loggar in&#8230;</string>
+    <string name="error_invalid_user_creadentials">Användarnamn eller lösenord verkar felaktiga</string>
+    <string name="error_field_required">Fältet måste fyllas i</string>
+    <string name="error_too_short_password">Lösenordet är för kort</string>
+
+</resources>

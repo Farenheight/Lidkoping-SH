@@ -27,6 +27,8 @@ import android.widget.Spinner;
  * Activities containing this fragment MUST implement the {@link OrderSelectedcks}
  * interface.
  * 
+ * @author Simon Bengtsson
+ * 
  */
 public class OrderListFragment extends ListFragment {
 

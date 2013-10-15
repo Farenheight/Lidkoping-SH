@@ -17,6 +17,8 @@ public class SearchHandler implements TextWatcher {
 	 * @param listView
 	 *            The list view with an ArrayAdapter containing the items to
 	 *            filter with a search
+	 * 
+	 * @author Simon Bengtsson
 	 */
 	public SearchHandler(EditText searchField, OrderAdapter orderAdapter) {
 		mSearchField = searchField;

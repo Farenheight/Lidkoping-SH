@@ -80,6 +80,8 @@ public class MainActivity extends FragmentActivity implements
 			detailIntent.putExtra(OrderDetailsFragment.ORDER_ID, orderId);
 			detailIntent.putExtra(IS_TABLET_SIZE, mTabletSize);
 			startActivity(detailIntent);
+			
+			
 		}
 	}
 

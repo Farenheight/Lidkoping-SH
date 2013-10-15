@@ -24,6 +24,8 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 * Contains the list of objects that represent the data of this
 	 * ArrayAdapter. The content of this list is referred to as "the array" in
 	 * the documentation.
+	 * 
+	 * @author Simon Bengtsson
 	 */
 	private List<Order> mOrders;
 

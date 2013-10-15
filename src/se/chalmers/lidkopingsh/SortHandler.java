@@ -11,7 +11,7 @@ import android.widget.Spinner;
 /**
  * Class handling the sort feature
  * 
- * @author Simon
+ * @author Simon Bengtsson
  * 
  */
 public class SortHandler implements OnItemSelectedListener {

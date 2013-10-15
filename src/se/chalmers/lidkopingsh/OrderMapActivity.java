@@ -37,6 +37,8 @@ import com.google.maps.android.ui.BubbleIconFactory;
 
 /**
  * Activity containing a map with all the orders positions marked.
+ * 
+ * @author Simon Bengtsson
  */
 public class OrderMapActivity extends FragmentActivity {
 
