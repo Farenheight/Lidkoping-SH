@@ -19,9 +19,10 @@ import android.view.MenuItem;
  * This activity is mostly just a 'shell' activity containing nothing more than
  * a {@link OrderDetailsFragment}.
  * 
- *  @author Simon Bengtsson
+ * @author Simon Bengtsson
  */
-public class HandsetsDetailsActivity extends FragmentActivity implements NetworkUpdateListener {
+public class HandsetsDetailsActivity extends FragmentActivity implements
+		NetworkUpdateListener {
 
 	private Menu mMenu;
 
@@ -54,19 +55,19 @@ public class HandsetsDetailsActivity extends FragmentActivity implements Network
 					.add(R.id.tablet_hint_container, fragment).commit();
 		}
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
 		ModelHandler.update(false);
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		ModelHandler.getLayer(this).removeNetworkListener(this);
 		super.onDestroy();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu items for use in the action bar
@@ -97,16 +98,19 @@ public class HandsetsDetailsActivity extends FragmentActivity implements Network
 	@Override
 	public void startUpdate() {
 		Log.d("HandsetDetailActivity", "Update started");
-		MenuItem updateItem = mMenu.findItem(R.id.action_update);
-		updateItem.setActionView(R.layout.progress_indicator);
+		if (mMenu != null) {
+			MenuItem updateItem = mMenu.findItem(R.id.action_update);
+			updateItem.setActionView(R.layout.progress_indicator);
+		}
 
-		
 	}
 
 	@Override
 	public void endUpdate() {
-		MenuItem updateItem = mMenu.findItem(R.id.action_update);
-		updateItem.setActionView(null);
+		if (mMenu != null) {
+			MenuItem updateItem = mMenu.findItem(R.id.action_update);
+			updateItem.setActionView(null);
+		}
 		Log.d("HandsetDetailActivity", "Update finished");
 	}
 
