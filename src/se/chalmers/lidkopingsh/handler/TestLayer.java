@@ -115,4 +115,10 @@ public class TestLayer implements ILayer {
 		
 	}
 
+	@Override
+	public void removeNetworkListener(NetworkUpdateListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

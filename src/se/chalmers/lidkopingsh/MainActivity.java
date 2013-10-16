@@ -52,6 +52,7 @@ public class MainActivity extends FragmentActivity implements
 		loggedInLog();
 		ModelHandler.getLayer(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
+		Log.d("DEBUG", "tablet size: " + mTabletSize);
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
@@ -79,6 +80,11 @@ public class MainActivity extends FragmentActivity implements
 				null);
 		Log.d("LoginAct", "SP is empty: " + TextUtils.isEmpty(sp));
 		Log.d("LoginAct", "API is empty: " + TextUtils.isEmpty(api));
+	}
+	@Override
+	protected void onDestroy() {
+		ModelHandler.getLayer(this).removeNetworkListener(this);
+		super.onDestroy();
 	}
 
 	/**

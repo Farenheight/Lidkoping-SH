@@ -3,7 +3,6 @@ package se.chalmers.lidkopingsh;
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
@@ -55,6 +54,11 @@ public class HandsetsDetailsActivity extends FragmentActivity implements Network
 					.add(R.id.tablet_hint_container, fragment).commit();
 		}
 	}
+	@Override
+	protected void onDestroy() {
+		ModelHandler.getLayer(this).removeNetworkListener(this);
+		super.onDestroy();
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -95,7 +99,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements Network
 	@Override
 	public void endUpdate() {
 		MenuItem updateItem = mMenu.findItem(R.id.action_update);
-		updateItem.setActionView(R.layout.progress_indicator);
+		updateItem.setActionView(null);
 		Log.d("HandsetDetailActivity", "Update finished");
 	}
 

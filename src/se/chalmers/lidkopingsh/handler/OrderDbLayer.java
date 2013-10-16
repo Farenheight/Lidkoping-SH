@@ -126,6 +126,10 @@ public class OrderDbLayer implements ILayer {
 		networkListeners.add(listener);
 	}
 	
+	@Override
+	public void removeNetworkListener(NetworkUpdateListener listener) {
+		networkListeners.remove(listener);
+	}
 	public void startUpdate() {
 		for(NetworkUpdateListener l : networkListeners) {
 			l.startUpdate();
@@ -143,5 +147,6 @@ public class OrderDbLayer implements ILayer {
 			l.noNetwork(message);
 		}
 	}
+
 
 }
