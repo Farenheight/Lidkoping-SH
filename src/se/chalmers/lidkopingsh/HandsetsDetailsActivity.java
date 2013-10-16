@@ -24,7 +24,7 @@ import android.view.MenuItem;
  */
 public class HandsetsDetailsActivity extends FragmentActivity implements NetworkUpdateListener {
 
-	private MenuItem mItem;
+	private Menu mMenu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements Network
 		// Inflate the menu items for use in the action bar
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.action_bar_details_activity, menu);
-		mItem = menu.findItem(R.id.action_update);
+		mMenu = menu;
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -86,13 +86,16 @@ public class HandsetsDetailsActivity extends FragmentActivity implements Network
 	@Override
 	public void startUpdate() {
 		Log.d("HandsetDetailActivity", "Update started");
-		mItem.setActionView(R.layout.progress_indicator);
+		MenuItem updateItem = mMenu.findItem(R.id.action_update);
+		updateItem.setActionView(R.layout.progress_indicator);
+
 		
 	}
 
 	@Override
 	public void endUpdate() {
-		mItem.setActionView(null);
+		MenuItem updateItem = mMenu.findItem(R.id.action_update);
+		updateItem.setActionView(R.layout.progress_indicator);
 		Log.d("HandsetDetailActivity", "Update finished");
 	}
 

@@ -33,11 +33,11 @@ public class MainActivity extends FragmentActivity implements
 	public static final String IS_TABLET_SIZE = "is_tablet_size";
 	private OrderDetailsFragment mCurrentOrderDetailsFragment;
 	private Order mCurrentOrder;
-	private MenuItem mItem;
 
 	/** Whether or not the app is running on a tablet sized device */
 	private boolean mTabletSize;
 	private SharedPreferences mSharedPreferences;
+	private Menu mMenu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +125,7 @@ public class MainActivity extends FragmentActivity implements
 		// Inflate the menu items for use in the action bar
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.action_bar_main, menu);
-		mItem = menu.findItem(R.id.action_update);
+		mMenu = menu;
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -152,13 +152,14 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void startUpdate() {
 		Log.d("MainActivity", "Update started");
-		mItem.setActionView(R.layout.progress_indicator);
-
+		MenuItem updateItem = mMenu.findItem(R.id.action_update);
+		updateItem.setActionView(R.layout.progress_indicator);
 	}
 
 	@Override
 	public void endUpdate() {
-		mItem.setActionView(null);
+		MenuItem updateItem = mMenu.findItem(R.id.action_update);
+		updateItem.setActionView(null);
 		Log.d("MainActivity", "Update finished");
 	}
 
