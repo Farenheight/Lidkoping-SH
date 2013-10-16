@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -53,7 +54,7 @@ public class LoginActivity extends Activity {
 
 		// Saves server path
 		SharedPreferences preferences = getSharedPreferences(
-				ServerLayer.PREFRENCES_NAME, Context.MODE_PRIVATE);
+				ServerLayer.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(ServerLayer.PREFERENCES_SERVER_PATH,
 				"http://lidkopingsh.kimkling.net/api/");
@@ -218,15 +219,16 @@ public class LoginActivity extends Activity {
 
 			// Send to server
 			ServerLayer serverLayer = new ServerLayer(LoginActivity.this);
+			mUserName = "dev";
+			mPassword = "dev";
 			ResponseSend response = serverLayer.getApikey(mUserName, mPassword,
 					deviceId);
 
-			try {
-				// testing with network delay TODO: Remove
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				return null;
-			}
+			// try {
+			// Thread.sleep(2000);
+			// } catch (InterruptedException e) {
+			// return null;
+			// }
 
 			return response;
 		}
