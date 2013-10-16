@@ -195,7 +195,8 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 
 	@Override
 	public void endUpdate() {
-		//mOrderAdapter.notifyDataSetChanged();
+		mOrderAdapter.notifyDataSetChanged();
+		mOrderAdapter.refreshSort();
 	}
 
 	@Override
