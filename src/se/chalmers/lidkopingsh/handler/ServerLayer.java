@@ -1,6 +1,8 @@
 package se.chalmers.lidkopingsh.handler;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -18,9 +20,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
+import se.chalmers.lidkopingsh.model.IModel;
+import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -189,7 +194,11 @@ public class ServerLayer {
 			orderArray[i][1] = (long) o.getLastTimeUpdate();
 			i++;
 		}
-		return getUpdatedOrdersFromServer(gson.toJson(orderArray));
+		
+		List<Order> newOrders = getUpdatedOrdersFromServer(gson.toJson(orderArray));
+		syncImages(newOrders);
+		
+		return newOrders;
 	}
 
 	/**
@@ -236,20 +245,51 @@ public class ServerLayer {
 		Log.d("server_layer", "Error code: " + response.getErrorcode()
 				+ " Message: " + response.getMessage());
 	}
-
-	public boolean isServerAvailable() {
-		try {
-			HttpPost httpPost = new HttpPost(serverPath);
-			httpPost.setEntity(new StringEntity(""));
-			httpPost.setHeader("Content-Type",
-					"application/x-www-form-urlencoded");
-			httpClient.execute(httpPost);
-		} catch (Exception e) {
-			return false;
+	
+	public void saveImage(Image i) {
+		if (i.getImageFile() == null) { 
+			try {
+				String fileName = Uri.parse(serverPath + "pics/" + i.getImagePath()).getLastPathSegment();
+				i.setImageFile(File.createTempFile(fileName, null, context.getCacheDir()));
+			} catch(IOException e) {
+				Log.e("server_layer", "Error getting Image");
+			}
 		}
-		return true;
 	}
 
+	private void syncImages(List<Order> orders) {
+		IModel model = ModelHandler.getModel(context);
+		List<Order> newOrders = new LinkedList<Order>();
+		newOrders.addAll(orders);
+		Collection<Order> oldOrders = model.getOrders();
+		
+		//removes all images that no longer should exist and adds new ones.
+		newOrders.retainAll(oldOrders);
+		
+		for (Order newOrder : newOrders) {
+			Order oldOrder = model.getOrderById(newOrder.getId());
+			//copies so that we dont change the actual lists
+			Collection<Image> oldImages = new LinkedList<Image>();
+			Collection<Image> newImages = new LinkedList<Image>();
+			oldImages.addAll(oldOrder.getImages());
+			newImages.addAll(newOrder.getImages());
+			
+			newImages.removeAll(oldImages);
+			oldImages.removeAll(newImages);
+			
+			//removes images that has been removed on the server
+			for(Image i : oldImages) {
+				i.deleteImage();
+			}
+			
+			//adds new images that we got from server
+			for (Image i : newImages) {
+				this.saveImage(i);
+			}
+			
+		}
+	}
+	
 	public class ResponseGet extends ResponseSend {
 		private List<Order> results;
 

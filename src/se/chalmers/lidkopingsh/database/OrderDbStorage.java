@@ -325,6 +325,9 @@ public class OrderDbStorage {
 			}
 		}
 
+		for (Image i : order.getImages()) {
+			i.deleteImage();
+		}
 		db.delete(ImageTable.TABLE_NAME, ImageTable.COLUMN_NAME_ORDER_ID
 				+ EQUALS + QUESTION_MARK,
 				new String[] { Integer.toString(order.getId()) });

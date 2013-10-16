@@ -1,14 +1,17 @@
 package se.chalmers.lidkopingsh.model;
 
+import java.io.File;
+
 /**
  * Holds the filepath to an image and its identification number.
  * 
- * @author Alexander Härenstam
+ * @author Alexander Hï¿½renstam
  * @author Olliver Mattsson
  */
 public class Image {
 	private int id;
 	private String imagePath;
+	private File imageFile;
 	
 	public Image(int id, String imagePath){
 		this.id = id;
@@ -29,5 +32,17 @@ public class Image {
 
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+
+	public File getImageFile() {
+		return imageFile;
+	}
+
+	public void setImageFile(File imageFile) {
+		this.imageFile = imageFile;
+	}
+	
+	public void deleteImage() {
+		imageFile.delete();
 	}
 }
