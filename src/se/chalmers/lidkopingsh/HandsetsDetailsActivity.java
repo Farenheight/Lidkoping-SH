@@ -1,10 +1,13 @@
 package se.chalmers.lidkopingsh;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,12 +22,15 @@ import android.view.MenuItem;
  * 
  *  @author Simon Bengtsson
  */
-public class HandsetsDetailsActivity extends FragmentActivity {
+public class HandsetsDetailsActivity extends FragmentActivity implements NetworkUpdateListener {
+
+	private MenuItem mItem;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.od_root);
+		ModelHandler.getLayer(this).addNetworkListener(this);
 
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -55,6 +61,7 @@ public class HandsetsDetailsActivity extends FragmentActivity {
 		// Inflate the menu items for use in the action bar
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.action_bar_details_activity, menu);
+		mItem = menu.findItem(R.id.action_update);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -74,5 +81,23 @@ public class HandsetsDetailsActivity extends FragmentActivity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public void startUpdate() {
+		Log.d("HandsetDetailActivity", "Update started");
+		mItem.setActionView(R.layout.progress_indicator);
+		
+	}
+
+	@Override
+	public void endUpdate() {
+		mItem.setActionView(null);
+		Log.d("HandsetDetailActivity", "Update finished");
+	}
+
+	@Override
+	public void noNetwork(String message) {
+		Log.d("HandsetDetailActivity", "Network error");
 	}
 }

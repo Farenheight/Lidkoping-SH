@@ -1,5 +1,8 @@
 package se.chalmers.lidkopingsh;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
@@ -9,6 +12,7 @@ import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.util.Listener;
 import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
+import android.location.Address;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -57,6 +61,10 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 	private boolean mTabletSize;
 
+	private List<ProgressBar> progressIndicators;
+
+	private List<ToggleButton> toggleButtons;
+
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -65,20 +73,27 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedState) {
-
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		progressIndicators = new ArrayList<ProgressBar>();
+		toggleButtons = new ArrayList<ToggleButton>();
 		ModelHandler.getLayer(getActivity()).addNetworkListener(
 				new NetworkWatcher());
-		mTabletSize = getArguments().getBoolean(MainActivity.IS_TABLET_SIZE);
-
-		// Inflate the root view for the fragment. The rootView should contain
-		// all other static views displayed in the fragment.
-		mRootView = inflater.inflate(R.layout.od_root, container, false);
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
+
+		mTabletSize = getArguments().getBoolean(MainActivity.IS_TABLET_SIZE);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedState) {
+
+		// Inflate the root view for the fragment. The rootView should contain
+		// all other static views displayed in the fragment.
+		mRootView = inflater.inflate(R.layout.od_root, container, false);
 
 		// Collects data from mOrder and initialize the views accordingly
 		initTabs(savedState == null ? null : savedState
@@ -86,7 +101,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		initTasks();
 
 		// Hack to make the scroll view on the details tab not scroll to the
-		// buttom when changing tabs programatically
+		// bottom when changing tabs
 		final ScrollView innerInfoScrollView = (ScrollView) mRootView
 				.findViewById(R.id.scrollview_inner_info);
 		innerInfoScrollView.post(new Runnable() {
@@ -102,15 +117,12 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 		@Override
 		public void startUpdate() {
-			// Do nothing
+			showProgressIndicators(true);
 		}
 
 		@Override
 		public void endUpdate() {
-			ViewGroup taskCont = (ViewGroup) mRootView
-					.findViewById(R.id.task_cont);
-			for (int i = 0; i < taskCont.getChildCount(); i++) {
-			}
+			showProgressIndicators(false);
 		}
 
 		@Override
@@ -205,7 +217,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	}
 
 	private View initTaskView(LayoutInflater inflater, final Task task) {
-		View taskView = inflater.inflate(R.layout.od_task, null);
+		final View taskView = inflater.inflate(R.layout.od_task, null);
 
 		// Set task name
 		((TextView) taskView.findViewById(R.id.task_name)).setText(task
@@ -214,16 +226,17 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		// Set the task toggler
 		final ToggleButton btn = (ToggleButton) taskView
 				.findViewById(R.id.task_toggler);
-		final ProgressBar bar = (ProgressBar) taskView
-				.findViewById(R.id.task_toggler_progress_indicator);
 		btn.setChecked(task.getStatus() == Status.DONE);
+		toggleButtons.add(btn);
+		progressIndicators.add((ProgressBar) taskView
+				.findViewById(R.id.task_toggler_progress_indicator));
+		// If not setSaveEnabaled(false), android resets the buttons on screen
+		// orientation change etc
 		btn.setSaveEnabled(false);
 		btn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton toggleButton,
 					boolean isChecked) {
-				bar.setVisibility(View.VISIBLE);
-				btn.setVisibility(View.GONE);
 				if (task.getStatus() == Status.DONE) {
 					task.setStatus(Status.NOT_DONE);
 				} else {
@@ -232,6 +245,15 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 			}
 		});
 		return taskView;
+	}
+
+	private void showProgressIndicators(boolean visible) {
+		for(ProgressBar pBar : progressIndicators) {
+			pBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+		}
+		for(ToggleButton tBtn : toggleButtons) {
+			tBtn.setVisibility(visible ? View.GONE : View.VISIBLE);
+		}
 	}
 
 	/**
@@ -308,19 +330,18 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 	@Override
 	public void changed(Order order) {
-		Log.d("DEBUG", "In changed()");
-
+		Log.d("OrderDetailsFragment", "In changed()");
+ 
 		if (order != mOrder) {
 			if (order == null) {
 				// TODO: Display error message to user
-				// TODO: Consider a better way than sending null to let GUI know
-				Log.d("DEBUG", "Server not about changes!");
+				Log.d("OrderDetails", "Server not about changes!");
 			} else {
 				throw new IllegalArgumentException(
 						"The changed object should be the one displayed in the GUI");
 			}
 		} else {
-			Log.d("DEBUG", "Updated GUI");
+			Log.d("OrderDetailsFragmnent", "Updated GUI");
 			ViewGroup taskContainer = (ViewGroup) mRootView
 					.findViewById(R.id.task_cont);
 			taskContainer.removeAllViews();
