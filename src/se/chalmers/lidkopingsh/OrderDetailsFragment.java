@@ -9,15 +9,12 @@ import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
-import se.chalmers.lidkopingsh.util.Listener;
 import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.content.res.Configuration;
-import android.graphics.drawable.GradientDrawable.Orientation;
-import android.location.Address;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -280,10 +277,14 @@ public class OrderDetailsFragment extends Fragment {
 	private void initDrawing() {
 		ImageView orderDrawing = (ImageView) mRootView
 				.findViewById(R.id.orderDrawing);
+		
+		Drawable img = Drawable.createFromPath(mOrder.getImages().get(0).getImageFile().getPath());
 
 		// Set the image displayed TODO: get from model
-		orderDrawing.setImageDrawable(getResources().getDrawable(
-				R.drawable.test_headstone_drawing));
+		//orderDrawing.setImageDrawable(getResources().getDrawable(
+			//	R.drawable.test_headstone_drawing));
+		
+		orderDrawing.setImageDrawable(img);
 
 		// Attaches the library
 		PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
