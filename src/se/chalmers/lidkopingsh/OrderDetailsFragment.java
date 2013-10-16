@@ -40,7 +40,7 @@ import android.widget.ToggleButton;
  * @author Simon Bengtsson
  * 
  */
-public class OrderDetailsFragment extends Fragment implements Listener<Order> {
+public class OrderDetailsFragment extends Fragment {
 
 	/** Used as a key when sending the object between activities and fragments */
 	public static final String ORDER_ID = "item_id";
@@ -125,6 +125,11 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		@Override
 		public void endUpdate() {
 			showProgressIndicators(false);
+			Log.d("OrderDetailsFragmnent", "End update = Updated GUI");
+			ViewGroup taskContainer = (ViewGroup) mRootView
+					.findViewById(R.id.task_cont);
+			taskContainer.removeAllViews();
+			initTasks();
 		}
 
 		@Override
@@ -214,7 +219,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 			for (final Task task : p.getTasks()) {
 				productView.addView(initTaskView(inflater, task));
 			}
-			rootTaskCont.addView(productView);
+			rootTaskCont.addView(productView); 
 		}
 	}
 
@@ -331,27 +336,6 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putString(CURRENT_TAB_KEY, mTabHost.getCurrentTabTag());
-	}
-
-	@Override
-	public void changed(Order order) {
-		Log.d("OrderDetailsFragment", "In changed()");
-
-		if (order != mOrder) {
-			if (order == null) {
-				// TODO: Display error message to user
-				Log.d("OrderDetails", "Server not about changes!");
-			} else {
-				throw new IllegalArgumentException(
-						"The changed object should be the one displayed in the GUI");
-			}
-		} else {
-			Log.d("OrderDetailsFragmnent", "Updated GUI");
-			ViewGroup taskContainer = (ViewGroup) mRootView
-					.findViewById(R.id.task_cont);
-			taskContainer.removeAllViews();
-			initTasks();
-		}
 	}
 
 }
