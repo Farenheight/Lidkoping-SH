@@ -1,12 +1,18 @@
 package se.chalmers.lidkopingsh;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.handler.ServerLayer;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,10 +37,19 @@ public class MainActivity extends FragmentActivity implements
 
 	/** Whether or not the app is running on a tablet sized device */
 	private boolean mTabletSize;
+	private SharedPreferences mSharedPreferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mSharedPreferences = getSharedPreferences(
+				ServerLayer.PREFERENCES_NAME, Context.MODE_PRIVATE);
+		if (!isLoggedIn()) {
+			Log.i("MainActivity", "LoginActivity started");
+			startActivity(new Intent(this, LoginActivity.class));
+			finish();
+		} 
+		loggedInLog();
 		ModelHandler.getLayer(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
@@ -44,7 +59,26 @@ public class MainActivity extends FragmentActivity implements
 		} else {
 			setContentView(R.layout.list_root);
 		}
+	}
+
+	private boolean isLoggedIn() {
+		boolean apiEmpty = TextUtils.isEmpty(mSharedPreferences.getString(
+				ServerLayer.PREFERENCES_API_KEY, null));
+		boolean serverPathEmpty = TextUtils.isEmpty(mSharedPreferences.getString(
+				ServerLayer.PREFERENCES_SERVER_PATH, null));
 		
+		loggedInLog();
+
+		return !apiEmpty && !serverPathEmpty;
+	}
+	
+	private void loggedInLog() {
+		String sp = mSharedPreferences.getString(ServerLayer.PREFERENCES_SERVER_PATH,
+				null);
+		String api = mSharedPreferences.getString(ServerLayer.PREFERENCES_API_KEY,
+				null);
+		Log.d("LoginAct", "SP is empty: " + TextUtils.isEmpty(sp));
+		Log.d("LoginAct", "API is empty: " + TextUtils.isEmpty(api));
 	}
 
 	/**
@@ -82,8 +116,7 @@ public class MainActivity extends FragmentActivity implements
 			detailIntent.putExtra(OrderDetailsFragment.ORDER_ID, orderId);
 			detailIntent.putExtra(IS_TABLET_SIZE, mTabletSize);
 			startActivity(detailIntent);
-			
-			
+
 		}
 	}
 
@@ -103,7 +136,7 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.action_start_map_view:
 			startActivity(new Intent(this, OrderMapActivity.class));
 			return true;
-		case R.id.action_update: 
+		case R.id.action_update:
 			item.setActionView(R.layout.progress_indicator);
 			ModelHandler.update(false);
 			return true;
@@ -120,7 +153,7 @@ public class MainActivity extends FragmentActivity implements
 	public void startUpdate() {
 		Log.d("MainActivity", "Update started");
 		mItem.setActionView(R.layout.progress_indicator);
-		
+
 	}
 
 	@Override
@@ -132,5 +165,20 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void noNetwork(String message) {
 		Log.d("MainActivity", "Network error");
+	}
+
+	@Override
+	public void onBackPressed() {
+		new AlertDialog.Builder(this)
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setTitle("Avsluta")
+				.setMessage("Vill du avsluta applikationen?")
+				.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+
+				}).setNegativeButton("Nej", null).show();
 	}
 }

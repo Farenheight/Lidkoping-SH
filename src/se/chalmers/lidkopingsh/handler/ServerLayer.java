@@ -40,8 +40,8 @@ public class ServerLayer {
 	private static final String LIDKOPING_SH_DEVICE_ID = "LidkopingSH-DeviceId";
 	private static final String LIDKOPINGSH_APIKEY = "Lidkopingsh-Apikey";
 
-	public static final String PREFRENCES_NAME = "AuthenticationPreferences";
-	private static final String PREFERENCES_API_KEY = "Apikey";
+	public static final String PREFERENCES_NAME = "AuthenticationPreferences";
+	public static final String PREFERENCES_API_KEY = "Apikey";
 	public static final String PREFERENCES_SERVER_PATH = "server_path";
 
 	private final String deviceId = "asdf";
@@ -58,7 +58,7 @@ public class ServerLayer {
 	 */
 	public ServerLayer(Context context) {
 		preferences = context.getSharedPreferences(
-				PREFRENCES_NAME, Context.MODE_PRIVATE);
+				PREFERENCES_NAME, Context.MODE_PRIVATE);
 		
 		this.serverPath = preferences.getString(PREFERENCES_SERVER_PATH, null);
 		this.context = context;
