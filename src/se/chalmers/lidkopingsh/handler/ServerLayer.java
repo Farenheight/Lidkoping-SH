@@ -1,14 +1,10 @@
 package se.chalmers.lidkopingsh.handler;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -189,10 +185,11 @@ public class ServerLayer {
 			orderArray[i][1] = (long) o.getLastTimeUpdate();
 			i++;
 		}
-		
-		List<Order> newOrders = getUpdatedOrdersFromServer(gson.toJson(orderArray));
+
+		List<Order> newOrders = getUpdatedOrdersFromServer(gson
+				.toJson(orderArray));
 		syncImages(newOrders);
-		
+
 		return newOrders;
 	}
 
@@ -240,21 +237,25 @@ public class ServerLayer {
 		Log.d("server_layer", "Error code: " + response.getErrorcode()
 				+ " Message: " + response.getMessage());
 	}
-	
+
 	public void saveImage(Image i) {
-		if (i.getImageFile() == null) { 
+		if (i.getImageFile() == null) {
 			URL fileName;
 			try {
+				// Download file from web server and save it on internal
+				// storage.
 				fileName = new URL(serverPath + "pics/" + i.getImagePath());
 				InputStream is = fileName.openStream();
-				OutputStream os = context.openFileOutput(i.getImagePath(), Context.MODE_PRIVATE);
+				OutputStream os = context.openFileOutput(i.getImagePath().replace("/", ""),
+						Context.MODE_PRIVATE);
+
 				byte[] b = new byte[2048];
 				int length;
-				
+
 				while ((length = is.read(b)) != -1) {
 					os.write(b, 0, length);
 				}
-				i.setImageFile(context.openFileInput(i.getImagePath()));
+				
 				is.close();
 				os.close();
 			} catch (Exception e) {
@@ -269,37 +270,38 @@ public class ServerLayer {
 		Collection<Order> oldOrders = model.getOrders();
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
-		
+
 		for (Order o : newOrders) {
 			if (o.isRemoved()) {
-				for(Image i : o.getImages()) {
+				for (Image i : o.getImages()) {
 					i.deleteImage();
 				}
 				newOrders.remove(o);
 			}
 		}
-		
-		//gets all old images
+
+		// gets all old images
 		for (Order oldOrder : oldOrders) {
 			oldImages.addAll(oldOrder.getImages());
 		}
-		
-		//Gets all new images
+
+		// Gets all new images
 		for (Order newOrder : newOrders) {
 			newImages.addAll(newOrder.getImages());
 		}
-		
-		//Adds all new images
+
+		// Adds all new images
 		addAllNew(newImages, oldImages);
-		
-		//Syncs the images that are the same
+
+		// Syncs the images that are the same
 		syncCommonImages(newImages, oldImages);
 	}
-	
-	private void addAllNew(Collection<Image> newImages, Collection<Image> oldImages) {
+
+	private void addAllNew(Collection<Image> newImages,
+			Collection<Image> oldImages) {
 		Collection<Image> modifiedImages = new LinkedList<Image>();
 		modifiedImages.addAll(newImages);
-		
+
 		for (Image newI : newImages) {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()) {
@@ -311,18 +313,20 @@ public class ServerLayer {
 			saveImage(i);
 		}
 	}
-	
-	private void syncCommonImages(Collection<Image> newImages, Collection<Image> oldImages) {	
+
+	private void syncCommonImages(Collection<Image> newImages,
+			Collection<Image> oldImages) {
 		for (Image newI : newImages) {
 			for (Image oldI : oldImages) {
-				if (newI.getId() == oldI.getId() && newI.getImagePath() != oldI.getImagePath()) {
+				if (newI.getId() == oldI.getId()
+						&& newI.getImagePath() != oldI.getImagePath()) {
 					oldI.deleteImage();
 					saveImage(newI);
 				}
 			}
 		}
 	}
-	
+
 	public class ResponseGet extends ResponseSend {
 		private List<Order> results;
 

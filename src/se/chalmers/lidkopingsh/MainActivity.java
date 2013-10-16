@@ -144,32 +144,22 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void startUpdate() {
-<<<<<<< HEAD
 		Log.i("MainActivity", "Update started");
 		// Is null when activity just started
 		if (mMenu != null) {
 			MenuItem updateItem = mMenu.findItem(R.id.action_update);
 			updateItem.setActionView(R.layout.progress_indicator);
 		}
-=======
-		//mItem.setActionView(R.layout.progress_indicator);
-		
->>>>>>> dev-serverlayer
 	}
 
 	@Override
 	public void endUpdate() {
-<<<<<<< HEAD
 		// Is null when activity just started
 		if (mMenu != null) {
 			MenuItem updateItem = mMenu.findItem(R.id.action_update);
 			updateItem.setActionView(null);
 		}
 		Log.i("MainActivity", "Update finished");
-=======
-		//mItem.setActionView(null);
-		
->>>>>>> dev-serverlayer
 	}
 
 	@Override

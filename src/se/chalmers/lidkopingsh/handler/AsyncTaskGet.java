@@ -22,9 +22,7 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 	}
 	
 	protected void onPreExecute() {
-		if (layer.getNetworkListener() != null) {
 			layer.startUpdate();
-		}
 	}
 	
 	@Override
@@ -41,9 +39,7 @@ public class AsyncTaskGet extends AsyncTask<ServerLayer, Void, List<Order>> {
 		if (orders != null) {
 			layer.updateDatabase(orders);
 		}
-		if (layer.getNetworkListener() != null) {
 			layer.endUpdate();
-		}
 		if(orders == null) {
 			layer.noNetwork("Kunde inte koppla upp mot server");
 		}

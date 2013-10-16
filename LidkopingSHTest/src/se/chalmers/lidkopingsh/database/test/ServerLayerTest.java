@@ -22,13 +22,13 @@ public class ServerLayerTest extends AndroidTestCase{
 	}
 	
 	public void testGetUpdate() {
-		ServerLayer serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", this.getContext());
+		ServerLayer serverLayer = new ServerLayer(this.getContext());
 		orders = serverLayer.getUpdates(true);
 		assertTrue(orders.size() != 0);
 	}
 	
 	public void testSendUpdate() {
-		ServerLayer serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/", this.getContext());
+		ServerLayer serverLayer = new ServerLayer(this.getContext());
 		orders = serverLayer.getUpdates(true);
 		Order order = new Order(orders.get(0));
 		if (order.getProducts() != null) {

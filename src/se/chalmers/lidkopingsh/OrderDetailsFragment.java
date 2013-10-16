@@ -1,5 +1,6 @@
 package se.chalmers.lidkopingsh;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +13,12 @@ import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +39,7 @@ import android.widget.ToggleButton;
  * in the {@link MainActivity}s two-pane layout if displayed on tablets.
  * 
  * @author Simon Bengtsson
- * 
+ * @author Anton Jansson
  */
 public class OrderDetailsFragment extends Fragment {
 
@@ -49,6 +53,11 @@ public class OrderDetailsFragment extends Fragment {
 	private static final String DETAIL_TAB = "DETAILS tab";
 
 	private static final String TASK_TAB = "task_tab";
+
+	/**
+	 * Size of largest image width or height, of order drawing.
+	 */
+	private static final int MAX_IMAGE_SIZE = 1800;
 
 	/** The order displayed by this StoneDetailFragment */
 	private Order mOrder;
@@ -275,20 +284,41 @@ public class OrderDetailsFragment extends Fragment {
 	 * to zoom and pan it smoothly
 	 */
 	private void initDrawing() {
-		ImageView orderDrawing = (ImageView) mRootView
-				.findViewById(R.id.orderDrawing);
-		
-		Drawable img = Drawable.createFromPath(mOrder.getImages().get(0).getImageFile().getPath());
+		if (!mOrder.getImages().isEmpty()) {
+			ImageView orderDrawing = (ImageView) mRootView
+					.findViewById(R.id.orderDrawing);
 
-		// Set the image displayed TODO: get from model
-		//orderDrawing.setImageDrawable(getResources().getDrawable(
-			//	R.drawable.test_headstone_drawing));
-		
-		orderDrawing.setImageDrawable(img);
+			// Get image from internal storage
+			String imagePath = mOrder.getImages().get(0).getImagePath()
+					.replace("/", "");
+			String filename = new File(getActivity().getFilesDir(), imagePath)
+					.getAbsolutePath();
+			Bitmap bitmap = BitmapFactory.decodeFile(filename);
 
-		// Attaches the library
-		PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
-		pva.setMaximumScale(8f);
+			if (bitmap != null) {
+				// Rescale the image if it is too big
+				int height = bitmap.getHeight();
+				int width = bitmap.getWidth();
+				if (width > MAX_IMAGE_SIZE) {
+					height *= (float) MAX_IMAGE_SIZE / width;
+					width = MAX_IMAGE_SIZE;
+				}
+				if (height > MAX_IMAGE_SIZE) {
+					width *= (float) MAX_IMAGE_SIZE / height;
+					height = MAX_IMAGE_SIZE;
+				}
+				bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+
+				// Set drawable to view
+				BitmapDrawable drawable = new BitmapDrawable(getResources(),
+						bitmap);
+				orderDrawing.setImageDrawable(drawable);
+
+				// Attaches the library
+				PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
+				pva.setMaximumScale(8f);
+			}
+		}
 	}
 
 	/**
@@ -345,5 +375,4 @@ public class OrderDetailsFragment extends Fragment {
 		super.onSaveInstanceState(outState);
 		outState.putString(CURRENT_TAB_KEY, mTabHost.getCurrentTabTag());
 	}
-
 }
