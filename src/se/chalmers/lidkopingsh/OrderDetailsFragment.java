@@ -67,6 +67,8 @@ public class OrderDetailsFragment extends Fragment {
 
 	private List<ToggleButton> toggleButtons;
 
+	private NetworkWatcher mNetworkWatcher;
+
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -79,8 +81,8 @@ public class OrderDetailsFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
-		ModelHandler.getLayer(getActivity()).addNetworkListener(
-				new NetworkWatcher());
+		mNetworkWatcher = new NetworkWatcher();
+		ModelHandler.getLayer(getActivity()).addNetworkListener(mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
@@ -88,6 +90,12 @@ public class OrderDetailsFragment extends Fragment {
 
 		mUse2Tabs = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
 				&& getResources().getBoolean(R.bool.isTablet);
+	}
+
+	@Override
+	public void onDestroy() {
+		ModelHandler.getLayer(getActivity()).removeNetworkListener(mNetworkWatcher);
+		super.onDestroy();
 	}
 
 	@Override
@@ -219,7 +227,7 @@ public class OrderDetailsFragment extends Fragment {
 			for (final Task task : p.getTasks()) {
 				productView.addView(initTaskView(inflater, task));
 			}
-			rootTaskCont.addView(productView); 
+			rootTaskCont.addView(productView);
 		}
 	}
 
