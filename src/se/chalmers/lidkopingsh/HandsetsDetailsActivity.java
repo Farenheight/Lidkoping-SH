@@ -55,6 +55,11 @@ public class HandsetsDetailsActivity extends FragmentActivity implements Network
 					.add(R.id.tablet_hint_container, fragment).commit();
 		}
 	}
+	@Override
+	protected void onDestroy() {
+		ModelHandler.getLayer(this).removeNetworkListener(this);
+		super.onDestroy();
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

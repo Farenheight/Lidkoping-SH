@@ -164,7 +164,7 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void endUpdate() {
-		mItem.setActionView(null);
+		//mItem.setActionView(null);
 		Log.d("MainActivity", "Update finished");
 	}
 
