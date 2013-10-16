@@ -20,6 +20,7 @@ import org.apache.http.protocol.HTTP;
 
 import se.chalmers.lidkopingsh.model.Order;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -33,6 +34,17 @@ import com.google.gson.Gson;
  * 
  */
 public class ServerLayer {
+	private static final String LIDKOPINGSH_DEVICEID = "Lidkopingsh-Deviceid";
+	private static final String LIDKOPINGSH_PASSWORD = "Lidkopingsh-Password";
+	private static final String LIDKOPINGSH_USERNAME = "Lidkopingsh-Username";
+	private static final String LIDKOPING_SH_DEVICE_ID = "LidkopingSH-DeviceId";
+	private static final String LIDKOPINGSH_APIKEY = "Lidkopingsh-Apikey";
+
+	private static final String PREFRENCES_NAME = "AuthenticationPreferences";
+	private static final String PREFERENCES_API_KEY = "Apikey";
+
+	private final String deviceId = "asdf";
+
 	private HttpClient httpClient;
 	private final Context context;
 	private final String serverPath;
@@ -59,22 +71,37 @@ public class ServerLayer {
 	 * @param orderString
 	 */
 	private BufferedReader sendHttpPostRequest(String orderString, String action) {
-		return sendHttpPostRequest(orderString, action,
-				Arrays.asList(new BasicHeader("LidkopingSH-Authentication",
-						"123456789qwertyuiop")));
+		SharedPreferences preferences = context.getSharedPreferences(
+				PREFRENCES_NAME, Context.MODE_PRIVATE);
+		String apikey = preferences.getString(PREFERENCES_API_KEY, null);
+		Log.d("server_layer", "SharedPreferences apikey: " + apikey);
+
+		if (apikey == null) {
+			ResponseSend response = getApikey("dev", "dev", deviceId);
+			if (response.isSuccess()) {
+				Log.d("server_layer", "Get api key success");
+				apikey = response.getMessage();
+			} else {
+				Log.d("server_layer", "Get api key failed");
+			}
+		}
+
+		return sendHttpPostRequest(orderString, action, Arrays.asList(
+				new BasicHeader(LIDKOPINGSH_APIKEY, apikey), new BasicHeader(
+						LIDKOPING_SH_DEVICE_ID, deviceId)));
 	}
 
 	/**
 	 * Used to send a POST request to server.
 	 * 
-	 * @param orderString
+	 * @param data
 	 */
-	private BufferedReader sendHttpPostRequest(String orderString,
-			String action, Collection<? extends Header> headers) {
+	private BufferedReader sendHttpPostRequest(String data, String action,
+			Collection<? extends Header> headers) {
 		BufferedReader reader = null;
 		try {
 			HttpPost httpPost = new HttpPost(serverPath + action);
-			httpPost.setEntity(new StringEntity(orderString, HTTP.UTF_8));
+			httpPost.setEntity(new StringEntity(data, HTTP.UTF_8));
 			httpPost.setHeader("Content-Type",
 					"application/x-www-form-urlencoded");
 			for (Header h : headers) {
@@ -129,12 +156,21 @@ public class ServerLayer {
 	public ResponseSend getApikey(String username, String password,
 			String deviceId) {
 		Collection<Header> headers = new ArrayList<Header>();
-		headers.add(new BasicHeader("Lidkopingsh-Username", username));
-		headers.add(new BasicHeader("Lidkopingsh-Password", password));
-		headers.add(new BasicHeader("Lidkopingsh-Deviceid", deviceId));
+		headers.add(new BasicHeader(LIDKOPINGSH_USERNAME, username));
+		headers.add(new BasicHeader(LIDKOPINGSH_PASSWORD, password));
+		headers.add(new BasicHeader(LIDKOPINGSH_DEVICEID, deviceId));
 		BufferedReader reader = sendHttpPostRequest("", "getApikey", headers);
 
-		return getResponseGet(reader);
+		ResponseSend response = getResponseSend(reader);
+
+		// Store in SharedPreferences
+		SharedPreferences preferences = context.getSharedPreferences(
+				PREFRENCES_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(PREFERENCES_API_KEY, response.getMessage());
+		editor.commit();
+
+		return response;
 	}
 
 	/**
@@ -168,13 +204,14 @@ public class ServerLayer {
 
 		if (!response.isSuccess()) {
 			if (!response.isSuccess()) {
-				order.sync(null); // Informing that no data has been able to change.
+				order.sync(null); // Informing that no data has been able to
+									// change.
 				printErrorLog(response);
 			}
 		}
 		return response;
 	}
-	
+
 	private ResponseGet getResponseGet(Reader reader) {
 		ResponseGet response = null;
 		try {
@@ -184,7 +221,7 @@ public class ServerLayer {
 		}
 		return response;
 	}
-	
+
 	private ResponseSend getResponseSend(Reader reader) {
 		ResponseSend response = null;
 		try {
@@ -199,17 +236,15 @@ public class ServerLayer {
 		Log.d("server_layer", "Error code: " + response.getErrorcode()
 				+ " Message: " + response.getMessage());
 	}
-	
+
 	public boolean isServerAvailable() {
 		try {
 			HttpPost httpPost = new HttpPost(serverPath);
 			httpPost.setEntity(new StringEntity(""));
-			httpPost.setHeader("LidkopingSH-Authentication",
-					"123456789qwertyuiop");
 			httpPost.setHeader("Content-Type",
 					"application/x-www-form-urlencoded");
 			httpClient.execute(httpPost);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
@@ -217,7 +252,7 @@ public class ServerLayer {
 
 	public class ResponseGet extends ResponseSend {
 		private List<Order> results;
-		
+
 		public List<Order> getResults() {
 			return results;
 		}
