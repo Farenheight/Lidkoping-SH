@@ -11,9 +11,12 @@ function getApikey(){
 			$row = $res->fetch_assoc();
 			
 			$userID = $row['user_id'];
-			$deviceID = "asdf";
-			
-			$apikey = genrerateApikey($userID, $deviceID);
+			$deviceID = "asdf"; //TODO Fix usage of deviceid
+			if(isset($_POST['expires'])){ //TODO Check validity of chosen expiration time.
+				$apikey = genrerateApikey($userID, $deviceID, $_POST['expires']);
+			}else{
+				$apikey = genrerateApikey($userID, $deviceID);
+			}
 			doDie(output(true, null, $apikey));
 		}else{
 			errorGeneric("Your credentials are not valid, please try again. Please honor the exponential back off.", 43);

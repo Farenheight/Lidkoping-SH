@@ -22,7 +22,7 @@ if ($_FILES["image1"]["error"] > 0) {
 	$temp = explode(".", $_FILES["image1"]["name"]);
 	$extension = end($temp);
 	if(in_array($_FILES["image1"]["type"], $allowedHeaderType) && in_array($extension, $allowedExts) && ($_FILES["image1"]["size"] < (1024*1024*10))){
-		if(!file_exists("../api/pics/$orderYear/" . $orderMonth . $orderDay . "-" . time() . "." . $extension)){ //TODO Get ordernumber
+		if(!file_exists("../api/pics/$orderYear/" . $orderMonth . $orderDay . "-" . time() . "." . $extension)){
 			move_uploaded_file($_FILES["image1"]["tmp_name"], "../api/pics/$orderYear/" . $orderMonth . $orderDay . "-" . time() . "." . $extension);
 			$imagePath = "$orderYear/$orderMonth" . "$orderDay-" . time() . ".$extension";
 		}else{
