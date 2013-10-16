@@ -96,10 +96,6 @@ public class MainActivity extends FragmentActivity implements
 		// On tablets, show the detail view in this activity by adding or
 		// replacing the detail fragment
 		if (mTabletSize) {
-			if (mCurrentOrderDetailsFragment != null && mCurrentOrder != null) {
-				mCurrentOrder
-						.removeSyncOrderListener(mCurrentOrderDetailsFragment);
-			}
 			Bundle arguments = new Bundle();
 			arguments.putInt(OrderDetailsFragment.ORDER_ID, orderId);
 			arguments.putBoolean(IS_TABLET_SIZE, mTabletSize);
@@ -107,8 +103,6 @@ public class MainActivity extends FragmentActivity implements
 			mCurrentOrder = ModelHandler.getModel(this).getOrderById(orderId);
 			mCurrentOrderDetailsFragment = new OrderDetailsFragment();
 			mCurrentOrderDetailsFragment.setArguments(arguments);
-
-			mCurrentOrder.addSyncOrderListener(mCurrentOrderDetailsFragment);
 
 			getSupportFragmentManager()
 					.beginTransaction()
