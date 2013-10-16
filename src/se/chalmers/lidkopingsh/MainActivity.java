@@ -37,6 +37,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		ModelHandler.getLayer(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
+		Log.d("DEBUG", "tablet size: " + mTabletSize);
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
@@ -45,6 +46,11 @@ public class MainActivity extends FragmentActivity implements
 			setContentView(R.layout.list_root);
 		}
 		
+	}
+	@Override
+	protected void onDestroy() {
+		ModelHandler.getLayer(this).removeNetworkListener(this);
+		super.onDestroy();
 	}
 
 	/**

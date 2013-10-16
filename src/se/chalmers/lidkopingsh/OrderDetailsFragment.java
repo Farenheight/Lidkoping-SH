@@ -12,6 +12,8 @@ import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.util.Listener;
 import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
+import android.content.res.Configuration;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.location.Address;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -59,7 +61,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 	private TabHost mTabHost;
 
-	private boolean mTabletSize;
+	private boolean mUse2Tabs;
 
 	private List<ProgressBar> progressIndicators;
 
@@ -84,7 +86,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
 
-		mTabletSize = getArguments().getBoolean(MainActivity.IS_TABLET_SIZE);
+		mUse2Tabs = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+				&& getResources().getBoolean(R.bool.isTablet);
 	}
 
 	@Override
@@ -156,7 +159,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		});
 
 		// On phones, put the task container in a new tab
-		if (!mTabletSize) {
+		if (!mUse2Tabs) {
 			TabHost.TabSpec taskTab = mTabHost.newTabSpec(TASK_TAB);
 			taskTab.setContent(R.id.task_cont_wrapper);
 			taskTab.setIndicator(getTabIndicator("Moment"));
@@ -173,7 +176,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		// Add detail tab
 		TabHost.TabSpec detailTab = mTabHost.newTabSpec(DETAIL_TAB);
 		detailTab.setContent(R.id.tab_info_container);
-		detailTab.setIndicator(getTabIndicator(mTabletSize ? "Information"
+		detailTab.setIndicator(getTabIndicator(mUse2Tabs ? "Information"
 				: "Info"));
 		mTabHost.addTab(detailTab);
 		initDetails();
@@ -228,7 +231,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 		btn.setChecked(task.getStatus() == Status.DONE);
 		toggleButtons.add(btn);
 		final ProgressBar pBar = (ProgressBar) taskView
-		.findViewById(R.id.task_toggler_progress_indicator);
+				.findViewById(R.id.task_toggler_progress_indicator);
 		progressIndicators.add(pBar);
 		// If not setSaveEnabaled(false), android resets the buttons on screen
 		// orientation change etc
@@ -237,7 +240,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 			@Override
 			public void onCheckedChanged(CompoundButton toggleButton,
 					boolean isChecked) {
-				btn.setVisibility(View.GONE); 
+				btn.setVisibility(View.GONE);
 				pBar.setVisibility(View.VISIBLE);
 				if (task.getStatus() == Status.DONE) {
 					task.setStatus(Status.NOT_DONE);
@@ -250,10 +253,10 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	}
 
 	private void showProgressIndicators(boolean visible) {
-		for(ProgressBar pBar : progressIndicators) {
+		for (ProgressBar pBar : progressIndicators) {
 			pBar.setVisibility(visible ? View.VISIBLE : View.GONE);
 		}
-		for(ToggleButton tBtn : toggleButtons) {
+		for (ToggleButton tBtn : toggleButtons) {
 			tBtn.setVisibility(visible ? View.GONE : View.VISIBLE);
 		}
 	}
@@ -333,7 +336,7 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	@Override
 	public void changed(Order order) {
 		Log.d("OrderDetailsFragment", "In changed()");
- 
+
 		if (order != mOrder) {
 			if (order == null) {
 				// TODO: Display error message to user

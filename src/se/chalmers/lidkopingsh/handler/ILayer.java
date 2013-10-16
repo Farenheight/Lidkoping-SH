@@ -14,4 +14,5 @@ public interface ILayer extends Listener<OrderChangedEvent> {
 	public IModel getModel();
 	public void update(boolean getAll);
 	public void addNetworkListener(NetworkUpdateListener listener);
+	public void removeNetworkListener(NetworkUpdateListener listener);
 }

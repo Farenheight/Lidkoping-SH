@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
+import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
 import android.app.Activity;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -29,7 +30,7 @@ import android.widget.Spinner;
  * @author Simon Bengtsson
  * 
  */
-public class OrderListFragment extends ListFragment {
+public class OrderListFragment extends ListFragment implements NetworkUpdateListener{
 
 	/* Bundle keys representing the activated item position. */
 	private static final String ACTIVATED_ORDER_ID = "activated_position";
@@ -71,10 +72,11 @@ public class OrderListFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		ModelHandler.getLayer(getActivity()).addNetworkListener(this);
 		return LayoutInflater.from(getActivity()).inflate(
 				R.layout.list_root_inner, null);
 	}
-
+	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		getListView().addHeaderView(
@@ -187,4 +189,15 @@ public class OrderListFragment extends ListFragment {
 		 */
 		public void onItemSelected(int orderId);
 	}
+
+	@Override
+	public void startUpdate() {}
+
+	@Override
+	public void endUpdate() {
+		//mOrderAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void noNetwork(String message) {}
 }
