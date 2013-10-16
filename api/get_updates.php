@@ -83,6 +83,8 @@ function produceOrders($res){
 			   "cemeteryBoard" => $row['cemetery_board'],
 			   "cemeteryBlock" => $row['cemetery_block'],
 			   "cemeteryNumber" => $row['cemetery_number'],
+			   "archived" => (boolean) $row['archived'],
+			   "cancelled" => (boolean) $row['cancelled'],
 			   "customer" => array(
 			      "title" => $row['title'],
 			      "name" => $row['customer_name'],
