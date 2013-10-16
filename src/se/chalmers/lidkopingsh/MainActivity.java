@@ -42,17 +42,15 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mSharedPreferences = getSharedPreferences(
-				ServerLayer.PREFERENCES_NAME, Context.MODE_PRIVATE);
+		mSharedPreferences = getSharedPreferences(ServerLayer.PREFERENCES_NAME,
+				Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
-			Log.i("MainActivity", "LoginActivity started");
+			Log.i("MainActivity", "Not logged, in. Staring login act");
 			startActivity(new Intent(this, LoginActivity.class));
 			finish();
-		} 
-		loggedInLog();
+		}
 		ModelHandler.getLayer(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
-		Log.d("DEBUG", "tablet size: " + mTabletSize);
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
@@ -65,22 +63,11 @@ public class MainActivity extends FragmentActivity implements
 	private boolean isLoggedIn() {
 		boolean apiEmpty = TextUtils.isEmpty(mSharedPreferences.getString(
 				ServerLayer.PREFERENCES_API_KEY, null));
-		boolean serverPathEmpty = TextUtils.isEmpty(mSharedPreferences.getString(
-				ServerLayer.PREFERENCES_SERVER_PATH, null));
-		
-		loggedInLog();
-
+		boolean serverPathEmpty = TextUtils.isEmpty(mSharedPreferences
+				.getString(ServerLayer.PREFERENCES_SERVER_PATH, null));
 		return !apiEmpty && !serverPathEmpty;
 	}
 	
-	private void loggedInLog() {
-		String sp = mSharedPreferences.getString(ServerLayer.PREFERENCES_SERVER_PATH,
-				null);
-		String api = mSharedPreferences.getString(ServerLayer.PREFERENCES_API_KEY,
-				null);
-		Log.d("LoginAct", "SP is empty: " + TextUtils.isEmpty(sp));
-		Log.d("LoginAct", "API is empty: " + TextUtils.isEmpty(api));
-	}
 	@Override
 	protected void onDestroy() {
 		ModelHandler.getLayer(this).removeNetworkListener(this);
@@ -121,6 +108,12 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+		ModelHandler.update(false);
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu items for use in the action bar
 		MenuInflater inflater = getMenuInflater();
@@ -151,21 +144,27 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void startUpdate() {
-		Log.d("MainActivity", "Update started");
-		MenuItem updateItem = mMenu.findItem(R.id.action_update);
-		updateItem.setActionView(R.layout.progress_indicator);
+		Log.i("MainActivity", "Update started");
+		// Is null when activity just started
+		if (mMenu != null) {
+			MenuItem updateItem = mMenu.findItem(R.id.action_update);
+			updateItem.setActionView(R.layout.progress_indicator);
+		}
 	}
 
 	@Override
 	public void endUpdate() {
-		MenuItem updateItem = mMenu.findItem(R.id.action_update);
-		updateItem.setActionView(null);
-		Log.d("MainActivity", "Update finished");
+		// Is null when activity just started
+		if (mMenu != null) {
+			MenuItem updateItem = mMenu.findItem(R.id.action_update);
+			updateItem.setActionView(null);
+		}
+		Log.i("MainActivity", "Update finished");
 	}
 
 	@Override
 	public void noNetwork(String message) {
-		Log.d("MainActivity", "Network error");
+		Log.i("MainActivity", "Network error");
 	}
 
 	@Override

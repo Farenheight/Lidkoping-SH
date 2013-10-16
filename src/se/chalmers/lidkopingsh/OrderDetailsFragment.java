@@ -100,7 +100,7 @@ public class OrderDetailsFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedState) {
+			Bundle savedState) { 
 
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
@@ -133,7 +133,6 @@ public class OrderDetailsFragment extends Fragment {
 		@Override
 		public void endUpdate() {
 			showProgressIndicators(false);
-			Log.d("OrderDetailsFragmnent", "End update = Updated GUI");
 			ViewGroup taskContainer = (ViewGroup) mRootView
 					.findViewById(R.id.task_cont);
 			taskContainer.removeAllViews();
