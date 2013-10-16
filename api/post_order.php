@@ -84,10 +84,10 @@ function validateUpdateInput($array) {
  */
 function requiredField($fieldName, $array, $moreInfo = "") {
 	if (!array_key_exists($fieldName, $array)) {
-		errorGeneric("Missing required field: $fieldName ($moreInfo)"); //TODO Add error code and documentation
+		errorGeneric("Missing required field: $fieldName ($moreInfo)", 24);
 	}
 	if (empty($array[$fieldName])) {
-		errorGeneric("Empty required field: $fieldName ($moreInfo)");
+		errorGeneric("Empty required field: $fieldName ($moreInfo)", 25);
 	}
 }
 
