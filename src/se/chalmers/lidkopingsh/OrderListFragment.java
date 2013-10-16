@@ -48,6 +48,7 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 
 	private SearchHandler mSearchHandler;
 	private SortHandler mSortHandler;
+	private DataSetObserver orderListObserver;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -87,7 +88,6 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 		mOrderAdapter = new OrderAdapter(getActivity(), new ArrayList<Order>(
 				ModelHandler.getModel(getActivity()).getOrders()));
 		setListAdapter(mOrderAdapter);
-		mOrderAdapter.registerDataSetObserver(new OrderListObserver());
 
 		// Sets up the station spinner and it's adapter
 		Spinner stationSpinner = (Spinner) getView().findViewById(
@@ -116,6 +116,13 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 						.getInt(ACTIVATED_ORDER_ID));
 			}
 		}
+		orderListObserver = new OrderListObserver();
+		mOrderAdapter.registerDataSetObserver(orderListObserver);
+	}
+	@Override
+	public void onDestroy() {
+		mOrderAdapter.unregisterDataSetObserver(orderListObserver);
+		super.onDestroy();
 	}
 
 	@Override
@@ -195,6 +202,7 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 
 	@Override
 	public void endUpdate() {
+		//TODO Error "Content view not yet created"
 		mOrderAdapter.notifyDataSetChanged();
 		mOrderAdapter.refreshSort();
 	}
