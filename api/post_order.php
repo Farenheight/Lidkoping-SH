@@ -36,6 +36,7 @@ function getValidInput() {
 	requiredField("name", $array["customer"], "customer");
 	requiredField("address", $array["customer"], "customer");
 	requiredField("postAddress", $array["customer"], "customer");
+	requiredField("deceased", $array);
 	// Check products
 	if (array_key_exists("products", $array)) {
 		foreach ($array["products"] as $index => $product) {
@@ -211,7 +212,6 @@ function sqlInsertImage($image, $orderId) {
 	$stmt = $GLOBALS['con'] -> prepare($sql);
 	$stmt -> bind_param("is", $orderId, $image['imagePath']);
 	$stmt -> execute();
-	echo "Inserted image";
 }
 
 function sqlInsertOrder($order) {

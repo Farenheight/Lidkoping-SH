@@ -51,8 +51,15 @@ class Util {
 		if(!array_key_exists("cemetery", $order) || !array_key_exists("deceased", $order)){
 			return false;
 		}
+		
 		$cemetery = $order['cemetery'];
 		$deceased = $order['deceased'];
+		
+		if(empty($order['deceased'])){ // For other things then gravestones
+			for($j=0; $j<10; $j++){
+				$deceased .= chr(rand(65, 90));
+			}
+		}
 		
 		$cemeteryLetter = strtoupper(substr($cemetery, 0, 1));
 		$cemeteryLetterCount = 1;
