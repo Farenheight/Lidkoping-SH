@@ -306,7 +306,7 @@ function sqlInsertStation($station) {
 function getStationId($station) {
 	if (array_key_exists('id', $station)) {
 		return $station['id'];
-	} else if (array_key_exists($station['name'], $GLOBALS['stations'])) {
+	} else if (@array_key_exists($station['name'], $GLOBALS['stations'])) { // Generates notice without @
 		return $GLOBALS['stations'][$station['name']];
 	} else {
 		// Insert station into database. It does not exist

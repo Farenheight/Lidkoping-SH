@@ -4,9 +4,12 @@ include_once 'class/mySQLConnection.php';
 include_once 'db_config.php';
 $con = new mySQLConnection();
 
-if(isset($_GET['user']) && isset($_GET['pw'])){
+if(false && isset($_GET['user']) && isset($_GET['pw'])){
 	createLogin($_GET['user'], $_GET['pw']);
 	$GLOBALS['con']->commit();
+	echo "Success";
+}else{
+	echo "Failure";
 }
 
 function createLogin($user, $pw, $accessLevel = "a"){	

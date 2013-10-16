@@ -1,4 +1,6 @@
 <?php
+require_once '../api/db_config.php';
+
 $data = $_POST;
 
 // Set order date to timestamp
@@ -43,14 +45,13 @@ if($imagePath !== ""){
 
 // Send JSON object to web api
 echo "Skickar: " . json_encode($data) . "<br />";
-$url = "http://lidkopingsh/api/?action=insertOrder";
 
 // Create a stream
 $opts = array(
 	'http' => array(
 		'method' => "POST",
 		'header' => "Content-type: application/x-www-form-urlencoded\r\n" .
-			"Lidkopingsh-Apikey: 97b48bdf2e10caac766c3aad8e0beebe\r\n" .
+			$GLOBALS['insertApikey'] .
 			"Lidkopingsh-Deviceid: asdf\r\n",
 		'content' => 'data=' . json_encode($data)
 	)
@@ -58,7 +59,7 @@ $opts = array(
 $context = stream_context_create($opts);
 
 // Open the file using the HTTP headers set above
-$file = file_get_contents($url, false, $context);
+$file = file_get_contents($GLOBALS['insertUrl'], false, $context);
 
 $response = json_decode($file, true);
 

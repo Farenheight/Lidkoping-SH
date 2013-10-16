@@ -22,7 +22,7 @@ class Util {
 		$stmt2->execute();
 		$res2 = $stmt2->get_result();
 
-		while($row2 = $res->fetch_assoc()){
+		while($row2 = $res2->fetch_assoc()){
 			$this->idNames[] = $row2['id_name'];
 		}
 	}
@@ -78,6 +78,7 @@ class Util {
 		$crysisArrayCount = sizeof($crysis);
 		$deceasedNameCount = strlen($order['deceased']);
 		while(in_array($proposal, $this->idNames)){ // If ID name is taken
+			//echo " - " . $proposal . " was taken, trying a new one... - ";
 			if($i < $deceasedNameCount){
 				if(substr($deceased, $i, 1) != " "){
 					$proposal = strtoupper(substr($deceased, $i, 1) . "." . $cemeteryLetter . ".");
@@ -111,6 +112,7 @@ class Util {
 			}
 			$i++;
 		}
+		//echo " - " . $proposal . " was available! - ";
 		$this->idNames[] = $proposal;
 		return $proposal;
 	}
