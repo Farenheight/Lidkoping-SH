@@ -140,9 +140,5 @@ public class OrderDbLayer implements ILayer {
 	public void noNetwork(String message) {
 		listener.noNetwork(message);
 	}
-	
-	public Context getContext() {
-		return context;
-	}
 
 }

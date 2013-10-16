@@ -109,7 +109,7 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 		return orderDate;
 	}
 
-	public Collection<Image> getImages() {
+	public List<Image> getImages() {
 		return images;
 	}
 

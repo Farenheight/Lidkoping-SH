@@ -8,6 +8,7 @@ import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.util.Listener;
 import uk.co.senab.photoview.PhotoViewAttacher;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -211,10 +212,14 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 	private void initDrawing() {
 		ImageView orderDrawing = (ImageView) rootView
 				.findViewById(R.id.orderDrawing);
+		
+		Drawable img = Drawable.createFromPath(mOrder.getImages().get(0).getImageFile().getPath());
 
 		// Set the image displayed TODO: get from model
-		orderDrawing.setImageDrawable(getResources().getDrawable(
-				R.drawable.test_headstone_drawing));
+		//orderDrawing.setImageDrawable(getResources().getDrawable(
+			//	R.drawable.test_headstone_drawing));
+		
+		orderDrawing.setImageDrawable(img);
 
 		// Attaches the library
 		PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
