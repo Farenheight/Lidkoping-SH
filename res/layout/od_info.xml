@@ -212,27 +212,6 @@
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/workerNotesHeader"
-                style="?android:attr/textAppearanceLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="@string/workerNote"
-                android:textIsSelectable="true"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/editText1"
-                android:layout_column="0"
-                android:layout_gravity="right|top"
-                android:ems="10"
-                android:hint="@string/noteHint"
-                android:text="@string/noteHint" >
-
-                <requestFocus />
-            </EditText>
         </GridLayout>
     </LinearLayout>
 
