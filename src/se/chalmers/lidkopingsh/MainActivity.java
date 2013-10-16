@@ -1,5 +1,7 @@
 package se.chalmers.lidkopingsh;
 
+import com.nullwire.trace.ExceptionHandler;
+
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.handler.ServerLayer;
 import se.chalmers.lidkopingsh.model.Order;
@@ -42,6 +44,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		ExceptionHandler.register(this, "http://simonbengtsson.se/lsh/stacktrace_script.php");
 		mSharedPreferences = getSharedPreferences(ServerLayer.PREFERENCES_NAME,
 				Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
