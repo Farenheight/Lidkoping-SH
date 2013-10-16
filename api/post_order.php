@@ -9,7 +9,7 @@ function insertOrder() {
 function updateOrder() {
 	$su = true; //TODO ?
 	$jsonData = getValidInput();
-	requiredField("id", $jsonData);
+	validateUpdateInput($jsonData);
 	prepareSql();
 	sqlUpdateOrder($jsonData, $su);
 	doDie(output(true));
@@ -63,6 +63,19 @@ function getValidInput() {
 	}
 	
 	return $array;
+}
+
+/**
+ * Checks that additional fields for update are valid.
+ */
+function validateUpdateInput($array) {
+	requiredField("id", $array);
+	// Check products
+	if (array_key_exists("products", $array)) {
+		foreach ($array["products"] as $index => $product) {
+			requiredField("id", $product, "product at index $index");
+		}
+	}
 }
 
 /**
@@ -297,6 +310,7 @@ function sqlInsertStation($station) {
 	$stmt = $GLOBALS['con'] -> prepare($sql);
 	$stmt -> bind_param("s", $station['name']);
 	$stmt -> execute();
+	$GLOBALS['stations'][$station['name']] = $stmt -> insert_id;
 	return $stmt -> insert_id;
 }
 
