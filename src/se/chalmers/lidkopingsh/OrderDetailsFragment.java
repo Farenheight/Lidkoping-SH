@@ -117,7 +117,6 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 
 		@Override
 		public void startUpdate() {
-			showProgressIndicators(true);
 		}
 
 		@Override
@@ -228,8 +227,9 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 				.findViewById(R.id.task_toggler);
 		btn.setChecked(task.getStatus() == Status.DONE);
 		toggleButtons.add(btn);
-		progressIndicators.add((ProgressBar) taskView
-				.findViewById(R.id.task_toggler_progress_indicator));
+		final ProgressBar pBar = (ProgressBar) taskView
+		.findViewById(R.id.task_toggler_progress_indicator);
+		progressIndicators.add(pBar);
 		// If not setSaveEnabaled(false), android resets the buttons on screen
 		// orientation change etc
 		btn.setSaveEnabled(false);
@@ -237,6 +237,8 @@ public class OrderDetailsFragment extends Fragment implements Listener<Order> {
 			@Override
 			public void onCheckedChanged(CompoundButton toggleButton,
 					boolean isChecked) {
+				btn.setVisibility(View.GONE); 
+				pBar.setVisibility(View.VISIBLE);
 				if (task.getStatus() == Status.DONE) {
 					task.setStatus(Status.NOT_DONE);
 				} else {

@@ -26,7 +26,7 @@ public class OrderDbLayer implements ILayer {
 	private final Timer timer;
 	private final OrderDbStorage db;
 	private final ServerLayer serverLayer;
-	private final long UPDATE_INTERVAL = 300000;
+	private final long UPDATE_INTERVAL = 10000;
 	private final Context context;
 	private static boolean first = true;
 	private OrderChangedEvent event;
