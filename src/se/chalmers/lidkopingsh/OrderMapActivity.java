@@ -159,7 +159,6 @@ public class OrderMapActivity extends FragmentActivity {
 		protected void onPostExecute(Map<MarkerOptions, Order> result) {
 			super.onPostExecute(result);
 			addMarkers(result);
-			addDebugMarkers();
 			zoomToMarkers(100);
 		}
 
@@ -180,18 +179,6 @@ public class OrderMapActivity extends FragmentActivity {
 				}
 			}
 			return markers;
-		}
-
-		// Adds ten markers in stockholm TODO: Remove
-		private void addDebugMarkers() {
-			Address cAddress = getAddress("eggvena kyrka");
-			LatLng cLatLng = new LatLng(cAddress.getLatitude(),
-					cAddress.getLongitude());
-			Bitmap icon = mIconFactory.makeIcon("E.G.");
-			Marker cemeteryMarker = mMap.addMarker(new MarkerOptions()
-					.position(cLatLng).title("Eggvena Kyrka!!"));
-			cemeteryMarker.setIcon(BitmapDescriptorFactory.fromBitmap(icon));
-			mMarkers.add(cemeteryMarker);
 		}
 
 		private void addMarkers(Map<MarkerOptions, Order> markers) {
