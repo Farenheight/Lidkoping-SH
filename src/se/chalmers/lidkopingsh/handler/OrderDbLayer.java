@@ -43,8 +43,7 @@ public class OrderDbLayer implements ILayer {
 		networkListeners = new ArrayList<NetworkUpdateListener>();
 		db = new OrderDbStorage(context);
 		// TODO: Remove server path. Set it in settings.
-		serverLayer = new ServerLayer("http://lidkopingsh.kimkling.net/api/",
-				context);
+		serverLayer = new ServerLayer(context);
 		update(true);
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new UpdateTimerTask(this), UPDATE_INTERVAL,

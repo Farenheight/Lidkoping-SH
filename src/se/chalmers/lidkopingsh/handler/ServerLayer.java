@@ -40,22 +40,27 @@ public class ServerLayer {
 	private static final String LIDKOPING_SH_DEVICE_ID = "LidkopingSH-DeviceId";
 	private static final String LIDKOPINGSH_APIKEY = "Lidkopingsh-Apikey";
 
-	private static final String PREFRENCES_NAME = "AuthenticationPreferences";
+	public static final String PREFRENCES_NAME = "AuthenticationPreferences";
 	private static final String PREFERENCES_API_KEY = "Apikey";
+	public static final String PREFERENCES_SERVER_PATH = "server_path";
 
 	private final String deviceId = "asdf";
 
 	private HttpClient httpClient;
 	private final Context context;
 	private final String serverPath;
+	private SharedPreferences preferences;
 
 	/**
 	 * Creates a new ServerLayer with a set server path.
 	 * 
 	 * @param serverPath
 	 */
-	public ServerLayer(String serverPath, Context context) {
-		this.serverPath = serverPath;
+	public ServerLayer(Context context) {
+		preferences = context.getSharedPreferences(
+				PREFRENCES_NAME, Context.MODE_PRIVATE);
+		
+		this.serverPath = preferences.getString(PREFERENCES_SERVER_PATH, null);
 		this.context = context;
 		try {
 			httpClient = new DefaultHttpClient();
@@ -71,21 +76,7 @@ public class ServerLayer {
 	 * @param orderString
 	 */
 	private BufferedReader sendHttpPostRequest(String orderString, String action) {
-		SharedPreferences preferences = context.getSharedPreferences(
-				PREFRENCES_NAME, Context.MODE_PRIVATE);
 		String apikey = preferences.getString(PREFERENCES_API_KEY, null);
-		Log.d("server_layer", "SharedPreferences apikey: " + apikey);
-
-		if (apikey == null) {
-			ResponseSend response = getApikey("dev", "dev", deviceId);
-			if (response.isSuccess()) {
-				Log.d("server_layer", "Get api key success");
-				apikey = response.getMessage();
-			} else {
-				Log.d("server_layer", "Get api key failed");
-			}
-		}
-
 		return sendHttpPostRequest(orderString, action, Arrays.asList(
 				new BasicHeader(LIDKOPINGSH_APIKEY, apikey), new BasicHeader(
 						LIDKOPING_SH_DEVICE_ID, deviceId)));
@@ -164,8 +155,6 @@ public class ServerLayer {
 		ResponseSend response = getResponseSend(reader);
 
 		// Store in SharedPreferences
-		SharedPreferences preferences = context.getSharedPreferences(
-				PREFRENCES_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(PREFERENCES_API_KEY, response.getMessage());
 		editor.commit();

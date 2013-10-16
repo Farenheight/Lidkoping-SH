@@ -7,7 +7,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +51,14 @@ public class LoginActivity extends Activity {
 
 		setContentView(R.layout.activity_login);
 
+		// Saves server path
+		SharedPreferences preferences = getSharedPreferences(
+				ServerLayer.PREFRENCES_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(ServerLayer.PREFERENCES_SERVER_PATH,
+				"http://lidkopingsh.kimkling.net/api/");
+		editor.commit();
+
 		// Set up the login form.
 		mUserNameView = (EditText) findViewById(R.id.email);
 		mUserNameView.setText(mUserName);
@@ -78,8 +88,10 @@ public class LoginActivity extends Activity {
 						attemptLogin();
 						InputMethodManager imm = (InputMethodManager) LoginActivity.this
 								.getSystemService(Service.INPUT_METHOD_SERVICE);
-						imm.hideSoftInputFromWindow(mPasswordView.getWindowToken(), 0); 
-						imm.hideSoftInputFromWindow(mUserNameView.getWindowToken(), 0); 
+						imm.hideSoftInputFromWindow(
+								mPasswordView.getWindowToken(), 0);
+						imm.hideSoftInputFromWindow(
+								mUserNameView.getWindowToken(), 0);
 					}
 				});
 	}
@@ -205,7 +217,7 @@ public class LoginActivity extends Activity {
 					LoginActivity.this.getContentResolver(), Secure.ANDROID_ID);
 
 			// Send to server
-			ServerLayer serverLayer = new ServerLayer("", LoginActivity.this);
+			ServerLayer serverLayer = new ServerLayer(LoginActivity.this);
 			ResponseSend response = serverLayer.getApikey(mUserName, mPassword,
 					deviceId);
 
