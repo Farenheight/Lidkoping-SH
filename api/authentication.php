@@ -12,6 +12,25 @@ function checkAuthenticated(){
 	}
 }
 
+function bruteforceProtection(){
+	$isBruteforcing = true;
+	
+	$sql = "SELECT * FROM `logging` WHERE `success`=0 AND `timestamp`>? AND `ip`=?";
+	$stmt = $GLOBALS['con']->prepare($sql);
+	$stmt->bind_param("is", $timestamp, $ip);
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$timestamp = (time()*1000)-(1000*60*10);
+	
+	$stmt->execute();
+	$res = $stmt->get_result();
+	$isBruteforcing = $res->num_rows >= 5;
+	
+	if($isBruteforcing){
+		logAccess(false, 0, 0);
+		errorGeneric("Your ipaddress have connected to many time with the wrong Apikey or credentials in a short amount of time, please honor the exponential back off.", 45);
+	}
+}
+
 function validateApikey($apikey, $deviceID){
 	$notExpired = false;
 	$returning = false;

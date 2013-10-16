@@ -13,6 +13,8 @@ require_once 'util.php';
 $con = new mySQLConnection();
 $util = new Util();
 
+bruteforceProtection();
+
 if(isset($_GET['action']) && $_GET['action'] === "getApikey"){
 	require_once 'getApikey.php';
 	getApikey();
