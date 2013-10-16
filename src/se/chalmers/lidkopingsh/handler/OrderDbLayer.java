@@ -1,12 +1,14 @@
 package se.chalmers.lidkopingsh.handler;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Timer;
 
 import se.chalmers.lidkopingsh.database.OrderDbStorage;
 import se.chalmers.lidkopingsh.model.IModel;
+import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
@@ -89,17 +91,23 @@ public class OrderDbLayer implements ILayer {
 		}else {
 			Log.d("update_database", "updates database");
 			IModel model = ModelHandler.getModel(context);
+			
 			for (Order o : orders) {
-				try {
-					Order order = model.getOrderById(o.getId());
-					if(order != null){
-						order.sync(o);
-						db.update(o);
+				if(o.isRemoved()) {
+					db.delete(o);
+					model.removeOrder(o);
+				} else {
+					try {
+						Order order = model.getOrderById(o.getId());
+						if(order != null){
+							order.sync(o);
+							db.update(o);
+						}
+					} catch (NoSuchElementException e) {
+						o.addOrderListener(this);
+						model.addOrder(o);
+						db.insert(o);
 					}
-				} catch (NoSuchElementException e) {
-					o.addOrderListener(this);
-					model.addOrder(o);
-					db.insert(o);
 				}
 			}
 		}

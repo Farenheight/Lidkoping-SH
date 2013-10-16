@@ -108,13 +108,13 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void startUpdate() {
-		mItem.setActionView(R.layout.progress_indicator);
+		//mItem.setActionView(R.layout.progress_indicator);
 		
 	}
 
 	@Override
 	public void endUpdate() {
-		mItem.setActionView(null);
+		//mItem.setActionView(null);
 		
 	}
 

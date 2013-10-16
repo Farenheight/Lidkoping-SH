@@ -33,6 +33,8 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	private List<Product> products;
 	private List<Image> images;
 	private String deceased;
+	private boolean archived = false;
+	private boolean cancelled = false;
 
 	/**
 	 * Creates an Order with the specified properties. For unknown or not
@@ -333,7 +335,10 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 				this.orderDate = newData.orderDate;
 				this.orderNumber = newData.orderNumber;
 				this.idName = newData.idName;
-				if(newData.getProducts() != null && products != null) {
+				if (newData.getImages() != null && getImages() != null) {
+					images = Syncher.syncList(images, newData.getImages());
+				}
+				if (newData.getProducts() != null && products != null) {
 					products = Syncher.syncList(products, newData.getProducts());
 				}
 				this.lastTimeSync = newData.lastTimeUpdate;
@@ -420,6 +425,10 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	@Override
 	public String toString() {
 		return id + "";
+	}
+	
+	public boolean isRemoved() {
+		return cancelled || archived;
 	}
 
 }

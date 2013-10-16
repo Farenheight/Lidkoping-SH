@@ -20,6 +20,7 @@ public class ModelHandler {
 		if (layer == null) {
 			layer = new OrderDbLayer(context);
 		}
+		layer.update(true);
 		return layer;
 	}	
 	
