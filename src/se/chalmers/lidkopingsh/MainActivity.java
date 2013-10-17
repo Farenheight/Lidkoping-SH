@@ -1,11 +1,9 @@
 package se.chalmers.lidkopingsh;
 
-import com.nullwire.trace.ExceptionHandler;
-
 import se.chalmers.lidkopingsh.handler.ModelHandler;
-import se.chalmers.lidkopingsh.handler.ServerLayer;
 import se.chalmers.lidkopingsh.model.Order;
-import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
+import se.chalmers.lidkopingsh.server.NetworkStatusListener;
+import se.chalmers.lidkopingsh.server.ServerSettings;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +18,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.nullwire.trace.ExceptionHandler;
+
 /**
  * An activity containing only a {@link OrderListFragment} on handsets and also
  * a {@link OrderDetailsFragment} on tablets.
@@ -31,7 +31,7 @@ import android.view.MenuItem;
  * 
  */
 public class MainActivity extends FragmentActivity implements
-		OrderListFragment.OrderSelectedCallbacks, NetworkUpdateListener {
+		OrderListFragment.OrderSelectedCallbacks, NetworkStatusListener {
 	public static final String IS_TABLET_SIZE = "is_tablet_size";
 	private OrderDetailsFragment mCurrentOrderDetailsFragment;
 	private Order mCurrentOrder;
@@ -45,7 +45,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ExceptionHandler.register(this, "http://simonbengtsson.se/lsh/stacktrace_script.php");
-		mSharedPreferences = getSharedPreferences(ServerLayer.PREFERENCES_NAME,
+		mSharedPreferences = getSharedPreferences(ServerSettings.PREFERENCES_NAME,
 				Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
 			Log.i("MainActivity", "Not logged, in. Staring login act");
@@ -53,7 +53,7 @@ public class MainActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
-		ModelHandler.getLayer(this).addNetworkListener(this);
+		ModelHandler.getServerConnector(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
@@ -66,15 +66,15 @@ public class MainActivity extends FragmentActivity implements
 
 	private boolean isLoggedIn() {
 		boolean apiEmpty = TextUtils.isEmpty(mSharedPreferences.getString(
-				ServerLayer.PREFERENCES_API_KEY, null));
+				ServerSettings.PREFERENCES_API_KEY, null));
 		boolean serverPathEmpty = TextUtils.isEmpty(mSharedPreferences
-				.getString(ServerLayer.PREFERENCES_SERVER_PATH, null));
+				.getString(ServerSettings.PREFERENCES_SERVER_PATH, null));
 		return !apiEmpty && !serverPathEmpty;
 	}
 	
 	@Override
 	protected void onDestroy() {
-		ModelHandler.getLayer(this).removeNetworkListener(this);
+		ModelHandler.getServerConnector(this).removeNetworkListener(this);
 		super.onDestroy();
 	}
 
@@ -147,7 +147,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void startUpdate() {
+	public void startedUpdate() {
 		Log.i("MainActivity", "Update started");
 		// Is null when activity just started
 		if (mMenu != null) {
@@ -157,7 +157,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void endUpdate() {
+	public void finishedUpdate() {
 		// Is null when activity just started
 		if (mMenu != null) {
 			MenuItem updateItem = mMenu.findItem(R.id.action_update);

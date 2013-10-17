@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public interface IModel {
+import se.chalmers.lidkopingsh.util.Listener;
+
+public interface IModel extends Listener<Collection<Order>> {
 
 	/**
 	 * Returns the product with the specified id.
@@ -51,5 +53,13 @@ public interface IModel {
 	public Collection<Station> getStations();
 	
 	public Station getStationById(int id);
+
+	void addDataChangedListener(DataChangedListener listener);
+
+	void removeDataChangedListener(DataChangedListener listener);
+
+	void addOrderChangedListener(Listener<OrderChangedEvent> listener);
+
+	void removeOrderChangedListener(Listener<OrderChangedEvent> listener);
 
 }

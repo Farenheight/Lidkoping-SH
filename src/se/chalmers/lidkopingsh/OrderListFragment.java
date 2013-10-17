@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
-import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
+import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.app.Activity;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -30,7 +30,7 @@ import android.widget.Spinner;
  * @author Simon Bengtsson
  * 
  */
-public class OrderListFragment extends ListFragment implements NetworkUpdateListener{
+public class OrderListFragment extends ListFragment implements NetworkStatusListener{
 
 	/* Bundle keys representing the activated item position. */
 	private static final String ACTIVATED_ORDER_ID = "activated_position";
@@ -73,7 +73,7 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		ModelHandler.getLayer(getActivity()).addNetworkListener(this);
+		ModelHandler.getServerConnector(getActivity()).addNetworkListener(this);
 		return LayoutInflater.from(getActivity()).inflate(
 				R.layout.list_root_inner, null);
 	}
@@ -198,10 +198,10 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 	}
 
 	@Override
-	public void startUpdate() {}
+	public void startedUpdate() {}
 
 	@Override
-	public void endUpdate() {
+	public void finishedUpdate() {
 		//TODO Error "Content view not yet created"
 		mOrderAdapter.notifyDataSetChanged();
 		mOrderAdapter.refreshSort();

@@ -10,7 +10,7 @@ import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
-import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
+import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -18,7 +18,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +87,7 @@ public class OrderDetailsFragment extends Fragment {
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
 		mNetworkWatcher = new NetworkWatcher();
-		ModelHandler.getLayer(getActivity()).addNetworkListener(mNetworkWatcher);
+		ModelHandler.getServerConnector(getActivity()).addNetworkListener(mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
@@ -100,7 +99,7 @@ public class OrderDetailsFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-		ModelHandler.getLayer(getActivity()).removeNetworkListener(mNetworkWatcher);
+		ModelHandler.getServerConnector(getActivity()).removeNetworkListener(mNetworkWatcher);
 		super.onDestroy();
 	}
 
@@ -130,14 +129,14 @@ public class OrderDetailsFragment extends Fragment {
 		return mRootView;
 	}
 
-	private class NetworkWatcher implements NetworkUpdateListener {
+	private class NetworkWatcher implements NetworkStatusListener {
 
 		@Override
-		public void startUpdate() {
+		public void startedUpdate() {
 		}
 
 		@Override
-		public void endUpdate() {
+		public void finishedUpdate() {
 			showProgressIndicators(false);
 			ViewGroup taskContainer = (ViewGroup) mRootView
 					.findViewById(R.id.task_cont);

@@ -1,6 +1,7 @@
-package se.chalmers.lidkopingsh.handler;
+package se.chalmers.lidkopingsh.server;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -21,9 +22,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
+import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -38,16 +41,12 @@ import com.google.gson.Gson;
  * @author Anton Jansson
  * 
  */
-public class ServerLayer {
+class ServerHelper {
 	private static final String LIDKOPINGSH_DEVICEID = "Lidkopingsh-Deviceid";
 	private static final String LIDKOPINGSH_PASSWORD = "Lidkopingsh-Password";
 	private static final String LIDKOPINGSH_USERNAME = "Lidkopingsh-Username";
 	private static final String LIDKOPING_SH_DEVICE_ID = "LidkopingSH-DeviceId";
 	private static final String LIDKOPINGSH_APIKEY = "Lidkopingsh-Apikey";
-
-	public static final String PREFERENCES_NAME = "AuthenticationPreferences";
-	public static final String PREFERENCES_API_KEY = "Apikey";
-	public static final String PREFERENCES_SERVER_PATH = "server_path";
 
 	private final String deviceId = "asdf";
 
@@ -57,15 +56,16 @@ public class ServerLayer {
 	private SharedPreferences preferences;
 
 	/**
-	 * Creates a new ServerLayer with a set server path.
+	 * Creates a new ServerHelper with a set server path.
 	 * 
 	 * @param serverPath
 	 */
-	public ServerLayer(Context context) {
+	public ServerHelper(Context context) {
 		preferences = context.getSharedPreferences(
-				PREFERENCES_NAME, Context.MODE_PRIVATE);
-		
-		this.serverPath = preferences.getString(PREFERENCES_SERVER_PATH, null);
+				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
+
+		this.serverPath = preferences.getString(
+				ServerSettings.PREFERENCES_SERVER_PATH, null);
 		this.context = context;
 		try {
 			httpClient = new DefaultHttpClient();
@@ -79,9 +79,13 @@ public class ServerLayer {
 	 * Used to send a POST request to server.
 	 * 
 	 * @param orderString
+	 * @throws NetworkErrorException
+	 *             if server could not be accessed.
 	 */
-	private BufferedReader sendHttpPostRequest(String orderString, String action) {
-		String apikey = preferences.getString(PREFERENCES_API_KEY, null);
+	private BufferedReader sendHttpPostRequest(String orderString, String action)
+			throws NetworkErrorException {
+		String apikey = preferences.getString(
+				ServerSettings.PREFERENCES_API_KEY, null);
 		return sendHttpPostRequest(orderString, action, Arrays.asList(
 				new BasicHeader(LIDKOPINGSH_APIKEY, apikey), new BasicHeader(
 						LIDKOPING_SH_DEVICE_ID, deviceId)));
@@ -91,9 +95,11 @@ public class ServerLayer {
 	 * Used to send a POST request to server.
 	 * 
 	 * @param data
+	 * @throws NetworkErrorException
+	 *             if server counld not be accessed.
 	 */
 	private BufferedReader sendHttpPostRequest(String data, String action,
-			Collection<? extends Header> headers) {
+			Collection<? extends Header> headers) throws NetworkErrorException {
 		BufferedReader reader = null;
 		try {
 			HttpPost httpPost = new HttpPost(serverPath + action);
@@ -106,9 +112,8 @@ public class ServerLayer {
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			reader = new BufferedReader(new InputStreamReader(httpResponse
 					.getEntity().getContent()));
-
-		} catch (Exception e) {
-			Log.e("server_layer", "Error in HTTP post " + e.toString());
+		} catch (IOException e) {
+			throw new NetworkErrorException(e);
 		}
 		return reader;
 	}
@@ -118,8 +123,11 @@ public class ServerLayer {
 	 * 
 	 * @param orderVerifiers
 	 *            A JsonObject with the ids and timestamps for comparing orders
+	 * @throws NetworkErrorException
+	 *             if server could not be accessed.
 	 */
-	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers) {
+	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers)
+			throws NetworkErrorException {
 		BufferedReader reader = sendHttpPostRequest("data=" + orderVerifiers,
 				"getUpdates");
 
@@ -148,9 +156,11 @@ public class ServerLayer {
 	 *            Unique device id.
 	 * @return Response with success status, error code and message. API key is
 	 *         returned in message if it exists.
+	 * @throws NetworkErrorException
+	 *             if server could not be accessed.
 	 */
 	public ResponseSend getApikey(String username, String password,
-			String deviceId) {
+			String deviceId) throws NetworkErrorException {
 		Collection<Header> headers = new ArrayList<Header>();
 		headers.add(new BasicHeader(LIDKOPINGSH_USERNAME, username));
 		headers.add(new BasicHeader(LIDKOPINGSH_PASSWORD, password));
@@ -161,7 +171,8 @@ public class ServerLayer {
 
 		// Store in SharedPreferences
 		SharedPreferences.Editor editor = preferences.edit();
-		editor.putString(PREFERENCES_API_KEY, response.getMessage());
+		editor.putString(ServerSettings.PREFERENCES_API_KEY,
+				response.getMessage());
 		editor.commit();
 
 		return response;
@@ -169,8 +180,11 @@ public class ServerLayer {
 
 	/**
 	 * Retrieve updates from server.
+	 * 
+	 * @throws NetworkErrorException
+	 *             if server could not be accessed.
 	 */
-	public List<Order> getUpdates(boolean getAll) {
+	public List<Order> getUpdates(boolean getAll) throws NetworkErrorException {
 		Gson gson = new Gson();
 		if (getAll) {
 			List<Order> allOrders = getUpdatedOrdersFromServer("");
@@ -195,8 +209,11 @@ public class ServerLayer {
 
 	/**
 	 * Send updates to server.
+	 * 
+	 * @throws NetworkErrorException
+	 *             if server could not be accessed.
 	 */
-	public ResponseSend sendUpdate(Order order) {
+	public ResponseSend sendUpdate(Order order) throws NetworkErrorException {
 		Gson gsonOrder = new Gson();
 		String json = "data=" + gsonOrder.toJson(order);
 		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
@@ -246,8 +263,8 @@ public class ServerLayer {
 				// storage.
 				fileName = new URL(serverPath + "pics/" + i.getImagePath());
 				InputStream is = fileName.openStream();
-				OutputStream os = context.openFileOutput(i.getImagePath().replace("/", ""),
-						Context.MODE_PRIVATE);
+				OutputStream os = context.openFileOutput(i.getImagePath()
+						.replace("/", ""), Context.MODE_PRIVATE);
 
 				byte[] b = new byte[2048];
 				int length;
@@ -255,7 +272,7 @@ public class ServerLayer {
 				while ((length = is.read(b)) != -1) {
 					os.write(b, 0, length);
 				}
-				
+
 				is.close();
 				os.close();
 			} catch (Exception e) {
@@ -352,5 +369,4 @@ public class ServerLayer {
 			return message;
 		}
 	}
-
 }

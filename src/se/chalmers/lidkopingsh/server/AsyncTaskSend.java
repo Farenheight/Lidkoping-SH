@@ -1,10 +1,11 @@
-package se.chalmers.lidkopingsh.handler;
+package se.chalmers.lidkopingsh.server;
 
 import java.util.List;
 
-import se.chalmers.lidkopingsh.handler.ServerLayer.ResponseSend;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
+import se.chalmers.lidkopingsh.server.ServerHelper.ResponseSend;
+import android.accounts.NetworkErrorException;
 import android.os.AsyncTask;
 
 /**
@@ -15,27 +16,32 @@ import android.os.AsyncTask;
  * @author Alexander Härenstam
  */
 
-public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
-	private final ServerLayer serverLayer;
+class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
+	private final ServerHelper serverHelper;
 	private final OrderChangedEvent event;
-	private final OrderDbLayer layer;
+	private final ServerConnector connector;
 	private ResponseSend response;
 
-	public AsyncTaskSend(OrderChangedEvent event, ServerLayer serverLayer,
-			OrderDbLayer layer) {
-		this.serverLayer = serverLayer;
+	public AsyncTaskSend(OrderChangedEvent event, ServerHelper serverLayer,
+			ServerConnector connector) {
+		this.serverHelper = serverLayer;
 		this.event = event;
-		this.layer = layer;
+		this.connector = connector;
 	}
 
 	protected void onPreExecute() {
-		layer.startUpdate();
+		connector.startedUpdate();
 	}
 
 	@Override
 	protected List<Order> doInBackground(Void... none) {
-		response = serverLayer.sendUpdate(event.getOrder());
-		List<Order> orders = serverLayer.getUpdates(false);
+		List<Order> orders = null;
+		try {
+			response = serverHelper.sendUpdate(event.getOrder());
+			orders = serverHelper.getUpdates(false);
+		} catch (NetworkErrorException e) {
+			e.printStackTrace();
+		}
 		return orders;
 	}
 
@@ -50,15 +56,15 @@ public class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 		se.chalmers.lidkopingsh.model.Status status = event.getTask()
 				.getStatus();
 		if (orders != null) {
-			layer.updateDatabase(orders);
+			connector.notifyDataChanged(orders);
 		}
 		if (response == null) {
-			layer.noNetwork("Kunde inte koppla upp sig mot servern");
+			connector.notifyNetworkProblem("Kunde inte koppla upp sig mot servern");
 		}
 		if (response != null && !response.isSuccess()) {
 			event.getTask().setStatus(status);
 		}
-		layer.endUpdate();
+		connector.finishedUpdate();
 	}
 
 }

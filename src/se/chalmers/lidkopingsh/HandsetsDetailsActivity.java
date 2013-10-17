@@ -1,7 +1,7 @@
 package se.chalmers.lidkopingsh;
 
 import se.chalmers.lidkopingsh.handler.ModelHandler;
-import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
+import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -22,7 +22,7 @@ import android.view.MenuItem;
  * @author Simon Bengtsson
  */
 public class HandsetsDetailsActivity extends FragmentActivity implements
-		NetworkUpdateListener {
+		NetworkStatusListener {
 
 	private Menu mMenu;
 
@@ -30,7 +30,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.od_root);
-		ModelHandler.getLayer(this).addNetworkListener(this);
+		ModelHandler.getServerConnector(this).addNetworkListener(this);
 
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,7 +64,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		ModelHandler.getLayer(this).removeNetworkListener(this);
+		ModelHandler.getServerConnector(this).removeNetworkListener(this);
 		super.onDestroy();
 	}
 
@@ -96,7 +96,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void startUpdate() {
+	public void startedUpdate() {
 		Log.d("HandsetDetailActivity", "Update started");
 		if (mMenu != null) {
 			MenuItem updateItem = mMenu.findItem(R.id.action_update);
@@ -106,7 +106,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void endUpdate() {
+	public void finishedUpdate() {
 		if (mMenu != null) {
 			MenuItem updateItem = mMenu.findItem(R.id.action_update);
 			updateItem.setActionView(null);

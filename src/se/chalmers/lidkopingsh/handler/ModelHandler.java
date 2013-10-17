@@ -1,30 +1,34 @@
 package se.chalmers.lidkopingsh.handler;
 
 import se.chalmers.lidkopingsh.model.IModel;
+import se.chalmers.lidkopingsh.server.ServerConnector;
 import android.content.Context;
-
 
 public class ModelHandler {
 	private static IModel model;
-	private static ILayer layer;
+	private static ServerConnector server;
 
 	public static IModel getModel(Context context) {
 		if (model == null) {
-			System.out.println("Created new model from db.");
-			model = getLayer(context).getModel(); // Should be populated from DB
+			OrderDbLayer layer = new OrderDbLayer(context);
+			model = layer.getModel(); // Should be populated from DB
+			getServerConnector(context).addOrderChangedListener(model);
+			model.addDataChangedListener(layer);
+			model.addOrderChangedListener(server);
+			server.update(true);
 		}
 		return model;
 	}
 
-	public static ILayer getLayer(Context context) {
-		if (layer == null) {
-			layer = new OrderDbLayer(context);
+	public static ServerConnector getServerConnector(Context context) {
+		// TODO: Create interface for ServerConnector
+		if (server == null) {
+			server = new ServerConnector(context);
 		}
-		layer.update(true);
-		return layer;
-	}	
-	
+		return server;
+	}
+
 	public static void update(boolean getAll) {
-		layer.update(getAll);
+		server.update(true);
 	}
 }

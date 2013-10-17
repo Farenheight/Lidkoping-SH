@@ -7,23 +7,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import se.chalmers.lidkopingsh.util.Listener;
+import android.util.Log;
+
 public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
-	private Map<Integer, Product> products; 
+	private Map<Integer, Product> products;
 	private Collection<Station> stations;
+	private Collection<DataChangedListener> dataChangedListeners;
+	private Collection<Listener<OrderChangedEvent>> orderChangedListeners;
 
 	public MapModel(Collection<Order> o, Collection<Station> s) {
 		this.products = new HashMap<Integer, Product>();
 		this.orders = new HashMap<Integer, Order>();
+		this.dataChangedListeners = new ArrayList<DataChangedListener>();
+		this.orderChangedListeners = new ArrayList<Listener<OrderChangedEvent>>();
 
 		for (Order or : o) {
 			this.orders.put(or.getId(), or);
 			for (Product p : or.getProducts()) {
 				this.products.put(p.getId(), p);
 			}
+			or.addOrderListener(orderChangedListener);
 		}
 		this.stations = new ArrayList<Station>(s);
+	}
 
+	@Override
+	public void addDataChangedListener(DataChangedListener listener) {
+		dataChangedListeners.add(listener);
+	}
+
+	@Override
+	public void removeDataChangedListener(DataChangedListener listener) {
+		dataChangedListeners.remove(listener);
+	}
+
+	@Override
+	public void addOrderChangedListener(Listener<OrderChangedEvent> listener) {
+		orderChangedListeners.add(listener);
+	}
+
+	@Override
+	public void removeOrderChangedListener(Listener<OrderChangedEvent> listener) {
+		orderChangedListeners.remove(listener);
 	}
 
 	public int getFirstUncompletedIndex(List<Order> sortedList, Station station) {
@@ -41,11 +68,6 @@ public class MapModel implements IModel {
 		this(o, new ArrayList<Station>());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.example.lidkopingsh.model.IModel#getProductById(int)
-	 */
 	@Override
 	public Product getProductById(int id) throws NoSuchElementException {
 		Product p = products.get(id);
@@ -56,11 +78,6 @@ public class MapModel implements IModel {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.example.lidkopingsh.model.IModel#getOrderById(int)
-	 */
 	@Override
 	public Order getOrderById(int id) throws NoSuchElementException {
 		Order o = orders.get(id);
@@ -71,13 +88,6 @@ public class MapModel implements IModel {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.example.lidkopingsh.model.IModel#addOrder(com.example.lidkopingsh
-	 * .model.Order)
-	 */
 	@Override
 	public void addOrder(Order o) {
 		if (orders.get(o.getId()) != null) {
@@ -94,28 +104,17 @@ public class MapModel implements IModel {
 		// does not exist in any other order.
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.example.lidkopingsh.model.IModel#removeOrder(com.example.lidkopingsh
-	 * .model.Order)
-	 */
 	@Override
 	public void removeOrder(Order o) {
 		orders.remove(o.getId());
 		for (Product p : orders.get(o.getId()).getProducts()) {
 			products.remove(p.getId());
 		}
+
 		// TODO When removing orders, check if the order have tasks that
 		// does not exist in any other order.
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.example.lidkopingsh.model.IModel#getOrders()
-	 */
 	@Override
 	public Collection<Order> getOrders() {
 		return orders.values();
@@ -136,4 +135,50 @@ public class MapModel implements IModel {
 		throw new NoSuchElementException("No station with the id: " + id
 				+ "is found");
 	}
+
+	private void sync(Collection<Order> orders) {
+		Log.d("Model", "Syncing model");
+		Collection<Order> added = new ArrayList<Order>();
+		Collection<Order> changed = new ArrayList<Order>();
+		Collection<Order> removed = new ArrayList<Order>();
+
+		for (Order o : orders) {
+			if (o.isRemoved()) {
+				removeOrder(o);
+				removed.add(o);
+			} else {
+				try {
+					Order order = getOrderById(o.getId());
+					if (order != null) {
+						order.sync(o);
+						changed.add(o);
+					}
+				} catch (NoSuchElementException e) {
+					o.addOrderListener(orderChangedListener);
+					addOrder(o);
+					added.add(o);
+				}
+			}
+		}
+
+		for (DataChangedListener l : dataChangedListeners) {
+			l.ordersChanged(added, changed, removed);
+		}
+	}
+
+	@Override
+	public void changed(Collection<Order> orders) {
+		sync(orders);
+	}
+
+	private Listener<OrderChangedEvent> orderChangedListener = new Listener<OrderChangedEvent>() {
+
+		@Override
+		public void changed(OrderChangedEvent event) {
+			Log.d("MapModel", "Order has been changed (OrderChangedEvent).");
+			for (Listener<OrderChangedEvent> l : orderChangedListeners) {
+				l.changed(event);
+			}
+		}
+	};
 }
