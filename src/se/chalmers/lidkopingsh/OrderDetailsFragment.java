@@ -16,6 +16,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -75,6 +76,8 @@ public class OrderDetailsFragment extends Fragment {
 
 	private NetworkWatcher mNetworkWatcher;
 
+	private Bitmap bitmap;
+
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -88,7 +91,8 @@ public class OrderDetailsFragment extends Fragment {
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
 		mNetworkWatcher = new NetworkWatcher();
-		ModelHandler.getLayer(getActivity()).addNetworkListener(mNetworkWatcher);
+		ModelHandler.getLayer(getActivity())
+				.addNetworkListener(mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
@@ -100,13 +104,18 @@ public class OrderDetailsFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-		ModelHandler.getLayer(getActivity()).removeNetworkListener(mNetworkWatcher);
+		ModelHandler.getLayer(getActivity()).removeNetworkListener(
+				mNetworkWatcher);
+		if (bitmap != null) {
+			bitmap.recycle();
+			Log.d("DEBUG", "bitmap data released");
+		}
 		super.onDestroy();
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedState) { 
+			Bundle savedState) {
 
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
@@ -149,12 +158,6 @@ public class OrderDetailsFragment extends Fragment {
 		public void noNetwork(String message) {
 			// Do nothing here
 		}
-
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
 
 	}
 
@@ -285,20 +288,42 @@ public class OrderDetailsFragment extends Fragment {
 	 */
 	private void initDrawing() {
 		if (!mOrder.getImages().isEmpty()) {
-			ImageView orderDrawing = (ImageView) mRootView
-					.findViewById(R.id.orderDrawing);
 
 			// Get image from internal storage
 			String imagePath = mOrder.getImages().get(0).getImagePath()
 					.replace("/", "");
-			String filename = new File(getActivity().getFilesDir(), imagePath)
-					.getAbsolutePath();
-			Bitmap bitmap = BitmapFactory.decodeFile(filename);
+			// Load Images
+			new AsyntaskImageLoader().execute(imagePath);
+		}
+	}
 
-			if (bitmap != null) {
+	private class AsyntaskImageLoader extends AsyncTask<String, Void, Bitmap> {
+		@Override
+		protected Bitmap doInBackground(String... params) {
+			Bitmap result = null;
+			if (params.length == 0) {
+				return null;
+			}
+			String imagePath = params[0];
+			File file = new File(getActivity().getFilesDir(), imagePath);
+			String filename = file.getAbsolutePath();
+
+			while (file.exists() && result == null) {
+				result = BitmapFactory.decodeFile(filename);
+				Log.d("DEBUG", "Trying to load Image");
+			}
+			if (file.exists()) {
+				Log.d("DEBUG", "Image loaded");
+			} else {
+				Log.d("DEBUG",
+						"Image not loaded, cannot find an image on path "
+								+ filename);
+
+			}
+			if (result != null) {
 				// Rescale the image if it is too big
-				int height = bitmap.getHeight();
-				int width = bitmap.getWidth();
+				int height = result.getHeight();
+				int width = result.getWidth();
 				if (width > MAX_IMAGE_SIZE) {
 					height *= (float) MAX_IMAGE_SIZE / width;
 					width = MAX_IMAGE_SIZE;
@@ -307,17 +332,30 @@ public class OrderDetailsFragment extends Fragment {
 					width *= (float) MAX_IMAGE_SIZE / height;
 					height = MAX_IMAGE_SIZE;
 				}
-				bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+				result = Bitmap.createScaledBitmap(result, width, height, true);
+			}
+			return result;
+		}
 
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			if (result != null) {
+				bitmap = result;
+				ImageView orderDrawing = (ImageView) mRootView
+						.findViewById(R.id.orderDrawing);
+				orderDrawing.setVisibility(View.VISIBLE);
+				ProgressBar pBar = (ProgressBar) mRootView
+						.findViewById(R.id.orderDrawingProgressBar);
+				pBar.setVisibility(View.GONE);
 				// Set drawable to view
 				BitmapDrawable drawable = new BitmapDrawable(getResources(),
 						bitmap);
 				orderDrawing.setImageDrawable(drawable);
-
 				// Attaches the library
 				PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
 				pva.setMaximumScale(8f);
 			}
+			super.onPostExecute(result);
 		}
 	}
 

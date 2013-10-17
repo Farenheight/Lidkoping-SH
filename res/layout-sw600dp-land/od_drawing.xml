@@ -14,7 +14,15 @@
         android:layout_margin="15dp"
         android:layout_weight="1"
         android:contentDescription="@string/order_drawing"
-        android:src="@drawable/test_headstone_drawing" />
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/orderDrawingProgressBar"
+         style="?android:attr/progressBarStyleLarge"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:layout_width="240dp"
