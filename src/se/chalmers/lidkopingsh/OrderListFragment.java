@@ -209,4 +209,10 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 
 	@Override
 	public void networkProblem(String message) {}
+
+	@Override
+	public void authinicationFailed() {
+		// TODO Auto-generated method stub
+		
+	}
 }

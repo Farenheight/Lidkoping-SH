@@ -185,4 +185,10 @@ public class MainActivity extends FragmentActivity implements
 
 				}).setNegativeButton("Nej", null).show();
 	}
+
+	@Override
+	public void authinicationFailed() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -150,6 +150,12 @@ public class OrderDetailsFragment extends Fragment {
 			// Do nothing here
 		}
 
+		@Override
+		public void authinicationFailed() {
+			// TODO Auto-generated method stub
+			
+		}
+
 	}
 
 	@Override

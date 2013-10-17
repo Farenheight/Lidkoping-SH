@@ -118,4 +118,10 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 	public void networkProblem(String message) {
 		Log.d("HandsetDetailActivity", "Network error");
 	}
+
+	@Override
+	public void authinicationFailed() {
+		// TODO Auto-generated method stub
+		
+	}
 }
