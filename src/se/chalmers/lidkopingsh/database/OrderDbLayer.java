@@ -1,9 +1,7 @@
-package se.chalmers.lidkopingsh.handler;
+package se.chalmers.lidkopingsh.database;
 
 import java.util.Collection;
 
-import se.chalmers.lidkopingsh.database.OrderDbStorage;
-import se.chalmers.lidkopingsh.model.DataChangedListener;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
@@ -15,7 +13,7 @@ import android.content.Context;
  * @author Anton Jansson
  * @author Olliver Mattsson
  */
-public class OrderDbLayer implements ILayer, DataChangedListener {
+public class OrderDbLayer implements ILayer {
 
 	private final OrderDbStorage db;
 

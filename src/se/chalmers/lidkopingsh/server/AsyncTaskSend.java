@@ -2,9 +2,10 @@ package se.chalmers.lidkopingsh.server;
 
 import java.util.List;
 
+import org.apache.http.auth.AuthenticationException;
+
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
-import se.chalmers.lidkopingsh.server.ServerHelper.ResponseSend;
 import android.accounts.NetworkErrorException;
 import android.os.AsyncTask;
 
@@ -20,7 +21,7 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	private final ServerHelper serverHelper;
 	private final OrderChangedEvent event;
 	private final ServerConnector connector;
-	private ResponseSend response;
+	private Exception exception;
 
 	public AsyncTaskSend(OrderChangedEvent event, ServerHelper serverLayer,
 			ServerConnector connector) {
@@ -29,6 +30,7 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 		this.connector = connector;
 	}
 
+	@Override
 	protected void onPreExecute() {
 		connector.startedUpdate();
 	}
@@ -37,10 +39,10 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	protected List<Order> doInBackground(Void... none) {
 		List<Order> orders = null;
 		try {
-			response = serverHelper.sendUpdate(event.getOrder());
+			serverHelper.sendUpdate(event.getOrder());
 			orders = serverHelper.getUpdates(false);
-		} catch (NetworkErrorException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			exception = e;
 		}
 		return orders;
 	}
@@ -52,19 +54,19 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	 * @param orders
 	 *            The orders returned from the database
 	 */
+	@Override
 	protected void onPostExecute(List<Order> orders) {
-		se.chalmers.lidkopingsh.model.Status status = event.getTask()
-				.getStatus();
-		if (orders != null) {
+		if (exception != null) {
+			if (exception instanceof NetworkErrorException) {
+				connector.notifyNetworkProblem("Kunde inte koppla upp sig mot servern");
+			} else if (exception instanceof AuthenticationException) {
+				connector.notifyAuthenticationFailed();
+			} else {
+				throw new IllegalStateException(exception);
+			}
+		} else if (orders != null) {
 			connector.notifyDataChanged(orders);
-		}
-		if (response == null) {
-			connector.notifyNetworkProblem("Kunde inte koppla upp sig mot servern");
-		}
-		if (response != null && !response.isSuccess()) {
-			event.getTask().setStatus(status);
 		}
 		connector.finishedUpdate();
 	}
-
 }

@@ -1,6 +1,6 @@
 package se.chalmers.lidkopingsh;
 
-import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,7 +30,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.od_root);
-		ModelHandler.getServerConnector(this).addNetworkListener(this);
+		Accessor.getServerConnector(this).addNetworkListener(this);
 
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -59,12 +59,12 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 	@Override
 	public void onResume() {
 		super.onResume();
-		ModelHandler.update(false);
+		Accessor.getServerConnector(this).update(false);
 	}
 
 	@Override
 	protected void onDestroy() {
-		ModelHandler.getServerConnector(this).removeNetworkListener(this);
+		Accessor.getServerConnector(this).removeNetworkListener(this);
 		super.onDestroy();
 	}
 
@@ -88,7 +88,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 			return true;
 		case R.id.action_update:
 			item.setActionView(R.layout.progress_indicator);
-			ModelHandler.update(false);
+			Accessor.getServerConnector(this).update(false);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

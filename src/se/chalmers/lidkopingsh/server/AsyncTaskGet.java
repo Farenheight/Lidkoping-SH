@@ -2,6 +2,8 @@ package se.chalmers.lidkopingsh.server;
 
 import java.util.List;
 
+import org.apache.http.auth.AuthenticationException;
+
 import se.chalmers.lidkopingsh.model.Order;
 import android.accounts.NetworkErrorException;
 import android.os.AsyncTask;
@@ -13,10 +15,11 @@ import android.os.AsyncTask;
  * @author Alexander Härenstam
  */
 
-public class AsyncTaskGet extends AsyncTask<Void, Void, List<Order>> {
+class AsyncTaskGet extends AsyncTask<Void, Void, List<Order>> {
 	private final boolean getAll;
 	private final ServerConnector connector;
 	private final ServerHelper helper;
+	private Exception exception;
 	
 	public AsyncTaskGet(boolean getAll, ServerHelper helper, ServerConnector connector) {
 		this.getAll = getAll;
@@ -24,6 +27,7 @@ public class AsyncTaskGet extends AsyncTask<Void, Void, List<Order>> {
 		this.helper = helper;
 	}
 	
+	@Override
 	protected void onPreExecute() {
 			connector.startedUpdate();
 	}
@@ -32,8 +36,8 @@ public class AsyncTaskGet extends AsyncTask<Void, Void, List<Order>> {
 	protected List<Order> doInBackground(Void... voids) {
 		try {
 			return helper.getUpdates(getAll);
-		} catch (NetworkErrorException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			exception = e;
 		}
 		return null;
 	}
@@ -43,11 +47,18 @@ public class AsyncTaskGet extends AsyncTask<Void, Void, List<Order>> {
 	 * 
 	 * @param orders The orders returned from the database
 	 */
+	@Override
 	protected void onPostExecute(List<Order> orders) {
-		if (orders != null) {
+		if (exception != null) {
+			if (exception instanceof NetworkErrorException) {
+				connector.notifyNetworkProblem("Kunde inte koppla upp sig mot servern");
+			} else if (exception instanceof AuthenticationException) {
+				connector.notifyAuthenticationFailed();
+			} else {
+				throw new IllegalStateException(exception);
+			}
+		} else if (orders != null) {
 			connector.notifyDataChanged(orders);
-		} else {
-			connector.notifyNetworkProblem("Kunde inte koppla upp mot server");
 		}
 		connector.finishedUpdate();
 	}

@@ -1,6 +1,6 @@
 package se.chalmers.lidkopingsh;
 
-import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import se.chalmers.lidkopingsh.server.ServerConnector;
 import se.chalmers.lidkopingsh.server.ServerSettings;
@@ -220,7 +220,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 
 	@Override
 	public void networkProblem(String message) {
-
+		// TODO Network problem
 	}
 
 	@Override
@@ -243,7 +243,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 					LoginActivity.this.getContentResolver(), Secure.ANDROID_ID);
 
 			// Send to server
-			ServerConnector server = ModelHandler.getServerConnector(LoginActivity.this);
+			ServerConnector server = Accessor.getServerConnector(LoginActivity.this);
 			mUserName = "dev";
 			mPassword = "dev";
 			boolean success = false;

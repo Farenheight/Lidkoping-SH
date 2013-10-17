@@ -1,8 +1,9 @@
-package se.chalmers.lidkopingsh.handler;
+package se.chalmers.lidkopingsh.database;
 
+import se.chalmers.lidkopingsh.model.DataChangedListener;
 import se.chalmers.lidkopingsh.model.IModel;
 
-public interface ILayer {
+public interface ILayer extends DataChangedListener {
 	/**
 	 * Returns the model that the layer holds
 	 * 

@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.http.auth.AuthenticationException;
+
 import se.chalmers.lidkopingsh.model.DataChangedListener;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
 import se.chalmers.lidkopingsh.model.Status;
-import se.chalmers.lidkopingsh.server.ServerHelper.ResponseSend;
+import se.chalmers.lidkopingsh.server.ServerHelper.ApiResponse;
 import se.chalmers.lidkopingsh.util.Listener;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
@@ -58,7 +60,12 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 	 */
 	public boolean authenticate(String username, String password,
 			String deviceId) throws NetworkErrorException {
-		ResponseSend response = helper.getApikey(username, password, deviceId);
+		ApiResponse response = null;
+		try {
+			response = helper.getApikey(username, password, deviceId);
+		} catch (AuthenticationException e) {
+			notifyAuthenticationFailed();
+		}
 
 		if (response != null) {
 			return response.isSuccess();
@@ -123,6 +130,12 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 	public void finishedUpdate() {
 		for (NetworkStatusListener l : networkListeners) {
 			l.finishedUpdate();
+		}
+	}
+
+	public void notifyAuthenticationFailed() {
+		for (NetworkStatusListener l : networkListeners) {
+			l.authinicationFailed();
 		}
 	}
 

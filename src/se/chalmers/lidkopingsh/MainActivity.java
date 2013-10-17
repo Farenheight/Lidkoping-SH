@@ -1,7 +1,6 @@
 package se.chalmers.lidkopingsh;
 
-import se.chalmers.lidkopingsh.handler.ModelHandler;
-import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import se.chalmers.lidkopingsh.server.ServerSettings;
 import android.app.AlertDialog;
@@ -34,7 +33,6 @@ public class MainActivity extends FragmentActivity implements
 		OrderListFragment.OrderSelectedCallbacks, NetworkStatusListener {
 	public static final String IS_TABLET_SIZE = "is_tablet_size";
 	private OrderDetailsFragment mCurrentOrderDetailsFragment;
-	private Order mCurrentOrder;
 
 	/** Whether or not the app is running on a tablet sized device */
 	private boolean mTabletSize;
@@ -53,7 +51,7 @@ public class MainActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
-		ModelHandler.getServerConnector(this).addNetworkListener(this);
+		Accessor.getServerConnector(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
@@ -74,7 +72,7 @@ public class MainActivity extends FragmentActivity implements
 	
 	@Override
 	protected void onDestroy() {
-		ModelHandler.getServerConnector(this).removeNetworkListener(this);
+		Accessor.getServerConnector(this).removeNetworkListener(this);
 		super.onDestroy();
 	}
 
@@ -91,7 +89,6 @@ public class MainActivity extends FragmentActivity implements
 			arguments.putInt(OrderDetailsFragment.ORDER_ID, orderId);
 			arguments.putBoolean(IS_TABLET_SIZE, mTabletSize);
 
-			mCurrentOrder = ModelHandler.getModel(this).getOrderById(orderId);
 			mCurrentOrderDetailsFragment = new OrderDetailsFragment();
 			mCurrentOrderDetailsFragment.setArguments(arguments);
 
@@ -107,14 +104,13 @@ public class MainActivity extends FragmentActivity implements
 			detailIntent.putExtra(OrderDetailsFragment.ORDER_ID, orderId);
 			detailIntent.putExtra(IS_TABLET_SIZE, mTabletSize);
 			startActivity(detailIntent);
-
 		}
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		ModelHandler.update(false);
+		Accessor.getServerConnector(this).update(false);
 	}
 
 	@Override
@@ -135,7 +131,7 @@ public class MainActivity extends FragmentActivity implements
 			return true;
 		case R.id.action_update:
 			item.setActionView(R.layout.progress_indicator);
-			ModelHandler.update(false);
+			Accessor.getServerConnector(this).update(false);
 			return true;
 		case R.id.action_help:
 			Uri url = Uri.parse("http://simonbengtsson.se/userguide.pdf");

@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -22,7 +23,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
-import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
@@ -32,6 +33,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * Handling communication between remote server and local database.
@@ -125,24 +128,23 @@ class ServerHelper {
 	 *            A JsonObject with the ids and timestamps for comparing orders
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
+	 * @throws AuthenticationException 
 	 */
 	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers)
-			throws NetworkErrorException {
+			throws NetworkErrorException, AuthenticationException {
 		BufferedReader reader = sendHttpPostRequest("data=" + orderVerifiers,
 				"getUpdates");
 
-		ResponseGet response = getResponseGet(reader);
+		ApiResponseGet response = getResponseGet(reader);
 
-		if (response != null) {
-			if (response.isSuccess()) {
-				List<Order> ord = new LinkedList<Order>();
-				for (Order o : response.getResults()) {
-					ord.add(o);
-				}
-				return ord;
-			} else {
-				printErrorLog(response);
+		if (isResponseValid(response)) {
+			List<Order> ord = new LinkedList<Order>();
+			for (Order o : response.getResults()) {
+				ord.add(o);
 			}
+			return ord;
+		} else {
+			printErrorLog(response);
 		}
 		return null;
 	}
@@ -158,22 +160,25 @@ class ServerHelper {
 	 *         returned in message if it exists.
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
+	 * @throws AuthenticationException 
 	 */
-	public ResponseSend getApikey(String username, String password,
-			String deviceId) throws NetworkErrorException {
+	public ApiResponse getApikey(String username, String password,
+			String deviceId) throws NetworkErrorException, AuthenticationException {
 		Collection<Header> headers = new ArrayList<Header>();
 		headers.add(new BasicHeader(LIDKOPINGSH_USERNAME, username));
 		headers.add(new BasicHeader(LIDKOPINGSH_PASSWORD, password));
 		headers.add(new BasicHeader(LIDKOPINGSH_DEVICEID, deviceId));
 		BufferedReader reader = sendHttpPostRequest("", "getApikey", headers);
 
-		ResponseSend response = getResponseSend(reader);
-
-		// Store in SharedPreferences
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.putString(ServerSettings.PREFERENCES_API_KEY,
-				response.getMessage());
-		editor.commit();
+		ApiResponse response = getResponseSend(reader);
+		
+		if (isResponseValid(response)) {
+			// Store in SharedPreferences
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putString(ServerSettings.PREFERENCES_API_KEY,
+					response.getMessage());
+			editor.commit();
+		}
 
 		return response;
 	}
@@ -183,15 +188,16 @@ class ServerHelper {
 	 * 
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
+	 * @throws AuthenticationException 
 	 */
-	public List<Order> getUpdates(boolean getAll) throws NetworkErrorException {
+	public List<Order> getUpdates(boolean getAll) throws NetworkErrorException, AuthenticationException {
 		Gson gson = new Gson();
 		if (getAll) {
 			List<Order> allOrders = getUpdatedOrdersFromServer("");
 			syncImages(allOrders);
 			return allOrders;
 		}
-		Collection<Order> orders = ModelHandler.getModel(context).getOrders();
+		Collection<Order> orders = Accessor.getModel(context).getOrders();
 		long[][] orderArray = new long[orders.size()][2];
 		int i = 0;
 		for (Order o : orders) {
@@ -212,45 +218,46 @@ class ServerHelper {
 	 * 
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
+	 * @throws AuthenticationException 
 	 */
-	public ResponseSend sendUpdate(Order order) throws NetworkErrorException {
+	public ApiResponse sendUpdate(Order order) throws NetworkErrorException, AuthenticationException {
 		Gson gsonOrder = new Gson();
 		String json = "data=" + gsonOrder.toJson(order);
 		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
 
-		ResponseSend response = getResponseSend(reader);
+		ApiResponse response = getResponseSend(reader);
+		
 
+		if (!isResponseValid(response)) {
+			order.sync(null); // Informing that no data has been able to
+								// change.
+			printErrorLog(response);
+		}
+		return response;
+	}
+
+	private ApiResponseGet getResponseGet(Reader reader) throws JsonSyntaxException, JsonIOException {
+		return new Gson().fromJson(reader, ApiResponseGet.class);
+	}
+
+	private ApiResponse getResponseSend(Reader reader) throws JsonSyntaxException, JsonIOException {
+		return new Gson().fromJson(reader, ApiResponse.class);
+	}
+	
+	private boolean isResponseValid(ApiResponse response) throws AuthenticationException {
+		if (response == null) {
+			throw new IllegalStateException("Invalid response from server. (response == null)");
+		}
 		if (!response.isSuccess()) {
-			if (!response.isSuccess()) {
-				order.sync(null); // Informing that no data has been able to
-									// change.
-				printErrorLog(response);
+			if (response.getErrorcode() == 41) {
+				throw new AuthenticationException(response.getMessage());
 			}
+			return false;
 		}
-		return response;
+		return true;
 	}
 
-	private ResponseGet getResponseGet(Reader reader) {
-		ResponseGet response = null;
-		try {
-			response = new Gson().fromJson(reader, ResponseGet.class);
-		} catch (Exception e) {
-			Log.d("server_layer", "No data from server");
-		}
-		return response;
-	}
-
-	private ResponseSend getResponseSend(Reader reader) {
-		ResponseSend response = null;
-		try {
-			response = new Gson().fromJson(reader, ResponseSend.class);
-		} catch (Exception e) {
-			Log.d("server_layer", "No data from server");
-		}
-		return response;
-	}
-
-	private void printErrorLog(ResponseSend response) {
+	private void printErrorLog(ApiResponse response) {
 		Log.d("server_layer", "Error code: " + response.getErrorcode()
 				+ " Message: " + response.getMessage());
 	}
@@ -283,7 +290,7 @@ class ServerHelper {
 	}
 
 	private void syncImages(List<Order> newOrders) {
-		IModel model = ModelHandler.getModel(context);
+		IModel model = Accessor.getModel(context);
 		Collection<Order> oldOrders = model.getOrders();
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
@@ -344,7 +351,7 @@ class ServerHelper {
 		}
 	}
 
-	public class ResponseGet extends ResponseSend {
+	public class ApiResponseGet extends ApiResponse {
 		private List<Order> results;
 
 		public List<Order> getResults() {
@@ -352,7 +359,7 @@ class ServerHelper {
 		}
 	}
 
-	public class ResponseSend {
+	public class ApiResponse {
 		private boolean success;
 		private int errorcode;
 		private String message;

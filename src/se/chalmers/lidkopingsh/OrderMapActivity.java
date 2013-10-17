@@ -10,10 +10,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -65,7 +64,7 @@ public class OrderMapActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_root);
-		mModel = ModelHandler.getModel(this);
+		mModel = Accessor.getModel(this);
 		mMarkers = new ArrayList<Marker>();
 		setUpMapIfNeeded();
 	}
