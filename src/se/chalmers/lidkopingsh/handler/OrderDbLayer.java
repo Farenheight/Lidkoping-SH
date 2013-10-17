@@ -150,7 +150,7 @@ public class OrderDbLayer implements ILayer {
 	
 	public void noNetwork(String message) {
 		for(NetworkUpdateListener l : networkListeners) {
-			l.noNetwork(message);
+			l.networkProblem(message);
 		}
 	}
 

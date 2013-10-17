@@ -51,6 +51,7 @@ public class MainActivity extends FragmentActivity implements
 			Log.i("MainActivity", "Not logged, in. Staring login act");
 			startActivity(new Intent(this, LoginActivity.class));
 			finish();
+			return;
 		}
 		ModelHandler.getLayer(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
@@ -166,7 +167,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void noNetwork(String message) {
+	public void networkProblem(String message) {
 		Log.i("MainActivity", "Network error");
 	}
 

@@ -115,7 +115,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void noNetwork(String message) {
+	public void networkProblem(String message) {
 		Log.d("HandsetDetailActivity", "Network error");
 	}
 }

@@ -146,7 +146,7 @@ public class OrderDetailsFragment extends Fragment {
 		}
 
 		@Override
-		public void noNetwork(String message) {
+		public void networkProblem(String message) {
 			// Do nothing here
 		}
 

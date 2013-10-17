@@ -14,10 +14,16 @@ public interface NetworkUpdateListener {
 	 * This method is called after updating from the network
 	 */
 	public void endUpdate();
+	
 	/**
 	 * This method is called when network for some reason is unreachable
 	 * @param message Error message
 	 */
-	public void noNetwork(String message);
+	public void networkProblem(String message);
+	
+	/**
+	 * Notifies about API key being invalid
+	 */
+	public void authinicationFailed();
 	
 }
