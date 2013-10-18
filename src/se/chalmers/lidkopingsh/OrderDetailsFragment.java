@@ -4,15 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.android.gms.internal.as;
-
-import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
-import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
+import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -95,11 +93,10 @@ public class OrderDetailsFragment extends Fragment {
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
 		mNetworkWatcher = new NetworkWatcher();
-		ModelHandler.getLayer(getActivity())
-				.addNetworkListener(mNetworkWatcher);
+		Accessor.getServerConnector(getActivity()).addNetworkListener(mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
-		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
+		mOrder = Accessor.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
 
 		mUse2Tabs = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -108,7 +105,7 @@ public class OrderDetailsFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-		ModelHandler.getLayer(getActivity()).removeNetworkListener(
+		Accessor.getServerConnector(getActivity()).removeNetworkListener(
 				mNetworkWatcher);
 		if (bitmap != null) {
 			bitmap.recycle();
@@ -146,14 +143,14 @@ public class OrderDetailsFragment extends Fragment {
 		return mRootView;
 	}
 
-	private class NetworkWatcher implements NetworkUpdateListener {
+	private class NetworkWatcher implements NetworkStatusListener {
 
 		@Override
-		public void startUpdate() {
+		public void startedUpdate() {
 		}
 
 		@Override
-		public void endUpdate() {
+		public void finishedUpdate() {
 			showProgressIndicators(false);
 			ViewGroup taskContainer = (ViewGroup) mRootView
 					.findViewById(R.id.task_cont);

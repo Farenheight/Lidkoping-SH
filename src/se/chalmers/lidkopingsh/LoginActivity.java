@@ -1,7 +1,10 @@
 package se.chalmers.lidkopingsh;
 
-import se.chalmers.lidkopingsh.handler.ServerLayer;
-import se.chalmers.lidkopingsh.handler.ServerLayer.ResponseSend;
+import se.chalmers.lidkopingsh.handler.Accessor;
+import se.chalmers.lidkopingsh.server.NetworkStatusListener;
+import se.chalmers.lidkopingsh.server.ServerConnector;
+import se.chalmers.lidkopingsh.server.ServerSettings;
+import android.accounts.NetworkErrorException;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -14,7 +17,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -31,7 +33,7 @@ import android.widget.Toast;
  * @author Simon Bengtsson
  * 
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity implements NetworkStatusListener {
 
 	private UserLoginTask mAuthTask = null;
 
@@ -54,9 +56,9 @@ public class LoginActivity extends Activity {
 
 		// Saves server path
 		SharedPreferences preferences = getSharedPreferences(
-				ServerLayer.PREFERENCES_NAME, Context.MODE_PRIVATE);
+				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
-		editor.putString(ServerLayer.PREFERENCES_SERVER_PATH,
+		editor.putString(ServerSettings.PREFERENCES_SERVER_PATH,
 				"http://lidkopingsh.kimkling.net/api/");
 		editor.commit();
 
@@ -204,60 +206,73 @@ public class LoginActivity extends Activity {
 		}
 	}
 
+	@Override
+	public void startedUpdate() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void finishedUpdate() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void networkProblem(String message) {
+		// TODO Network problem
+	}
+
+	@Override
+	public void authinicationFailed() {
+		// TODO Auto-generated method stub
+
+	}
+
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, ResponseSend> {
+	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
 		@Override
-		protected ResponseSend doInBackground(Void... params) {
+		protected Boolean doInBackground(Void... params) {
 
 			// Unique device id for every android device
 			String deviceId = Secure.getString(
 					LoginActivity.this.getContentResolver(), Secure.ANDROID_ID);
 
 			// Send to server
-			ServerLayer serverLayer = new ServerLayer(LoginActivity.this);
+			ServerConnector server = Accessor.getServerConnector(LoginActivity.this);
 			mUserName = "dev";
 			mPassword = "dev";
-			ResponseSend response = serverLayer.getApikey(mUserName, mPassword,
-					deviceId);
+			boolean success = false;
+			try {
+				success = server.authenticate(mUserName, mPassword, deviceId);
+			} catch (NetworkErrorException e) {
+				Log.e("LoginActivity", "Could not connect to server");
+				Toast toast = Toast.makeText(LoginActivity.this,
+						"Kunde inte ansluta till server.", Toast.LENGTH_SHORT);
+				toast.show();
+			}
 
-			// try {
-			// Thread.sleep(2000);
-			// } catch (InterruptedException e) {
-			// return null;
-			// }
-
-			return response;
+			return success;
 		}
 
 		@Override
-		protected void onPostExecute(final ResponseSend response) {
+		protected void onPostExecute(final Boolean success) {
 			mAuthTask = null;
 			showProgress(false);
 
-			if (response != null) {
-				if (response.isSuccess()) {
-					startActivity(new Intent(LoginActivity.this,
-							MainActivity.class));
-					Log.i("DEBUG", "Login seccesful. MainActivity started");
-				} else {
-					mUserNameView
-							.setError(getString(R.string.error_invalid_user_creadentials));
-					mUserNameView.requestFocus();
-					Log.e("DEBUG",
-							"Login failed with error: "
-									+ response.getErrorcode()
-									+ " and message: " + response.getMessage());
-				}
-			} else {
-				Log.e("LoginActivity", "Got response null from ServerLayer");
+			if (success) {
 				startActivity(new Intent(LoginActivity.this, MainActivity.class));
-				Toast toast = Toast.makeText(LoginActivity.this,
-						"Got null from server layer", Toast.LENGTH_SHORT);
-				toast.show();
+				Log.i("DEBUG", "Login seccesful. MainActivity started");
+			} else {
+				mUserNameView
+						.setError(getString(R.string.error_invalid_user_creadentials));
+				mUserNameView.requestFocus();
+				Log.e("DEBUG",
+						"Login failed with error. Invalid user credentials.");
 			}
 		}
 

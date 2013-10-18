@@ -1,6 +1,7 @@
-package se.chalmers.lidkopingsh.handler;
+package se.chalmers.lidkopingsh.server;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -21,33 +23,35 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
+import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 /**
- * Handling communication between remote server and local database.
+ * Handling communication to remote server.
  * 
  * @author Alexander Härenstam
  * @author Olliver Mattsson
  * @author Anton Jansson
  * 
  */
-public class ServerLayer {
+class ServerHelper {
 	private static final String LIDKOPINGSH_DEVICEID = "Lidkopingsh-Deviceid";
 	private static final String LIDKOPINGSH_PASSWORD = "Lidkopingsh-Password";
 	private static final String LIDKOPINGSH_USERNAME = "Lidkopingsh-Username";
 	private static final String LIDKOPING_SH_DEVICE_ID = "LidkopingSH-DeviceId";
 	private static final String LIDKOPINGSH_APIKEY = "Lidkopingsh-Apikey";
 
-	public static final String PREFERENCES_NAME = "AuthenticationPreferences";
-	public static final String PREFERENCES_API_KEY = "Apikey";
-	public static final String PREFERENCES_SERVER_PATH = "server_path";
+	private static final String PICTURES_FOLDER = "pics/";
 
 	private final String deviceId = "asdf";
 
@@ -57,15 +61,16 @@ public class ServerLayer {
 	private SharedPreferences preferences;
 
 	/**
-	 * Creates a new ServerLayer with a set server path.
+	 * Creates a new ServerHelper with a set server path.
 	 * 
 	 * @param serverPath
 	 */
-	public ServerLayer(Context context) {
+	public ServerHelper(Context context) {
 		preferences = context.getSharedPreferences(
-				PREFERENCES_NAME, Context.MODE_PRIVATE);
-		
-		this.serverPath = preferences.getString(PREFERENCES_SERVER_PATH, null);
+				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
+
+		this.serverPath = preferences.getString(
+				ServerSettings.PREFERENCES_SERVER_PATH, null);
 		this.context = context;
 		try {
 			httpClient = new DefaultHttpClient();
@@ -79,9 +84,13 @@ public class ServerLayer {
 	 * Used to send a POST request to server.
 	 * 
 	 * @param orderString
+	 * @throws NetworkErrorException
+	 *             if server could not be accessed.
 	 */
-	private BufferedReader sendHttpPostRequest(String orderString, String action) {
-		String apikey = preferences.getString(PREFERENCES_API_KEY, null);
+	private BufferedReader sendHttpPostRequest(String orderString, String action)
+			throws NetworkErrorException {
+		String apikey = preferences.getString(
+				ServerSettings.PREFERENCES_API_KEY, null);
 		return sendHttpPostRequest(orderString, action, Arrays.asList(
 				new BasicHeader(LIDKOPINGSH_APIKEY, apikey), new BasicHeader(
 						LIDKOPING_SH_DEVICE_ID, deviceId)));
@@ -91,9 +100,11 @@ public class ServerLayer {
 	 * Used to send a POST request to server.
 	 * 
 	 * @param data
+	 * @throws NetworkErrorException
+	 *             if server counld not be accessed.
 	 */
 	private BufferedReader sendHttpPostRequest(String data, String action,
-			Collection<? extends Header> headers) {
+			Collection<? extends Header> headers) throws NetworkErrorException {
 		BufferedReader reader = null;
 		try {
 			HttpPost httpPost = new HttpPost(serverPath + action);
@@ -106,9 +117,8 @@ public class ServerLayer {
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			reader = new BufferedReader(new InputStreamReader(httpResponse
 					.getEntity().getContent()));
-
-		} catch (Exception e) {
-			Log.e("server_layer", "Error in HTTP post " + e.toString());
+		} catch (IOException e) {
+			throw new NetworkErrorException(e);
 		}
 		return reader;
 	}
@@ -118,23 +128,25 @@ public class ServerLayer {
 	 * 
 	 * @param orderVerifiers
 	 *            A JsonObject with the ids and timestamps for comparing orders
+	 * @throws NetworkErrorException
+	 *             if server could not be accessed.
+	 * @throws AuthenticationException
 	 */
-	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers) {
+	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers)
+			throws NetworkErrorException, AuthenticationException {
 		BufferedReader reader = sendHttpPostRequest("data=" + orderVerifiers,
 				"getUpdates");
 
-		ResponseGet response = getResponseGet(reader);
+		ApiResponseGet response = getResponseGet(reader);
 
-		if (response != null) {
-			if (response.isSuccess()) {
-				List<Order> ord = new LinkedList<Order>();
-				for (Order o : response.getResults()) {
-					ord.add(o);
-				}
-				return ord;
-			} else {
-				printErrorLog(response);
+		if (isResponseValid(response)) {
+			List<Order> ord = new LinkedList<Order>();
+			for (Order o : response.getResults()) {
+				ord.add(o);
 			}
+			return ord;
+		} else {
+			printErrorLog(response);
 		}
 		return null;
 	}
@@ -148,36 +160,54 @@ public class ServerLayer {
 	 *            Unique device id.
 	 * @return Response with success status, error code and message. API key is
 	 *         returned in message if it exists.
+	 * @throws NetworkErrorException
+	 *             if server could not be accessed.
+	 * @throws AuthenticationException
 	 */
-	public ResponseSend getApikey(String username, String password,
-			String deviceId) {
+	public ApiResponse getApikey(String username, String password,
+			String deviceId) throws NetworkErrorException,
+			AuthenticationException {
 		Collection<Header> headers = new ArrayList<Header>();
 		headers.add(new BasicHeader(LIDKOPINGSH_USERNAME, username));
 		headers.add(new BasicHeader(LIDKOPINGSH_PASSWORD, password));
 		headers.add(new BasicHeader(LIDKOPINGSH_DEVICEID, deviceId));
 		BufferedReader reader = sendHttpPostRequest("", "getApikey", headers);
 
-		ResponseSend response = getResponseSend(reader);
+		ApiResponse response = getResponseSend(reader);
 
-		// Store in SharedPreferences
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.putString(PREFERENCES_API_KEY, response.getMessage());
-		editor.commit();
+		if (isResponseValid(response)) {
+			// Store in SharedPreferences
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putString(ServerSettings.PREFERENCES_API_KEY,
+					response.getMessage());
+			editor.commit();
+		}
 
 		return response;
 	}
 
 	/**
 	 * Retrieve updates from server.
+	 * 
+	 * @param getAll
+	 *            if all orders should be downloaded, or just getting updates.
+	 * @param currentOrders
+	 *            if getAll is false, this is the current orders in the model
+	 *            used for finding which orders that need to be updated.
+	 * 
+	 * @throws NetworkErrorException
+	 *             if server could not be accessed.
+	 * @throws AuthenticationException
 	 */
-	public List<Order> getUpdates(boolean getAll) {
+	public List<Order> getUpdates(boolean getAll) throws NetworkErrorException,
+			AuthenticationException {
 		Gson gson = new Gson();
 		if (getAll) {
 			List<Order> allOrders = getUpdatedOrdersFromServer("");
 			syncImages(allOrders);
 			return allOrders;
 		}
-		Collection<Order> orders = ModelHandler.getModel(context).getOrders();
+		Collection<Order> orders = Accessor.getModel(context).getOrders();
 		long[][] orderArray = new long[orders.size()][2];
 		int i = 0;
 		for (Order o : orders) {
@@ -195,45 +225,53 @@ public class ServerLayer {
 
 	/**
 	 * Send updates to server.
+	 * 
+	 * @throws NetworkErrorException
+	 *             if server could not be accessed.
+	 * @throws AuthenticationException
 	 */
-	public ResponseSend sendUpdate(Order order) {
+	public ApiResponse sendUpdate(Order order) throws NetworkErrorException,
+			AuthenticationException {
 		Gson gsonOrder = new Gson();
 		String json = "data=" + gsonOrder.toJson(order);
 		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
 
-		ResponseSend response = getResponseSend(reader);
+		ApiResponse response = getResponseSend(reader);
 
+		if (!isResponseValid(response)) {
+			order.sync(null); // Informing that no data has been able to
+								// change.
+			printErrorLog(response);
+		}
+		return response;
+	}
+
+	private ApiResponseGet getResponseGet(Reader reader)
+			throws JsonSyntaxException, JsonIOException {
+		return new Gson().fromJson(reader, ApiResponseGet.class);
+	}
+
+	private ApiResponse getResponseSend(Reader reader)
+			throws JsonSyntaxException, JsonIOException {
+		return new Gson().fromJson(reader, ApiResponse.class);
+	}
+
+	private boolean isResponseValid(ApiResponse response)
+			throws AuthenticationException {
+		if (response == null) {
+			throw new IllegalStateException(
+					"Invalid response from server. (response == null)");
+		}
 		if (!response.isSuccess()) {
-			if (!response.isSuccess()) {
-				order.sync(null); // Informing that no data has been able to
-									// change.
-				printErrorLog(response);
+			if (response.getErrorcode() == 41) {
+				throw new AuthenticationException(response.getMessage());
 			}
+			return false;
 		}
-		return response;
+		return true;
 	}
 
-	private ResponseGet getResponseGet(Reader reader) {
-		ResponseGet response = null;
-		try {
-			response = new Gson().fromJson(reader, ResponseGet.class);
-		} catch (Exception e) {
-			Log.d("server_layer", "No data from server");
-		}
-		return response;
-	}
-
-	private ResponseSend getResponseSend(Reader reader) {
-		ResponseSend response = null;
-		try {
-			response = new Gson().fromJson(reader, ResponseSend.class);
-		} catch (Exception e) {
-			Log.d("server_layer", "No data from server");
-		}
-		return response;
-	}
-
-	private void printErrorLog(ResponseSend response) {
+	private void printErrorLog(ApiResponse response) {
 		Log.d("server_layer", "Error code: " + response.getErrorcode()
 				+ " Message: " + response.getMessage());
 	}
@@ -244,10 +282,11 @@ public class ServerLayer {
 			try {
 				// Download file from web server and save it on internal
 				// storage.
-				fileName = new URL(serverPath + "pics/" + i.getImagePath());
+				fileName = new URL(serverPath + PICTURES_FOLDER
+						+ i.getImagePath());
 				InputStream is = fileName.openStream();
-				OutputStream os = context.openFileOutput(i.getImagePath().replace("/", ""),
-						Context.MODE_PRIVATE);
+				OutputStream os = context.openFileOutput(i.getImagePath()
+						.replace("/", ""), Context.MODE_PRIVATE);
 
 				byte[] b = new byte[2048];
 				int length;
@@ -255,7 +294,7 @@ public class ServerLayer {
 				while ((length = is.read(b)) != -1) {
 					os.write(b, 0, length);
 				}
-				
+
 				is.close();
 				os.close();
 			} catch (Exception e) {
@@ -266,7 +305,7 @@ public class ServerLayer {
 	}
 
 	private void syncImages(List<Order> newOrders) {
-		IModel model = ModelHandler.getModel(context);
+		IModel model = Accessor.getModel(context);
 		Collection<Order> oldOrders = model.getOrders();
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
@@ -327,7 +366,7 @@ public class ServerLayer {
 		}
 	}
 
-	public class ResponseGet extends ResponseSend {
+	public class ApiResponseGet extends ApiResponse {
 		private List<Order> results;
 
 		public List<Order> getResults() {
@@ -335,9 +374,9 @@ public class ServerLayer {
 		}
 	}
 
-	public class ResponseSend {
+	public class ApiResponse {
 		private boolean success;
-		private int errorcode;
+		private int errorCode;
 		private String message;
 
 		public boolean isSuccess() {
@@ -345,12 +384,11 @@ public class ServerLayer {
 		}
 
 		public int getErrorcode() {
-			return errorcode;
+			return errorCode;
 		}
 
 		public String getMessage() {
 			return message;
 		}
 	}
-
 }
