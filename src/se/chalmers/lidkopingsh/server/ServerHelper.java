@@ -363,7 +363,21 @@ public class ServerHelper {
 	private void syncImages(List<Order> newOrders, Collection<Order> oldOrders) {
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
+		Collection<Order> newOrderscopy = new LinkedList<Order>(newOrders);
+		Collection<Order> removedOrders = new LinkedList<Order>();
+		
+		for (Order o : newOrderscopy) {
+			if (o.isRemoved()) {
+				for (Image i : o.getImages()) {
+					context.deleteFile(i.getImagePath().replace("/", ""));
+				}
+				removedOrders.add(o);
+			}
+		}
 
+		//removes all deprecated orders
+		newOrderscopy.removeAll(removedOrders);
+		
 		// gets all old images
 		for (Order oldOrder : oldOrders) {
 			oldImages.addAll(oldOrder.getImages());
@@ -420,6 +434,7 @@ public class ServerHelper {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
 						&& !newI.getImagePath().equals(oldI.getImagePath())) {
+					context.deleteFile(oldI.getImagePath().replace("/", ""));
 					saveImage(newI);
 				}
 			}
