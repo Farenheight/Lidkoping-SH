@@ -23,11 +23,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
+import se.chalmers.lidkopingsh.LoginActivity;
 import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.Settings.Secure;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -51,7 +53,7 @@ public class ServerHelper {
 
 	private static final String PICTURES_FOLDER = "pics/";
 
-	private final String deviceId = "asdf";
+	private final String deviceId;
 
 	private HttpClient httpClient;
 	private final Context context;
@@ -64,6 +66,8 @@ public class ServerHelper {
 	 * @param serverPath
 	 */
 	public ServerHelper(Context context) {
+		deviceId = Secure.getString(
+				context.getContentResolver(), Secure.ANDROID_ID);
 		preferences = context.getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 
@@ -152,16 +156,13 @@ public class ServerHelper {
 	 * 
 	 * @param username
 	 * @param password
-	 * @param deviceId
-	 *            Unique device id.
 	 * @return Response with success status, error code and message. API key is
 	 *         returned in message if it exists.
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
 	 * @throws AuthenticationException
 	 */
-	public ApiResponse getApikey(String username, String password,
-			String deviceId) throws NetworkErrorException,
+	public ApiResponse getApikey(String username, String password) throws NetworkErrorException,
 			AuthenticationException {
 		Collection<Header> headers = new ArrayList<Header>();
 		headers.add(new BasicHeader(LIDKOPINGSH_USERNAME, username));
