@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import se.chalmers.lidkopingsh.util.Listener;
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 /**
@@ -21,12 +22,12 @@ public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
 	private Map<Integer, Product> products;
 	private Collection<Station> stations;
-	
+
 	/**
 	 * Listeners for when model is synced with orders from network.
 	 */
-	private Collection<DataChangedListener> dataChangedListeners;
-	
+	private Collection<DataSyncedListener> dataSyncedListeners;
+
 	/**
 	 * Listeners for when something is changed in the orders.
 	 */
@@ -40,10 +41,13 @@ public class MapModel implements IModel {
 	 * @param s
 	 *            The collection of stations to be held by the model
 	 */
+	// Model is independent from the Android SDK therefore not using
+	// SparseArrays
+	@SuppressLint("UseSparseArrays")
 	public MapModel(Collection<Order> o, Collection<Station> s) {
 		this.products = new HashMap<Integer, Product>();
 		this.orders = new HashMap<Integer, Order>();
-		this.dataChangedListeners = new ArrayList<DataChangedListener>();
+		this.dataSyncedListeners = new ArrayList<DataSyncedListener>();
 		this.orderChangedListeners = new ArrayList<Listener<OrderChangedEvent>>();
 
 		for (Order or : o) {
@@ -61,13 +65,13 @@ public class MapModel implements IModel {
 	}
 
 	@Override
-	public void addDataChangedListener(DataChangedListener listener) {
-		dataChangedListeners.add(listener);
+	public void addDataSyncedListener(DataSyncedListener listener) {
+		dataSyncedListeners.add(listener);
 	}
 
 	@Override
-	public void removeDataChangedListener(DataChangedListener listener) {
-		dataChangedListeners.remove(listener);
+	public void removeDataSyncedListener(DataSyncedListener listener) {
+		dataSyncedListeners.remove(listener);
 	}
 
 	@Override
@@ -139,9 +143,9 @@ public class MapModel implements IModel {
 		orders.remove(o.getId());
 
 	}
-	
+
 	@Override
-	public void clearAllOrders(){
+	public void clearAllOrders() {
 		sync(new ArrayList<Order>());
 	}
 
@@ -197,7 +201,7 @@ public class MapModel implements IModel {
 			}
 		}
 
-		for (DataChangedListener l : dataChangedListeners) {
+		for (DataSyncedListener l : dataSyncedListeners) {
 			l.ordersChanged(added, changed, removed, this);
 		}
 	}

@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh.handler;
+package se.chalmers.lidkopingsh;
 
 import se.chalmers.lidkopingsh.database.ILayer;
 import se.chalmers.lidkopingsh.database.OrderDbLayer;
@@ -13,7 +13,7 @@ import android.content.Context;
  * @author Anton Jansson
  * @author Simon Bengtsson
  */
-public class Accessor {
+class Accessor {
 	private static IModel model;
 	private static ServerConnector server;
 	private static ILayer layer;
@@ -29,7 +29,7 @@ public class Accessor {
 	public synchronized static IModel getModel(Context context) {
 		if (model == null) {
 			model = getLayer(context).getModel(); // Should be populated from DB
-			model.addDataChangedListener(layer);
+			model.addDataSyncedListener(layer);
 		}
 		return model;
 	}

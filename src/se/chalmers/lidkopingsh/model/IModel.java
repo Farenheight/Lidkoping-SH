@@ -30,7 +30,7 @@ public interface IModel extends Listener<Collection<Order>> {
 	 * Returns the order with the specified id.
 	 * 
 	 * @param id
-	 *            int
+	 *            The id of the order
 	 * @return product with specified id
 	 * @throws NoSuchElementException
 	 *             when the id does not exist
@@ -59,18 +59,52 @@ public interface IModel extends Listener<Collection<Order>> {
 
 	public Collection<Station> getStations();
 
+	/**
+	 * Get the station with the specified id.
+	 * 
+	 * @param id
+	 *            The id of the station
+	 * @return The station with the specified id
+	 * @throws NoSuchElementException
+	 *             If no order the specified id is found.
+	 */
 	public Station getStationById(int id);
 
-	void addDataChangedListener(DataChangedListener listener);
+	/**
+	 * Add listeners for when data is synced from remote server.
+	 * 
+	 * @param listener
+	 *            The listener to be added.
+	 */
+	void addDataSyncedListener(DataSyncedListener listener);
 
-	void removeDataChangedListener(DataChangedListener listener);
+	/**
+	 * Remove listener for when data is synced from remote server.
+	 * 
+	 * @param listener
+	 *            The listener to be removed.
+	 */
+	void removeDataSyncedListener(DataSyncedListener listener);
 
+	/**
+	 * Add listeners for when order is changed.
+	 * 
+	 * @param listener
+	 *            The listener to be added.
+	 */
 	void addOrderChangedListener(Listener<OrderChangedEvent> listener);
 
+	/**
+	 * Remove listener for when order is changed.
+	 * 
+	 * @param listener
+	 *            The listener to be removed.
+	 */
 	void removeOrderChangedListener(Listener<OrderChangedEvent> listener);
-	
+
 	/**
 	 * Sets the currently active stations in the model.
+	 * 
 	 * @param stations
 	 */
 	void setStations(Collection<Station> stations);

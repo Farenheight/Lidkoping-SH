@@ -1,6 +1,5 @@
 package se.chalmers.lidkopingsh;
 
-import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,6 +1,5 @@
 package se.chalmers.lidkopingsh;
 
-import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import se.chalmers.lidkopingsh.server.ServerSettings;
 import android.app.AlertDialog;
