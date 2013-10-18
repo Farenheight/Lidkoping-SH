@@ -275,16 +275,15 @@ public class ServerHelper {
 	}
 
 	public void saveImage(Image i) {
-		if (i.getImagePath() == null) {
+		if (i.getImagePath() != null) {
 			URL fileName;
 			try {
 				// Download file from web server and save it on internal
 				// storage.
 				fileName = new URL(serverPath + PICTURES_FOLDER
-						+ i.getImagePath());
+						+ i.getServerImagePath());
 				InputStream is = fileName.openStream();
-				OutputStream os = context.openFileOutput(i.getImagePath()
-						.replace("/", ""), Context.MODE_PRIVATE);
+				OutputStream os = context.openFileOutput(i.getImagePath(), Context.MODE_PRIVATE);
 
 				byte[] b = new byte[2048];
 				int length;
