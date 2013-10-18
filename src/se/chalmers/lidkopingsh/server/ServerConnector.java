@@ -32,8 +32,10 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 
 	private final ServerHelper helper;
 	private final Timer timer;
-	
+
+	/** Listeners for network statuses, such as network problems etc. */
 	private List<NetworkStatusListener> networkListeners;
+	/** Listeners for when orders has been changed after a server update. */
 	private List<Listener<Collection<Order>>> orderListeners;
 
 	public ServerConnector(Context context) {
@@ -45,6 +47,14 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new UpdateTimerTask(), UPDATE_INTERVAL,
 				UPDATE_INTERVAL);
+	}
+
+	public void addNetworkListener(NetworkStatusListener listener) {
+		networkListeners.add(listener);
+	}
+
+	public void addOrderChangedListener(Listener<Collection<Order>> listener) {
+		orderListeners.add(listener);
 	}
 
 	/**
@@ -74,57 +84,9 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		}
 	}
 
-	/**
-	 * Creates an asynctask that will send an update and then update the local
-	 * database
-	 * 
-	 * @param event
-	 *            The event which holds what has changed
-	 */
-	public void sendUpdate(OrderChangedEvent event) {
-		Log.d("ServerConnection", "Sending update to server.");
-		// Update order(s) before sending to server, otherwise
-		// request can be dismissed.
-		Status status = event.getTask().getStatus();
-		update(false);
-		if (!event.getOrder().isRemoved()) {
-			event.getTask().setStatus(status);
-			new AsyncTaskSend(event, helper, this).execute();
-		}
-	}
-
-	/**
-	 * Updates the local database with data from server. Runs in a different
-	 * thread because of asynctask.
-	 * 
-	 * @param getAll
-	 *            True if everything should be fetched false otherwise
-	 */
-	public void update(boolean getAll) {
-		Log.d("ServerConnection", "Getting update from server.");
-		new AsyncTaskGet(getAll, helper, this).execute();
-	}
-
-	public void addNetworkListener(NetworkStatusListener listener) {
-		networkListeners.add(listener);
-	}
-
-	public void removeNetworkListener(NetworkStatusListener listener) {
-		networkListeners.remove(listener);
-	}
-
-	public void addOrderChangedListener(Listener<Collection<Order>> listener) {
-		orderListeners.add(listener);
-	}
-
-	public void removeOrderChangedListener(DataChangedListener listener) {
-		orderListeners.remove(listener);
-	}
-
-	public void startedUpdate() {
-		for (NetworkStatusListener l : networkListeners) {
-			l.startedUpdate();
-		}
+	@Override
+	public void changed(OrderChangedEvent event) {
+		sendUpdate(event);
 	}
 
 	public void finishedUpdate() {
@@ -151,25 +113,67 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		}
 	}
 
-	@Override
-	public void changed(OrderChangedEvent event) {
-		sendUpdate(event);
+	public void removeNetworkListener(NetworkStatusListener listener) {
+		networkListeners.remove(listener);
 	}
-	
+
+	public void removeOrderChangedListener(DataChangedListener listener) {
+		orderListeners.remove(listener);
+	}
+
+	/**
+	 * Creates an asynctask that will send an update and then update the local
+	 * database
+	 * 
+	 * @param event
+	 *            The event which holds what has changed
+	 */
+	public void sendUpdate(OrderChangedEvent event) {
+		Log.d("ServerConnection",
+				"Sending update to server, via AsyncTaskSend. (updating data before send)");
+		// Update order(s) before sending to server, otherwise
+		// request can be dismissed.
+		Status status = event.getTask().getStatus();
+		update(false);
+		if (!event.getOrder().isRemoved()) {
+			event.getTask().setStatus(status);
+			new AsyncTaskSend(event, helper, this).execute();
+		}
+	}
+
+	public void startedUpdate() {
+		for (NetworkStatusListener l : networkListeners) {
+			l.startedUpdate();
+		}
+	}
+
+	/**
+	 * Updates the local database with data from server. Runs in a different
+	 * thread because of asynctask.
+	 * 
+	 * @param getAll
+	 *            True if everything should be fetched false otherwise
+	 */
+	public void update(boolean getAll) {
+		Log.d("ServerConnection",
+				"Getting update from server, via AsyncTaskGet.");
+		new AsyncTaskGet(getAll, helper, this).execute();
+	}
+
 	private class UpdateTimerTask extends TimerTask {
 		private Handler handler;
-		
+
 		public UpdateTimerTask() {
-			handler = new Handler();		// TODO: Add comment for this
+			handler = new Handler(); // TODO: Add comment for this
 		}
 
 		@Override
 		public void run() {
 			handler.post(new Runnable() {
-		        public void run() {       
-		    		update(false);		// Update orders from server
-		        }
-		    });
+				public void run() {
+					update(false); // Update orders from server
+				}
+			});
 		}
 	}
 }

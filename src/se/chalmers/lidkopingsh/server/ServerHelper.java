@@ -37,7 +37,7 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 /**
- * Handling communication between remote server and local database.
+ * Handling communication to remote server.
  * 
  * @author Alexander Härenstam
  * @author Olliver Mattsson
@@ -50,6 +50,8 @@ class ServerHelper {
 	private static final String LIDKOPINGSH_USERNAME = "Lidkopingsh-Username";
 	private static final String LIDKOPING_SH_DEVICE_ID = "LidkopingSH-DeviceId";
 	private static final String LIDKOPINGSH_APIKEY = "Lidkopingsh-Apikey";
+
+	private static final String PICTURES_FOLDER = "pics/";
 
 	private final String deviceId = "asdf";
 
@@ -128,7 +130,7 @@ class ServerHelper {
 	 *            A JsonObject with the ids and timestamps for comparing orders
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
-	 * @throws AuthenticationException 
+	 * @throws AuthenticationException
 	 */
 	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers)
 			throws NetworkErrorException, AuthenticationException {
@@ -160,10 +162,11 @@ class ServerHelper {
 	 *         returned in message if it exists.
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
-	 * @throws AuthenticationException 
+	 * @throws AuthenticationException
 	 */
 	public ApiResponse getApikey(String username, String password,
-			String deviceId) throws NetworkErrorException, AuthenticationException {
+			String deviceId) throws NetworkErrorException,
+			AuthenticationException {
 		Collection<Header> headers = new ArrayList<Header>();
 		headers.add(new BasicHeader(LIDKOPINGSH_USERNAME, username));
 		headers.add(new BasicHeader(LIDKOPINGSH_PASSWORD, password));
@@ -171,7 +174,7 @@ class ServerHelper {
 		BufferedReader reader = sendHttpPostRequest("", "getApikey", headers);
 
 		ApiResponse response = getResponseSend(reader);
-		
+
 		if (isResponseValid(response)) {
 			// Store in SharedPreferences
 			SharedPreferences.Editor editor = preferences.edit();
@@ -186,11 +189,18 @@ class ServerHelper {
 	/**
 	 * Retrieve updates from server.
 	 * 
+	 * @param getAll
+	 *            if all orders should be downloaded, or just getting updates.
+	 * @param currentOrders
+	 *            if getAll is false, this is the current orders in the model
+	 *            used for finding which orders that need to be updated.
+	 * 
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
-	 * @throws AuthenticationException 
+	 * @throws AuthenticationException
 	 */
-	public List<Order> getUpdates(boolean getAll) throws NetworkErrorException, AuthenticationException {
+	public List<Order> getUpdates(boolean getAll) throws NetworkErrorException,
+			AuthenticationException {
 		Gson gson = new Gson();
 		if (getAll) {
 			List<Order> allOrders = getUpdatedOrdersFromServer("");
@@ -218,15 +228,15 @@ class ServerHelper {
 	 * 
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
-	 * @throws AuthenticationException 
+	 * @throws AuthenticationException
 	 */
-	public ApiResponse sendUpdate(Order order) throws NetworkErrorException, AuthenticationException {
+	public ApiResponse sendUpdate(Order order) throws NetworkErrorException,
+			AuthenticationException {
 		Gson gsonOrder = new Gson();
 		String json = "data=" + gsonOrder.toJson(order);
 		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
 
 		ApiResponse response = getResponseSend(reader);
-		
 
 		if (!isResponseValid(response)) {
 			order.sync(null); // Informing that no data has been able to
@@ -236,17 +246,21 @@ class ServerHelper {
 		return response;
 	}
 
-	private ApiResponseGet getResponseGet(Reader reader) throws JsonSyntaxException, JsonIOException {
+	private ApiResponseGet getResponseGet(Reader reader)
+			throws JsonSyntaxException, JsonIOException {
 		return new Gson().fromJson(reader, ApiResponseGet.class);
 	}
 
-	private ApiResponse getResponseSend(Reader reader) throws JsonSyntaxException, JsonIOException {
+	private ApiResponse getResponseSend(Reader reader)
+			throws JsonSyntaxException, JsonIOException {
 		return new Gson().fromJson(reader, ApiResponse.class);
 	}
-	
-	private boolean isResponseValid(ApiResponse response) throws AuthenticationException {
+
+	private boolean isResponseValid(ApiResponse response)
+			throws AuthenticationException {
 		if (response == null) {
-			throw new IllegalStateException("Invalid response from server. (response == null)");
+			throw new IllegalStateException(
+					"Invalid response from server. (response == null)");
 		}
 		if (!response.isSuccess()) {
 			if (response.getErrorcode() == 41) {
@@ -268,7 +282,8 @@ class ServerHelper {
 			try {
 				// Download file from web server and save it on internal
 				// storage.
-				fileName = new URL(serverPath + "pics/" + i.getImagePath());
+				fileName = new URL(serverPath + PICTURES_FOLDER
+						+ i.getImagePath());
 				InputStream is = fileName.openStream();
 				OutputStream os = context.openFileOutput(i.getImagePath()
 						.replace("/", ""), Context.MODE_PRIVATE);
@@ -361,7 +376,7 @@ class ServerHelper {
 
 	public class ApiResponse {
 		private boolean success;
-		private int errorcode;
+		private int errorCode;
 		private String message;
 
 		public boolean isSuccess() {
@@ -369,7 +384,7 @@ class ServerHelper {
 		}
 
 		public int getErrorcode() {
-			return errorcode;
+			return errorCode;
 		}
 
 		public String getMessage() {
