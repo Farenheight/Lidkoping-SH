@@ -54,6 +54,8 @@ public class OrderMapActivity extends FragmentActivity {
 
 	private Geocoder mGeoCoder;
 
+	private MapLoader mMapLoader;
+	
 	private BubbleIconFactory mIconFactory;
 	
 	private static LatLng STANDARD_COORDINATES = new LatLng(58.3f, 14);
@@ -73,6 +75,12 @@ public class OrderMapActivity extends FragmentActivity {
 	protected void onResume() {
 		super.onResume();
 		setUpMapIfNeeded();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		mMapLoader.cancel(true);
+		super.onDestroy();
 	}
 
 	/**
@@ -115,7 +123,8 @@ public class OrderMapActivity extends FragmentActivity {
 		initMapTypeToggleButton();
 		initBubbleFactory();
 		zoomToStandardLocation();
-		new MapLoader().execute(mMap); // Setup map
+		mMapLoader = new MapLoader();
+		mMapLoader.execute(mMap);
 		mMap.setMyLocationEnabled(true);
 	}
 

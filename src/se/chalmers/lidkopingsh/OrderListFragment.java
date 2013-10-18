@@ -234,6 +234,7 @@ public class OrderListFragment extends ListFragment implements
 		mOrderAdapter
 				.updateOrders(Accessor.getModel(getActivity()).getOrders());
 		mOrderAdapter.notifyDataSetChanged();
+		mOrderAdapter.refreshSort();
 		mStationsAdapter.clear();
 		mStationsAdapter.addAll(Accessor.getModel(getActivity()).getStations());
 		mStationsAdapter.notifyDataSetChanged();
