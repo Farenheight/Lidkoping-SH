@@ -2,7 +2,6 @@ package se.chalmers.lidkopingsh.controller;
 
 import org.apache.http.auth.AuthenticationException;
 
-import se.chalmers.lidkopingsh.R;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import se.chalmers.lidkopingsh.server.ServerHelper;
 import se.chalmers.lidkopingsh.server.ServerHelper.ApiResponse;

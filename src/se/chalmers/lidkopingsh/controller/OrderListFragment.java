@@ -2,7 +2,6 @@ package se.chalmers.lidkopingsh.controller;
 
 import java.util.ArrayList;
 
-import se.chalmers.lidkopingsh.R;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
