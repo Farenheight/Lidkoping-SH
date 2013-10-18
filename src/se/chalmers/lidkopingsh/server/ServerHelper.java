@@ -61,11 +61,16 @@ public class ServerHelper {
 	private final String serverPath;
 	private SharedPreferences preferences;
 
-	/**
-	 * Creates a new ServerHelper with a set server path.
-	 * 
-	 * @param serverPath
-	 */
+	 /**
+     * Creates a new ServerHelper for communicating with server. A server path
+     * must be set in {@link SharedPreferences}, with name
+     * {@link ServerSettings#PREFERENCES_NAME} and key
+     * {@link ServerSettings#PREFERENCES_SERVER_PATH}. A unique device id is
+     * created for this device.
+     * 
+     * @param context
+     *            The context used for accessing local storage.
+     */
 	public ServerHelper(Context context) {
 		deviceId = Secure.getString(context.getContentResolver(),
 				Secure.ANDROID_ID);
@@ -84,12 +89,15 @@ public class ServerHelper {
 	}
 
 	/**
-	 * Used to send a POST request to server.
-	 * 
-	 * @param orderString
-	 * @throws NetworkErrorException
-	 *             if server could not be accessed.
-	 */
+     * Used to send a POST request to server.
+     * 
+     * @param postData
+     *            The data to pass in POST body.
+     * @param action
+     *            The action name of the API method to run.
+     * @throws NetworkErrorException
+     *             if server could not be accessed.
+     */
 	private BufferedReader sendHttpPostRequest(String orderString, String action)
 			throws NetworkErrorException {
 		String apikey = preferences.getString(
@@ -100,12 +108,15 @@ public class ServerHelper {
 	}
 
 	/**
-	 * Used to send a POST request to server.
-	 * 
-	 * @param data
-	 * @throws NetworkErrorException
-	 *             if server counld not be accessed.
-	 */
+     * Used to send a POST request to server.
+     * 
+     * @param postData
+     *            The data to pass in POST body.
+     * @param action
+     *            The action name of the API method to run.
+     * @throws NetworkErrorException
+     *             if server could not be accessed.
+     */
 	private BufferedReader sendHttpPostRequest(String data, String action,
 			Collection<? extends Header> headers) throws NetworkErrorException {
 		BufferedReader reader = null;
@@ -127,20 +138,21 @@ public class ServerHelper {
 	}
 
 	/**
-	 * Get the updated orders from the server
-	 * 
-	 * @param orderVerifiers
-	 *            A JsonObject with the ids and timestamps for comparing orders
-	 * @throws NetworkErrorException
-	 *             if server could not be accessed.
-	 * @throws AuthenticationException
-	 */
+     * Get the updated orders from the server.
+     * 
+     * @param orderVerifiers
+     *            A JsonObject with the ids and timestamps for comparing orders
+     * @throws NetworkErrorException
+     *             if server could not be accessed.
+     * @throws AuthenticationException
+     *             if an authentication problem occurred
+     */
 	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers)
 			throws NetworkErrorException, AuthenticationException {
 		BufferedReader reader = sendHttpPostRequest("data=" + orderVerifiers,
 				"getUpdates");
 
-		ApiResponseGet response = getResponseGet(reader);
+		ApiResponseGet response = convertResponseGet(reader);
 
 		if (isResponseValid(response)) {
 			List<Order> ord = new LinkedList<Order>();
@@ -153,16 +165,19 @@ public class ServerHelper {
 	}
 
 	/**
-	 * Tries to authenticate and retrieve an API key for this device.
-	 * 
-	 * @param username
-	 * @param password
-	 * @return Response with success status, error code and message. API key is
-	 *         returned in message if it exists.
-	 * @throws NetworkErrorException
-	 *             if server could not be accessed.
-	 * @throws AuthenticationException
-	 */
+     * Tries to authenticate and retrieve an API key for this device.
+     * 
+     * @param username
+     *            Username for web API account.
+     * @param password
+     *            Password for web API account.
+     * @return Response with success status, error code and message. API key is
+     *         returned in message if it exists.
+     * @throws NetworkErrorException
+     *             if server could not be accessed.
+     * @throws AuthenticationException
+     *             if an authentication problem occurred
+     */
 	public ApiResponse getApikey(String username, String password)
 			throws NetworkErrorException, AuthenticationException {
 		Collection<Header> headers = new ArrayList<Header>();
@@ -171,7 +186,7 @@ public class ServerHelper {
 		headers.add(new BasicHeader(LIDKOPINGSH_DEVICEID, deviceId));
 		BufferedReader reader = sendHttpPostRequest("", "getApikey", headers);
 
-		ApiResponse response = getResponseSend(reader);
+		ApiResponse response = convertResponseSend(reader);
 
 		if (isResponseValid(response)) {
 			// Store in SharedPreferences
@@ -185,18 +200,21 @@ public class ServerHelper {
 	}
 
 	/**
-	 * Retrieve updates from server.
-	 * 
-	 * @param getAll
-	 *            if all orders should be downloaded, or just getting updates.
-	 * @param currentOrders
-	 *            if getAll is false, this is the current orders in the model
-	 *            used for finding which orders that need to be updated.
-	 * 
-	 * @throws NetworkErrorException
-	 *             if server could not be accessed.
-	 * @throws AuthenticationException
-	 */
+     * Retrieve updates from server.
+     * 
+     * @param getAll
+     *            if all orders should be downloaded, or just getting updates.
+     * @param currentOrders
+     *            if getAll is false, this is the current orders in the model
+     *            used for finding which orders that need to be updated.
+     * 
+     * @return A list of orders which were updated on remote server.
+     * 
+     * @throws NetworkErrorException
+     *             if server could not be accessed.
+     * @throws AuthenticationException
+     *             if an authentication problem occurred
+     */
 	public List<Order> getUpdates(boolean getAll,
 			Collection<Order> currentOrders) throws NetworkErrorException,
 			AuthenticationException {
@@ -223,19 +241,20 @@ public class ServerHelper {
 	}
 
 	/**
-	 * Send updates to server.
-	 * 
-	 * @throws NetworkErrorException
-	 *             if server could not be accessed.
-	 * @throws AuthenticationException
-	 */
+     * Send an update to server.
+     * 
+     * @throws NetworkErrorException
+     *             if server could not be accessed.
+     * @throws AuthenticationException
+     *             if an authentication problem occurred
+     */
 	public ApiResponse sendUpdate(Order order) throws NetworkErrorException,
 			AuthenticationException {
 		Gson gsonOrder = new Gson();
 		String json = "data=" + gsonOrder.toJson(order);
 		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
 
-		ApiResponse response = getResponseSend(reader);
+		ApiResponse response = convertResponseSend(reader);
 
 		if (!isResponseValid(response)) {
 			order.sync(null); // Informing that no data has been able to
@@ -244,7 +263,13 @@ public class ServerHelper {
 		return response;
 	}
 
-	private ApiResponseGet getResponseGet(Reader reader)
+	/**
+     * Convert a JSON reader response to an ApiResponseGet.
+     * 
+     * @throws JsonSyntaxException
+     * @throws JsonIOException
+     */
+	private ApiResponseGet convertResponseGet(Reader reader)
 			throws JsonSyntaxException, JsonIOException {
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(Product.class, new ProductDeserializer());
@@ -252,11 +277,28 @@ public class ServerHelper {
 		return gson.fromJson(reader, ApiResponseGet.class);
 	}
 
-	private ApiResponse getResponseSend(Reader reader)
+	/**
+     * Convert a JSON reader response to an ApiResponse.
+     * 
+     * @throws JsonSyntaxException
+     * @throws JsonIOException
+     */
+	private ApiResponse convertResponseSend(Reader reader)
 			throws JsonSyntaxException, JsonIOException {
 		return new Gson().fromJson(reader, ApiResponse.class);
 	}
 
+	/**
+     * Validates if the response is correct.
+     * 
+     * @param response
+     *            The response
+     * @return Whether the response was valid or not.
+     * @throws IllegalStateException
+     *             if response is null
+     * @throws AuthenticationException
+     *             if an authentication problem occurred
+     */
 	private boolean isResponseValid(ApiResponse response)
 			throws AuthenticationException {
 		if (response == null) {
@@ -274,6 +316,12 @@ public class ServerHelper {
 		return true;
 	}
 
+	/**
+     * Download image from web server and save it to the storage.
+     * 
+     * @param i
+     *            The image to process.
+     */
 	public void saveImage(Image i) {
 		if (i.getImagePath() == null) {
 			URL fileName;
@@ -301,6 +349,15 @@ public class ServerHelper {
 		}
 	}
 
+	 /**
+     * Sync the lists of images, to delete removed orders' images and download
+     * new orders' images
+     * 
+     * @param newOrders
+     *            The collection of new orders
+     * @param oldOrders
+     *            The collection of old orders
+     */
 	private void syncImages(List<Order> newOrders, Collection<Order> oldOrders) {
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
@@ -336,6 +393,14 @@ public class ServerHelper {
 		syncCommonImages(newImages, oldImages);
 	}
 
+	/**
+     * Save all new images to internal storage.
+     * 
+     * @param newImages
+     *            A collection of new images.
+     * @param oldImages
+     *            A collection of old images.
+     */
 	private void addAllNew(Collection<Image> newImages,
 			Collection<Image> oldImages) {
 		Collection<Image> modifiedImages = new LinkedList<Image>();
@@ -353,6 +418,14 @@ public class ServerHelper {
 		}
 	}
 
+	/**
+     * Redownload images that has a new file name.
+     * 
+     * @param newImages
+     *            A collection of new images.
+     * @param oldImages
+     *            A collection of old images.
+     */
 	private void syncCommonImages(Collection<Image> newImages,
 			Collection<Image> oldImages) {
 		for (Image newI : newImages) {
@@ -366,6 +439,9 @@ public class ServerHelper {
 		}
 	}
 
+	/**
+     * The response for getting orders that is returned from web API.
+     */
 	public class ApiResponseGet extends ApiResponse {
 		private List<Order> results;
 
@@ -374,6 +450,9 @@ public class ServerHelper {
 		}
 	}
 
+	/**
+     * The general response that is returned from web API.
+     */
 	public class ApiResponse {
 		private boolean success;
 		private int errorCode;
