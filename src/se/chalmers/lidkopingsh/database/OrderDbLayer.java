@@ -16,6 +16,7 @@ import android.content.Context;
 public class OrderDbLayer implements ILayer {
 
 	private final OrderDbStorage db;
+	private Object context;
 
 	/**
 	 * Creates a layer for communication between model and Order database.
@@ -35,7 +36,7 @@ public class OrderDbLayer implements ILayer {
 
 	@Override
 	public void ordersChanged(Collection<Order> added,
-			Collection<Order> changed, Collection<Order> removed) {
+			Collection<Order> changed, Collection<Order> removed, IModel currentModel) {
 		if (added != null) {
 			db.insert(added);
 		}
@@ -45,5 +46,6 @@ public class OrderDbLayer implements ILayer {
 		if (removed != null) {
 			db.delete(removed);
 		}
+		currentModel.setStations(db.getStations());
 	}
 }

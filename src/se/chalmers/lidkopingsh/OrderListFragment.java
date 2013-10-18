@@ -31,7 +31,8 @@ import android.widget.Spinner;
  * @author Simon Bengtsson
  * 
  */
-public class OrderListFragment extends ListFragment implements NetworkStatusListener{
+public class OrderListFragment extends ListFragment implements
+		NetworkStatusListener {
 
 	/* Bundle keys representing the activated item position. */
 	private static final String ACTIVATED_ORDER_ID = "activated_position";
@@ -50,6 +51,7 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 	private SearchHandler mSearchHandler;
 	private SortHandler mSortHandler;
 	private DataSetObserver orderListObserver;
+	private ArrayAdapter<Station> mStationsAdapter;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -90,20 +92,7 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 				Accessor.getModel(getActivity()).getOrders()));
 		setListAdapter(mOrderAdapter);
 
-		// Sets up the station spinner and it's adapter
-		Spinner stationSpinner = (Spinner) getView().findViewById(
-				R.id.station_spinner);
-		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(
-				getActivity(), R.layout.spinner_white_text,
-				(ArrayList<Station>) Accessor.getModel(getActivity()).getStations());
-		stationsAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		stationSpinner.setAdapter(stationsAdapter);
-
-		// Setup helper handlers to features in this fragment
-		mSortHandler = new SortHandler(stationSpinner, mOrderAdapter);
-		mSearchHandler = new SearchHandler((EditText) getView().findViewById(
-				R.id.search_field), mOrderAdapter);
+		initStationSpinner();
 
 		// Restore the previously serialized state on screen orientation change
 		if (savedInstanceState != null) {
@@ -113,12 +102,30 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 					.getInt(CURRENT_STATION_POS));
 
 			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
-				mActivatedOrder = Accessor.getModel(getActivity()).getOrderById(savedInstanceState
-						.getInt(ACTIVATED_ORDER_ID));
+				mActivatedOrder = Accessor.getModel(getActivity())
+						.getOrderById(
+								savedInstanceState.getInt(ACTIVATED_ORDER_ID));
 			}
 		}
 		orderListObserver = new OrderListObserver();
 		mOrderAdapter.registerDataSetObserver(orderListObserver);
+	}
+
+	private void initStationSpinner() {
+		// Sets up the station spinner and it's adapter
+		Spinner stationSpinner = (Spinner) getView().findViewById(
+				R.id.station_spinner);
+		mStationsAdapter = new ArrayAdapter<Station>(getActivity(),
+				R.layout.spinner_white_text, (ArrayList<Station>) Accessor
+						.getModel(getActivity()).getStations());
+		mStationsAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		stationSpinner.setAdapter(mStationsAdapter);
+
+		// Setup helper handlers to features in this fragment
+		mSortHandler = new SortHandler(stationSpinner, mOrderAdapter);
+		mSearchHandler = new SearchHandler((EditText) getView().findViewById(
+				R.id.search_field), mOrderAdapter);
 	}
 
 	@Override
@@ -133,8 +140,8 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 		super.onListItemClick(listView, view, position, id);
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mActivatedOrder = Accessor.getModel(getActivity()).getOrderById(mOrderAdapter.getItem(
-				position - 1).getId());
+		mActivatedOrder = Accessor.getModel(getActivity()).getOrderById(
+				mOrderAdapter.getItem(position - 1).getId());
 		mOrderSelectedCallbacks.onItemSelected(mActivatedOrder.getId());
 	}
 
@@ -200,15 +207,17 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 	}
 
 	@Override
-	public void startedUpdate() {}
+	public void startedUpdate() {
+	}
 
 	@Override
 	public void finishedUpdate() {
-		//TODO Error "Content view not yet created"
+		// TODO Error "Content view not yet created"
 		mOrderAdapter.notifyDataSetChanged();
 		mOrderAdapter.refreshSort();
 		Log.d("OrderListFragment",
 				"Orders in OrderAdapter: " + mOrderAdapter.getCount());
+		mStationsAdapter.notifyDataSetChanged();
 	}
 
 	@Override

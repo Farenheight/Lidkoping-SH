@@ -162,7 +162,7 @@ public class MapModel implements IModel {
 		}
 
 		for (DataChangedListener l : dataChangedListeners) {
-			l.ordersChanged(added, changed, removed);
+			l.ordersChanged(added, changed, removed,this);
 		}
 	}
 
@@ -181,4 +181,10 @@ public class MapModel implements IModel {
 			}
 		}
 	};
+
+	@Override
+	public void setStations(Collection<Station> stations) {
+		this.stations.clear();
+		this.stations.addAll(stations);
+	}
 }

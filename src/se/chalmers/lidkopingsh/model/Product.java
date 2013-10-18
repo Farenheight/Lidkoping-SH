@@ -172,10 +172,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * @return All the tasks this product has.
 	 */
 	public List<Task> getTasks() {
-		if(tasks == null){
-			return null;
-		}
-		return new ArrayList<Task>(tasks);
+		return tasks == null? new ArrayList<Task>() : new ArrayList<Task>(tasks);
 	}
 
 	/**
