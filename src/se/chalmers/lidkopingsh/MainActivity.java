@@ -53,6 +53,7 @@ public class MainActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
+		Log.d("MainAct", "ServerConnector created");
 		Accessor.getServerConnector(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
