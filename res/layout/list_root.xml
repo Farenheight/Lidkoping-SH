@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/order_list"
-        android:name="se.chalmers.lidkopingsh.OrderListFragment"
+        android:name="se.chalmers.lidkopingsh.controller.OrderListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@android:layout/list_content" >
