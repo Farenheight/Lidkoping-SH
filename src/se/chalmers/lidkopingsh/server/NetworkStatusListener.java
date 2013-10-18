@@ -24,6 +24,6 @@ public interface NetworkStatusListener {
 	/**
 	 * Notifies about API key being invalid
 	 */
-	public void authinicationFailed();
+	public void authenticationFailed();
 	
 }

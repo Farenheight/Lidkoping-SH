@@ -120,7 +120,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void authinicationFailed() {
+	public void authenticationFailed() {
 		// TODO Auto-generated method stub
 		
 	}

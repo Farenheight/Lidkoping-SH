@@ -143,8 +143,6 @@ public class ServerHelper {
 				ord.add(o);
 			}
 			return ord;
-		} else {
-			printErrorLog(response);
 		}
 		return null;
 	}
@@ -239,7 +237,6 @@ public class ServerHelper {
 		if (!isResponseValid(response)) {
 			order.sync(null); // Informing that no data has been able to
 								// change.
-			printErrorLog(response);
 		}
 		return response;
 	}
@@ -261,17 +258,14 @@ public class ServerHelper {
 					"Invalid response from server. (response == null)");
 		}
 		if (!response.isSuccess()) {
-			if (response.getErrorcode() == 41) {
+			if (response.getErrorcode() >= 40 && response.getErrorcode() < 50) {
 				throw new AuthenticationException(response.getMessage());
 			}
+			Log.d("server_layer", "Error code: " + response.getErrorcode()
+					+ " Message: " + response.getMessage());
 			return false;
 		}
 		return true;
-	}
-
-	private void printErrorLog(ApiResponse response) {
-		Log.d("server_layer", "Error code: " + response.getErrorcode()
-				+ " Message: " + response.getMessage());
 	}
 
 	public void saveImage(Image i) {
@@ -296,7 +290,6 @@ public class ServerHelper {
 				is.close();
 				os.close();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

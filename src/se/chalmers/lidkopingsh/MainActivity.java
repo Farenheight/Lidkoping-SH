@@ -139,6 +139,10 @@ public class MainActivity extends FragmentActivity implements
 			Uri url = Uri.parse("http://simonbengtsson.se/userguide.pdf");
 			Intent intent = new Intent(Intent.ACTION_VIEW, url);
 			startActivity(intent);
+			return true;
+		case R.id.action_logout:
+			logout();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -190,7 +194,13 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void authinicationFailed() {
+	public void authenticationFailed() {
 		Log.d("MainAct", "Authunication failed");
+		logout();
+	}
+
+	private void logout() {
+		startActivity(new Intent(this, LoginActivity.class));
+		finish();
 	}
 }

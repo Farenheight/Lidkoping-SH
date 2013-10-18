@@ -40,5 +40,8 @@
     <string name="satellite">Satellite</string>
     <string name="normal">Normal</string>
     <string name="update">Uppdatera</string>
+    <string name="logout">Logga ut</string>
+    <string name="help">Hjälp</string>
+    <string name="see_map_view">Se Kartvy</string>
 
 </resources>
