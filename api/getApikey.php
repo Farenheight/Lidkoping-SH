@@ -11,7 +11,10 @@ function getApikey(){
 			$row = $res->fetch_assoc();
 			
 			$userID = $row['user_id'];
-			$deviceID = "asdf"; //TODO Fix usage of deviceid
+			$deviceID = "asdf";
+			if(isset($_SERVER['HTTP_LIDKOPINGSH_DEVICEID'])){ //TODO Force usage of device id
+				$deviceID = $_SERVER['HTTP_LIDKOPINGSH_DEVICEID'];
+			}
 			if(isset($_POST['expires'])){ //TODO Check validity of chosen expiration time.
 				$apikey = genrerateApikey($userID, $deviceID, $_POST['expires']);
 			}else{

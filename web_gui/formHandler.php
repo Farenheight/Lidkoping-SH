@@ -1,4 +1,6 @@
+
 <?php
+header("Content-Type: text/plain; charset=utf-8");
 require_once '../api/db_config.php';
 
 $data = $_POST;
@@ -52,7 +54,7 @@ $opts = array(
 		'method' => "POST",
 		'header' => "Content-type: application/x-www-form-urlencoded\r\n" .
 			$GLOBALS['insertApikey'] .
-			"Lidkopingsh-Deviceid: asdf\r\n",
+			$GLOBALS['insertDeviceId'],
 		'content' => 'data=' . json_encode($data)
 	)
 );

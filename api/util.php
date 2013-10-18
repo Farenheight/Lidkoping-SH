@@ -53,7 +53,7 @@ class Util {
 		}
 		
 		$cemetery = $order['cemetery'];
-		$deceased = $order['deceased'];
+		$deceased = $order['deceased'];	
 		
 		if(empty($order['deceased'])){ // For other things then gravestones
 			for($j=0; $j<10; $j++){
@@ -61,15 +61,15 @@ class Util {
 			}
 		}
 		
-		$cemeteryLetter = strtoupper(substr($cemetery, 0, 1));
+		$cemeteryLetter = $this->utf8_strtoupper($this->utf8_substr($cemetery, 0, 1));
 		$cemeteryLetterCount = 1;
 		while($cemeteryLetter == " "){
-			$cemeteryLetter = strtoupper(substr($cemetery, $cemeteryLetterCount, 1));
+			$cemeteryLetter = $this->utf8_strtoupper($this->utf8_substr($cemetery, $cemeteryLetterCount, 1));
 		}
 		
-		$proposal = strtoupper((substr($deceased, 0, 1) == " " ? "A" : substr($deceased, 0, 1))) . 
+		$proposal = $this->utf8_strtoupper(($this->utf8_substr($deceased, 0, 1) == " " ? "A" : $this->utf8_substr($deceased, 0, 1))) . 
 			"." . $cemeteryLetter . ".";
-		$crysis = array("X", "Y", "Z", "Ä", "Ö");
+		$crysis = array("X", "Y", "Z", "Ã„", "Ã–");
 		
 		$i = 0;
 		$crysisNum = 0;
@@ -80,15 +80,15 @@ class Util {
 		while(in_array($proposal, $this->idNames)){ // If ID name is taken
 			//echo " - " . $proposal . " was taken, trying a new one... - ";
 			if($i < $deceasedNameCount){
-				if(substr($deceased, $i, 1) != " "){
-					$proposal = strtoupper(substr($deceased, $i, 1) . "." . $cemeteryLetter . ".");
+				if($this->utf8_substr($deceased, $i, 1) != " "){
+					$proposal = $this->utf8_strtoupper($this->utf8_substr($deceased, $i, 1) . "." . $cemeteryLetter . ".");
 				}
 			}else if($crysisNum < $crysisArrayCount){
-				$proposal = strtoupper($crysis[$crysisNum] . "." . $cemeteryLetter . ".");
+				$proposal = $this->utf8_strtoupper($crysis[$crysisNum] . "." . $cemeteryLetter . ".");
 				$crysisNum++;
 			}else if($secLetterNum < $deceasedNameCount-1){
-				if(substr($deceased, 0, 1) != " " && substr($deceased, $secLetterNum, 1) != " "){
-					$proposal = strtoupper(substr($deceased, 0, 1)) . strtolower(substr($deceased, $secLetterNum, 1)) . "." . $cemeteryLetter . ".";
+				if($this->utf8_substr($deceased, 0, 1) != " " && $this->utf8_substr($deceased, $secLetterNum, 1) != " "){
+					$proposal = $this->utf8_strtoupper($this->utf8_substr($deceased, 0, 1)) . $this->utf8_strtolower($this->utf8_substr($deceased, $secLetterNum, 1)) . "." . $cemeteryLetter . ".";
 				}
 				$secLetterNum++;
 			}else{
@@ -128,6 +128,18 @@ class Util {
 				$stmt->execute();
 			}
 		}
+	}
+	
+	function utf8_strtoupper($string){
+		return mb_strtoupper($string, "UTF-8");
+	}
+	
+	function utf8_strtolower($string) {
+		return mb_strtolower($string, "UTF-8");
+	}
+	
+	function utf8_substr($string, $start, $length) {
+		return mb_substr($string, $start, $length, "UTF-8");
 	}
 
 }

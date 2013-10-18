@@ -5,25 +5,28 @@ define("APIKEY", 2);
 function checkAuthenticated(){
 	if(isset($_SERVER['HTTP_LIDKOPINGSH_APIKEY']) && isset($_SERVER['HTTP_LIDKOPINGSH_DEVICEID'])){
 		if(!validateApikey($_SERVER['HTTP_LIDKOPINGSH_APIKEY'], $_SERVER['HTTP_LIDKOPINGSH_DEVICEID'])){
-			errorGeneric("Apikey is invalid or outdated, try again. Please honor the exponential back off.", 41);
+			errorGeneric("Apikey is invalid or outdated, or specified device id is not correct. Try again. Please honor the exponential back off.", 41);
 		}
 	}else{
-		errorGeneric("No apikey specified, try again.", 42);
+		errorGeneric("No apikey or no device id specified, try again.", 42);
 	}
 }
 
 function bruteforceProtection(){
+	$numOfAttempts = 20;
+	$inTime = 1000*60*5; //5min
+	
 	$isBruteforcing = true;
 	
 	$sql = "SELECT * FROM `logging` WHERE `success`=0 AND `timestamp`>? AND `ip`=?";
 	$stmt = $GLOBALS['con']->prepare($sql);
 	$stmt->bind_param("is", $timestamp, $ip);
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$timestamp = (time()*1000)-(1000*60*10);
+	$timestamp = (time()*1000)-$inTime;
 	
 	$stmt->execute();
 	$res = $stmt->get_result();
-	$isBruteforcing = $res->num_rows >= 5;
+	$isBruteforcing = $res->num_rows >= $numOfAttempts;
 	
 	if($isBruteforcing){
 		logAccess(false, 0, 0);
