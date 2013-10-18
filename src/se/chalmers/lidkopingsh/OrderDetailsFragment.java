@@ -309,11 +309,19 @@ public class OrderDetailsFragment extends Fragment {
 		if (!mOrder.getImages().isEmpty()) {
 
 			// Get image from internal storage
-			String imagePath = mOrder.getImages().get(0).getImagePath()
-					.replace("/", "");
+			String imagePath = mOrder.getImages().get(0).getImagePath();
 			// Load Images
 			asyntaskImageLoader = new AsyntaskImageLoader();
 			asyntaskImageLoader.execute(imagePath);
+		}else{
+			ProgressBar pBar = (ProgressBar) mRootView
+					.findViewById(R.id.orderDrawingProgressBar);
+			pBar.setVisibility(View.GONE);
+			TextView textView = (TextView) mRootView
+					.findViewById(R.id.no_images_found_text_view);
+			textView.setVisibility(View.VISIBLE);
+			Log.d("DEBUG",
+					"Image not loaded, cannot find an image on path ");
 		}
 	}
 
@@ -332,14 +340,7 @@ public class OrderDetailsFragment extends Fragment {
 				result = BitmapFactory.decodeFile(filename);
 				Log.d("DEBUG", "Trying to load Image");
 			}
-			if (file.exists()) {
-				Log.d("DEBUG", "Image loaded");
-			} else {
-				Log.d("DEBUG",
-						"Image not loaded, cannot find an image on path "
-								+ filename);
-
-			}
+		
 			if (result != null) {
 				// Rescale the image if it is too big
 				int height = result.getHeight();
@@ -359,11 +360,11 @@ public class OrderDetailsFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Bitmap result) {
-			ProgressBar pBar = (ProgressBar) mRootView
-					.findViewById(R.id.orderDrawingProgressBar);
-			pBar.setVisibility(View.GONE);
 			if (result != null) {
 				bitmap = result;
+				ProgressBar pBar = (ProgressBar) mRootView
+						.findViewById(R.id.orderDrawingProgressBar);
+				pBar.setVisibility(View.GONE);
 				ImageView orderDrawing = (ImageView) mRootView
 						.findViewById(R.id.orderDrawing);
 				orderDrawing.setVisibility(View.VISIBLE);
@@ -374,10 +375,7 @@ public class OrderDetailsFragment extends Fragment {
 				// Attaches the library
 				PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
 				pva.setMaximumScale(8f);
-			}else{
-				LinearLayout textView = (LinearLayout) mRootView
-						.findViewById(R.id.no_images_found_card);
-				textView.setVisibility(View.VISIBLE);
+					Log.d("DEBUG", "Image loaded");
 			}
 			super.onPostExecute(result);
 		}

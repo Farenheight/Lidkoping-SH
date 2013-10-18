@@ -34,6 +34,10 @@ public class Image implements Syncable<Image> {
 	}
 
 	public String getImagePath() {
+		return imagePath.replace("/", "");
+	}
+	
+	public String getServerImagePath() {
 		return imagePath;
 	}
 

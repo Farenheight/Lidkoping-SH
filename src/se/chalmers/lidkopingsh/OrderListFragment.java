@@ -146,7 +146,9 @@ public class OrderListFragment extends ListFragment implements
 
 	@Override
 	public void onDestroy() {
-		mOrderAdapter.unregisterDataSetObserver(orderListObserver);
+		if (orderListObserver != null) {
+			mOrderAdapter.unregisterDataSetObserver(orderListObserver);
+		}
 		super.onDestroy();
 	}
 
@@ -228,13 +230,13 @@ public class OrderListFragment extends ListFragment implements
 
 	@Override
 	public void finishedUpdate() {
-		initOrderAdapter();
+		mOrderAdapter
+				.updateOrders(Accessor.getModel(getActivity()).getOrders());
 		mOrderAdapter.notifyDataSetChanged();
-		mOrderAdapter.refreshSort();
-		Log.d("OrderListFragment",
-				"Orders in OrderAdapter: " + mOrderAdapter.getCount());
+		mStationsAdapter.clear();
+		mStationsAdapter.addAll(Accessor.getModel(getActivity()).getStations());
 		mStationsAdapter.notifyDataSetChanged();
-		initStationAdapter();
+		Log.d("OrderListFragment", "Finsished update. Stations: " + mStationsAdapter.getCount());
 	}
 
 	@Override

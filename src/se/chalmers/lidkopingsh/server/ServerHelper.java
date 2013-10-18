@@ -323,16 +323,15 @@ public class ServerHelper {
      *            The image to process.
      */
 	public void saveImage(Image i) {
-		if (i.getImagePath() == null) {
+		if (i.getImagePath() != null) {
 			URL fileName;
 			try {
 				// Download file from web server and save it on internal
 				// storage.
 				fileName = new URL(serverPath + PICTURES_FOLDER
-						+ i.getImagePath());
+						+ i.getServerImagePath());
 				InputStream is = fileName.openStream();
-				OutputStream os = context.openFileOutput(i.getImagePath()
-						.replace("/", ""), Context.MODE_PRIVATE);
+				OutputStream os = context.openFileOutput(i.getImagePath(), Context.MODE_PRIVATE);
 
 				byte[] b = new byte[2048];
 				int length;
@@ -367,7 +366,7 @@ public class ServerHelper {
 		for (Order o : newOrderscopy) {
 			if (o.isRemoved()) {
 				for (Image i : o.getImages()) {
-					context.deleteFile(i.getImagePath().replace("/", ""));
+					context.deleteFile(i.getImagePath());
 				}
 				removedOrders.add(o);
 			}
@@ -432,7 +431,7 @@ public class ServerHelper {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
 						&& !newI.getImagePath().equals(oldI.getImagePath())) {
-					context.deleteFile(oldI.getImagePath().replace("/", ""));
+					context.deleteFile(oldI.getImagePath());
 					saveImage(newI);
 				}
 			}

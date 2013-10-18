@@ -32,7 +32,7 @@ public class SortHandler implements OnItemSelectedListener {
 		sort();
 	}
 
-	private void sort() {
+	public void sort() {
 		mOrderAdapter.sort(new StationComparator<Order>(mCurrentStation),
 				mCurrentStation);
 	}
