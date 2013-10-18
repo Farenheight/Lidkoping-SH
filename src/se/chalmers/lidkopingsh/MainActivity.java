@@ -190,7 +190,6 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void authinicationFailed() {
-		// TODO Auto-generated method stub
-		
+		Log.d("MainAct", "Authunication failed");
 	}
 }

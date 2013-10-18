@@ -201,25 +201,22 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 
 	@Override
 	public void startedUpdate() {
-		// TODO Auto-generated method stub
-
+		Log.e("LoginAct", "Started update - Should not update in loginAct");
 	}
 
 	@Override
 	public void finishedUpdate() {
-		// TODO Auto-generated method stub
-
+		Log.d("LoginAct", "Finished update - Should not happen in login act");
 	}
 
 	@Override
 	public void networkProblem(String message) {
-		// TODO Network problem
+		Log.d("LoginAct", "Network problem");
 	}
 
 	@Override
 	public void authinicationFailed() {
-		// TODO Auto-generated method stub
-
+		Log.d("LoginAct", "Authunication failed");
 	}
 
 	/**
