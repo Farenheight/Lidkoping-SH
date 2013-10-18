@@ -63,12 +63,12 @@ public class Accessor {
 	 * @return A connector that can connect to the server.
 	 */
 	public static ServerConnector getServerConnector(Context context) {
-		if (model == null) {
-			throw new IllegalStateException(
-					"Model is not created. getModel(Context) must be called before this method.");
-		}
 		// TODO: Create interface for ServerConnector
 		if (server == null) {
+			if (model == null) {
+				throw new IllegalStateException(
+						"Model is not created. getModel(Context) must be called before this method.");
+			}
 			server = new ServerConnector(context, model);
 		}
 		return server;
