@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Lidkopings Stenhuggeri</string>
-    <string name="title_stone_detail">Order detaljer</string>
+    <string name="app_name">Lidköpings Stenhuggeri</string>
+    <string name="title_stone_detail">Orderdetaljer</string>
 
     <string-array name="tasks_array">
         <item>Polering</item>
