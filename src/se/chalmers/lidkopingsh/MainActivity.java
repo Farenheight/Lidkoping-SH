@@ -51,6 +51,7 @@ public class MainActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
+		Accessor.getModel(this);		// Create model and load from database.
 		Accessor.getServerConnector(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {

@@ -1,8 +1,10 @@
 package se.chalmers.lidkopingsh;
 
-import se.chalmers.lidkopingsh.handler.Accessor;
+import org.apache.http.auth.AuthenticationException;
+
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
-import se.chalmers.lidkopingsh.server.ServerConnector;
+import se.chalmers.lidkopingsh.server.ServerHelper;
+import se.chalmers.lidkopingsh.server.ServerHelper.ApiResponse;
 import se.chalmers.lidkopingsh.server.ServerSettings;
 import android.accounts.NetworkErrorException;
 import android.animation.Animator;
@@ -220,13 +222,16 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 
 	@Override
 	public void networkProblem(String message) {
-		// TODO Network problem
+		Log.e("LoginActivity", "Could not connect to server");
+		Toast toast = Toast.makeText(LoginActivity.this, message,
+				Toast.LENGTH_SHORT);
+		toast.show();
 	}
 
 	@Override
 	public void authinicationFailed() {
-		// TODO Auto-generated method stub
-
+		Log.e("LoginActivity",
+				"Authentication failed (API key), this should never happen.");
 	}
 
 	/**
@@ -237,26 +242,26 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-
 			// Unique device id for every android device
 			String deviceId = Secure.getString(
 					LoginActivity.this.getContentResolver(), Secure.ANDROID_ID);
 
 			// Send to server
-			ServerConnector server = Accessor.getServerConnector(LoginActivity.this);
 			mUserName = "dev";
 			mPassword = "dev";
-			boolean success = false;
 			try {
-				success = server.authenticate(mUserName, mPassword, deviceId);
+				ApiResponse response = new ServerHelper(LoginActivity.this)
+						.getApikey(mUserName, mPassword, deviceId);
+				if (response != null) {
+					return response.isSuccess();
+				}
+			} catch (AuthenticationException e) {
+				authinicationFailed();
 			} catch (NetworkErrorException e) {
-				Log.e("LoginActivity", "Could not connect to server");
-				Toast toast = Toast.makeText(LoginActivity.this,
-						"Kunde inte ansluta till server.", Toast.LENGTH_SHORT);
-				toast.show();
+				networkProblem("Kunde inte ansluta till server.");
 			}
 
-			return success;
+			return false;
 		}
 
 		@Override

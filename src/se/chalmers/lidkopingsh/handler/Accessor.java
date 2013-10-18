@@ -39,7 +39,9 @@ public class Accessor {
 
 	/**
 	 * Returns the layer that creates the model.
-	 * @param context Context for using database.
+	 * 
+	 * @param context
+	 *            Context for using database.
 	 * @return A layer that can create a model.
 	 */
 	private static ILayer getLayer(Context context) {
@@ -51,13 +53,23 @@ public class Accessor {
 
 	/**
 	 * Returns a connector object for the remote server.
-	 * @param context Context for accessing local storage.
+	 * <p>
+	 * {@link #getModel(Context)} must be called before this method.
+	 * 
+	 * @param context
+	 *            Context for accessing local storage.
+	 * @param model
+	 *            The model holding all orders.
 	 * @return A connector that can connect to the server.
 	 */
 	public static ServerConnector getServerConnector(Context context) {
+		if (model == null) {
+			throw new IllegalStateException(
+					"Model is not created. getModel(Context) must be called before this method.");
+		}
 		// TODO: Create interface for ServerConnector
 		if (server == null) {
-			server = new ServerConnector(context);
+			server = new ServerConnector(context, model);
 		}
 		return server;
 	}

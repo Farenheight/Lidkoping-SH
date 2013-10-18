@@ -44,7 +44,7 @@ import com.google.gson.JsonSyntaxException;
  * @author Anton Jansson
  * 
  */
-class ServerHelper {
+public class ServerHelper {
 	private static final String LIDKOPINGSH_DEVICEID = "Lidkopingsh-Deviceid";
 	private static final String LIDKOPINGSH_PASSWORD = "Lidkopingsh-Password";
 	private static final String LIDKOPINGSH_USERNAME = "Lidkopingsh-Username";
@@ -199,7 +199,8 @@ class ServerHelper {
 	 *             if server could not be accessed.
 	 * @throws AuthenticationException
 	 */
-	public List<Order> getUpdates(boolean getAll) throws NetworkErrorException,
+	public List<Order> getUpdates(boolean getAll,
+			Collection<Order> currentOrders) throws NetworkErrorException,
 			AuthenticationException {
 		Gson gson = new Gson();
 		if (getAll) {
@@ -207,10 +208,9 @@ class ServerHelper {
 			syncImages(allOrders);
 			return allOrders;
 		}
-		Collection<Order> orders = Accessor.getModel(context).getOrders();
-		long[][] orderArray = new long[orders.size()][2];
+		long[][] orderArray = new long[currentOrders.size()][2];
 		int i = 0;
-		for (Order o : orders) {
+		for (Order o : currentOrders) {
 			orderArray[i][0] = (long) o.getId();
 			orderArray[i][1] = (long) o.getLastTimeUpdate();
 			i++;
