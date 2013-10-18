@@ -11,6 +11,7 @@
         android:id="@+id/id_name"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
         android:text="O.M."
         android:textColor="@color/list_item_text_color_selector"
         android:textSize="50sp"

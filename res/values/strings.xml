@@ -9,8 +9,8 @@
         <item>Sagning</item>
     </string-array>
 
-    <string name="cemetery_board">Kyrkogardsnämnd</string>
-    <string name="cemetery">Kyrkogard</string>
+    <string name="cemetery_board">Kyrkogårdsnämnd</string>
+    <string name="cemetery">Kyrkogård</string>
     <string name="desc">Beskrivning</string>
     <string name="model">Modell</string>
     <string name="material_and_color">Material och färg</string>
@@ -24,7 +24,7 @@
     <string name="base">Sockel</string>
     <string name="long_test_string">This is a longer test string for testing longer strings suitability in lorem ipsum</string>
     <string name="stoneModel">Stenmodell</string>
-    <string name="order_drawing">Order ritning</string>
+    <string name="order_drawing">Orderritning</string>
     <string name="workerNote">Anteckningar</string>
     <string name="noteHint">Skriv här</string>
     <string name="tablet_startup_hint">Klicka i listan till vänster för att visa en order</string>
