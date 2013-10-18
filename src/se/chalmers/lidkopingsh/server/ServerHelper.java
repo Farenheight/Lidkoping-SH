@@ -23,9 +23,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
-import se.chalmers.lidkopingsh.LoginActivity;
 import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
+import se.chalmers.lidkopingsh.model.Product;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -33,6 +33,7 @@ import android.provider.Settings.Secure;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
@@ -66,8 +67,8 @@ public class ServerHelper {
 	 * @param serverPath
 	 */
 	public ServerHelper(Context context) {
-		deviceId = Secure.getString(
-				context.getContentResolver(), Secure.ANDROID_ID);
+		deviceId = Secure.getString(context.getContentResolver(),
+				Secure.ANDROID_ID);
 		preferences = context.getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 
@@ -162,8 +163,8 @@ public class ServerHelper {
 	 *             if server could not be accessed.
 	 * @throws AuthenticationException
 	 */
-	public ApiResponse getApikey(String username, String password) throws NetworkErrorException,
-			AuthenticationException {
+	public ApiResponse getApikey(String username, String password)
+			throws NetworkErrorException, AuthenticationException {
 		Collection<Header> headers = new ArrayList<Header>();
 		headers.add(new BasicHeader(LIDKOPINGSH_USERNAME, username));
 		headers.add(new BasicHeader(LIDKOPINGSH_PASSWORD, password));
@@ -199,15 +200,16 @@ public class ServerHelper {
 	public List<Order> getUpdates(boolean getAll,
 			Collection<Order> currentOrders) throws NetworkErrorException,
 			AuthenticationException {
+		Collection<Order> oldOrders = new ArrayList<Order>(currentOrders);
 		Gson gson = new Gson();
 		if (getAll) {
 			List<Order> allOrders = getUpdatedOrdersFromServer("");
-			syncImages(allOrders, currentOrders);
+			syncImages(allOrders, oldOrders);
 			return allOrders;
 		}
-		long[][] orderArray = new long[currentOrders.size()][2];
+		long[][] orderArray = new long[oldOrders.size()][2];
 		int i = 0;
-		for (Order o : currentOrders) {
+		for (Order o : oldOrders) {
 			orderArray[i][0] = (long) o.getId();
 			orderArray[i][1] = (long) o.getLastTimeUpdate();
 			i++;
@@ -215,7 +217,7 @@ public class ServerHelper {
 
 		List<Order> newOrders = getUpdatedOrdersFromServer(gson
 				.toJson(orderArray));
-		syncImages(newOrders, currentOrders);
+		syncImages(newOrders, oldOrders);
 
 		return newOrders;
 	}
@@ -244,7 +246,10 @@ public class ServerHelper {
 
 	private ApiResponseGet getResponseGet(Reader reader)
 			throws JsonSyntaxException, JsonIOException {
-		return new Gson().fromJson(reader, ApiResponseGet.class);
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Product.class, new ProductDeserializer());
+		Gson gson = builder.create();
+		return gson.fromJson(reader, ApiResponseGet.class);
 	}
 
 	private ApiResponse getResponseSend(Reader reader)
