@@ -317,8 +317,8 @@ public class OrderDetailsFragment extends Fragment {
 			ProgressBar pBar = (ProgressBar) mRootView
 					.findViewById(R.id.orderDrawingProgressBar);
 			pBar.setVisibility(View.GONE);
-			LinearLayout textView = (LinearLayout) mRootView
-					.findViewById(R.id.no_images_found_card);
+			TextView textView = (TextView) mRootView
+					.findViewById(R.id.no_images_found_text_view);
 			textView.setVisibility(View.VISIBLE);
 			Log.d("DEBUG",
 					"Image not loaded, cannot find an image on path ");
