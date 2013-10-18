@@ -68,4 +68,6 @@ public interface IModel extends Listener<Collection<Order>> {
 
 	void removeOrderChangedListener(Listener<OrderChangedEvent> listener);
 
+	public void setStations(Collection<Station> stations);
+
 }
