@@ -29,10 +29,7 @@ public class Accessor {
 	public static IModel getModel(Context context) {
 		if (model == null) {
 			model = getLayer(context).getModel(); // Should be populated from DB
-			getServerConnector(context).addOrderChangedListener(model);
 			model.addDataChangedListener(layer);
-			model.addOrderChangedListener(server);
-			server.update(true);
 		}
 		return model;
 	}
@@ -70,6 +67,9 @@ public class Accessor {
 						"Model is not created. getModel(Context) must be called before this method.");
 			}
 			server = new ServerConnector(context, model);
+			server.addOrderChangedListener(model);
+			model.addOrderChangedListener(server);
+			server.update(true);
 		}
 		return server;
 	}
