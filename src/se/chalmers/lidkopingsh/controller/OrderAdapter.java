@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh;
+package se.chalmers.lidkopingsh.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import se.chalmers.lidkopingsh.R;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.StationComparator;

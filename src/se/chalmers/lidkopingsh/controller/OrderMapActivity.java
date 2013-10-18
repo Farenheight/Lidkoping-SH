@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh;
+package se.chalmers.lidkopingsh.controller;
 
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import se.chalmers.lidkopingsh.R;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import android.graphics.drawable.Drawable;

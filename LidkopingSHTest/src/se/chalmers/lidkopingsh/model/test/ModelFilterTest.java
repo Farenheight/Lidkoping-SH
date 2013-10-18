@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import se.chalmers.lidkopingsh.ModelFilter;
+import se.chalmers.lidkopingsh.controller.ModelFilter;
 import se.chalmers.lidkopingsh.database.OrderDbFiller;
 import se.chalmers.lidkopingsh.model.Order;
 

@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh;
+package se.chalmers.lidkopingsh.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;

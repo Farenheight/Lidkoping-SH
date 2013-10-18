@@ -1,6 +1,6 @@
 eclipse.preferences.version=1
-encoding//src/se/chalmers/lidkopingsh/LoginActivity.java=UTF-8
-encoding//src/se/chalmers/lidkopingsh/OrderListFragment.java=UTF-8
+encoding//src/se/chalmers/lidkopingsh/controller/LoginActivity.java=UTF-8
+encoding//src/se/chalmers/lidkopingsh/controller/OrderListFragment.java=UTF-8
 encoding//src/se/chalmers/lidkopingsh/server/AsyncTaskGet.java=UTF-8
 encoding//src/se/chalmers/lidkopingsh/server/ServerHelper.java=UTF-8
 encoding/<project>=UTF-8

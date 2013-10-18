@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh;
+package se.chalmers.lidkopingsh.controller;
 
 import se.chalmers.lidkopingsh.database.ILayer;
 import se.chalmers.lidkopingsh.database.OrderDbLayer;

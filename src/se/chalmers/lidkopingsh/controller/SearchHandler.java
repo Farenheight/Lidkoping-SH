@@ -1,4 +1,4 @@
-package se.chalmers.lidkopingsh;
+package se.chalmers.lidkopingsh.controller;
 
 import android.text.Editable;
 import android.text.TextWatcher;
