@@ -2,6 +2,7 @@ package se.chalmers.lidkopingsh;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -33,7 +34,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	// A copy of the original mOrders list, initialized from and then used
 	// instead as soon as the mFilter ArrayFilter is used. mOrders will then
 	// only contain the filtered values.
-	private List<Order> mOriginalObjects;
+	private Collection<Order> mOriginalObjects;
 	private ArrayFilter mFilter;
 	private ModelFilter mModelFilter;
 
@@ -54,11 +55,11 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	public OrderAdapter(Context context, List<Order> orders) {
 		mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mOrders = orders;
+		mOrders = new ArrayList<Order>(orders);
 		mContext = context;
 		// First time the filter is run, save the original values in a new
 		// list and create a new model filter
-		mOriginalObjects = new ArrayList<Order>(mOrders);
+		mOriginalObjects = new ArrayList<Order>(orders);
 	}
 
 	/**
@@ -174,7 +175,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 				mModelFilter = new ModelFilter();
 			}
 
-			List<Order> filteredOrders = mModelFilter.getOrdersByFilter(
+			Collection<Order> filteredOrders = mModelFilter.getOrdersByFilter(
 					constraint, mOrders, mOriginalObjects);
 			results.values = filteredOrders;
 			results.count = filteredOrders.size();
@@ -201,5 +202,11 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	
 	public void refreshSort(){
 		sort(new StationComparator<Order>(currentSortStation), currentSortStation);
+	}
+	public void setOrders(Collection<Order> collection){
+		this.mOrders = new ArrayList<Order>(collection);
+		this.mOriginalObjects = new ArrayList<Order>(collection);
+		notifyDataSetChanged();
+		refreshSort();
 	}
 }

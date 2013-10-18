@@ -359,14 +359,14 @@ public class OrderDetailsFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Bitmap result) {
+			ProgressBar pBar = (ProgressBar) mRootView
+					.findViewById(R.id.orderDrawingProgressBar);
+			pBar.setVisibility(View.GONE);
 			if (result != null) {
 				bitmap = result;
 				ImageView orderDrawing = (ImageView) mRootView
 						.findViewById(R.id.orderDrawing);
 				orderDrawing.setVisibility(View.VISIBLE);
-				ProgressBar pBar = (ProgressBar) mRootView
-						.findViewById(R.id.orderDrawingProgressBar);
-				pBar.setVisibility(View.GONE);
 				// Set drawable to view
 				BitmapDrawable drawable = new BitmapDrawable(getResources(),
 						bitmap);
@@ -374,6 +374,10 @@ public class OrderDetailsFragment extends Fragment {
 				// Attaches the library
 				PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
 				pva.setMaximumScale(8f);
+			}else{
+				LinearLayout textView = (LinearLayout) mRootView
+						.findViewById(R.id.no_images_found_card);
+				textView.setVisibility(View.VISIBLE);
 			}
 			super.onPostExecute(result);
 		}

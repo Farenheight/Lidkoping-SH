@@ -272,7 +272,7 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	 * @param listener
 	 *            the uninterested listener
 	 */
-	public void removeOrderListener(Listener<Order> listener) {
+	public void removeOrderListener(Listener<OrderChangedEvent> listener) {
 		orderListeners.remove(listener);
 	}
 
@@ -349,6 +349,18 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 			notifySyncedListeners(null);
 			return false;
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		return (int) ((id * 2) + (timeCreated * 3) + (lastTimeUpdate * 5)
+				+ (cemetery.hashCode() * 7) + (cemeteryBoard.hashCode() * 11)
+				+ (cemeteryBlock.hashCode() * 13)
+				+ (cemeteryNumber.hashCode() * 17) + (orderDate * 19)
+				+ (orderNumber.hashCode() * 23) + (idName.hashCode() * 29)
+				+ (customer.hashCode() * 31) + (products.hashCode() * 37) + (deceased
+				.hashCode() * 41));
+		
 	}
 
 	@Override

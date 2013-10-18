@@ -10,6 +10,13 @@ import java.util.NoSuchElementException;
 import se.chalmers.lidkopingsh.util.Listener;
 import android.util.Log;
 
+/**
+ * A mapmodel that holds all orders and stations
+ * 
+ * @author Kim Kling
+ * 
+ */
+
 public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
 	private Map<Integer, Product> products;
@@ -17,6 +24,14 @@ public class MapModel implements IModel {
 	private Collection<DataChangedListener> dataChangedListeners;
 	private Collection<Listener<OrderChangedEvent>> orderChangedListeners;
 
+	/**
+	 * Creates a new mapmodel with the specified orders and stations
+	 * 
+	 * @param o
+	 *            The collection of orders to be held by the model
+	 * @param s
+	 *            The collection of stations to be held by the model
+	 */
 	public MapModel(Collection<Order> o, Collection<Station> s) {
 		this.products = new HashMap<Integer, Product>();
 		this.orders = new HashMap<Integer, Order>();
@@ -31,6 +46,10 @@ public class MapModel implements IModel {
 			or.addOrderListener(orderChangedListener);
 		}
 		this.stations = new ArrayList<Station>(s);
+	}
+
+	public MapModel(Collection<Order> o) {
+		this(o, new ArrayList<Station>());
 	}
 
 	@Override
@@ -53,6 +72,10 @@ public class MapModel implements IModel {
 		orderChangedListeners.remove(listener);
 	}
 
+	/**
+	 * Returns the index of the first order that has an uncompleted task at
+	 * station
+	 */
 	public int getFirstUncompletedIndex(List<Order> sortedList, Station station) {
 		int i = 0;
 		for (Order o : sortedList) {
@@ -62,10 +85,6 @@ public class MapModel implements IModel {
 			i++;
 		}
 		return i;
-	}
-
-	public MapModel(Collection<Order> o) {
-		this(o, new ArrayList<Station>());
 	}
 
 	@Override
@@ -106,10 +125,13 @@ public class MapModel implements IModel {
 
 	@Override
 	public void removeOrder(Order o) {
-		orders.remove(o.getId());
-		for (Product p : orders.get(o.getId()).getProducts()) {
-			products.remove(p.getId());
+		Order order = orders.get(o.getId());
+		if (order != null) {
+			for (Product p : order.getProducts()) {
+				products.remove(p.getId());
+			}
 		}
+		orders.remove(o.getId());
 
 		// TODO When removing orders, check if the order have tasks that
 		// does not exist in any other order.
@@ -136,6 +158,12 @@ public class MapModel implements IModel {
 				+ "is found");
 	}
 
+	/**
+	 * Syncs the list of orders to the orders the model holds itself
+	 * 
+	 * @param orders
+	 *            The list of orders to be synced with this model
+	 */
 	private void sync(Collection<Order> orders) {
 		Log.d("Model", "Syncing model");
 		Collection<Order> added = new ArrayList<Order>();
@@ -162,7 +190,7 @@ public class MapModel implements IModel {
 		}
 
 		for (DataChangedListener l : dataChangedListeners) {
-			l.ordersChanged(added, changed, removed,this);
+			l.ordersChanged(added, changed, removed, this);
 		}
 	}
 

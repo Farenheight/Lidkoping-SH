@@ -61,7 +61,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		this.frontWork = frontWork != null ? frontWork : "";
 		this.listeners = new ArrayList<Listener<OrderChangedEvent>>();
 		this.tasks = new TaskList(tasks);
-		
+
 		if (tasks != null) {
 			for (Task t : tasks) {
 				t.addTaskListener(this);
@@ -97,7 +97,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	public Product(List<Task> tasks) {
 		this(0, "", "", "", tasks, new ProductType(0, ""));
 	}
-	
+
 	/**
 	 * Create a new product with a product.
 	 * 
@@ -172,7 +172,8 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * @return All the tasks this product has.
 	 */
 	public List<Task> getTasks() {
-		return tasks == null? new ArrayList<Task>() : new ArrayList<Task>(tasks);
+		return tasks == null ? new ArrayList<Task>() : new ArrayList<Task>(
+				tasks);
 	}
 
 	/**
@@ -315,6 +316,13 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		return 41 * id + 43 * materialColor.hashCode()
+				+ ((description != null) ? 53 * description.hashCode() : 0)
+				+ 47 * frontWork.hashCode() + 59 * tasks.hashCode();
+	}
+
 	/**
 	 * Inner class that makes sure that listeners are added and removed properly
 	 * when an {@link Product} is synced.
@@ -326,7 +334,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		private static final long serialVersionUID = 4082149811877348098L;
 
 		public TaskList(Collection<Task> collection) {
-			super(collection == null? new ArrayList<Task>() : collection);
+			super(collection == null ? new ArrayList<Task>() : collection);
 		}
 
 		@Override

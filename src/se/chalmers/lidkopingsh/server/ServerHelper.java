@@ -275,7 +275,7 @@ public class ServerHelper {
 	}
 
 	public void saveImage(Image i) {
-		if (i.getImageFile() == null) {
+		if (i.getImagePath() == null) {
 			URL fileName;
 			try {
 				// Download file from web server and save it on internal
@@ -304,13 +304,13 @@ public class ServerHelper {
 	private void syncImages(List<Order> newOrders, Collection<Order> oldOrders) {
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
-
+		
 		for (Order o : newOrders) {
 			if (o.isRemoved()) {
 				for (Image i : o.getImages()) {
-					i.deleteImage();
+//					i.deleteImage();
 				}
-				newOrders.remove(o);
+				//newOrders.remove(o);
 			}
 		}
 
@@ -354,7 +354,7 @@ public class ServerHelper {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
 						&& newI.getImagePath() != oldI.getImagePath()) {
-					oldI.deleteImage();
+//					oldI.deleteImage();
 					saveImage(newI);
 				}
 			}

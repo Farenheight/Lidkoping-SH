@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import se.chalmers.lidkopingsh.model.DataChangedListener;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
-import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.util.Listener;
 import android.content.Context;
 import android.os.Handler;
@@ -36,6 +34,14 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 	/** Listeners for when orders has been changed after a server update. */
 	private List<Listener<Collection<Order>>> orderListeners;
 
+	/**
+	 * Creates a ServerConnector for handling server connection.
+	 * 
+	 * @param context
+	 *            The context for accessing local storage.
+	 * @param model
+	 *            The model for retrieving updates.
+	 */
 	public ServerConnector(Context context, IModel model) {
 		helper = new ServerHelper(context);
 		networkListeners = new ArrayList<NetworkStatusListener>();
@@ -48,10 +54,23 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 				UPDATE_INTERVAL);
 	}
 
+	/**
+	 * Add listener for retrieving network statuses.
+	 * 
+	 * @param listener
+	 *            The network listener.
+	 */
 	public void addNetworkListener(NetworkStatusListener listener) {
 		networkListeners.add(listener);
 	}
 
+	/**
+	 * Add listener for retrieving when orders has been changed after a server
+	 * update.
+	 * 
+	 * @param listener
+	 *            The listener of orders
+	 */
 	public void addOrderChangedListener(Listener<Collection<Order>> listener) {
 		orderListeners.add(listener);
 	}
@@ -61,40 +80,74 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		sendUpdate(event);
 	}
 
-	public void finishedUpdate() {
-		for (NetworkStatusListener l : networkListeners) {
-			l.finishedUpdate();
-		}
-	}
-
+	/**
+	 * Notifies all network listeners that authentication failed.
+	 */
 	public void notifyAuthenticationFailed() {
 		for (NetworkStatusListener l : networkListeners) {
 			l.authenticationFailed();
 		}
 	}
 
+	/**
+	 * Notifies all order changed listeners that data changed.
+	 */
 	public void notifyDataChanged(Collection<Order> orders) {
 		for (Listener<Collection<Order>> l : orderListeners) {
 			l.changed(orders);
 		}
 	}
 
+	/**
+	 * Notifies all network listeners that update is finished.
+	 */
+	public void notifyFinishedUpdate() {
+		for (NetworkStatusListener l : networkListeners) {
+			l.finishedUpdate();
+		}
+	}
+
+	/**
+	 * Notifies all network listeners that a network problem occurred.
+	 */
 	public void notifyNetworkProblem(String message) {
 		for (NetworkStatusListener l : networkListeners) {
 			l.networkProblem(message);
 		}
 	}
 
+	/**
+	 * Notifies all network listeners that update is started.
+	 */
+	public void notifyStartedUpdate() {
+		for (NetworkStatusListener l : networkListeners) {
+			l.startedUpdate();
+		}
+	}
+
+	/**
+	 * Remove listener for retrieving network statuses.
+	 * 
+	 * @param listener
+	 *            The network listener.
+	 */
 	public void removeNetworkListener(NetworkStatusListener listener) {
 		networkListeners.remove(listener);
 	}
 
-	public void removeOrderChangedListener(DataChangedListener listener) {
+	/**
+	 * Remove listener for retrieving when orders has been changed after a
+	 * server update.
+	 * 
+	 * @param listener
+	 *            The order listener.
+	 */
+	public void removeOrderChangedListener(Listener<Collection<Order>> listener) {
 		orderListeners.remove(listener);
 	}
 
 	/**
-	 * Creates an asynctask that will send an update and then update the local
+	 * Creates an AsyncTask that will send an update and then update the local
 	 * database
 	 * 
 	 * @param event
@@ -103,25 +156,12 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 	public void sendUpdate(OrderChangedEvent event) {
 		Log.d("ServerConnection",
 				"Sending update to server, via AsyncTaskSend. (updating data before send)");
-		// Update order(s) before sending to server, otherwise
-		// request can be dismissed.
-		Status status = event.getTask().getStatus();
-		update(false);
-		if (!event.getOrder().isRemoved()) {
-			event.getTask().setStatus(status);
-			new AsyncTaskSend(event, helper, this, model.getOrders()).execute();
-		}
-	}
-
-	public void startedUpdate() {
-		for (NetworkStatusListener l : networkListeners) {
-			l.startedUpdate();
-		}
+		new AsyncTaskSend(event, helper, this, model.getOrders()).execute();
 	}
 
 	/**
 	 * Updates the local database with data from server. Runs in a different
-	 * thread because of asynctask.
+	 * thread because of AsyncTask.
 	 * 
 	 * @param getAll
 	 *            True if everything should be fetched false otherwise
@@ -132,11 +172,14 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		new AsyncTaskGet(getAll, helper, this, model.getOrders()).execute();
 	}
 
+	/**
+	 * A TimerTask that updates from server in a specified interval.
+	 */
 	private class UpdateTimerTask extends TimerTask {
 		private Handler handler;
 
 		public UpdateTimerTask() {
-			handler = new Handler(); // TODO: Add comment for this
+			handler = new Handler();
 		}
 
 		@Override

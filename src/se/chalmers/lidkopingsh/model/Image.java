@@ -1,31 +1,45 @@
 package se.chalmers.lidkopingsh.model;
 
-import java.io.File;
-
 import se.chalmers.lidkopingsh.util.Syncable;
 
 /**
  * Holds the filepath to an image and its identification number.
  * 
- * @author Alexander H�renstam
+ * @author Alexander Härenstam
  * @author Olliver Mattsson
+ * @author Anton
  */
 public class Image implements Syncable<Image> {
 	private int id;
 	private String imagePath;
-	private File imageFile;
-	
-	public Image(int id, String imagePath){
+
+	public Image(int id, String imagePath) {
 		this.id = id;
 		this.imagePath = imagePath;
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		} else if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Image i = (Image) o;
+		return id == i.id && imagePath.equals(i.imagePath);
+	}
+
 	public int getId() {
 		return id;
 	}
-	
+
 	public String getImagePath() {
 		return imagePath;
+	}
+
+	@Override
+	public int hashCode() {
+		return 31 * id + imagePath.hashCode();
 	}
 
 	public void setId(int id) {
@@ -36,28 +50,14 @@ public class Image implements Syncable<Image> {
 		this.imagePath = imagePath;
 	}
 
-	public File getImageFile() {
-		return imageFile;
-	}
-
-	public void setImageFile(File imageFile) {
-		this.imageFile = imageFile;
-	}
-	
-	public void deleteImage() {
-		if (imageFile != null) {
-			imageFile.delete();
-			imageFile = null;
-		}
-	}
-
 	@Override
 	public boolean sync(Image newData) {
 		if (newData != null && this.id == newData.id
 				&& getClass() == newData.getClass()) {
-			} else {
-				return this.id == newData.id && this.imageFile == newData.imageFile && this.imagePath.equals(newData.imagePath);
-			}
+			this.id = newData.id;
+			this.imagePath = newData.imagePath;
+			return true;
+		}
 		return false;
 	}
 }

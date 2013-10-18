@@ -34,7 +34,7 @@ class AsyncTaskGet extends AsyncTask<Void, Void, List<Order>> {
 
 	@Override
 	protected void onPreExecute() {
-		connector.startedUpdate();
+		connector.notifyStartedUpdate();
 	}
 
 	@Override
@@ -69,6 +69,6 @@ class AsyncTaskGet extends AsyncTask<Void, Void, List<Order>> {
 		} else if (orders != null) {
 			connector.notifyDataChanged(orders);
 		}
-		connector.finishedUpdate();
+		connector.notifyFinishedUpdate();
 	}
 }

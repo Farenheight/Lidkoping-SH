@@ -7,6 +7,7 @@ import org.apache.http.auth.AuthenticationException;
 
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
+import se.chalmers.lidkopingsh.server.ServerHelper.ApiResponse;
 import android.accounts.NetworkErrorException;
 import android.os.AsyncTask;
 
@@ -23,6 +24,8 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	private final OrderChangedEvent event;
 	private final ServerConnector connector;
 	private final Collection<Order> currentOrders;
+	private ApiResponse response;
+	private se.chalmers.lidkopingsh.model.Status status;
 	private Exception exception;
 
 	public AsyncTaskSend(OrderChangedEvent event, ServerHelper serverLayer,
@@ -35,14 +38,15 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 
 	@Override
 	protected void onPreExecute() {
-		connector.startedUpdate();
+		connector.notifyStartedUpdate();
 	}
 
 	@Override
 	protected List<Order> doInBackground(Void... none) {
 		List<Order> orders = null;
 		try {
-			serverHelper.sendUpdate(event.getOrder());
+			status = event.getTask().getStatus();
+			response = serverHelper.sendUpdate(event.getOrder());
 			orders = serverHelper.getUpdates(false, currentOrders);
 		} catch (Exception e) {
 			exception = e;
@@ -70,7 +74,13 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 			}
 		} else if (orders != null) {
 			connector.notifyDataChanged(orders);
+			if (response != null && !response.isSuccess()
+					&& !event.getOrder().isRemoved()) {
+				// Indirectly calls this Asynctask once more, trying to send
+				// update again.
+				event.getTask().setStatus(status);
+			}
 		}
-		connector.finishedUpdate();
+		connector.notifyFinishedUpdate();
 	}
 }

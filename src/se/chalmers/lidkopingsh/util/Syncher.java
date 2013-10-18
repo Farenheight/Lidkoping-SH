@@ -10,8 +10,7 @@ public class Syncher {
 		boolean objectModified = false;
 		int i = 0;
 		if (newList != null) {
-			for (T newObject : newList) { // TODO: null här, follow the
-											// debugger!
+			for (T newObject : newList) { 
 				objectModified = false;
 				for (T oldObject : oldList) {
 					if (oldObject.sync(newObject)) {
@@ -26,10 +25,6 @@ public class Syncher {
 			}
 		}
 
-		// Removes data that doesn't exist in new list
-		// List<T> delta = new ArrayList<T>(oldList);
-		// delta.removeAll(newList);
-		// returnedList.removeAll(delta);
 		return returnedList;
 	}
 }

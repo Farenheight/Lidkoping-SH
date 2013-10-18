@@ -1,7 +1,7 @@
 package se.chalmers.lidkopingsh;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Locale;
 
 import se.chalmers.lidkopingsh.model.Order;
@@ -22,8 +22,8 @@ public class ModelFilter {
 		return idName.startsWith(constr);
 	}
 
-	public List<Order> getOrdersByFilter(CharSequence constraint, List<Order> orders,
-			List<Order> originalObjects) {
+	public Collection<Order> getOrdersByFilter(CharSequence constraint, Collection<Order> orders,
+			Collection<Order> originalObjects) {
 		if (constraint == null || constraint.length() == 0) {
 			return new ArrayList<Order>(originalObjects);
 		} else {

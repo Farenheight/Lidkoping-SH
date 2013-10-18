@@ -114,7 +114,7 @@ public class OrderListFragment extends ListFragment implements
 				Accessor.getModel(getActivity()).getOrders()));
 		setListAdapter(mOrderAdapter);
 		orderListObserver = new OrderListObserver();
-		mOrderAdapter.registerDataSetObserver(orderListObserver);
+		mOrderAdapter.registerDataSetObserver(orderListObserver); 
 		Log.i("OrderListFragment", "New Order Adapter created");
 	}
 

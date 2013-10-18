@@ -6,7 +6,7 @@ package se.chalmers.lidkopingsh.model;
  * @author Kim
  * 
  */
-public class Customer implements Cloneable{
+public class Customer implements Cloneable {
 
 	private String title;
 	private String name;
@@ -77,6 +77,16 @@ public class Customer implements Cloneable{
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		return 79 * id + 83 * title.hashCode() + 89 * name.hashCode() + 97
+				* address.hashCode() + 101 * postAddress.hashCode() + 103
+				* eMail.hashCode();
+	}
+
+	/**
+	 * Clones this customer
+	 */
 	public Customer clone() {
 		return new Customer(title, name, address, postAddress, eMail, id);
 	}
