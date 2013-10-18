@@ -18,7 +18,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;

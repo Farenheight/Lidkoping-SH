@@ -204,11 +204,9 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 
 	@Override
 	public void finishedUpdate() {
-		//TODO Error "Content view not yet created"
+		mOrderAdapter.
 		mOrderAdapter.notifyDataSetChanged();
 		mOrderAdapter.refreshSort();
-		Log.d("OrderListFragment",
-				"Orders in OrderAdapter: " + mOrderAdapter.getCount());
 	}
 
 	@Override
