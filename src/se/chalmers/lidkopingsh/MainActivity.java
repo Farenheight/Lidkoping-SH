@@ -186,7 +186,7 @@ public class MainActivity extends FragmentActivity implements
 	public void networkProblem(String message) {
 		Log.i("MainActivity", "Network error");
 		Context context = getApplicationContext();
-		CharSequence text = "Network error, check your connection";
+		CharSequence text = getResources().getString(R.string.network_error_no_internet);
 		int duration = Toast.LENGTH_SHORT;
 
 		Toast toast = Toast.makeText(context, text, duration);

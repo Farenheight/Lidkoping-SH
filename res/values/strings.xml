@@ -31,6 +31,8 @@
     <string name="dynamic_id_name">O.R.</string>
     <string name="searchHint">Sök</string>
     <string name="section_header">&lt;u>SECTION HEADER&lt;/u></string>
+    <string name="network_error_change_data">Kan inte ändra status, kolla internetuppkopplingen</string>
+    <string name="network_error_no_internet">Internetuppkoppling saknas, kolla internetuppkopplingen</string>
 
     <string-array name="layers_array">
         <item>@string/normal</item>
@@ -43,5 +45,6 @@
     <string name="logout">Logga ut</string>
     <string name="help">Hjälp</string>
     <string name="see_map_view">Se Kartvy</string>
+
 
 </resources>

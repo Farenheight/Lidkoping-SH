@@ -138,7 +138,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 
 		// Customer name TODO: Change to deceased's name if available later
 		tmpTextView = (TextView) listItemView.findViewById(R.id.deceased_name);
-		tmpTextView.setText("Avlidnes namn");
+		tmpTextView.setText(order.getDeceased());
 
 		// Other details
 		Calendar cal = Calendar.getInstance();
