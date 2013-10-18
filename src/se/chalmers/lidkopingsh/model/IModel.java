@@ -6,6 +6,12 @@ import java.util.NoSuchElementException;
 
 import se.chalmers.lidkopingsh.util.Listener;
 
+/**
+ * An interface for a model 
+ * @author Kim Kling
+ *
+ */
+
 public interface IModel extends Listener<Collection<Order>> {
 
 	/**

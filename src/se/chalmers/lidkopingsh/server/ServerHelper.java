@@ -275,44 +275,33 @@ public class ServerHelper {
 	}
 
 	public void saveImage(Image i) {
-		if (i.getImageFile() == null) {
-			URL fileName;
-			try {
-				// Download file from web server and save it on internal
-				// storage.
-				fileName = new URL(serverPath + PICTURES_FOLDER
-						+ i.getImagePath());
-				InputStream is = fileName.openStream();
-				OutputStream os = context.openFileOutput(i.getImagePath()
-						.replace("/", ""), Context.MODE_PRIVATE);
+		URL fileName;
+		try {
+			// Download file from web server and save it on internal
+			// storage.
+			fileName = new URL(serverPath + PICTURES_FOLDER
+					+ i.getImagePath());
+			InputStream is = fileName.openStream();
+			OutputStream os = context.openFileOutput(i.getImagePath()
+					.replace("/", ""), Context.MODE_PRIVATE);
 
-				byte[] b = new byte[2048];
-				int length;
+			byte[] b = new byte[2048];
+			int length;
 
-				while ((length = is.read(b)) != -1) {
-					os.write(b, 0, length);
-				}
-
-				is.close();
-				os.close();
-			} catch (Exception e) {
-				e.printStackTrace();
+			while ((length = is.read(b)) != -1) {
+				os.write(b, 0, length);
 			}
+
+			is.close();
+			os.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	private void syncImages(List<Order> newOrders, Collection<Order> oldOrders) {
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
-
-		for (Order o : newOrders) {
-			if (o.isRemoved()) {
-				for (Image i : o.getImages()) {
-					i.deleteImage();
-				}
-				newOrders.remove(o);
-			}
-		}
 
 		// gets all old images
 		for (Order oldOrder : oldOrders) {
@@ -354,7 +343,6 @@ public class ServerHelper {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
 						&& newI.getImagePath() != oldI.getImagePath()) {
-					oldI.deleteImage();
 					saveImage(newI);
 				}
 			}

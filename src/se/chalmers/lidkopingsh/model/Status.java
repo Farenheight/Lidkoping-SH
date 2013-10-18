@@ -2,6 +2,12 @@ package se.chalmers.lidkopingsh.model;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * A status for a task
+ * @author Olliver
+ *
+ */
+
 public enum Status {
 	@SerializedName("0")
 	NOT_DONE(0),

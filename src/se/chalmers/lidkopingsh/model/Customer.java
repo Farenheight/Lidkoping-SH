@@ -77,6 +77,9 @@ public class Customer implements Cloneable{
 		}
 	}
 
+	/**
+	 * Clones this customer
+	 */
 	public Customer clone() {
 		return new Customer(title, name, address, postAddress, eMail, id);
 	}
