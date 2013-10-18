@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +25,8 @@ import android.widget.Spinner;
  * selection. This helps indicate which item is currently being viewed in a
  * {@link OrderDetailsFragment}.
  * 
- * Activities containing this fragment MUST implement the {@link OrderSelectedcks}
- * interface.
+ * Activities containing this fragment MUST implement the
+ * {@link OrderSelectedcks} interface.
  * 
  * @author Simon Bengtsson
  * 
@@ -77,7 +78,7 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 		return LayoutInflater.from(getActivity()).inflate(
 				R.layout.list_root_inner, null);
 	}
-	
+
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		getListView().addHeaderView(
@@ -119,6 +120,7 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 		orderListObserver = new OrderListObserver();
 		mOrderAdapter.registerDataSetObserver(orderListObserver);
 	}
+
 	@Override
 	public void onDestroy() {
 		mOrderAdapter.unregisterDataSetObserver(orderListObserver);
@@ -205,14 +207,17 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 		//TODO Error "Content view not yet created"
 		mOrderAdapter.notifyDataSetChanged();
 		mOrderAdapter.refreshSort();
+		Log.d("OrderListFragment",
+				"Orders in OrderAdapter: " + mOrderAdapter.getCount());
 	}
 
 	@Override
-	public void networkProblem(String message) {}
+	public void networkProblem(String message) {
+	}
 
 	@Override
 	public void authinicationFailed() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

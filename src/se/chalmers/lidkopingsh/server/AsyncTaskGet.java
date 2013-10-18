@@ -63,7 +63,8 @@ class AsyncTaskGet extends AsyncTask<Void, Void, List<Order>> {
 			} else if (exception instanceof AuthenticationException) {
 				connector.notifyAuthenticationFailed();
 			} else {
-				throw new IllegalStateException(exception);
+				throw new IllegalStateException(
+						"Unhandled exception in ServerHelper.", exception);
 			}
 		} else if (orders != null) {
 			connector.notifyDataChanged(orders);

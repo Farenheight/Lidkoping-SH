@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -128,31 +129,19 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 		boolean cancel = false;
 		View focusView = null;
 
-		// TODO: Uncomment
 		// Check for a valid password.
-		// if (TextUtils.isEmpty(mPassword)) {
-		// mPasswordView.setError(getString(R.string.error_field_required));
-		// focusView = mPasswordView;
-		// cancel = true;
-		// } else if (mPassword.length() < 4) {
-		// mPasswordView
-		// .setError(getString(R.string.error_too_short_password));
-		// focusView = mPasswordView;
-		// cancel = true;
-		// }
-		//
-		// // Check for a valid email address.
-		// if (TextUtils.isEmpty(mUserName)) {
-		// mEmailView.setError(getString(R.string.error_field_required));
-		// focusView = mEmailView;
-		// cancel = true;
-		// }
-		// else if (!mUserName.contains("@")) {
-		// mEmailView
-		// .setError(getString(R.string.error_invalid_user_creadentials));
-		// focusView = mEmailView;
-		// cancel = true;
-		// }
+		if (TextUtils.isEmpty(mPassword)) {
+			mPasswordView.setError(getString(R.string.error_field_required));
+			focusView = mPasswordView;
+			cancel = true;
+		}
+
+		// Check for a valid email address.
+		if (TextUtils.isEmpty(mUserName)) {
+			mUserNameView.setError(getString(R.string.error_field_required));
+			focusView = mUserNameView;
+			cancel = true;
+		}
 
 		// Don't try login if errors
 		if (cancel) {
@@ -210,19 +199,17 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 
 	@Override
 	public void startedUpdate() {
-		// TODO Auto-generated method stub
-
+		Log.e("LoginAct", "Started update - Should not update in loginAct");
 	}
 
 	@Override
 	public void finishedUpdate() {
-		// TODO Auto-generated method stub
-
+		Log.d("LoginAct", "Finished update - Should not happen in login act");
 	}
 
 	@Override
 	public void networkProblem(String message) {
-		Log.e("LoginActivity", "Could not connect to server");
+		Log.e("LoginAct", "Could not connect to server");
 		Toast toast = Toast.makeText(LoginActivity.this, message,
 				Toast.LENGTH_SHORT);
 		toast.show();
@@ -230,7 +217,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 
 	@Override
 	public void authinicationFailed() {
-		Log.e("LoginActivity",
+		Log.e("LoginAct",
 				"Authentication failed (API key), this should never happen.");
 	}
 

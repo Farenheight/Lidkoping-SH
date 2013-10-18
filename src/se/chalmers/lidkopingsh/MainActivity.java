@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.nullwire.trace.ExceptionHandler;
 
@@ -163,12 +164,6 @@ public class MainActivity extends FragmentActivity implements
 		Log.i("MainActivity", "Update finished");
 	}
 
-	@Override
-	public void networkProblem(String message) {
-		Log.i("MainActivity", "Network error");
-	}
-
-	@Override
 	public void onBackPressed() {
 		new AlertDialog.Builder(this)
 				.setIcon(android.R.drawable.ic_dialog_alert)
@@ -182,10 +177,20 @@ public class MainActivity extends FragmentActivity implements
 
 				}).setNegativeButton("Nej", null).show();
 	}
+	
+	@Override
+	public void networkProblem(String message) {
+		Log.i("MainActivity", "Network error");
+		Context context = getApplicationContext();
+		CharSequence text = "Network error, check your connection";
+		int duration = Toast.LENGTH_SHORT;
+
+		Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
+	}
 
 	@Override
 	public void authinicationFailed() {
-		// TODO Auto-generated method stub
-		
+		Log.d("MainAct", "Authunication failed");
 	}
 }

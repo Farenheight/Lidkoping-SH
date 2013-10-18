@@ -55,7 +55,7 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 		this.cemeteryNumber = cemeteryNumber != null ? cemeteryNumber : "";
 		this.orderDate = orderDate;
 		this.customer = customer.clone();
-		this.images = images;
+		this.images = images == null? new ArrayList<Image>() : images;
 		this.deceased = deceased;
 		orderListeners = new ArrayList<Listener<OrderChangedEvent>>();
 		orderSyncedListeners = new ArrayList<Listener<Order>>();
@@ -112,7 +112,7 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	}
 
 	public List<Image> getImages() {
-		return images;
+		return images == null? new ArrayList<Image>() : images;
 	}
 
 	public String getOrderNumber() {
@@ -128,7 +128,7 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	}
 
 	public List<Product> getProducts() {
-		return products;
+		return products == null? new ArrayList<Product>() : products;
 	}
 	
 	public String getDeceased() {

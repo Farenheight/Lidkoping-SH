@@ -235,7 +235,7 @@ public class OrderMapActivity extends FragmentActivity {
 			// Pan to see all markers in view.
 			// Cannot zoom to bounds until the map has a size.
 			final View mapView = getSupportFragmentManager().findFragmentById(
-					R.id.map).getView();
+					R.id.map).getView(); //TODO null pointer??
 			if (mapView.getViewTreeObserver().isAlive()) {
 				if(mMarkers.size() > 1){
 					LatLngBounds.Builder bld = new LatLngBounds.Builder();
