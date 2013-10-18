@@ -120,35 +120,27 @@ public class LoginActivity extends Activity {
 		// Store values at the time of the login attempt.
 		mUserName = mUserNameView.getText().toString();
 		mPassword = mPasswordView.getText().toString();
+		
+		// TODO: Remove
+		mUserName = "dev";
+		mPassword = "dev";
 
 		boolean cancel = false;
 		View focusView = null;
 
-		// TODO: Uncomment
 		// Check for a valid password.
-		// if (TextUtils.isEmpty(mPassword)) {
-		// mPasswordView.setError(getString(R.string.error_field_required));
-		// focusView = mPasswordView;
-		// cancel = true;
-		// } else if (mPassword.length() < 4) {
-		// mPasswordView
-		// .setError(getString(R.string.error_too_short_password));
-		// focusView = mPasswordView;
-		// cancel = true;
-		// }
-		//
-		// // Check for a valid email address.
-		// if (TextUtils.isEmpty(mUserName)) {
-		// mEmailView.setError(getString(R.string.error_field_required));
-		// focusView = mEmailView;
-		// cancel = true;
-		// }
-		// else if (!mUserName.contains("@")) {
-		// mEmailView
-		// .setError(getString(R.string.error_invalid_user_creadentials));
-		// focusView = mEmailView;
-		// cancel = true;
-		// }
+		if (TextUtils.isEmpty(mPassword)) {
+			mPasswordView.setError(getString(R.string.error_field_required));
+			focusView = mPasswordView;
+			cancel = true;
+		}
+
+		// Check for a valid email address.
+		if (TextUtils.isEmpty(mUserName)) {
+			mUserNameView.setError(getString(R.string.error_field_required));
+			focusView = mUserNameView;
+			cancel = true;
+		}
 
 		// Don't try login if errors
 		if (cancel) {

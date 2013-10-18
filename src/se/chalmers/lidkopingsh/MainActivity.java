@@ -157,21 +157,6 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void endUpdate() {
-		// Is null when activity just started
-		if (mMenu != null) {
-			MenuItem updateItem = mMenu.findItem(R.id.action_update);
-			updateItem.setActionView(null);
-		}
-		Log.i("MainActivity", "Update finished");
-	}
-
-	@Override
-	public void networkProblem(String message) {
-		Log.i("MainActivity", "Network error");
-	}
-
-	@Override
 	public void onBackPressed() {
 		new AlertDialog.Builder(this)
 				.setIcon(android.R.drawable.ic_dialog_alert)
@@ -184,6 +169,21 @@ public class MainActivity extends FragmentActivity implements
 					}
 
 				}).setNegativeButton("Nej", null).show();
+	}
+
+	@Override
+	public void endUpdate() {
+		// Is null when activity just started
+		if (mMenu != null) {
+			MenuItem updateItem = mMenu.findItem(R.id.action_update);
+			updateItem.setActionView(null);
+		}
+		Log.i("MainActivity", "Update finished");
+	}
+
+	@Override
+	public void networkProblem(String message) {
+		Log.i("MainActivity", "Network error");
 	}
 
 	@Override

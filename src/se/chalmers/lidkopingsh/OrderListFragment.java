@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +25,14 @@ import android.widget.Spinner;
  * selection. This helps indicate which item is currently being viewed in a
  * {@link OrderDetailsFragment}.
  * 
- * Activities containing this fragment MUST implement the {@link OrderSelectedcks}
- * interface.
+ * Activities containing this fragment MUST implement the
+ * {@link OrderSelectedcks} interface.
  * 
  * @author Simon Bengtsson
  * 
  */
-public class OrderListFragment extends ListFragment implements NetworkUpdateListener{
+public class OrderListFragment extends ListFragment implements
+		NetworkUpdateListener {
 
 	/* Bundle keys representing the activated item position. */
 	private static final String ACTIVATED_ORDER_ID = "activated_position";
@@ -77,7 +79,7 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 		return LayoutInflater.from(getActivity()).inflate(
 				R.layout.list_root_inner, null);
 	}
-	
+
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		getListView().addHeaderView(
@@ -94,7 +96,8 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 				R.id.station_spinner);
 		ArrayAdapter<Station> stationsAdapter = new ArrayAdapter<Station>(
 				getActivity(), R.layout.spinner_white_text,
-				(ArrayList<Station>) ModelHandler.getModel(getActivity()).getStations());
+				(ArrayList<Station>) ModelHandler.getModel(getActivity())
+						.getStations());
 		stationsAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		stationSpinner.setAdapter(stationsAdapter);
@@ -112,13 +115,15 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 					.getInt(CURRENT_STATION_POS));
 
 			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
-				mActivatedOrder = ModelHandler.getModel(getActivity()).getOrderById(savedInstanceState
-						.getInt(ACTIVATED_ORDER_ID));
+				mActivatedOrder = ModelHandler.getModel(getActivity())
+						.getOrderById(
+								savedInstanceState.getInt(ACTIVATED_ORDER_ID));
 			}
 		}
 		orderListObserver = new OrderListObserver();
 		mOrderAdapter.registerDataSetObserver(orderListObserver);
 	}
+
 	@Override
 	public void onDestroy() {
 		mOrderAdapter.unregisterDataSetObserver(orderListObserver);
@@ -131,8 +136,8 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 		super.onListItemClick(listView, view, position, id);
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mActivatedOrder = ModelHandler.getModel(getActivity()).getOrderById(mOrderAdapter.getItem(
-				position - 1).getId());
+		mActivatedOrder = ModelHandler.getModel(getActivity()).getOrderById(
+				mOrderAdapter.getItem(position - 1).getId());
 		mOrderSelectedCallbacks.onItemSelected(mActivatedOrder.getId());
 	}
 
@@ -198,21 +203,25 @@ public class OrderListFragment extends ListFragment implements NetworkUpdateList
 	}
 
 	@Override
-	public void startUpdate() {}
-
-	@Override
-	public void endUpdate() {
-		//TODO Error "Content view not yet created"
-		mOrderAdapter.notifyDataSetChanged();
-		mOrderAdapter.refreshSort();
+	public void startUpdate() {
 	}
 
 	@Override
-	public void networkProblem(String message) {}
+	public void endUpdate() {
+		// TODO Error "Content view not yet created"
+		mOrderAdapter.notifyDataSetChanged();
+		mOrderAdapter.refreshSort();
+		Log.d("OrderListFragment",
+				"Orders in OrderAdapter: " + mOrderAdapter.getCount());
+	}
+
+	@Override
+	public void networkProblem(String message) {
+	}
 
 	@Override
 	public void authinicationFailed() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
