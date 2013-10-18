@@ -44,6 +44,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ExceptionHandler.register(this, "http://simonbengtsson.se/lsh/stacktrace_script.php");
+		Accessor.getModel(this);		// Create model and load from database.
 		mSharedPreferences = getSharedPreferences(ServerSettings.PREFERENCES_NAME,
 				Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
@@ -52,7 +53,6 @@ public class MainActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
-		Accessor.getModel(this);		// Create model and load from database.
 		Accessor.getServerConnector(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {

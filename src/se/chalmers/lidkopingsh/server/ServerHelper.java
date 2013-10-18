@@ -23,8 +23,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
-import se.chalmers.lidkopingsh.handler.Accessor;
-import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
 import android.accounts.NetworkErrorException;
@@ -205,7 +203,7 @@ public class ServerHelper {
 		Gson gson = new Gson();
 		if (getAll) {
 			List<Order> allOrders = getUpdatedOrdersFromServer("");
-			syncImages(allOrders);
+			syncImages(allOrders, currentOrders);
 			return allOrders;
 		}
 		long[][] orderArray = new long[currentOrders.size()][2];
@@ -218,7 +216,7 @@ public class ServerHelper {
 
 		List<Order> newOrders = getUpdatedOrdersFromServer(gson
 				.toJson(orderArray));
-		syncImages(newOrders);
+		syncImages(newOrders, currentOrders);
 
 		return newOrders;
 	}
@@ -304,9 +302,7 @@ public class ServerHelper {
 		}
 	}
 
-	private void syncImages(List<Order> newOrders) {
-		IModel model = Accessor.getModel(context);
-		Collection<Order> oldOrders = model.getOrders();
+	private void syncImages(List<Order> newOrders, Collection<Order> oldOrders) {
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
 
