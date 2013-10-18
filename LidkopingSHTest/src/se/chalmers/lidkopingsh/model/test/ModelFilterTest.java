@@ -3,6 +3,7 @@ package se.chalmers.lidkopingsh.model.test;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
@@ -33,7 +34,7 @@ public class ModelFilterTest {
 
 		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
 		originalOrders.addAll(orders);
-		List<Order> returnedOrderList = filter.getOrdersByFilter(
+		Collection<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 0, is:"
@@ -50,7 +51,7 @@ public class ModelFilterTest {
 
 		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
 		originalOrders.addAll(orders);
-		List<Order> returnedOrderList = filter.getOrdersByFilter(
+		Collection<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 1, is:"
@@ -67,7 +68,7 @@ public class ModelFilterTest {
 
 		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
 		originalOrders.addAll(orders);
-		List<Order> returnedOrderList = filter.getOrdersByFilter(
+		Collection<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 0, is:"
@@ -84,7 +85,7 @@ public class ModelFilterTest {
 
 		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
 		originalOrders.addAll(orders);
-		List<Order> returnedOrderList = filter.getOrdersByFilter(
+		Collection<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 1, is:"
@@ -101,7 +102,7 @@ public class ModelFilterTest {
 
 		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
 		originalOrders.addAll(orders);
-		List<Order> returnedOrderList = filter.getOrdersByFilter(
+		Collection<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 1, is:"
@@ -122,7 +123,7 @@ public class ModelFilterTest {
 		
 		originalOrders.addAll(orders);
 
-		List<Order> returnedOrderList = filter.getOrdersByFilter(
+		Collection<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 3, is: "
@@ -143,7 +144,7 @@ public class ModelFilterTest {
 		
 		originalOrders.addAll(orders);
 
-		List<Order> returnedOrderList = filter.getOrdersByFilter(
+		Collection<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 3, is: "
@@ -160,7 +161,7 @@ public class ModelFilterTest {
 		
 		originalOrders.addAll(orders);
 
-		List<Order> returnedOrderList = filter.getOrdersByFilter(
+		Collection<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
 
 		String assertMessage = "Size of list should be 0, is: "
