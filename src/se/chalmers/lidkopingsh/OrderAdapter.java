@@ -203,10 +203,16 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	public void refreshSort(){
 		sort(new StationComparator<Order>(currentSortStation), currentSortStation);
 	}
+	
 	public void setOrders(Collection<Order> collection){
 		this.mOrders = new ArrayList<Order>(collection);
 		this.mOriginalObjects = new ArrayList<Order>(collection);
 		notifyDataSetChanged();
 		refreshSort();
+	}
+	
+	public void updateOrders(Collection<Order> collection){
+		mOrders = new ArrayList<Order> (collection);
+		mOriginalObjects = new ArrayList<Order>(new ArrayList<Order> (collection));
 	}
 }
