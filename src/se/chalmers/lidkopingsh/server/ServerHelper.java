@@ -310,7 +310,7 @@ public class ServerHelper {
 		for (Order o : newOrderscopy) {
 			if (o.isRemoved()) {
 				for (Image i : o.getImages()) {
-					context.deleteFile(i.getImagePath().replace("/", ""));
+					context.deleteFile(i.getImagePath());
 				}
 				removedOrders.add(o);
 			}
@@ -359,7 +359,7 @@ public class ServerHelper {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
 						&& !newI.getImagePath().equals(oldI.getImagePath())) {
-					context.deleteFile(oldI.getImagePath().replace("/", ""));
+					context.deleteFile(oldI.getImagePath());
 					saveImage(newI);
 				}
 			}

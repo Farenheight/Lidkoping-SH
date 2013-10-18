@@ -34,7 +34,7 @@ public class Image implements Syncable<Image> {
 	}
 
 	public String getImagePath() {
-		return imagePath;
+		return imagePath.replace("/", "");
 	}
 
 	@Override

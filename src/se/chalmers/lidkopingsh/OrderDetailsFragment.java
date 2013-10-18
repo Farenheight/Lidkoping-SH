@@ -309,8 +309,7 @@ public class OrderDetailsFragment extends Fragment {
 		if (!mOrder.getImages().isEmpty()) {
 
 			// Get image from internal storage
-			String imagePath = mOrder.getImages().get(0).getImagePath()
-					.replace("/", "");
+			String imagePath = mOrder.getImages().get(0).getImagePath();
 			// Load Images
 			asyntaskImageLoader = new AsyntaskImageLoader();
 			asyntaskImageLoader.execute(imagePath);
