@@ -369,6 +369,7 @@ public class OrderDbStorage {
 		db.delete(OrderTable.TABLE_NAME, OrderTable.COLUMN_NAME_ORDER_ID
 				+ EQUALS + QUESTION_MARK,
 				new String[] { String.valueOf(order.getId()) });
+		Log.d("orderdbstorage", "deleted order" + order.getId());
 		
 	}
 
