@@ -232,16 +232,13 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			// Unique device id for every android device
-			String deviceId = Secure.getString(
-					LoginActivity.this.getContentResolver(), Secure.ANDROID_ID);
-
+			
 			// Send to server
 			mUserName = "dev";
 			mPassword = "dev";
 			try {
 				ApiResponse response = new ServerHelper(LoginActivity.this)
-						.getApikey(mUserName, mPassword, deviceId);
+						.getApikey(mUserName, mPassword);
 				if (response != null) {
 					return response.isSuccess();
 				}
