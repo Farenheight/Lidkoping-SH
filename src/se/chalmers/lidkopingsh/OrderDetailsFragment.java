@@ -162,8 +162,14 @@ public class OrderDetailsFragment extends Fragment {
 		}
 
 		@Override
-		public void noNetwork(String message) {
+		public void networkProblem(String message) {
 			// Do nothing here
+		}
+
+		@Override
+		public void authinicationFailed() {
+			// TODO Auto-generated method stub
+			
 		}
 
 	}

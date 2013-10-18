@@ -1,5 +1,7 @@
 package se.chalmers.lidkopingsh;
 
+import com.nullwire.trace.ExceptionHandler;
+
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.handler.ServerLayer;
 import se.chalmers.lidkopingsh.model.Order;
@@ -42,12 +44,14 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		ExceptionHandler.register(this, "http://simonbengtsson.se/lsh/stacktrace_script.php");
 		mSharedPreferences = getSharedPreferences(ServerLayer.PREFERENCES_NAME,
 				Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
 			Log.i("MainActivity", "Not logged, in. Staring login act");
 			startActivity(new Intent(this, LoginActivity.class));
 			finish();
+			return;
 		}
 		ModelHandler.getLayer(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
@@ -163,7 +167,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void noNetwork(String message) {
+	public void networkProblem(String message) {
 		Log.i("MainActivity", "Network error");
 	}
 
@@ -180,5 +184,11 @@ public class MainActivity extends FragmentActivity implements
 					}
 
 				}).setNegativeButton("Nej", null).show();
+	}
+
+	@Override
+	public void authinicationFailed() {
+		// TODO Auto-generated method stub
+		
 	}
 }
