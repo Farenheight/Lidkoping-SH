@@ -113,20 +113,14 @@ public class MapModel implements IModel {
 				products.put(p.getId(), p);
 			}
 		}
-
-		// TODO When adding orders, check if the order have tasks that
-		// does not exist in any other order.
 	}
 
 	@Override
 	public void removeOrder(Order o) {
-		orders.remove(o.getId());
-		for (Product p : orders.get(o.getId()).getProducts()) {
+		for (Product p : getOrderById(o.getId()).getProducts()) {
 			products.remove(p.getId());
 		}
-
-		// TODO When removing orders, check if the order have tasks that
-		// does not exist in any other order.
+		orders.remove(o.getId());
 	}
 
 	@Override
@@ -180,7 +174,7 @@ public class MapModel implements IModel {
 		}
 
 		for (DataChangedListener l : dataChangedListeners) {
-			l.ordersChanged(added, changed, removed,this);
+			l.ordersChanged(added, changed, removed, this);
 		}
 	}
 
