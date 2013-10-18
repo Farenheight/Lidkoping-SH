@@ -9,7 +9,7 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import se.chalmers.lidkopingsh.model.Customer;
+import se.chalmers.lidkopingsh.database.OrderDbFiller;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
 import se.chalmers.lidkopingsh.model.Product;
@@ -34,16 +34,9 @@ public class OrderTest {
 
 	@Test
 	public void testGetNumOfStationsLeft() {
-		long time = System.currentTimeMillis();
-		Order firstOrder = new Order(1, "130001", "K.J", time, time,
-				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null,null);
-		Order secondOrder = new Order(1, "130001", "K.J", time, time,
-				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null,null);
-		Order thirdOrder = new Order(1, "130001", "K.J", time, time,
-				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null,null);
+		Order firstOrder = OrderDbFiller.getOrderFullyPopulated("O.S");
+		Order secondOrder = OrderDbFiller.getOrderFullyPopulated("O.S");
+		Order thirdOrder = OrderDbFiller.getOrderFullyPopulated("O.S");
 
 		firstOrder.addProduct(new Product(Arrays.asList(new Task[] {
 				new Task(firstStation, Status.DONE),
@@ -72,16 +65,9 @@ public class OrderTest {
 
 	@Test
 	public void testProgress() {
-		long time = System.currentTimeMillis();
-		Order firstOrder = new Order(1, "130001", "K.J", time, time,
-				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null,null);
-		Order secondOrder = new Order(1, "130001", "K.J", time, time,
-				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null,null);
-		Order thirdOrder = new Order(1, "130001", "K.J", time, time,
-				"Goteborg", null, null, null, time, new Customer("", "", "",
-						"", "", 0), null, null,null);
+		Order firstOrder = OrderDbFiller.getOrderFullyPopulated("O.S");
+		Order secondOrder = OrderDbFiller.getOrderFullyPopulated("O.S");
+		Order thirdOrder = OrderDbFiller.getOrderFullyPopulated("O.S");
 
 		firstOrder.addProduct(new Product(Arrays.asList(new Task[] {
 				new Task(firstStation, Status.DONE),
@@ -102,15 +88,9 @@ public class OrderTest {
 
 	@Test
 	public void testEquals() {
-		// TODO filled with null to avoid compilation errors.
-		long time = System.currentTimeMillis();
 
-		Order o1 = new Order(1, "130001", "K.J", time, time, "Goteborg", null,
-				null, null, time, new Customer("", "", "", "", "", 0), null,
-				null,null);
-		Order o2 = new Order(1, "130001", "K.J", time, time, "Goteborg", null,
-				null, null, time, new Customer("", "", "", "", "", 0), null,
-				null,null);
+		Order o1 = OrderDbFiller.getOrderFullyPopulated("O.S");
+		Order o2 = OrderDbFiller.getOrderFullyPopulated("O.S");
 		assertTrue(o1.equals(o2));
 
 		Product p = new Product(new ArrayList<Task>());
@@ -131,15 +111,9 @@ public class OrderTest {
 	public void testSync() {
 		SyncListener syncListener = new SyncListener();
 		// TODO filled with null to avoid compilation errors
-		Order o0 = new Order(0, "2", "OM", 2837203547257l,
-				System.currentTimeMillis(), "Kvanum", null, null, null, 0l,
-				new Customer("", "", "", "", "", 0), null, null,null);
-		Order o1 = new Order(0, "3", "OK", 2837203547257l,
-				System.currentTimeMillis(), "Lish", null, null, null, 2l,
-				new Customer("", "", "", "", "", 0), null, null,null);
-		Order o2 = new Order(0, "3", "OK", 2837203547257l,
-				System.currentTimeMillis(), "Lish", null, null, null, 2l,
-				new Customer("", "", "", "", "", 0), null, null,null);
+		Order o0 = OrderDbFiller.getOrderFullyPopulated("O.S");
+		Order o1 = OrderDbFiller.getOrderFullyPopulated("O.R");
+		Order o2 = OrderDbFiller.getOrderFullyPopulated("O.T");
 		assertFalse(o0.equals(o1));
 		assertTrue(o1.equals(o2));
 
@@ -179,10 +153,7 @@ public class OrderTest {
 	@Test
 	public void testListeners() {
 		OrderListener listener = new OrderListener();
-		Order order0 = new Order(0, "13555", "OV", System.currentTimeMillis(),
-				System.currentTimeMillis(), "Kvanum", null, "", "",
-				System.currentTimeMillis(),
-				new Customer("", "", "", "", "", 0), null, null,null);
+		Order order0 = OrderDbFiller.getOrderFullyPopulated("O.S");
 
 		order0.addOrderListener(listener);
 
@@ -203,10 +174,7 @@ public class OrderTest {
 		product1.addTask(task2);
 		product1.addTask(task3);
 
-		Order order1 = new Order(0, "", "", System.currentTimeMillis(),
-				System.currentTimeMillis(), null, "", "", "",
-				System.currentTimeMillis(),
-				new Customer("", "", "", "", "", 0), null, null,null);
+		Order order1 = OrderDbFiller.getOrderFullyPopulated("O.S");
 
 		Product product2 = new Product(0, "", "", "", null);
 		Task task4 = new Task(new Station(0, "Task0"));
