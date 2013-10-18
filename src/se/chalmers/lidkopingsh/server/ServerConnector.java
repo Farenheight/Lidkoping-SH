@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import se.chalmers.lidkopingsh.model.DataChangedListener;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
@@ -88,7 +87,7 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		networkListeners.remove(listener);
 	}
 
-	public void removeOrderChangedListener(DataChangedListener listener) {
+	public void removeOrderChangedListener(Listener<Collection<Order>> listener) {
 		orderListeners.remove(listener);
 	}
 

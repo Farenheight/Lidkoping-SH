@@ -419,7 +419,7 @@ public class ServerHelper {
 		for (Image newI : newImages) {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
-						&& newI.getImagePath() != oldI.getImagePath()) {
+						&& !newI.getImagePath().equals(oldI.getImagePath())) {
 					saveImage(newI);
 				}
 			}

@@ -8,6 +8,7 @@ package se.chalmers.lidkopingsh.model;
 public class Station {
 	private final int id;
 	private final String name;
+	
 	/**
 	 * Create a new {@link Station}
 	 * @param id The id of the {@link Station}
@@ -21,9 +22,11 @@ public class Station {
 	public int getId() {
 		return id;
 	}
+	
 	public String getName() {
 		return name;
 	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if(o == this) return true;
@@ -34,6 +37,12 @@ public class Station {
 			return s.id == id && s.getName().equals(getName());
 		}
 	}
+	
+	@Override
+	public int hashCode() {
+		return 67 * id + 83 * name.hashCode();
+	}
+	
 	@Override
 	public String toString() {
 		return name;

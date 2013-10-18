@@ -128,6 +128,11 @@ public class Task implements Syncable<Task> {
 					&& this.status.equals(t.getStatus());
 		}
 	}
+	
+	@Override
+	public int hashCode() {
+		return 13 * station.hashCode() + 23 * status.hashCode();
+	}
 
 	@Override
 	public boolean sync(Task newData) {
