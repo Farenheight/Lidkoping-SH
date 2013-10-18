@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import se.chalmers.lidkopingsh.ModelFilter;
-import se.chalmers.lidkopingsh.model.Customer;
+import se.chalmers.lidkopingsh.database.OrderDbFiller;
 import se.chalmers.lidkopingsh.model.Order;
 
 public class ModelFilterTest {
@@ -29,11 +29,9 @@ public class ModelFilterTest {
 	 */
 	@Test
 	public void testNoResults() {
-		String testIdName = "O.R";
 		String testConstraint = "Not a matching string";
 
-		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null,null,null));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -48,11 +46,9 @@ public class ModelFilterTest {
 	 */
 	@Test
 	public void testPartOfConstraint() {
-		String testIdName = "O.R";
 		String testConstraint = "O";
 
-		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null,null,null));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -67,11 +63,9 @@ public class ModelFilterTest {
 	 */
 	@Test
 	public void testNotInTheBeginning() {
-		String testIdName = "O.SS";
-		String testConstraint = "SS";
+		String testConstraint = "S";
 
-		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null,null,null));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -86,11 +80,9 @@ public class ModelFilterTest {
 	 */
 	@Test
 	public void testLetterCase() {
-		String testIdName = "O.R";
-		String testConstraint = "o.r";
+		String testConstraint = "o.s";
 
-		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null,null,null));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -105,11 +97,9 @@ public class ModelFilterTest {
 	 */
 	@Test
 	public void testDotIndependece() {
-		String testIdName = "O.R";
-		String testConstraint = "or";
+		String testConstraint = "os";
 
-		orders.add(new Order(0, null, testIdName, 0, 0, null, null, null, null,
-				0, new Customer("","","","","",0), null,null,null));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
 		originalOrders.addAll(orders);
 		List<Order> returnedOrderList = filter.getOrdersByFilter(
 				testConstraint, orders, originalOrders);
@@ -126,12 +116,9 @@ public class ModelFilterTest {
 	public void testEmptyString() {
 		String testConstraint = "";
 
-		orders.add(new Order(0, null, "O.R", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null,null));
-		orders.add(new Order(0, null, "O.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null,null));
-		orders.add(new Order(0, null, "S.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null,null));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.R"));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.T"));
 		
 		originalOrders.addAll(orders);
 
@@ -150,12 +137,9 @@ public class ModelFilterTest {
 	public void testNull() {
 		String testConstraint = null;
 
-		orders.add(new Order(0, null, "O.R", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null,null));
-		orders.add(new Order(0, null, "O.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null,null));
-		orders.add(new Order(0, null, "S.S", 0, 0, null, null, null, null, 0,
-				new Customer("","","","","",0), null,null,null));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.S"));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.R"));
+		orders.add(OrderDbFiller.getOrderFullyPopulated("O.T"));
 		
 		originalOrders.addAll(orders);
 

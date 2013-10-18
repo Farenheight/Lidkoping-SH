@@ -82,7 +82,7 @@ public class OrderDbFiller {
 		return new Order(orderId++, String.valueOf(orderNumber++), idName,
 				System.currentTimeMillis(), System.currentTimeMillis(),
 				"Kyrkogård", "Kyrkogårdsnämnd", "Kvarter", "Nummer",
-				System.currentTimeMillis(), customer, null, getImages(), "död");
+				System.currentTimeMillis(), customer, new LinkedList<Product>(), getImages(), "död");
 	}
 
 	private static List<Image> getImages() {
@@ -96,7 +96,7 @@ public class OrderDbFiller {
 
 	private static List<Task> getSocleTasks() {
 		List<Task> tasks2 = new ArrayList<Task>();
-		tasks2.add(new Task(new Station(1, "Sagning"), Status.DONE));
+		tasks2.add(new Task(new Station(1, "Sågning"), Status.DONE));
 		tasks2.add(new Task(new Station(2, "Slipning")));
 		return tasks2;
 	}

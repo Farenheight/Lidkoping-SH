@@ -56,10 +56,7 @@ public class Image implements Syncable<Image> {
 		if (newData != null && this.id == newData.id
 				&& getClass() == newData.getClass()) {
 			} else {
-				this.id = newData.id;
-				this.imageFile = newData.imageFile;
-				this.imagePath = newData.imagePath;
-				return true;
+				return this.id == newData.id && this.imageFile == newData.imageFile && this.imagePath.equals(newData.imagePath);
 			}
 		return false;
 	}
