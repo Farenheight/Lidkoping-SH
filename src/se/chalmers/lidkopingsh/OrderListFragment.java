@@ -149,6 +149,7 @@ public class OrderListFragment extends ListFragment implements
 		if (orderListObserver != null) {
 			mOrderAdapter.unregisterDataSetObserver(orderListObserver);
 		}
+		Accessor.getServerConnector(getActivity()).removeNetworkStatusListener(this);
 		super.onDestroy();
 	}
 
@@ -236,6 +237,7 @@ public class OrderListFragment extends ListFragment implements
 		mStationsAdapter.clear();
 		mStationsAdapter.addAll(Accessor.getModel(getActivity()).getStations());
 		mStationsAdapter.notifyDataSetChanged();
+		mSearchHandler.restoreSearch(mSearchHandler.getCurrentSearchTerm());
 		Log.d("OrderListFragment", "Finsished update. Stations: " + mStationsAdapter.getCount());
 	}
 

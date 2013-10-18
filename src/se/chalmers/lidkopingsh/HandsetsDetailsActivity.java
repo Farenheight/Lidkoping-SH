@@ -64,7 +64,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		Accessor.getServerConnector(this).removeNetworkListener(this);
+		Accessor.getServerConnector(this).removeNetworkStatusListener(this);
 		super.onDestroy();
 	}
 
