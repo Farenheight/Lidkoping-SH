@@ -23,8 +23,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
-import se.chalmers.lidkopingsh.handler.Accessor;
-import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
 import android.accounts.NetworkErrorException;
@@ -44,7 +42,7 @@ import com.google.gson.JsonSyntaxException;
  * @author Anton Jansson
  * 
  */
-class ServerHelper {
+public class ServerHelper {
 	private static final String LIDKOPINGSH_DEVICEID = "Lidkopingsh-Deviceid";
 	private static final String LIDKOPINGSH_PASSWORD = "Lidkopingsh-Password";
 	private static final String LIDKOPINGSH_USERNAME = "Lidkopingsh-Username";
@@ -199,18 +197,18 @@ class ServerHelper {
 	 *             if server could not be accessed.
 	 * @throws AuthenticationException
 	 */
-	public List<Order> getUpdates(boolean getAll) throws NetworkErrorException,
+	public List<Order> getUpdates(boolean getAll,
+			Collection<Order> currentOrders) throws NetworkErrorException,
 			AuthenticationException {
 		Gson gson = new Gson();
 		if (getAll) {
 			List<Order> allOrders = getUpdatedOrdersFromServer("");
-			syncImages(allOrders);
+			syncImages(allOrders, currentOrders);
 			return allOrders;
 		}
-		Collection<Order> orders = Accessor.getModel(context).getOrders();
-		long[][] orderArray = new long[orders.size()][2];
+		long[][] orderArray = new long[currentOrders.size()][2];
 		int i = 0;
-		for (Order o : orders) {
+		for (Order o : currentOrders) {
 			orderArray[i][0] = (long) o.getId();
 			orderArray[i][1] = (long) o.getLastTimeUpdate();
 			i++;
@@ -218,7 +216,7 @@ class ServerHelper {
 
 		List<Order> newOrders = getUpdatedOrdersFromServer(gson
 				.toJson(orderArray));
-		syncImages(newOrders);
+		syncImages(newOrders, currentOrders);
 
 		return newOrders;
 	}
@@ -304,9 +302,7 @@ class ServerHelper {
 		}
 	}
 
-	private void syncImages(List<Order> newOrders) {
-		IModel model = Accessor.getModel(context);
-		Collection<Order> oldOrders = model.getOrders();
+	private void syncImages(List<Order> newOrders, Collection<Order> oldOrders) {
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
 

@@ -1,5 +1,6 @@
 package se.chalmers.lidkopingsh.server;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.http.auth.AuthenticationException;
@@ -20,13 +21,15 @@ class AsyncTaskGet extends AsyncTask<Void, Void, List<Order>> {
 	private final boolean getAll;
 	private final ServerConnector connector;
 	private final ServerHelper helper;
+	private final Collection<Order> currentOrders;
 	private Exception exception;
 
 	public AsyncTaskGet(boolean getAll, ServerHelper helper,
-			ServerConnector connector) {
+			ServerConnector connector, Collection<Order> currentOrders) {
 		this.getAll = getAll;
 		this.connector = connector;
 		this.helper = helper;
+		this.currentOrders = currentOrders;
 	}
 
 	@Override
@@ -37,7 +40,7 @@ class AsyncTaskGet extends AsyncTask<Void, Void, List<Order>> {
 	@Override
 	protected List<Order> doInBackground(Void... voids) {
 		try {
-			return helper.getUpdates(getAll);
+			return helper.getUpdates(getAll, currentOrders);
 		} catch (Exception e) {
 			exception = e;
 		}

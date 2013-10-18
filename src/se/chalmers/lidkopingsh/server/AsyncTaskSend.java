@@ -1,5 +1,6 @@
 package se.chalmers.lidkopingsh.server;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.http.auth.AuthenticationException;
@@ -21,13 +22,15 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	private final ServerHelper serverHelper;
 	private final OrderChangedEvent event;
 	private final ServerConnector connector;
+	private final Collection<Order> currentOrders;
 	private Exception exception;
 
 	public AsyncTaskSend(OrderChangedEvent event, ServerHelper serverLayer,
-			ServerConnector connector) {
+			ServerConnector connector, Collection<Order> currentOrders) {
 		this.serverHelper = serverLayer;
 		this.event = event;
 		this.connector = connector;
+		this.currentOrders = currentOrders;
 	}
 
 	@Override
@@ -40,7 +43,7 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 		List<Order> orders = null;
 		try {
 			serverHelper.sendUpdate(event.getOrder());
-			orders = serverHelper.getUpdates(false);
+			orders = serverHelper.getUpdates(false, currentOrders);
 		} catch (Exception e) {
 			exception = e;
 		}
@@ -58,7 +61,8 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	protected void onPostExecute(List<Order> orders) {
 		if (exception != null) {
 			if (exception instanceof NetworkErrorException) {
-				connector.notifyNetworkProblem("Kunde inte koppla upp sig mot servern");
+				connector
+						.notifyNetworkProblem("Kunde inte koppla upp sig mot servern");
 			} else if (exception instanceof AuthenticationException) {
 				connector.notifyAuthenticationFailed();
 			} else {
