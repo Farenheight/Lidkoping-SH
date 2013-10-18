@@ -13,13 +13,17 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"
+            android:layout_marginTop="@dimen/default_margin"
             android:background="@drawable/card_border_shape"
             android:columnCount="2"
             android:padding="30dp"
-            android:rowCount="5"
-            android:useDefaultMargins="true" >
-
+            android:useDefaultMargins="true"
+            android:rowCount="5" >
+			
+			<!-- Task Name -->
+            
             <TextView
                 android:id="@+id/task_name"
                 android:layout_width="wrap_content"
@@ -34,6 +38,8 @@
                 android:layout_gravity="left"
                 android:text="@string/dynamic"
                 android:textSize="18sp" />
+			
+			<!-- Gravplatsbeteckning -->
 
             <TextView
                 android:id="@+id/cemetery_number_header"
@@ -51,6 +57,8 @@
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
+			
+			<!-- Kyrkogårdsnämnd -->
 
             <TextView
                 android:id="@+id/cemeteryBoardHeader"
@@ -69,6 +77,8 @@
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
 
+			<!-- Kyrkogård -->
+			
             <TextView
                 android:id="@+id/cemeteryHeader"
                 style="?android:attr/textAppearanceLarge"
@@ -85,27 +95,8 @@
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/TextView05"
-                style="?android:attr/textAppearanceLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="@string/material_and_color"
-                android:textIsSelectable="true"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/materialAndColor"
-                style="?android:attr/textAppearanceLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="@string/dynamic"
-                android:textIsSelectable="true"
-                android:textSize="16sp" />
+			
+			<!-- Stenmodell -->
 
             <TextView
                 android:id="@+id/stoneModelHeader"
@@ -123,6 +114,8 @@
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
+			
+			<!-- Ornament -->
 
             <TextView
                 android:id="@+id/TextView10"
@@ -148,13 +141,17 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"
             android:background="@drawable/card_border_shape"
             android:columnCount="1"
             android:padding="30dp"
             android:rowCount="10"
             android:useDefaultMargins="true" >
 
+            <!-- Beskrivning -->
+            
             <TextView
                 android:id="@+id/TextView04"
                 style="?android:attr/textAppearanceLarge"
@@ -174,6 +171,31 @@
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
 
+            <!-- Material och farg -->
+
+            <TextView
+                android:id="@+id/TextView05"
+                style="?android:attr/textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="@string/material_and_color"
+                android:textIsSelectable="true"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/materialAndColor"
+                style="?android:attr/textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="@string/dynamic"
+                android:textIsSelectable="true"
+                android:textSize="16sp" />
+
+            <!-- Bearbetning pa framsidan-->
+            
             <TextView
                 android:id="@+id/TextView07"
                 style="?android:attr/textAppearanceLarge"
@@ -193,6 +215,8 @@
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
 
+            <!-- Textstil och bearbetning-->
+
             <TextView
                 android:id="@+id/TextView08"
                 style="?android:attr/textAppearanceLarge"
@@ -211,7 +235,6 @@
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
-
         </GridLayout>
     </LinearLayout>
 

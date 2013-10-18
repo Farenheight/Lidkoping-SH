@@ -279,13 +279,27 @@ public class OrderDbStorage {
 		db.setTransactionSuccessful();
 		db.endTransaction();
 	}
+
+	/**
+	 * Deletes a collection of orders
+	 * 
+	 * @param orders The orders to be deleted.
+	 */
+	public void delete(Collection<Order> orders) {
+		db.beginTransaction();
+		for (Order order : orders) {
+			deleteOrder(order);
+		}
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
 	
 	/**
 	 * Delete an order
 	 * 
 	 * @param order The order to be deleted
 	 */
-	public void deleteOrder(Order order){
+	private void deleteOrder(Order order){
 		if (order.getProducts() != null) {
 			for (Product p : order.getProducts()) {
 				//checks if there are any products with the given type left if not the type is removed

@@ -4,20 +4,22 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
-import se.chalmers.lidkopingsh.util.NetworkUpdateListener;
+import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,6 +76,10 @@ public class OrderDetailsFragment extends Fragment {
 
 	private NetworkWatcher mNetworkWatcher;
 
+	private Bitmap bitmap;
+
+	private AsyntaskImageLoader asyntaskImageLoader;
+
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -87,10 +93,10 @@ public class OrderDetailsFragment extends Fragment {
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
 		mNetworkWatcher = new NetworkWatcher();
-		ModelHandler.getLayer(getActivity()).addNetworkListener(mNetworkWatcher);
+		Accessor.getServerConnector(getActivity()).addNetworkListener(mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
-		mOrder = ModelHandler.getModel(this.getActivity()).getOrderById(
+		mOrder = Accessor.getModel(this.getActivity()).getOrderById(
 				getArguments().getInt(ORDER_ID));
 
 		mUse2Tabs = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -99,13 +105,21 @@ public class OrderDetailsFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-		ModelHandler.getLayer(getActivity()).removeNetworkListener(mNetworkWatcher);
+		Accessor.getServerConnector(getActivity()).removeNetworkListener(
+				mNetworkWatcher);
+		if (bitmap != null) {
+			bitmap.recycle();
+			Log.d("DEBUG", "bitmap data released");
+		}
+		if(asyntaskImageLoader != null){
+			asyntaskImageLoader.cancel(true);
+		}
 		super.onDestroy();
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedState) { 
+			Bundle savedState) {
 
 		// Inflate the root view for the fragment. The rootView should contain
 		// all other static views displayed in the fragment.
@@ -129,14 +143,14 @@ public class OrderDetailsFragment extends Fragment {
 		return mRootView;
 	}
 
-	private class NetworkWatcher implements NetworkUpdateListener {
+	private class NetworkWatcher implements NetworkStatusListener {
 
 		@Override
-		public void startUpdate() {
+		public void startedUpdate() {
 		}
 
 		@Override
-		public void endUpdate() {
+		public void finishedUpdate() {
 			showProgressIndicators(false);
 			ViewGroup taskContainer = (ViewGroup) mRootView
 					.findViewById(R.id.task_cont);
@@ -154,12 +168,6 @@ public class OrderDetailsFragment extends Fragment {
 			// TODO Auto-generated method stub
 			
 		}
-
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
 
 	}
 
@@ -290,20 +298,43 @@ public class OrderDetailsFragment extends Fragment {
 	 */
 	private void initDrawing() {
 		if (!mOrder.getImages().isEmpty()) {
-			ImageView orderDrawing = (ImageView) mRootView
-					.findViewById(R.id.orderDrawing);
 
 			// Get image from internal storage
 			String imagePath = mOrder.getImages().get(0).getImagePath()
 					.replace("/", "");
-			String filename = new File(getActivity().getFilesDir(), imagePath)
-					.getAbsolutePath();
-			Bitmap bitmap = BitmapFactory.decodeFile(filename);
+			// Load Images
+			asyntaskImageLoader = new AsyntaskImageLoader();
+			asyntaskImageLoader.execute(imagePath);
+		}
+	}
 
-			if (bitmap != null) {
+	private class AsyntaskImageLoader extends AsyncTask<String, Void, Bitmap> {
+		@Override
+		protected Bitmap doInBackground(String... params) {
+			Bitmap result = null;
+			if (params.length == 0) {
+				return null;
+			}
+			String imagePath = params[0];
+			File file = new File(getActivity().getFilesDir(), imagePath);
+			String filename = file.getAbsolutePath();
+
+			while (file.exists() && result == null) {
+				result = BitmapFactory.decodeFile(filename);
+				Log.d("DEBUG", "Trying to load Image");
+			}
+			if (file.exists()) {
+				Log.d("DEBUG", "Image loaded");
+			} else {
+				Log.d("DEBUG",
+						"Image not loaded, cannot find an image on path "
+								+ filename);
+
+			}
+			if (result != null) {
 				// Rescale the image if it is too big
-				int height = bitmap.getHeight();
-				int width = bitmap.getWidth();
+				int height = result.getHeight();
+				int width = result.getWidth();
 				if (width > MAX_IMAGE_SIZE) {
 					height *= (float) MAX_IMAGE_SIZE / width;
 					width = MAX_IMAGE_SIZE;
@@ -312,17 +343,30 @@ public class OrderDetailsFragment extends Fragment {
 					width *= (float) MAX_IMAGE_SIZE / height;
 					height = MAX_IMAGE_SIZE;
 				}
-				bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+				result = Bitmap.createScaledBitmap(result, width, height, true);
+			}
+			return result;
+		}
 
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			if (result != null) {
+				bitmap = result;
+				ImageView orderDrawing = (ImageView) mRootView
+						.findViewById(R.id.orderDrawing);
+				orderDrawing.setVisibility(View.VISIBLE);
+				ProgressBar pBar = (ProgressBar) mRootView
+						.findViewById(R.id.orderDrawingProgressBar);
+				pBar.setVisibility(View.GONE);
 				// Set drawable to view
 				BitmapDrawable drawable = new BitmapDrawable(getResources(),
 						bitmap);
 				orderDrawing.setImageDrawable(drawable);
-
 				// Attaches the library
 				PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
 				pva.setMaximumScale(8f);
 			}
+			super.onPostExecute(result);
 		}
 	}
 
@@ -344,6 +388,7 @@ public class OrderDetailsFragment extends Fragment {
 				.getCemeteryBoard());
 		((TextView) mRootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
+		
 
 		// Product info
 		StringBuilder desc = new StringBuilder();
@@ -351,9 +396,15 @@ public class OrderDetailsFragment extends Fragment {
 		StringBuilder materialColor = new StringBuilder();
 
 		for (Product product : mOrder.getProducts()) {
-			desc.append(product.getDescription());
-			frontWork.append(product.getFrontWork());
-			materialColor.append(product.getMaterialColor());
+			if(!product.getDescription().isEmpty()){
+				desc.append(product.getType() + ": " + product.getDescription() + "\n");
+			}
+			if(!product.getFrontWork().isEmpty()){
+				frontWork.append(product.getType() + ": " + product.getFrontWork()+ "\n");
+			}
+			if(!product.getMaterialColor().isEmpty()){
+				materialColor.append(product.getType() + ": " + product.getMaterialColor() + "\n");				
+			}
 		}
 
 		((TextView) mRootView.findViewById(R.id.desc)).setText(desc);
@@ -364,15 +415,19 @@ public class OrderDetailsFragment extends Fragment {
 
 		// Stone specific
 		Stone stone = mOrder.getStone();
+		String stoneModel = "";
+		String ornament = "";
+		String textStyle= "";
 		if (stone != null) {
-			((TextView) mRootView.findViewById(R.id.stoneModel)).setText(stone
-					.getStoneModel());
-
-			((TextView) mRootView.findViewById(R.id.ornament)).setText(stone
-					.getOrnament());
-			((TextView) mRootView.findViewById(R.id.textStyleAndProcessing))
-					.setText(stone.getTextStyle());
+			stoneModel = stone.getStoneModel();
+			ornament = stone.getOrnament();
+			textStyle = stone.getTextStyle();
 		}
+		((TextView) mRootView.findViewById(R.id.stoneModel)).setText(stoneModel);
+		
+		((TextView) mRootView.findViewById(R.id.ornament)).setText(ornament);
+		((TextView) mRootView.findViewById(R.id.textStyleAndProcessing))
+		.setText(textStyle);
 	}
 
 	@Override

@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import se.chalmers.lidkopingsh.handler.ModelHandler;
+import se.chalmers.lidkopingsh.handler.Accessor;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.model.StationComparator;
@@ -70,7 +70,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 */
 	public void sort(Comparator<? super Order> comparator, Station station) {
 		Collections.sort(mOrders, comparator);
-		dividerIndex = ModelHandler.getModel(mContext)
+		dividerIndex = Accessor.getModel(mContext)
 				.getFirstUncompletedIndex(mOrders, station);
 		currentSortStation = station;
 		notifyDataSetChanged();

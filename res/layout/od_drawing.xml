@@ -4,7 +4,7 @@
     android:id="@+id/tabDrawingContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-     android:layout_margin="15dp"
+    android:layout_margin="15dp"
     android:baselineAligned="false"
     android:orientation="horizontal" >
 
@@ -13,6 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/order_drawing"
-        android:src="@drawable/test_headstone_drawing" />
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/orderDrawingProgressBar"
+         style="?android:attr/progressBarStyleLarge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1" />
 
 </LinearLayout>
