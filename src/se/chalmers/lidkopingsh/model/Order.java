@@ -272,7 +272,7 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	 * @param listener
 	 *            the uninterested listener
 	 */
-	public void removeOrderListener(Listener<Order> listener) {
+	public void removeOrderListener(Listener<OrderChangedEvent> listener) {
 		orderListeners.remove(listener);
 	}
 

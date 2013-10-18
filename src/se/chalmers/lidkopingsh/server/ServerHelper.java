@@ -62,23 +62,33 @@ public class ServerHelper {
 	private SharedPreferences preferences;
 
 	/**
-	 * Creates a new ServerHelper with a set server path.
+	 * Creates a new ServerHelper for communicating with server. A server path
+	 * must be set in {@link SharedPreferences}, with name
+	 * {@link ServerSettings#PREFERENCES_NAME} and key
+	 * {@link ServerSettings#PREFERENCES_SERVER_PATH}. A unique device id is
+	 * created for this device.
 	 * 
-	 * @param serverPath
+	 * @param context
+	 *            The context used for accessing local storage.
 	 */
 	public ServerHelper(Context context) {
+		this.context = context;
 		deviceId = Secure.getString(context.getContentResolver(),
 				Secure.ANDROID_ID);
 		preferences = context.getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
-
 		this.serverPath = preferences.getString(
 				ServerSettings.PREFERENCES_SERVER_PATH, null);
-		this.context = context;
+
+		if (serverPath == null) {
+			throw new IllegalStateException(
+					"Server path is not set in SharedPreferences.");
+		}
+
 		try {
 			httpClient = new DefaultHttpClient();
 		} catch (Exception e) {
-			Log.e("server_layer",
+			Log.e("ServerHelper",
 					"Error in HTTP Server Connection" + e.toString());
 		}
 	}
@@ -86,15 +96,18 @@ public class ServerHelper {
 	/**
 	 * Used to send a POST request to server.
 	 * 
-	 * @param orderString
+	 * @param postData
+	 *            The data to pass in POST body.
+	 * @param action
+	 *            The action name of the API method to run.
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
 	 */
-	private BufferedReader sendHttpPostRequest(String orderString, String action)
+	private BufferedReader sendHttpPostRequest(String postData, String action)
 			throws NetworkErrorException {
 		String apikey = preferences.getString(
 				ServerSettings.PREFERENCES_API_KEY, null);
-		return sendHttpPostRequest(orderString, action, Arrays.asList(
+		return sendHttpPostRequest(postData, action, Arrays.asList(
 				new BasicHeader(LIDKOPINGSH_APIKEY, apikey), new BasicHeader(
 						LIDKOPING_SH_DEVICE_ID, deviceId)));
 	}
@@ -102,9 +115,12 @@ public class ServerHelper {
 	/**
 	 * Used to send a POST request to server.
 	 * 
-	 * @param data
+	 * @param postData
+	 *            The data to pass in POST body.
+	 * @param action
+	 *            The action name of the API method to run.
 	 * @throws NetworkErrorException
-	 *             if server counld not be accessed.
+	 *             if server could not be accessed.
 	 */
 	private BufferedReader sendHttpPostRequest(String data, String action,
 			Collection<? extends Header> headers) throws NetworkErrorException {
@@ -127,20 +143,21 @@ public class ServerHelper {
 	}
 
 	/**
-	 * Get the updated orders from the server
+	 * Get the updated orders from the server.
 	 * 
 	 * @param orderVerifiers
 	 *            A JsonObject with the ids and timestamps for comparing orders
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
 	 * @throws AuthenticationException
+	 *             if an authentication problem occurred
 	 */
 	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers)
 			throws NetworkErrorException, AuthenticationException {
 		BufferedReader reader = sendHttpPostRequest("data=" + orderVerifiers,
 				"getUpdates");
 
-		ApiResponseGet response = getResponseGet(reader);
+		ApiResponseGet response = convertResponseGet(reader);
 
 		if (isResponseValid(response)) {
 			List<Order> ord = new LinkedList<Order>();
@@ -156,12 +173,15 @@ public class ServerHelper {
 	 * Tries to authenticate and retrieve an API key for this device.
 	 * 
 	 * @param username
+	 *            Username for web API account.
 	 * @param password
+	 *            Password for web API account.
 	 * @return Response with success status, error code and message. API key is
 	 *         returned in message if it exists.
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
 	 * @throws AuthenticationException
+	 *             if an authentication problem occurred
 	 */
 	public ApiResponse getApikey(String username, String password)
 			throws NetworkErrorException, AuthenticationException {
@@ -171,7 +191,7 @@ public class ServerHelper {
 		headers.add(new BasicHeader(LIDKOPINGSH_DEVICEID, deviceId));
 		BufferedReader reader = sendHttpPostRequest("", "getApikey", headers);
 
-		ApiResponse response = getResponseSend(reader);
+		ApiResponse response = convertResponseSend(reader);
 
 		if (isResponseValid(response)) {
 			// Store in SharedPreferences
@@ -193,9 +213,12 @@ public class ServerHelper {
 	 *            if getAll is false, this is the current orders in the model
 	 *            used for finding which orders that need to be updated.
 	 * 
+	 * @return A list of orders which were updated on remote server.
+	 * 
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
 	 * @throws AuthenticationException
+	 *             if an authentication problem occurred
 	 */
 	public List<Order> getUpdates(boolean getAll,
 			Collection<Order> currentOrders) throws NetworkErrorException,
@@ -223,11 +246,12 @@ public class ServerHelper {
 	}
 
 	/**
-	 * Send updates to server.
+	 * Send an update to server.
 	 * 
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
 	 * @throws AuthenticationException
+	 *             if an authentication problem occurred
 	 */
 	public ApiResponse sendUpdate(Order order) throws NetworkErrorException,
 			AuthenticationException {
@@ -235,7 +259,7 @@ public class ServerHelper {
 		String json = "data=" + gsonOrder.toJson(order);
 		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
 
-		ApiResponse response = getResponseSend(reader);
+		ApiResponse response = convertResponseSend(reader);
 
 		if (!isResponseValid(response)) {
 			order.sync(null); // Informing that no data has been able to
@@ -244,7 +268,13 @@ public class ServerHelper {
 		return response;
 	}
 
-	private ApiResponseGet getResponseGet(Reader reader)
+	/**
+	 * Convert a JSON reader response to an ApiResponseGet.
+	 * 
+	 * @throws JsonSyntaxException
+	 * @throws JsonIOException
+	 */
+	private ApiResponseGet convertResponseGet(Reader reader)
 			throws JsonSyntaxException, JsonIOException {
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(Product.class, new ProductDeserializer());
@@ -252,11 +282,28 @@ public class ServerHelper {
 		return gson.fromJson(reader, ApiResponseGet.class);
 	}
 
-	private ApiResponse getResponseSend(Reader reader)
+	/**
+	 * Convert a JSON reader response to an ApiResponse.
+	 * 
+	 * @throws JsonSyntaxException
+	 * @throws JsonIOException
+	 */
+	private ApiResponse convertResponseSend(Reader reader)
 			throws JsonSyntaxException, JsonIOException {
 		return new Gson().fromJson(reader, ApiResponse.class);
 	}
 
+	/**
+	 * Validates if the response is correct.
+	 * 
+	 * @param response
+	 *            The response
+	 * @return Whether the response was valid or not.
+	 * @throws IllegalStateException
+	 *             if response is null
+	 * @throws AuthenticationException
+	 *             if an authentication problem occurred
+	 */
 	private boolean isResponseValid(ApiResponse response)
 			throws AuthenticationException {
 		if (response == null) {
@@ -264,26 +311,31 @@ public class ServerHelper {
 					"Invalid response from server. (response == null)");
 		}
 		if (!response.isSuccess()) {
+			Log.d("server_layer", "Error code: " + response.getErrorcode()
+					+ " Message: " + response.getMessage());
 			if (response.getErrorcode() >= 40 && response.getErrorcode() < 50) {
 				throw new AuthenticationException(response.getMessage());
 			}
-			Log.d("server_layer", "Error code: " + response.getErrorcode()
-					+ " Message: " + response.getMessage());
 			return false;
 		}
 		return true;
 	}
 
-	public void saveImage(Image i) {
+	/**
+	 * Download image from web server and save it to the storage.
+	 * 
+	 * @param i
+	 *            The image to process.
+	 */
+	private void saveImage(Image i) {
 		URL fileName;
 		try {
 			// Download file from web server and save it on internal
 			// storage.
-			fileName = new URL(serverPath + PICTURES_FOLDER
-					+ i.getImagePath());
+			fileName = new URL(serverPath + PICTURES_FOLDER + i.getImagePath());
 			InputStream is = fileName.openStream();
-			OutputStream os = context.openFileOutput(i.getImagePath()
-					.replace("/", ""), Context.MODE_PRIVATE);
+			OutputStream os = context.openFileOutput(
+					i.getImagePath().replace("/", ""), Context.MODE_PRIVATE);
 
 			byte[] b = new byte[2048];
 			int length;
@@ -299,6 +351,15 @@ public class ServerHelper {
 		}
 	}
 
+	/**
+	 * Sync the lists of images, to delete removed orders' images and download
+	 * new orders' images
+	 * 
+	 * @param newOrders
+	 *            The collection of new orders
+	 * @param oldOrders
+	 *            The collection of old orders
+	 */
 	private void syncImages(List<Order> newOrders, Collection<Order> oldOrders) {
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
@@ -314,13 +375,21 @@ public class ServerHelper {
 		}
 
 		// Adds all new images
-		addAllNew(newImages, oldImages);
+		addNewImages(newImages, oldImages);
 
 		// Syncs the images that are the same
 		syncCommonImages(newImages, oldImages);
 	}
 
-	private void addAllNew(Collection<Image> newImages,
+	/**
+	 * Save all new images to internal storage.
+	 * 
+	 * @param newImages
+	 *            A collection of new images.
+	 * @param oldImages
+	 *            A collection of old images.
+	 */
+	private void addNewImages(Collection<Image> newImages,
 			Collection<Image> oldImages) {
 		Collection<Image> modifiedImages = new LinkedList<Image>();
 		modifiedImages.addAll(newImages);
@@ -337,18 +406,29 @@ public class ServerHelper {
 		}
 	}
 
+	/**
+	 * Redownload images that has a new file name.
+	 * 
+	 * @param newImages
+	 *            A collection of new images.
+	 * @param oldImages
+	 *            A collection of old images.
+	 */
 	private void syncCommonImages(Collection<Image> newImages,
 			Collection<Image> oldImages) {
 		for (Image newI : newImages) {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
-						&& newI.getImagePath() != oldI.getImagePath()) {
+						&& !newI.getImagePath().equals(oldI.getImagePath())) {
 					saveImage(newI);
 				}
 			}
 		}
 	}
 
+	/**
+	 * The response for getting orders that is returned from web API.
+	 */
 	public class ApiResponseGet extends ApiResponse {
 		private List<Order> results;
 
@@ -357,6 +437,9 @@ public class ServerHelper {
 		}
 	}
 
+	/**
+	 * The general response that is returned from web API.
+	 */
 	public class ApiResponse {
 		private boolean success;
 		private int errorCode;

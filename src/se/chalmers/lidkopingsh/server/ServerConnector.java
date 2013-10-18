@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import se.chalmers.lidkopingsh.model.DataChangedListener;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
-import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.util.Listener;
 import android.content.Context;
 import android.os.Handler;
@@ -89,7 +87,7 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		networkListeners.remove(listener);
 	}
 
-	public void removeOrderChangedListener(DataChangedListener listener) {
+	public void removeOrderChangedListener(Listener<Collection<Order>> listener) {
 		orderListeners.remove(listener);
 	}
 
@@ -103,14 +101,7 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 	public void sendUpdate(OrderChangedEvent event) {
 		Log.d("ServerConnection",
 				"Sending update to server, via AsyncTaskSend. (updating data before send)");
-		// Update order(s) before sending to server, otherwise
-		// request can be dismissed.
-		Status status = event.getTask().getStatus();
-		update(false);
-		if (!event.getOrder().isRemoved()) {
-			event.getTask().setStatus(status);
-			new AsyncTaskSend(event, helper, this, model.getOrders()).execute();
-		}
+		new AsyncTaskSend(event, helper, this, model.getOrders()).execute();
 	}
 
 	public void startedUpdate() {

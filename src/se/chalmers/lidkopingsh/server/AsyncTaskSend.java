@@ -42,8 +42,16 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 	protected List<Order> doInBackground(Void... none) {
 		List<Order> orders = null;
 		try {
-			serverHelper.sendUpdate(event.getOrder());
-			orders = serverHelper.getUpdates(false, currentOrders);
+			// Update order(s) before sending to server, otherwise
+			// request can be dismissed.
+			se.chalmers.lidkopingsh.model.Status status = event.getTask()
+					.getStatus();
+			serverHelper.getUpdates(false, currentOrders);
+			if (!event.getOrder().isRemoved()) {
+				event.getTask().setStatus(status);
+				serverHelper.sendUpdate(event.getOrder());
+				orders = serverHelper.getUpdates(false, currentOrders);
+			}
 		} catch (Exception e) {
 			exception = e;
 		}

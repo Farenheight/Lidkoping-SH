@@ -26,7 +26,7 @@ public class Accessor {
 	 *            Context used for using database.
 	 * @return the model with all orders.
 	 */
-	public static IModel getModel(Context context) {
+	public synchronized static IModel getModel(Context context) {
 		if (model == null) {
 			model = getLayer(context).getModel(); // Should be populated from DB
 			model.addDataChangedListener(layer);
@@ -41,7 +41,7 @@ public class Accessor {
 	 *            Context for using database.
 	 * @return A layer that can create a model.
 	 */
-	private static ILayer getLayer(Context context) {
+	private synchronized static ILayer getLayer(Context context) {
 		if (layer == null) {
 			layer = new OrderDbLayer(context);
 		}
@@ -59,7 +59,7 @@ public class Accessor {
 	 *            The model holding all orders.
 	 * @return A connector that can connect to the server.
 	 */
-	public static ServerConnector getServerConnector(Context context) {
+	public synchronized static ServerConnector getServerConnector(Context context) {
 		// TODO: Create interface for ServerConnector
 		if (server == null) {
 			if (model == null) {

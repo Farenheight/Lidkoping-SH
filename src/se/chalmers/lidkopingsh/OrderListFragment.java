@@ -207,8 +207,7 @@ public class OrderListFragment extends ListFragment implements
 	}
 
 	@Override
-	public void startedUpdate() {
-	}
+	public void startedUpdate() {}
 
 	@Override
 	public void finishedUpdate() {

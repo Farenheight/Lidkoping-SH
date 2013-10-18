@@ -40,12 +40,13 @@ public class Stone extends Product {
 	 */
 	public Stone(int id, String materialColor, String description,
 			String frontWork, List<Task> tasks, String stoneModel,
-			String sideToBackWork, String textStyle, String ornament, ProductType type) {
+			String sideToBackWork, String textStyle, String ornament,
+			ProductType type) {
 		super(id, materialColor, description, frontWork, tasks, type);
-		this.stoneModel = stoneModel != null? stoneModel : "";
-		this.sideBackWork = sideToBackWork != null? sideToBackWork : "";
-		this.textStyle = textStyle != null? textStyle : "";
-		this.ornament = ornament != null? ornament : "";
+		this.stoneModel = stoneModel != null ? stoneModel : "";
+		this.sideBackWork = sideToBackWork != null ? sideToBackWork : "";
+		this.textStyle = textStyle != null ? textStyle : "";
+		this.ornament = ornament != null ? ornament : "";
 	}
 
 	public String getStoneModel() {
@@ -79,14 +80,21 @@ public class Stone extends Product {
 
 	@Override
 	public boolean equals(Object o) {
-		if(o instanceof Stone){
+		if (o instanceof Stone) {
 			Stone s = ((Stone) o);
 			return super.equals(s) && this.stoneModel.equals(s.getStoneModel())
 					&& this.sideBackWork.equals(s.getSideBackWork())
 					&& this.textStyle.equals(s.getTextStyle())
 					&& this.ornament.equals(s.getOrnament());
-		}else{
+		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode() + 79 * stoneModel.hashCode() + 11
+				* sideBackWork.hashCode() + 31 * textStyle.hashCode() + 37
+				* ornament.hashCode();
 	}
 }
