@@ -118,9 +118,6 @@ public class MapModel implements IModel {
 				products.put(p.getId(), p);
 			}
 		}
-
-		// TODO When adding orders, check if the order have tasks that
-		// does not exist in any other order.
 	}
 
 	@Override
@@ -133,8 +130,6 @@ public class MapModel implements IModel {
 		}
 		orders.remove(o.getId());
 
-		// TODO When removing orders, check if the order have tasks that
-		// does not exist in any other order.
 	}
 
 	@Override
