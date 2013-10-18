@@ -6,6 +6,12 @@ import java.util.NoSuchElementException;
 
 import se.chalmers.lidkopingsh.util.Listener;
 
+/**
+ * An interface for a model 
+ * @author Kim Kling
+ *
+ */
+
 public interface IModel extends Listener<Collection<Order>> {
 
 	/**
@@ -61,5 +67,7 @@ public interface IModel extends Listener<Collection<Order>> {
 	void addOrderChangedListener(Listener<OrderChangedEvent> listener);
 
 	void removeOrderChangedListener(Listener<OrderChangedEvent> listener);
+
+	public void setStations(Collection<Station> stations);
 
 }

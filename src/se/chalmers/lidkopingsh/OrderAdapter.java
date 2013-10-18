@@ -33,7 +33,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	// A copy of the original mOrders list, initialized from and then used
 	// instead as soon as the mFilter ArrayFilter is used. mOrders will then
 	// only contain the filtered values.
-	private ArrayList<Order> mOriginalObjects;
+	private List<Order> mOriginalObjects;
 	private ArrayFilter mFilter;
 	private ModelFilter mModelFilter;
 
@@ -193,12 +193,12 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 				notifyDataSetInvalidated();
 			}
 		}
-
 	}
 
 	public int indexOf(Order order) {
 		return mOrders.indexOf(order);
 	}
+	
 	public void refreshSort(){
 		sort(new StationComparator<Order>(currentSortStation), currentSortStation);
 	}

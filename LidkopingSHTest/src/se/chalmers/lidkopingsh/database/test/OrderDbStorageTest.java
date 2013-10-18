@@ -33,6 +33,9 @@ public class OrderDbStorageTest extends AndroidTestCase {
 		super.tearDown();
 	}
 
+	/**
+	 * Test if a fullypopulated order is inserted properly in the database and can be extracted
+	 */
 	public void testInsertSelectFullyPopulated() {
 		Order order = OrderDbFiller.getOrderFullyPopulated("O.S.");
 
@@ -43,6 +46,9 @@ public class OrderDbStorageTest extends AndroidTestCase {
 		assertTrue(orders.contains(order));
 	}
 
+	/**
+	 * Test if an order with null fields is inserted properly in the database and can be extracted
+	 */
 	public void testInsertSelectWithNullFields() {
 		Order order = OrderDbFiller.getOrderWithNullFields("O.R.");
 
@@ -53,6 +59,9 @@ public class OrderDbStorageTest extends AndroidTestCase {
 		assertTrue(orders.contains(order));
 	}
 
+	/**
+	 * Test if an order without tasks is inserted properly in the database and can be extracted
+	 */
 	public void testInsertSelectWithoutTasks() {
 		Order order = OrderDbFiller.getOrderWithoutTasks("O.T.");
 
@@ -63,6 +72,9 @@ public class OrderDbStorageTest extends AndroidTestCase {
 		assertTrue(orders.contains(order));
 	}
 
+	/**
+	 * Tests if you can insert mutiple orders and extract all from the database at the same time
+	 */
 	public void testInsertSelectMultiple() {
 		List<Order> initOrders = new ArrayList<Order>();
 		Order order1 = OrderDbFiller.getOrderFullyPopulated("O.S.");
@@ -77,6 +89,9 @@ public class OrderDbStorageTest extends AndroidTestCase {
 		assertTrue(orders.contains(order1) && orders.contains(order2));
 	}
 
+	/**
+	 * Test if an order without products is inserted properly in the database and can be extracted
+	 */
 	public void testInsertOrderWithoutProducts() {
 		Order order = OrderDbFiller.getOrderWithoutProducts("O.G.");
 
@@ -87,6 +102,9 @@ public class OrderDbStorageTest extends AndroidTestCase {
 		assertTrue(orders.contains(order));
 	}
 
+	/**
+	 * Tests if you can delete orders from the database
+	 */
 	public void testDelete() {
 		Order order = OrderDbFiller.getOrderFullyPopulated("O.S.");
 
@@ -102,6 +120,9 @@ public class OrderDbStorageTest extends AndroidTestCase {
 		assertTrue(orders.size() == 0);
 	}
 
+	/**
+	 * Tests if it's possible to update orders stored in the database
+	 */
 	public void testUpdate() {
 		Order order = OrderDbFiller.getOrderFullyPopulated("O.S.");
 
@@ -119,40 +140,4 @@ public class OrderDbStorageTest extends AndroidTestCase {
 		assertTrue(orders.size() == 1);
 		assertTrue(orders.contains(order));
 	}
-
-	//
-	// public void testWhere() {
-	// Order order1 = OrderDbFiller.getOrderFullyPopulated("O.S.");
-	// Order order2 = OrderDbFiller.getOrderFullyPopulated("O.R.");
-	// dbStorage.insert(order1);
-	// dbStorage.insert(order2);
-	// Collection<Order> orders = dbStorage.query(OrderTable.COLUMN_NAME_ID_NAME
-	// + " = ?",
-	// new String[] { "O.R." }, null);
-	//
-	// assertTrue(orders.size() == 1);
-	// assertTrue(orders.contains(order2));
-	//
-	// }
-	//
-	//
-	// public void testSort() {
-	// Order order1 = OrderDbFiller.getOrderFullyPopulated("O.S.");
-	// Order order2 = OrderDbFiller.getOrderFullyPopulated("O.R.");
-	// dbStorage.insert(order1);
-	// dbStorage.insert(order2);
-	// Collection<Order> orders = dbStorage.query(null, null,
-	// OrderTable.COLUMN_NAME_ID_NAME + " ASC");
-	// Iterator<Order> iOrders = orders.iterator();
-	//
-	// assertTrue(orders.size() == 2);
-	// assertEquals(iOrders.next(), order2);
-	//
-	// orders = dbStorage.query(null, null,
-	// OrderTable.COLUMN_NAME_ID_NAME + " DESC");
-	// iOrders = orders.iterator();
-	//
-	// assertTrue(orders.size() == 2);
-	// assertEquals(iOrders.next(), order1);
-	// }
 }

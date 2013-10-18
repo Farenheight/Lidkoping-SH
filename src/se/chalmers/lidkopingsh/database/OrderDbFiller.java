@@ -16,7 +16,7 @@ import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 
 /**
- * A class to fill the database with dummydata. Is to be removed when not needed anymore.
+ * A class to fill the database with dummydata. Is to be removed when not needed anymore. Only used for testing
  * @author Olliver
  *
  */
@@ -29,6 +29,10 @@ public class OrderDbFiller {
 	private static int charcode = 65;
 	private static int imageId = 600;
 	
+	/**
+	 * Fills database with dummy data
+	 * @param db The database to fill
+	 */
 	public static void fillDb(OrderDbStorage db){
 		for(int i=0;i<20;i++){
 			db.insert(getOrderFullyPopulated("O." + (char)charcode++ + "."));
@@ -36,6 +40,12 @@ public class OrderDbFiller {
 			db.insert(getOrderWithoutTasks("O." + (char)charcode++ + "."));
 		}
 	}
+	
+	/**
+	 * Returns a fully populated order
+	 * @param idName The identification name example "O.E"
+	 * @return The populated order
+	 */
 	public static Order getOrderFullyPopulated(String idName) {
 		Order order = getOrder(idName, getCustomer());
 
@@ -47,6 +57,11 @@ public class OrderDbFiller {
 		return order;
 	}
 
+	/**
+	 * Returns an order with some null fields
+	 * @param idName The identification name example "O.E"
+	 * @return The complete order
+	 */
 	public static Order getOrderWithNullFields(String idName) {
 		Order order = getOrder(idName, getCustomer());
 
@@ -58,6 +73,11 @@ public class OrderDbFiller {
 		return order;
 	}
 
+	/**
+	 * Returns an order without tasks
+	 * @param idName The identification name example "O.E"
+	 * @return The populated order
+	 */
 	public static Order getOrderWithoutTasks(String idName) {
 		Order order = getOrder(idName, getCustomer());
 
@@ -69,6 +89,11 @@ public class OrderDbFiller {
 		return order;
 	}
 	
+	/**
+	 * Returns an order without products
+	 * @param idName The identification name example "O.E"
+	 * @return The populated order
+	 */
 	public static Order getOrderWithoutProducts(String idName) {
 		return getOrder(idName, getCustomer());
 	}
@@ -101,12 +126,22 @@ public class OrderDbFiller {
 		return tasks2;
 	}
 
+	/**
+	 * Returns a new stone
+	 * @param description The description of the stone
+	 * @param tasks The list with the tasks
+	 * @return A new stone
+	 */
 	public static Stone getStone(String description, List<Task> tasks) {
 		return new Stone(productId++, "Hallandia", description, "Polerad", tasks,
 				"NB 49", "Råhugget", "Helvetica nedhuggen i guld",
 				"Blomma nedhuggen i guld", new ProductType(2, "Sten"));
 	}
 
+	/**
+	 * Returns example tasks of a stone
+	 * @return Example tasks
+	 */
 	public static List<Task> getStoneTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		tasks.add(new Task(new Station(1, "Sågning"), Status.DONE));

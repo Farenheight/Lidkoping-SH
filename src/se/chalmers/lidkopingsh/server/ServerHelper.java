@@ -328,29 +328,26 @@ public class ServerHelper {
 	 *            The image to process.
 	 */
 	private void saveImage(Image i) {
-		if (i.getImageFile() == null) {
-			URL fileName;
-			try {
-				// Download file from web server and save it on internal
-				// storage.
-				fileName = new URL(serverPath + PICTURES_FOLDER
-						+ i.getImagePath());
-				InputStream is = fileName.openStream();
-				OutputStream os = context.openFileOutput(i.getImagePath()
-						.replace("/", ""), Context.MODE_PRIVATE);
+		URL fileName;
+		try {
+			// Download file from web server and save it on internal
+			// storage.
+			fileName = new URL(serverPath + PICTURES_FOLDER + i.getImagePath());
+			InputStream is = fileName.openStream();
+			OutputStream os = context.openFileOutput(
+					i.getImagePath().replace("/", ""), Context.MODE_PRIVATE);
 
-				byte[] b = new byte[2048];
-				int length;
+			byte[] b = new byte[2048];
+			int length;
 
-				while ((length = is.read(b)) != -1) {
-					os.write(b, 0, length);
-				}
-
-				is.close();
-				os.close();
-			} catch (Exception e) {
-				e.printStackTrace();
+			while ((length = is.read(b)) != -1) {
+				os.write(b, 0, length);
 			}
+
+			is.close();
+			os.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -358,21 +355,14 @@ public class ServerHelper {
 	 * Sync the lists of images, to delete removed orders' images and download
 	 * new orders' images
 	 * 
-	 * @param newOrders The collection of new orders
-	 * @param oldOrders The collection of old orders
+	 * @param newOrders
+	 *            The collection of new orders
+	 * @param oldOrders
+	 *            The collection of old orders
 	 */
 	private void syncImages(List<Order> newOrders, Collection<Order> oldOrders) {
 		Collection<Image> oldImages = new LinkedList<Image>();
 		Collection<Image> newImages = new LinkedList<Image>();
-
-		for (Order o : newOrders) {
-			if (o.isRemoved()) {
-				for (Image i : o.getImages()) {
-					i.deleteImage();
-				}
-				newOrders.remove(o);
-			}
-		}
 
 		// gets all old images
 		for (Order oldOrder : oldOrders) {
@@ -394,8 +384,10 @@ public class ServerHelper {
 	/**
 	 * Save all new images to internal storage.
 	 * 
-	 * @param newImages A collection of new images.
-	 * @param oldImages A collection of old images.
+	 * @param newImages
+	 *            A collection of new images.
+	 * @param oldImages
+	 *            A collection of old images.
 	 */
 	private void addNewImages(Collection<Image> newImages,
 			Collection<Image> oldImages) {
@@ -417,16 +409,17 @@ public class ServerHelper {
 	/**
 	 * Redownload images that has a new file name.
 	 * 
-	 * @param newImages A collection of new images.
-	 * @param oldImages A collection of old images.
+	 * @param newImages
+	 *            A collection of new images.
+	 * @param oldImages
+	 *            A collection of old images.
 	 */
 	private void syncCommonImages(Collection<Image> newImages,
 			Collection<Image> oldImages) {
 		for (Image newI : newImages) {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
-						&& !newI.getImagePath().equals(oldI.getImagePath())) {
-					oldI.deleteImage();
+						&& newI.getImagePath() != oldI.getImagePath()) {
 					saveImage(newI);
 				}
 			}

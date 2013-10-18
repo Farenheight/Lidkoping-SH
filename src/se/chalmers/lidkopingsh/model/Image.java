@@ -1,7 +1,5 @@
 package se.chalmers.lidkopingsh.model;
 
-import java.io.File;
-
 import se.chalmers.lidkopingsh.util.Syncable;
 
 /**
@@ -13,7 +11,6 @@ import se.chalmers.lidkopingsh.util.Syncable;
 public class Image implements Syncable<Image> {
 	private int id;
 	private String imagePath;
-	private File imageFile;
 	
 	public Image(int id, String imagePath){
 		this.id = id;
@@ -36,27 +33,12 @@ public class Image implements Syncable<Image> {
 		this.imagePath = imagePath;
 	}
 
-	public File getImageFile() {
-		return imageFile;
-	}
-
-	public void setImageFile(File imageFile) {
-		this.imageFile = imageFile;
-	}
-	
-	public void deleteImage() {
-		if (imageFile != null) {
-			imageFile.delete();
-			imageFile = null;
-		}
-	}
-
 	@Override
 	public boolean sync(Image newData) {
 		if (newData != null && this.id == newData.id
 				&& getClass() == newData.getClass()) {
 			} else {
-				return this.id == newData.id && this.imageFile == newData.imageFile && this.imagePath.equals(newData.imagePath);
+				return this.id == newData.id && this.imagePath.equals(newData.imagePath);
 			}
 		return false;
 	}

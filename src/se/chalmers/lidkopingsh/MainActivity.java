@@ -72,7 +72,7 @@ public class MainActivity extends FragmentActivity implements
 				.getString(ServerSettings.PREFERENCES_SERVER_PATH, null));
 		return !apiEmpty && !serverPathEmpty;
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		Accessor.getServerConnector(this).removeNetworkListener(this);
@@ -182,12 +182,13 @@ public class MainActivity extends FragmentActivity implements
 
 				}).setNegativeButton("Nej", null).show();
 	}
-	
+
 	@Override
 	public void networkProblem(String message) {
 		Log.i("MainActivity", "Network error");
 		Context context = getApplicationContext();
-		CharSequence text = getResources().getString(R.string.network_error_no_internet);
+		CharSequence text = getResources().getString(
+				R.string.network_error_no_internet);
 		int duration = Toast.LENGTH_SHORT;
 
 		Toast toast = Toast.makeText(context, text, duration);
