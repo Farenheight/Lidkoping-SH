@@ -26,6 +26,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 /**
@@ -61,7 +62,8 @@ public class OrderDbStorage {
 	private static final String SPACE = " ";
 	private static final String WHERE = " WHERE ";
 
-	private final SQLiteDatabase db;
+	private SQLiteDatabase db;
+	private OrderDbHelper dbHelper;
 
 	private final Collection<Integer> stationIds;
 	private final Collection<Integer> productTypeIds;
@@ -74,8 +76,12 @@ public class OrderDbStorage {
 	 *            to use to open or create the database
 	 */
 	public OrderDbStorage(Context context) {
-		OrderDbHelper dbHelper = new OrderDbHelper(context);
-		db = dbHelper.getWritableDatabase();
+		dbHelper = new OrderDbHelper(context);
+		try {
+			db = dbHelper.getWritableDatabase();
+		} catch (SQLiteException e) {
+			
+		}
 		stationIds = new ArrayList<Integer>();
 		productTypeIds = new ArrayList<Integer>();
 	}
@@ -648,6 +654,10 @@ public class OrderDbStorage {
 		c.moveToPrevious();
 
 		return tasks;
+	}
+	
+	public void close() {
+		db.close();
 	}
 
 	//Gets a column with the specified type, int, long or String

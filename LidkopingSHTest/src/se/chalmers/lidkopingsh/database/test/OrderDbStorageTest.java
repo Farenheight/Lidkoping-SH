@@ -17,28 +17,19 @@ import android.test.AndroidTestCase;
 public class OrderDbStorageTest extends AndroidTestCase {
 
 	private OrderDbStorage dbStorage;
-	private static Collection<Order> originalData;
 
 	@Override
 	protected void setUp() throws Exception {
 		dbStorage = new OrderDbStorage(this.getContext());
 		dbStorage.clear();
 
-		originalData = new OrderDbStorage(this.getContext()).query(null, null,
-				null);
-
 		super.setUp();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		OrderDbStorage dbStorage = new OrderDbStorage(this.getContext());
 		dbStorage.clear();
-
-		for (Order o : originalData) {
-			dbStorage.insert(o);
-		}
-
+		
 		super.tearDown();
 	}
 
@@ -91,7 +82,7 @@ public class OrderDbStorageTest extends AndroidTestCase {
 
 		dbStorage.insert(order);
 		Collection<Order> orders = dbStorage.query(null, null, null);
-
+		
 		assertTrue(orders.size() == 1);
 		assertTrue(orders.contains(order));
 	}

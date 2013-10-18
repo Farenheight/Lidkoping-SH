@@ -369,7 +369,8 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 					&& this.orderNumber.equals(or.getOrderNumber())
 					&& this.idName.equals(or.getIdName())
 					&& this.customer.equals(or.getCustomer())
-					&& this.products.equals(or.getProducts());
+					&& this.products.equals(or.getProducts())
+					&& this.deceased.equals(or.getDeceased());
 		}
 	}
 
