@@ -15,6 +15,9 @@ import android.content.Context;
  */
 public class OrderDbLayer implements ILayer {
 
+	/**
+	 * The database to be use
+	 */
 	private final OrderDbStorage db;
 
 	/**

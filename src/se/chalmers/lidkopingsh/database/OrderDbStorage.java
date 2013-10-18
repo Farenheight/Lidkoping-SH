@@ -41,6 +41,9 @@ import android.util.Log;
  */
 public class OrderDbStorage {
 
+	/**
+	 * Constants to make it easier writing database queries.
+	 */
 	private static final String CUSTOMER = "c";
 	private static final String IMAGE = "i";
 	private static final String ORDER = "o";
@@ -62,9 +65,16 @@ public class OrderDbStorage {
 	private static final String SPACE = " ";
 	private static final String WHERE = " WHERE ";
 
+	/**
+	 * The database and Helper to use
+	 */
 	private SQLiteDatabase db;
 	private OrderDbHelper dbHelper;
 
+	/**
+	 * Incremental values to keep track of the ids so that not two equal stations or producttypes are 
+	 * created in the database.
+	 */
 	private final Collection<Integer> stationIds;
 	private final Collection<Integer> productTypeIds;
 
@@ -654,10 +664,6 @@ public class OrderDbStorage {
 		c.moveToPrevious();
 
 		return tasks;
-	}
-	
-	public void close() {
-		db.close();
 	}
 
 	//Gets a column with the specified type, int, long or String
