@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -204,7 +203,6 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 
 	@Override
 	public void finishedUpdate() {
-		mOrderAdapter.
 		mOrderAdapter.notifyDataSetChanged();
 		mOrderAdapter.refreshSort();
 	}
