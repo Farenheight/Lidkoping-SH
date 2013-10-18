@@ -107,25 +107,36 @@ public class OrderListFragment extends ListFragment implements
 								savedInstanceState.getInt(ACTIVATED_ORDER_ID));
 			}
 		}
+	}
+
+	public void initOrderAdapter() {
+		mOrderAdapter = new OrderAdapter(getActivity(), new ArrayList<Order>(
+				Accessor.getModel(getActivity()).getOrders()));
+		setListAdapter(mOrderAdapter);
 		orderListObserver = new OrderListObserver();
 		mOrderAdapter.registerDataSetObserver(orderListObserver);
+		Log.i("OrderListFragment", "New Order Adapter created");
 	}
 
 	private void initStationSpinner() {
 		// Sets up the station spinner and it's adapter
 		Spinner stationSpinner = (Spinner) getView().findViewById(
 				R.id.station_spinner);
+		
+		initStationAdapter();
+		stationSpinner.setAdapter(mStationsAdapter);
+		// Setup helper handlers to features in this fragment
+		mSortHandler = new SortHandler(stationSpinner, mOrderAdapter);
+		mSearchHandler = new SearchHandler((EditText) getView().findViewById(
+				R.id.search_field), mOrderAdapter);
+	}
+	
+	private void initStationAdapter(){
 		mStationsAdapter = new ArrayAdapter<Station>(getActivity(),
 				R.layout.spinner_white_text, (ArrayList<Station>) Accessor
 						.getModel(getActivity()).getStations());
 		mStationsAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		stationSpinner.setAdapter(mStationsAdapter);
-
-		// Setup helper handlers to features in this fragment
-		mSortHandler = new SortHandler(stationSpinner, mOrderAdapter);
-		mSearchHandler = new SearchHandler((EditText) getView().findViewById(
-				R.id.search_field), mOrderAdapter);
 	}
 
 	@Override
@@ -212,12 +223,13 @@ public class OrderListFragment extends ListFragment implements
 
 	@Override
 	public void finishedUpdate() {
-		// TODO Error "Content view not yet created"
+		initOrderAdapter();
 		mOrderAdapter.notifyDataSetChanged();
 		mOrderAdapter.refreshSort();
 		Log.d("OrderListFragment",
 				"Orders in OrderAdapter: " + mOrderAdapter.getCount());
 		mStationsAdapter.notifyDataSetChanged();
+		initStationSpinner();
 	}
 
 	@Override
@@ -226,7 +238,5 @@ public class OrderListFragment extends ListFragment implements
 
 	@Override
 	public void authenticationFailed() {
-		// TODO Auto-generated method stub
-
 	}
 }

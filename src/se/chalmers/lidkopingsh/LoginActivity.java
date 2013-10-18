@@ -233,8 +233,6 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 		protected Boolean doInBackground(Void... params) {
 			
 			// Send to server
-			mUserName = "dev";
-			mPassword = "dev";
 			try {
 				ApiResponse response = new ServerHelper(LoginActivity.this)
 						.getApikey(mUserName, mPassword);
