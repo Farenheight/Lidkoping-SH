@@ -7,7 +7,7 @@
     android:baselineAligned="false"
     android:orientation="horizontal" >
 
-   <include layout="@layout/od_drawing_cont"/>
+    <include layout="@layout/od_drawing_cont" />
 
     <FrameLayout
         android:layout_width="240dp"
