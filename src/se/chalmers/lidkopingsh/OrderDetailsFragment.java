@@ -110,7 +110,7 @@ public class OrderDetailsFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-		Accessor.getServerConnector(getActivity()).removeNetworkListener(
+		Accessor.getServerConnector(getActivity()).removeNetworkStatusListener(
 				mNetworkWatcher);
 		if (bitmap != null) {
 			bitmap.recycle();

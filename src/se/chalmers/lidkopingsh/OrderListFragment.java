@@ -149,6 +149,7 @@ public class OrderListFragment extends ListFragment implements
 		if (orderListObserver != null) {
 			mOrderAdapter.unregisterDataSetObserver(orderListObserver);
 		}
+		Accessor.getServerConnector(getActivity()).removeNetworkStatusListener(this);
 		super.onDestroy();
 	}
 

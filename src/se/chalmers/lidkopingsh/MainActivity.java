@@ -75,7 +75,7 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		Accessor.getServerConnector(this).removeNetworkListener(this);
+		Accessor.getServerConnector(this).removeNetworkStatusListener(this);
 		super.onDestroy();
 	}
 

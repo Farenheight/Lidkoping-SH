@@ -131,7 +131,7 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 	 * @param listener
 	 *            The network listener.
 	 */
-	public void removeNetworkListener(NetworkStatusListener listener) {
+	public void removeNetworkStatusListener(NetworkStatusListener listener) {
 		networkListeners.remove(listener);
 	}
 
