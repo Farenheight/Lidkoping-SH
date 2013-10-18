@@ -38,7 +38,7 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 
 	@Override
 	protected void onPreExecute() {
-		connector.startedUpdate();
+		connector.notifyStartedUpdate();
 	}
 
 	@Override
@@ -81,6 +81,6 @@ class AsyncTaskSend extends AsyncTask<Void, Void, List<Order>> {
 				event.getTask().setStatus(status);
 			}
 		}
-		connector.finishedUpdate();
+		connector.notifyFinishedUpdate();
 	}
 }
