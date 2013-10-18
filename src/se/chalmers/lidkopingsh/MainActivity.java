@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -43,10 +44,11 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ExceptionHandler.register(this, "http://simonbengtsson.se/lsh/stacktrace_script.php");
-		Accessor.getModel(this);		// Create model and load from database.
-		mSharedPreferences = getSharedPreferences(ServerSettings.PREFERENCES_NAME,
-				Context.MODE_PRIVATE);
+		ExceptionHandler.register(this,
+				"http://simonbengtsson.se/lsh/stacktrace_script.php");
+		Accessor.getModel(this); // Create model and load from database.
+		mSharedPreferences = getSharedPreferences(
+				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
 			Log.i("MainActivity", "Not logged, in. Staring login act");
 			startActivity(new Intent(this, LoginActivity.class));
@@ -203,6 +205,10 @@ public class MainActivity extends FragmentActivity implements
 
 	private void logout() {
 		startActivity(new Intent(this, LoginActivity.class));
+		Editor editor = getSharedPreferences(ServerSettings.PREFERENCES_NAME,
+				Context.MODE_PRIVATE).edit();
+		editor.clear().commit();
+		Accessor.getModel(this).clearAllOrders();
 		finish();
 	}
 }

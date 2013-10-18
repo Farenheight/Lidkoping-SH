@@ -21,7 +21,15 @@ public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
 	private Map<Integer, Product> products;
 	private Collection<Station> stations;
+	
+	/**
+	 * Listeners for when model is synced with orders from network.
+	 */
 	private Collection<DataChangedListener> dataChangedListeners;
+	
+	/**
+	 * Listeners for when something is changed in the orders.
+	 */
 	private Collection<Listener<OrderChangedEvent>> orderChangedListeners;
 
 	/**
@@ -130,6 +138,11 @@ public class MapModel implements IModel {
 		}
 		orders.remove(o.getId());
 
+	}
+	
+	@Override
+	public void clearAllOrders(){
+		sync(new ArrayList<Order>());
 	}
 
 	@Override

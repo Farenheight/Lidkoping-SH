@@ -7,9 +7,10 @@ import java.util.NoSuchElementException;
 import se.chalmers.lidkopingsh.util.Listener;
 
 /**
- * An interface for a model 
+ * An interface for a model
+ * 
  * @author Kim Kling
- *
+ * 
  */
 
 public interface IModel extends Listener<Collection<Order>> {
@@ -57,7 +58,7 @@ public interface IModel extends Listener<Collection<Order>> {
 	public Collection<Order> getOrders();
 
 	public Collection<Station> getStations();
-	
+
 	public Station getStationById(int id);
 
 	void addDataChangedListener(DataChangedListener listener);
@@ -67,7 +68,16 @@ public interface IModel extends Listener<Collection<Order>> {
 	void addOrderChangedListener(Listener<OrderChangedEvent> listener);
 
 	void removeOrderChangedListener(Listener<OrderChangedEvent> listener);
+	
+	/**
+	 * Sets the currently active stations in the model.
+	 * @param stations
+	 */
+	void setStations(Collection<Station> stations);
 
-	public void setStations(Collection<Station> stations);
+	/**
+	 * Removes all orders from the model and notifies all listeners.
+	 */
+	void clearAllOrders();
 
 }
