@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.android.gms.internal.as;
+
 import se.chalmers.lidkopingsh.handler.ModelHandler;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
@@ -78,6 +80,8 @@ public class OrderDetailsFragment extends Fragment {
 
 	private Bitmap bitmap;
 
+	private AsyntaskImageLoader asyntaskImageLoader;
+
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -109,6 +113,9 @@ public class OrderDetailsFragment extends Fragment {
 		if (bitmap != null) {
 			bitmap.recycle();
 			Log.d("DEBUG", "bitmap data released");
+		}
+		if(asyntaskImageLoader != null){
+			asyntaskImageLoader.cancel(true);
 		}
 		super.onDestroy();
 	}
@@ -293,7 +300,8 @@ public class OrderDetailsFragment extends Fragment {
 			String imagePath = mOrder.getImages().get(0).getImagePath()
 					.replace("/", "");
 			// Load Images
-			new AsyntaskImageLoader().execute(imagePath);
+			asyntaskImageLoader = new AsyntaskImageLoader();
+			asyntaskImageLoader.execute(imagePath);
 		}
 	}
 
@@ -377,6 +385,7 @@ public class OrderDetailsFragment extends Fragment {
 				.getCemeteryBoard());
 		((TextView) mRootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
+		
 
 		// Product info
 		StringBuilder desc = new StringBuilder();
@@ -384,9 +393,15 @@ public class OrderDetailsFragment extends Fragment {
 		StringBuilder materialColor = new StringBuilder();
 
 		for (Product product : mOrder.getProducts()) {
-			desc.append(product.getDescription());
-			frontWork.append(product.getFrontWork());
-			materialColor.append(product.getMaterialColor());
+			if(!product.getDescription().isEmpty()){
+				desc.append(product.getType() + ": " + product.getDescription() + "\n");
+			}
+			if(!product.getFrontWork().isEmpty()){
+				frontWork.append(product.getType() + ": " + product.getFrontWork()+ "\n");
+			}
+			if(!product.getMaterialColor().isEmpty()){
+				materialColor.append(product.getType() + ": " + product.getMaterialColor() + "\n");				
+			}
 		}
 
 		((TextView) mRootView.findViewById(R.id.desc)).setText(desc);
@@ -397,15 +412,19 @@ public class OrderDetailsFragment extends Fragment {
 
 		// Stone specific
 		Stone stone = mOrder.getStone();
+		String stoneModel = "";
+		String ornament = "";
+		String textStyle= "";
 		if (stone != null) {
-			((TextView) mRootView.findViewById(R.id.stoneModel)).setText(stone
-					.getStoneModel());
-
-			((TextView) mRootView.findViewById(R.id.ornament)).setText(stone
-					.getOrnament());
-			((TextView) mRootView.findViewById(R.id.textStyleAndProcessing))
-					.setText(stone.getTextStyle());
+			stoneModel = stone.getStoneModel();
+			ornament = stone.getOrnament();
+			textStyle = stone.getTextStyle();
 		}
+		((TextView) mRootView.findViewById(R.id.stoneModel)).setText(stoneModel);
+		
+		((TextView) mRootView.findViewById(R.id.ornament)).setText(ornament);
+		((TextView) mRootView.findViewById(R.id.textStyleAndProcessing))
+		.setText(textStyle);
 	}
 
 	@Override
