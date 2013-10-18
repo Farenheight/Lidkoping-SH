@@ -69,7 +69,7 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 
 	public void notifyAuthenticationFailed() {
 		for (NetworkStatusListener l : networkListeners) {
-			l.authinicationFailed();
+			l.authenticationFailed();
 		}
 	}
 

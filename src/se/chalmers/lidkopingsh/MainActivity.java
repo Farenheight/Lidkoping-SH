@@ -53,6 +53,7 @@ public class MainActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
+		Log.d("MainAct", "ServerConnector created");
 		Accessor.getServerConnector(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
@@ -139,6 +140,10 @@ public class MainActivity extends FragmentActivity implements
 			Uri url = Uri.parse("http://simonbengtsson.se/userguide.pdf");
 			Intent intent = new Intent(Intent.ACTION_VIEW, url);
 			startActivity(intent);
+			return true;
+		case R.id.action_logout:
+			logout();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -182,7 +187,7 @@ public class MainActivity extends FragmentActivity implements
 	public void networkProblem(String message) {
 		Log.i("MainActivity", "Network error");
 		Context context = getApplicationContext();
-		CharSequence text = "Network error, check your connection";
+		CharSequence text = getResources().getString(R.string.network_error_no_internet);
 		int duration = Toast.LENGTH_SHORT;
 
 		Toast toast = Toast.makeText(context, text, duration);
@@ -190,7 +195,13 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void authinicationFailed() {
+	public void authenticationFailed() {
 		Log.d("MainAct", "Authunication failed");
+		logout();
+	}
+
+	private void logout() {
+		startActivity(new Intent(this, LoginActivity.class));
+		finish();
 	}
 }

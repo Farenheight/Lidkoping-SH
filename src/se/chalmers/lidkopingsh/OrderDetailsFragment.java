@@ -12,10 +12,13 @@ import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,6 +35,7 @@ import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 /**
@@ -93,7 +97,8 @@ public class OrderDetailsFragment extends Fragment {
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
 		mNetworkWatcher = new NetworkWatcher();
-		Accessor.getServerConnector(getActivity()).addNetworkListener(mNetworkWatcher);
+		Accessor.getServerConnector(getActivity()).addNetworkListener(
+				mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = Accessor.getModel(this.getActivity()).getOrderById(
@@ -111,7 +116,7 @@ public class OrderDetailsFragment extends Fragment {
 			bitmap.recycle();
 			Log.d("DEBUG", "bitmap data released");
 		}
-		if(asyntaskImageLoader != null){
+		if (asyntaskImageLoader != null) {
 			asyntaskImageLoader.cancel(true);
 		}
 		super.onDestroy();
@@ -164,9 +169,9 @@ public class OrderDetailsFragment extends Fragment {
 		}
 
 		@Override
-		public void authinicationFailed() {
+		public void authenticationFailed() {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 	}
@@ -271,12 +276,16 @@ public class OrderDetailsFragment extends Fragment {
 			@Override
 			public void onCheckedChanged(CompoundButton toggleButton,
 					boolean isChecked) {
-				btn.setVisibility(View.GONE);
-				pBar.setVisibility(View.VISIBLE);
-				if (task.getStatus() == Status.DONE) {
-					task.setStatus(Status.NOT_DONE);
+				if (isNetworkAvailable()) {
+					btn.setVisibility(View.GONE);
+					pBar.setVisibility(View.VISIBLE);
+					task.setStatus(task.getStatus() == Status.DONE ? Status.NOT_DONE
+							: Status.DONE);
 				} else {
-					task.setStatus(Status.DONE);
+					toggleButton.setChecked(!isChecked);
+					Toast toast = Toast.makeText(getActivity(),
+									getResources().getString(R.string.network_error_change_data),2);
+					toast.show();
 				}
 			}
 		});
@@ -383,12 +392,12 @@ public class OrderDetailsFragment extends Fragment {
 
 		// General
 		((TextView) mRootView.findViewById(R.id.cemetery_number))
-				.setText(mOrder.getCemetaryNumber());
+				.setText(mOrder.getCemetaryBlock() + " "
+						+ mOrder.getCemetaryNumber());
 		((TextView) mRootView.findViewById(R.id.cemeteryBoard)).setText(mOrder
 				.getCemeteryBoard());
 		((TextView) mRootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
-		
 
 		// Product info
 		StringBuilder desc = new StringBuilder();
@@ -396,14 +405,17 @@ public class OrderDetailsFragment extends Fragment {
 		StringBuilder materialColor = new StringBuilder();
 
 		for (Product product : mOrder.getProducts()) {
-			if(!product.getDescription().isEmpty()){
-				desc.append(product.getType() + ": " + product.getDescription() + "\n");
+			if (!product.getDescription().isEmpty()) {
+				desc.append(product.getType() + ": " + product.getDescription()
+						+ "\n");
 			}
-			if(!product.getFrontWork().isEmpty()){
-				frontWork.append(product.getType() + ": " + product.getFrontWork()+ "\n");
+			if (!product.getFrontWork().isEmpty()) {
+				frontWork.append(product.getType() + ": "
+						+ product.getFrontWork() + "\n");
 			}
-			if(!product.getMaterialColor().isEmpty()){
-				materialColor.append(product.getType() + ": " + product.getMaterialColor() + "\n");				
+			if (!product.getMaterialColor().isEmpty()) {
+				materialColor.append(product.getType() + ": "
+						+ product.getMaterialColor() + "\n");
 			}
 		}
 
@@ -417,22 +429,41 @@ public class OrderDetailsFragment extends Fragment {
 		Stone stone = mOrder.getStone();
 		String stoneModel = "";
 		String ornament = "";
-		String textStyle= "";
+		String textStyle = "";
 		if (stone != null) {
 			stoneModel = stone.getStoneModel();
 			ornament = stone.getOrnament();
 			textStyle = stone.getTextStyle();
 		}
-		((TextView) mRootView.findViewById(R.id.stoneModel)).setText(stoneModel);
-		
+		((TextView) mRootView.findViewById(R.id.stoneModel))
+				.setText(stoneModel);
+
 		((TextView) mRootView.findViewById(R.id.ornament)).setText(ornament);
 		((TextView) mRootView.findViewById(R.id.textStyleAndProcessing))
-		.setText(textStyle);
+				.setText(textStyle);
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putString(CURRENT_TAB_KEY, mTabHost.getCurrentTabTag());
+	}
+
+	private boolean isNetworkAvailable() {
+		boolean haveConnectedWifi = false;
+		boolean haveConnectedMobile = false;
+
+		ConnectivityManager cm = (ConnectivityManager) getActivity()
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+		for (NetworkInfo ni : netInfo) {
+			if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+				if (ni.isConnected())
+					haveConnectedWifi = true;
+			if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+				if (ni.isConnected())
+					haveConnectedMobile = true;
+		}
+		return haveConnectedWifi || haveConnectedMobile;
 	}
 }

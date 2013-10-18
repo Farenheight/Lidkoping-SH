@@ -216,7 +216,7 @@ public class OrderListFragment extends ListFragment implements NetworkStatusList
 	}
 
 	@Override
-	public void authinicationFailed() {
+	public void authenticationFailed() {
 		// TODO Auto-generated method stub
 
 	}

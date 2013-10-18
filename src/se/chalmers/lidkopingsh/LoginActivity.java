@@ -216,9 +216,10 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 	}
 
 	@Override
-	public void authinicationFailed() {
-		Log.e("LoginAct",
-				"Authentication failed (API key), this should never happen.");
+	public void authenticationFailed() {
+		mUserNameView
+				.setError(getString(R.string.error_invalid_user_creadentials));
+		mUserNameView.requestFocus();
 	}
 
 	/**
@@ -227,25 +228,22 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+		private Exception exception;
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			// Unique device id for every android device
-			String deviceId = Secure.getString(
-					LoginActivity.this.getContentResolver(), Secure.ANDROID_ID);
-
+			
 			// Send to server
 			mUserName = "dev";
 			mPassword = "dev";
 			try {
 				ApiResponse response = new ServerHelper(LoginActivity.this)
-						.getApikey(mUserName, mPassword, deviceId);
+						.getApikey(mUserName, mPassword);
 				if (response != null) {
 					return response.isSuccess();
 				}
-			} catch (AuthenticationException e) {
-				authinicationFailed();
-			} catch (NetworkErrorException e) {
-				networkProblem("Kunde inte ansluta till server.");
+			} catch (Exception e) {
+				exception = e;
 			}
 
 			return false;
@@ -256,15 +254,22 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 			mAuthTask = null;
 			showProgress(false);
 
+			if (exception != null) {
+				if (exception instanceof AuthenticationException) {
+					authenticationFailed();
+					Log.e("LoginAct", "Failed to login with message: "
+							+ exception.getMessage());
+				} else if (exception instanceof NetworkErrorException) {
+					networkProblem("Kunde inte ansluta till server.");
+				} else {
+					throw new IllegalStateException(
+							"Unhandled exception in LoginActivity", exception);
+				}
+			}
+
 			if (success) {
 				startActivity(new Intent(LoginActivity.this, MainActivity.class));
 				Log.i("DEBUG", "Login seccesful. MainActivity started");
-			} else {
-				mUserNameView
-						.setError(getString(R.string.error_invalid_user_creadentials));
-				mUserNameView.requestFocus();
-				Log.e("DEBUG",
-						"Login failed with error. Invalid user credentials.");
 			}
 		}
 
