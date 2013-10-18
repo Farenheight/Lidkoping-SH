@@ -30,14 +30,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/default_padding"
-        android:visibility="gone" >
+        android:visibility="gone"
+        android:background="@drawable/card_border_shape" >
 
         <TextView
             android:id="@+id/task_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/no_images_found"
-            android:textSize="60sp" />
+            android:textSize="30sp" 
+            android:textColor="#555"/>
     </LinearLayout>
 
     <FrameLayout

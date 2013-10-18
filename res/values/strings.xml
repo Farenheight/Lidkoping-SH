@@ -33,7 +33,7 @@
     <string name="section_header">&lt;u>SECTION HEADER&lt;/u></string>
     <string name="network_error_change_data">Kan inte ändra status, kolla internetuppkopplingen</string>
     <string name="network_error_no_internet">Internetuppkoppling saknas, kolla internetuppkopplingen</string>
-    <string name="no_images_found">Hittar inga bilder för denna Order :(</string>
+    <string name="no_images_found">Hittar ingen ritning för denna order :(</string>
 
     <string-array name="layers_array">
         <item>@string/normal</item>
