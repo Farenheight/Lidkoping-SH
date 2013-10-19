@@ -1,27 +1,18 @@
 <?php
 function insertOrder() {
 	$jsonData = getValidInput();
-	
 	prepareSql();
-	$orderNrGen = new OrderNumberGenerator();
-	$orderId = sqlInsertOrder($jsonData, $orderNrGen);
-
-	$orderNrGen->saveChanges();
-	$GLOBALS['con'] -> commit();	//TODO Response. Where are we notified if the sql returns error?
-
-	output(true);
+	$orderId = sqlInsertOrder($jsonData);
+	doDie(output(true));
 }
 
 function updateOrder() {
-	$su = true;
-
+	$su = true; //TODO ?
 	$jsonData = getValidInput();
-
+	validateUpdateInput($jsonData);
 	prepareSql();
 	sqlUpdateOrder($jsonData, $su);
-
-	$GLOBALS['con'] -> commit();	//TODO Response. Where are we notified if the sql returns error?
-	output(true);
+	doDie(output(true));
 }
 
 /**
@@ -31,11 +22,11 @@ function updateOrder() {
  */
 function getValidInput() {
 	if (!isset($_POST['data']) || empty($_POST['data'])) {
-		errorGeneric("No data provided. Check that header ContentType is 'application/x-www-form-urlencoded'.");
+		errorGeneric("No data provided.", 12);
 	}
 	$array = json_decode($_POST['data'], true);
 	if (is_null($array)) {
-		errorGeneric("Invalid JSON data provided");
+		errorGeneric("JSON data was not valid, when trying to decode request data.", 20);
 	}
 	
 	// Verify that JSON data contains an order.
@@ -45,6 +36,7 @@ function getValidInput() {
 	requiredField("name", $array["customer"], "customer");
 	requiredField("address", $array["customer"], "customer");
 	requiredField("postAddress", $array["customer"], "customer");
+	requiredField("deceased", $array);
 	// Check products
 	if (array_key_exists("products", $array)) {
 		foreach ($array["products"] as $index => $product) {
@@ -74,15 +66,28 @@ function getValidInput() {
 }
 
 /**
+ * Checks that additional fields for update are valid.
+ */
+function validateUpdateInput($array) {
+	requiredField("id", $array);
+	// Check products
+	if (array_key_exists("products", $array)) {
+		foreach ($array["products"] as $index => $product) {
+			requiredField("id", $product, "product at index $index");
+		}
+	}
+}
+
+/**
  * Validates a field that should be required. Generates
  * an error if the field is missing or empty.
  */
 function requiredField($fieldName, $array, $moreInfo = "") {
 	if (!array_key_exists($fieldName, $array)) {
-		errorGeneric("Missing required field: $fieldName ($moreInfo)");
+		errorGeneric("Missing required field: $fieldName ($moreInfo)", 24);
 	}
 	if (empty($array[$fieldName])) {
-		errorGeneric("Empty required field: $fieldName ($moreInfo)");
+		errorGeneric("Empty required field: $fieldName ($moreInfo)", 25);
 	}
 }
 
@@ -130,6 +135,7 @@ function sqlUpdateOrder($array, $su) {
 		`cemetery`=?,
 		`cemetery_block`=?,
 		`cemetery_number`=?,
+		`deceased`=?,
 		`time_last_update`=?";
 
 	if ($su) {
@@ -139,12 +145,12 @@ function sqlUpdateOrder($array, $su) {
 	$stmt = $GLOBALS['con'] -> prepare($sql);
 	$currentTime = getMilliseconds();
 	if ($su) {
-		$stmt -> bind_param("ssssiiiii", $array['cemeteryBoard'], $array['cemetery'], $array['cemeteryBlock'],
-			$array['cemeteryNumber'], $currentTime, $array['cancelled'], $array['archived'],
+		$stmt -> bind_param("sssssiiiii", $array['cemeteryBoard'], $array['cemetery'], $array['cemeteryBlock'],
+			$array['cemeteryNumber'], $array['deceased'], $currentTime, $array['cancelled'], $array['archived'],
 			$array['id'], $array['lastTimeUpdate']);
 	} else {
-		$stmt -> bind_param("ssssiii", $array['cemeteryBoard'], $array['cemetery'], $array['cemeteryBlock'],
-			$array['cemeteryNumber'], $currentTime, $array['id'], $array['lastTimeUpdate']);
+		$stmt -> bind_param("sssssiii", $array['cemeteryBoard'], $array['cemetery'], $array['cemeteryBlock'],
+			$array['cemeteryNumber'], $array['deceased'], $currentTime, $array['id'], $array['lastTimeUpdate']);
 	}
 	$stmt -> execute();
 	
@@ -167,7 +173,7 @@ function sqlUpdateOrder($array, $su) {
 			}
 		}
 	} else {
-		die(output(false, "Order was not updated. Order has been changed after sent 'lastTimeUpdate'."));
+		doDie(output(false, "Order was not updated. Order has been changed after sent 'lastTimeUpdate'."));
 	}
 }
 
@@ -221,24 +227,22 @@ function sqlInsertImage($image, $orderId) {
 	$stmt -> execute();
 }
 
-function sqlInsertOrder($order, $orderNrGen) {
+function sqlInsertOrder($order) {
 	$customerId = sqlInsertCustomer($order['customer']);
-
-	$orderNr = $orderNrGen -> newOrderNumber($order['orderDate']);
-	$idName = "CustomID";
-	// TODO: Generate id name
+	$orderNr = $GLOBALS['util'] -> newOrderNumber($order['orderDate']);
+	$idName = $GLOBALS['util']->getIdName($order);
 	$time = getMilliseconds();
 
-	$sql = "INSERT INTO `order` (`order_number`, `id_name`, `order_date`, `cemetery_board`,
+	$sql = "INSERT INTO `order` (`order_number`, `id_name`, `deceased`, `order_date`, `cemetery_board`,
 		`cemetery`, `cemetery_block`, `cemetery_number`, `customer_id`, `time_created`,
 		`time_last_update`, `cancelled`, `archived`)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	$zero = 0;
 
 	$stmt = $GLOBALS['con'] -> prepare($sql);
-	$stmt -> bind_param("ssissssiiiii", $orderNr, $idName, $order['orderDate'], $order['cemeteryBoard'],
-		$order['cemetery'], $order['cemeteryBlock'], $order['cemeteryNumber'], $customerId, $time, $time,
-		$zero, $zero);
+	$stmt -> bind_param("sssissssiiiii", $orderNr, $idName, $order['deceased'], $order['orderDate'],
+		$order['cemeteryBoard'], $order['cemetery'], $order['cemeteryBlock'], $order['cemeteryNumber'],
+		$customerId, $time, $time, $zero, $zero);
 
 	$stmt -> execute();
 	$orderId = $stmt -> insert_id;
@@ -306,6 +310,7 @@ function sqlInsertStation($station) {
 	$stmt = $GLOBALS['con'] -> prepare($sql);
 	$stmt -> bind_param("s", $station['name']);
 	$stmt -> execute();
+	$GLOBALS['stations'][$station['name']] = $stmt -> insert_id;
 	return $stmt -> insert_id;
 }
 
@@ -315,7 +320,7 @@ function sqlInsertStation($station) {
 function getStationId($station) {
 	if (array_key_exists('id', $station)) {
 		return $station['id'];
-	} else if (array_key_exists($station['name'], $GLOBALS['stations'])) {
+	} else if (@array_key_exists($station['name'], $GLOBALS['stations'])) { // Generates notice without @
 		return $GLOBALS['stations'][$station['name']];
 	} else {
 		// Insert station into database. It does not exist

@@ -162,6 +162,12 @@ function generateStoneDetails() {
 
 						</li>
 						<li id="li_1" >
+							<label class="description" for="element_deceased">Avlidnes namn</label>
+							<div>
+								<input id="element_deceased" name="deceased" class="element text medium" type="text" maxlength="255" value=""/>
+							</div>
+						</li>
+						<li id="li_1" >
 							<label class="description" for="element_1">Kyrkogårdsnämnd </label>
 							<div>
 								<input id="element_1" name="cemeteryBoard" class="element text medium" type="text" maxlength="255" value=""/>
@@ -236,7 +242,7 @@ function generateStoneDetails() {
 						<li id="li_10" >
 							<label class="description" for="element_10">Bild </label>
 							<div>
-								<input id="element_10" name="images[][file]" class="element file" type="file"/>
+								<input id="element_10" name="image1" class="element file" type="file"/>
 							</div>
 						</li>
 					</ul>

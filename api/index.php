@@ -9,7 +9,16 @@ require_once 'authentication.php';
 require_once 'db_config.php';
 require_once 'class/mySQLConnection.php';
 require_once 'util.php';
+
 $con = new mySQLConnection();
+$util = new Util();
+
+bruteforceProtection();
+
+if(isset($_GET['action']) && $_GET['action'] === "getApikey"){
+	require_once 'getApikey.php';
+	getApikey();
+}
 checkAuthenticated();
 
 if (isset($_GET['action'])) {
@@ -23,10 +32,10 @@ if (isset($_GET['action'])) {
 		require_once 'post_order.php';
 		insertOrder();
 	} else {
-		errorGeneric("No valid action: Provided action (". $_GET['action'] .") does not exist");
+		errorGeneric("Provided action (". $_GET['action'] .") does not exist", 10);
 	}
 } else {
-	errorGeneric("Empty respons: Specify your action in the URL.");
+	errorGeneric("Specify your action in the URL.", 11);
 }
 //echo round((microtime(true)-$start)*1000, 2) . "ms";
 ?>
