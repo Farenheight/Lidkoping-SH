@@ -10,7 +10,6 @@ import java.util.Locale;
 
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
-import se.chalmers.lidkopingsh.model.StationComparator;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -160,14 +159,6 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 */
 	public int indexOf(Order order) {
 		return mOrders.indexOf(order);
-	}
-
-	/**
-	 * Refresh the sorting with the currently saved currentSortStation.
-	 */
-	public void refreshSort() {
-		sort(new StationComparator<Order>(currentSortStation),
-				currentSortStation);
 	}
 
 	/**

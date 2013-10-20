@@ -43,9 +43,13 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Register an exception handler that sends unhandled exceptions to
+		// http://simonbengtsson.se/lsh/stacktrace
 		ExceptionHandler.register(this,
 				"http://simonbengtsson.se/lsh/stacktrace_script.php");
-		Accessor.getModel(this); // Create model and load from database.
+		
+		Accessor.getModel(this); // Create model and load data from database.
 		mSharedPreferences = getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
@@ -54,9 +58,9 @@ public class MainActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
-		Log.d("MainAct", "ServerConnector created");
 		Accessor.getServerConnector(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
+		mTabletSize = true;
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
@@ -64,6 +68,7 @@ public class MainActivity extends FragmentActivity implements
 		} else {
 			setContentView(R.layout.list_root);
 		}
+		Log.i("MainAct", "MainAct created and user is logged in.");
 	}
 
 	private boolean isLoggedIn() {
@@ -170,6 +175,10 @@ public class MainActivity extends FragmentActivity implements
 		Log.i("MainActivity", "Update finished");
 	}
 
+	/**
+	 * Asks the user if he really wants to exit
+	 */
+	@Override
 	public void onBackPressed() {
 		new AlertDialog.Builder(this)
 				.setIcon(android.R.drawable.ic_dialog_alert)

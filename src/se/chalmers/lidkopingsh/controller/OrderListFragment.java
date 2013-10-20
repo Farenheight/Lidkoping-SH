@@ -3,7 +3,6 @@ package se.chalmers.lidkopingsh.controller;
 import java.util.ArrayList;
 
 import se.chalmers.lidkopingsh.model.Order;
-import se.chalmers.lidkopingsh.model.Station;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.app.Activity;
 import android.database.DataSetObserver;
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -33,7 +31,7 @@ import android.widget.Spinner;
 public class OrderListFragment extends ListFragment implements
 		NetworkStatusListener {
 
-	/* Bundle keys representing the activated item position. */
+	/* Bundle keys for remembering state on screen orientation change etc */
 	private static final String ACTIVATED_ORDER_ID = "activated_position";
 	private final String SEARCH_TERM = "search_term_key";
 	private final String CURRENT_STATION_POS = "current_station_pos_key";
@@ -47,10 +45,14 @@ public class OrderListFragment extends ListFragment implements
 	/** The current activated item. Only used on tablets. */
 	private Order mActivatedOrder;
 
+	/** Handler for the search feature */
 	private SearchHandler mSearchHandler;
+
+	/** Handler for the sort feature */
 	private SortHandler mSortHandler;
-	private DataSetObserver orderListObserver;
-	private ArrayAdapter<Station> mStationsAdapter;
+
+	/** Gets notified when the OrderAdapters data changes */
+	private DataSetObserver mOrderListObserver;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -82,6 +84,8 @@ public class OrderListFragment extends ListFragment implements
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
+		
+		// Adds the header view to the list view
 		getListView().addHeaderView(
 				LayoutInflater.from(getActivity()).inflate(
 						R.layout.list_header, null));
@@ -89,9 +93,16 @@ public class OrderListFragment extends ListFragment implements
 		// Setup list view and it's adapter
 		mOrderAdapter = new OrderAdapter(getActivity(), new ArrayList<Order>(
 				Accessor.getModel(getActivity()).getOrders()));
+		mOrderListObserver = new OrderListObserver();
+		mOrderAdapter.registerDataSetObserver(mOrderListObserver);
 		setListAdapter(mOrderAdapter);
+		
 
-		initStationSpinner();
+		// Setup handlers for features in this fragment
+		mSortHandler = new SortHandler((Spinner) getView().findViewById(
+				R.id.station_spinner), mOrderAdapter, getActivity());
+		mSearchHandler = new SearchHandler((EditText) getView().findViewById(
+				R.id.search_field), mOrderAdapter);
 
 		// Restore the previously serialized state on screen orientation change
 		if (savedInstanceState != null) {
@@ -100,6 +111,7 @@ public class OrderListFragment extends ListFragment implements
 			mSortHandler.restoreSort(savedInstanceState
 					.getInt(CURRENT_STATION_POS));
 
+			//Doesn't contain key if no order has been selected yet
 			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
 				mActivatedOrder = Accessor.getModel(getActivity())
 						.getOrderById(
@@ -108,47 +120,13 @@ public class OrderListFragment extends ListFragment implements
 		}
 	}
 
-	public void initOrderAdapter() {
-		if (getActivity() != null) {
-			mOrderAdapter = new OrderAdapter(getActivity(),
-					new ArrayList<Order>(Accessor.getModel(getActivity())
-							.getOrders()));
-			setListAdapter(mOrderAdapter);
-			orderListObserver = new OrderListObserver();
-			mOrderAdapter.registerDataSetObserver(orderListObserver);
-			Log.i("OrderListFragment", "New Order Adapter created");
-		}
-	}
-
-	private void initStationSpinner() {
-		// Sets up the station spinner and it's adapter
-		Spinner stationSpinner = (Spinner) getView().findViewById(
-				R.id.station_spinner);
-
-		initStationAdapter();
-		stationSpinner.setAdapter(mStationsAdapter);
-		// Setup helper handlers to features in this fragment
-		mSortHandler = new SortHandler(stationSpinner, mOrderAdapter);
-		mSearchHandler = new SearchHandler((EditText) getView().findViewById(
-				R.id.search_field), mOrderAdapter);
-	}
-
-	private void initStationAdapter() {
-		if (getActivity() != null) {
-			mStationsAdapter = new ArrayAdapter<Station>(getActivity(),
-					R.layout.spinner_white_text, (ArrayList<Station>) Accessor
-							.getModel(getActivity()).getStations());
-			mStationsAdapter
-					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		}
-	}
-
 	@Override
 	public void onDestroy() {
-		if (orderListObserver != null) {
-			mOrderAdapter.unregisterDataSetObserver(orderListObserver);
+		if (mOrderListObserver != null) {
+			mOrderAdapter.unregisterDataSetObserver(mOrderListObserver);
 		}
-		Accessor.getServerConnector(getActivity()).removeNetworkStatusListener(this);
+		Accessor.getServerConnector(getActivity()).removeNetworkStatusListener(
+				this);
 		super.onDestroy();
 	}
 
@@ -169,6 +147,7 @@ public class OrderListFragment extends ListFragment implements
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 
+		//
 		if (mActivatedOrder != null) {
 			outState.putInt(ACTIVATED_ORDER_ID, mActivatedOrder.getId());
 		}
@@ -232,13 +211,9 @@ public class OrderListFragment extends ListFragment implements
 	public void finishedUpdate() {
 		mOrderAdapter
 				.updateOrders(Accessor.getModel(getActivity()).getOrders());
-		mOrderAdapter.notifyDataSetChanged();
-		mOrderAdapter.refreshSort();
-		mStationsAdapter.clear();
-		mStationsAdapter.addAll(Accessor.getModel(getActivity()).getStations());
-		mStationsAdapter.notifyDataSetChanged();
-		mSearchHandler.restoreSearch(mSearchHandler.getCurrentSearchTerm());
-		Log.d("OrderListFragment", "Finsished update. Stations: " + mStationsAdapter.getCount());
+		mSortHandler.refresh();
+		//mSearchHandler.restoreSearch(mSearchHandler.getCurrentSearchTerm());
+		Log.d("OrderListFragment", "Finsished update");
 	}
 
 	@Override
