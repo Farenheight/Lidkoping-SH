@@ -179,10 +179,10 @@ public class OrderListFragment extends ListFragment implements
 		 */
 		@Override
 		public void onChanged() {
-//			mSearchHandler.search(new FilterListener() {
-//				
-//				@Override
-//				public void onFilterComplete(int count) {
+			mSearchHandler.search(new FilterListener() {
+				
+				@Override
+				public void onFilterComplete(int count) {
 					mSortHandler.sort();
 					// Null if no orders have been viewed.
 					if (mActivatedOrder != null) {
@@ -190,9 +190,9 @@ public class OrderListFragment extends ListFragment implements
 								mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
 
 					}
-//					Log.d("OrderListFragment", "orderAdapter filtering complete");
-//				}
-//			});
+					Log.d("OrderListFragment", "orderAdapter filtering complete");
+				}
+			});
 			Log.d("OrderListFragment", "orderAdapter data changed");
 			
 		}
