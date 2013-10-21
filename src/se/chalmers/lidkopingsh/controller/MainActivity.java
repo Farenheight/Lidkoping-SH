@@ -60,7 +60,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 		Accessor.getServerConnector(this).addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
-		mTabletSize = true;
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
@@ -197,12 +196,9 @@ public class MainActivity extends FragmentActivity implements
 	public void networkProblem(String message) {
 		Log.i("MainActivity", "Network error");
 		Context context = getApplicationContext();
-		CharSequence text = getResources().getString(
+		String text = getResources().getString(
 				R.string.network_error_no_internet);
-		int duration = Toast.LENGTH_SHORT;
-
-		Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
+		RepeatSafeToast.show(context, text);
 	}
 
 	@Override

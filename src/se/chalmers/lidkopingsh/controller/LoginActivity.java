@@ -209,9 +209,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 	@Override
 	public void networkProblem(String message) {
 		Log.e("LoginAct", "Could not connect to server");
-		Toast toast = Toast.makeText(LoginActivity.this, message,
-				Toast.LENGTH_SHORT);
-		toast.show();
+		RepeatSafeToast.show(LoginActivity.this, message);
 	}
 
 	@Override
