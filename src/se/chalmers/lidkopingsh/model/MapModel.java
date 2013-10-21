@@ -162,8 +162,9 @@ public class MapModel implements IModel {
 
 		for (Order o : orders) {
 			if (o.isRemoved()) {
-				removeOrder(o);
-				removed.add(o);
+				Order order = getOrderById(o.getId());
+				removeOrder(order);
+				removed.add(order);
 			} else {
 				try {
 					Order order = getOrderById(o.getId());
