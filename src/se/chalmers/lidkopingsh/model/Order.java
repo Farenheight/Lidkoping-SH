@@ -133,7 +133,7 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	}
 
 	public List<Product> getProducts() {
-		return products == null? new ArrayList<Product>() : products;
+		return products == null?  new ProductList() : products;
 	}
 	
 	public String getDeceased() {
@@ -265,9 +265,6 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	 *            the interested listener for this object
 	 */
 	public void addOrderListener(Listener<OrderChangedEvent> listener) {
-		if (orderListeners == null) {
-			orderListeners = new ArrayList<Listener<OrderChangedEvent>>();
-		}
 		orderListeners.add(listener);
 	}
 
@@ -314,10 +311,8 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	 * Notify syncedListeners when synced.
 	 */
 	public void notifySyncedListeners(Order order) {
-		if (orderSyncedListeners != null) {
-			for (Listener<Order> listener : orderSyncedListeners) {
-				listener.changed(order);
-			}
+		for (Listener<Order> listener : orderSyncedListeners) {
+			listener.changed(order);
 		}
 	}
 
@@ -417,6 +412,10 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 
 		public ProductList(Collection<Product> collection) {
 			super(collection);
+		}
+		
+		public ProductList() {
+			super();
 		}
 
 		@Override
