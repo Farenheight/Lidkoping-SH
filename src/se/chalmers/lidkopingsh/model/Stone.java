@@ -48,6 +48,13 @@ public class Stone extends Product {
 		this.textStyle = textStyle != null ? textStyle : "";
 		this.ornament = ornament != null ? ornament : "";
 	}
+	
+	public Stone (Stone s) {
+		this(s.getId(), s.getMaterialColor(), s.getDescription(), 
+				s.getFrontWork(), s.getTasks(), s.getStoneModel(), 
+				s.getSideBackWork(), s.getTextStyle(), s.getOrnament(), 
+				s.getType());
+	}
 
 	public String getStoneModel() {
 		return stoneModel;

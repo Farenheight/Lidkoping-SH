@@ -2,6 +2,7 @@ package se.chalmers.lidkopingsh.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import se.chalmers.lidkopingsh.util.Listener;
@@ -59,11 +60,15 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 		this.deceased = deceased;
 		orderListeners = new ArrayList<Listener<OrderChangedEvent>>();
 		orderSyncedListeners = new ArrayList<Listener<Order>>();
-		this.products = new ProductList(products);
 		
+		this.products = new ProductList(new ArrayList<Product>());
 		if (products != null) {
 			for (Product p : products) {
-				p.addProductListener(this);
+				if (p instanceof Stone) {
+					this.products.add(new Stone((Stone)p));
+				} else {
+					this.products.add(new Product(p));
+				}
 			}
 		}
 	}

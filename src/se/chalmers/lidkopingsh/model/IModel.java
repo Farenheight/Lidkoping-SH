@@ -16,17 +16,6 @@ import se.chalmers.lidkopingsh.util.Listener;
 public interface IModel extends Listener<Collection<Order>> {
 
 	/**
-	 * Returns the product with the specified id.
-	 * 
-	 * @param id
-	 *            int
-	 * @return product with specified id
-	 * @throws NoSuchElementException
-	 *             when the id does not exist
-	 */
-	public Product getProductById(int id) throws NoSuchElementException;
-
-	/**
 	 * Returns the order with the specified id.
 	 * 
 	 * @param id
