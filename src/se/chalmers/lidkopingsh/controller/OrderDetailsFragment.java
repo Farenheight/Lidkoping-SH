@@ -282,8 +282,9 @@ public class OrderDetailsFragment extends Fragment {
 							: Status.DONE);
 				} else {
 					toggleButton.setChecked(!isChecked);
-					Toast toast = Toast.makeText(getActivity(),
-									getResources().getString(R.string.network_error_change_data),2);
+					Toast toast = Toast.makeText(getActivity(), getResources()
+							.getString(R.string.network_error_change_data),
+							Toast.LENGTH_SHORT);
 					toast.show();
 				}
 			}
@@ -312,15 +313,14 @@ public class OrderDetailsFragment extends Fragment {
 			// Load Images
 			asyntaskImageLoader = new AsyntaskImageLoader();
 			asyntaskImageLoader.execute(imagePath);
-		}else{
+		} else {
 			ProgressBar pBar = (ProgressBar) mRootView
 					.findViewById(R.id.orderDrawingProgressBar);
 			pBar.setVisibility(View.GONE);
 			TextView textView = (TextView) mRootView
 					.findViewById(R.id.no_images_found_text_view);
 			textView.setVisibility(View.VISIBLE);
-			Log.d("DEBUG",
-					"Image not loaded, cannot find an image on path ");
+			Log.d("DEBUG", "Image not loaded, cannot find an image on path ");
 		}
 	}
 
@@ -339,7 +339,7 @@ public class OrderDetailsFragment extends Fragment {
 				result = BitmapFactory.decodeFile(filename);
 				Log.d("DEBUG", "Trying to load Image");
 			}
-		
+
 			if (result != null) {
 				// Rescale the image if it is too big
 				int height = result.getHeight();
@@ -374,7 +374,7 @@ public class OrderDetailsFragment extends Fragment {
 				// Attaches the library
 				PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
 				pva.setMaximumScale(8f);
-					Log.d("DEBUG", "Image loaded");
+				Log.d("DEBUG", "Image loaded");
 			}
 			super.onPostExecute(result);
 		}
@@ -399,6 +399,8 @@ public class OrderDetailsFragment extends Fragment {
 				.getCemeteryBoard());
 		((TextView) mRootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
+		((TextView) mRootView.findViewById(R.id.deceased)).setText(mOrder
+				.getDeceased());
 
 		// Product info
 		StringBuilder desc = new StringBuilder();

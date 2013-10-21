@@ -59,11 +59,15 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 		this.deceased = deceased;
 		orderListeners = new ArrayList<Listener<OrderChangedEvent>>();
 		orderSyncedListeners = new ArrayList<Listener<Order>>();
-		this.products = new ProductList(products);
 		
+		this.products = new ProductList(new ArrayList<Product>());
 		if (products != null) {
 			for (Product p : products) {
-				p.addProductListener(this);
+				if (p instanceof Stone) {
+					this.products.add(new Stone((Stone)p));
+				} else {
+					this.products.add(new Product(p));
+				}
 			}
 		}
 	}
@@ -128,7 +132,7 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	}
 
 	public List<Product> getProducts() {
-		return products == null? new ArrayList<Product>() : products;
+		return products == null?  new ProductList() : products;
 	}
 	
 	public String getDeceased() {
@@ -260,9 +264,6 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	 *            the interested listener for this object
 	 */
 	public void addOrderListener(Listener<OrderChangedEvent> listener) {
-		if (orderListeners == null) {
-			orderListeners = new ArrayList<Listener<OrderChangedEvent>>();
-		}
 		orderListeners.add(listener);
 	}
 
@@ -309,10 +310,8 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 	 * Notify syncedListeners when synced.
 	 */
 	public void notifySyncedListeners(Order order) {
-		if (orderSyncedListeners != null) {
-			for (Listener<Order> listener : orderSyncedListeners) {
-				listener.changed(order);
-			}
+		for (Listener<Order> listener : orderSyncedListeners) {
+			listener.changed(order);
 		}
 	}
 
@@ -412,6 +411,10 @@ public class Order implements Listener<OrderChangedEvent>, Syncable<Order> {
 
 		public ProductList(Collection<Product> collection) {
 			super(collection);
+		}
+		
+		public ProductList() {
+			super();
 		}
 
 		@Override

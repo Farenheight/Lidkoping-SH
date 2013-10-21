@@ -84,9 +84,6 @@ public class Task implements Syncable<Task> {
 	 *            {@link Task}
 	 */
 	public void addTaskListener(Listener<Task> listener) {
-		if(listeners == null) {
-			listeners = new ArrayList<Listener<Task>>();
-		}
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}
@@ -109,10 +106,8 @@ public class Task implements Syncable<Task> {
 	 * Notify listeners that this task have been changed
 	 */
 	private void notifyTaskListeners() {
-		if (listeners != null) {
-			for (Listener<Task> l : listeners) {
-				l.changed(this);
-			}
+		for (Listener<Task> l : listeners) {
+			l.changed(this);
 		}
 	}
 

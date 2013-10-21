@@ -20,7 +20,6 @@ import android.util.Log;
 
 public class MapModel implements IModel {
 	private Map<Integer, Order> orders;
-	private Map<Integer, Product> products;
 	private Collection<Station> stations;
 
 	/**
@@ -45,16 +44,12 @@ public class MapModel implements IModel {
 	// SparseArrays
 	@SuppressLint("UseSparseArrays")
 	public MapModel(Collection<Order> o, Collection<Station> s) {
-		this.products = new HashMap<Integer, Product>();
 		this.orders = new HashMap<Integer, Order>();
 		this.dataSyncedListeners = new ArrayList<DataSyncedListener>();
 		this.orderChangedListeners = new ArrayList<Listener<OrderChangedEvent>>();
 
 		for (Order or : o) {
 			this.orders.put(or.getId(), or);
-			for (Product p : or.getProducts()) {
-				this.products.put(p.getId(), p);
-			}
 			or.addOrderListener(orderChangedListener);
 		}
 		this.stations = new ArrayList<Station>(s);
@@ -100,16 +95,6 @@ public class MapModel implements IModel {
 	}
 
 	@Override
-	public Product getProductById(int id) throws NoSuchElementException {
-		Product p = products.get(id);
-		if (p == null) {
-			throw new NoSuchElementException();
-		} else {
-			return p;
-		}
-	}
-
-	@Override
 	public Order getOrderById(int id) throws NoSuchElementException {
 		Order o = orders.get(id);
 		if (o == null) {
@@ -125,20 +110,13 @@ public class MapModel implements IModel {
 			removeOrder(o);
 		}
 		orders.put(o.getId(), o);
-		if (o.getProducts() != null) {
-			for (Product p : o.getProducts()) {
-				products.put(p.getId(), p);
-			}
-		}
 	}
 
 	@Override
 	public void removeOrder(Order o) {
 		Order order = orders.get(o.getId());
 		if (order != null) {
-			for (Product p : order.getProducts()) {
-				products.remove(p.getId());
-			}
+			o.removeOrderListener(orderChangedListener);
 		}
 		orders.remove(o.getId());
 
@@ -184,8 +162,9 @@ public class MapModel implements IModel {
 
 		for (Order o : orders) {
 			if (o.isRemoved()) {
-				removeOrder(o);
-				removed.add(o);
+				Order order = getOrderById(o.getId());
+				removeOrder(order);
+				removed.add(order);
 			} else {
 				try {
 					Order order = getOrderById(o.getId());
@@ -194,9 +173,10 @@ public class MapModel implements IModel {
 						changed.add(o);
 					}
 				} catch (NoSuchElementException e) {
-					o.addOrderListener(orderChangedListener);
-					addOrder(o);
-					added.add(o);
+					Order order = new Order(o);
+					order.addOrderListener(orderChangedListener);
+					addOrder(order);
+					added.add(order);
 				}
 			}
 		}

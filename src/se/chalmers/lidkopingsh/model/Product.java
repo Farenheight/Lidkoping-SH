@@ -60,12 +60,10 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		this.description = description != null ? description : "";
 		this.frontWork = frontWork != null ? frontWork : "";
 		this.listeners = new ArrayList<Listener<OrderChangedEvent>>();
-		this.tasks = new TaskList(tasks);
-
-		if (tasks != null) {
-			for (Task t : tasks) {
-				t.addTaskListener(this);
-			}
+		
+		this.tasks = new TaskList(new ArrayList<Task>());
+		for (Task t : tasks) {
+			this.tasks.add(new Task(t));
 		}
 	}
 
@@ -172,7 +170,7 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * @return All the tasks this product has.
 	 */
 	public List<Task> getTasks() {
-		return tasks == null ? new ArrayList<Task>() : new ArrayList<Task>(
+		return tasks == null ? new TaskList() : new ArrayList<Task>(
 				tasks);
 	}
 
@@ -259,9 +257,6 @@ public class Product implements Listener<Task>, Syncable<Product> {
 	 * @return true if listeners was modified, false otherwise.
 	 */
 	public boolean addProductListener(Listener<OrderChangedEvent> listener) {
-		if (listeners == null) {
-			listeners = new ArrayList<Listener<OrderChangedEvent>>();
-		}
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 			return true;
@@ -335,6 +330,10 @@ public class Product implements Listener<Task>, Syncable<Product> {
 
 		public TaskList(Collection<Task> collection) {
 			super(collection == null ? new ArrayList<Task>() : collection);
+		}
+
+		public TaskList() {
+			super();
 		}
 
 		@Override
