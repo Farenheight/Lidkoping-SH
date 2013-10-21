@@ -11,6 +11,7 @@
 
     <string name="cemetery_board">Kyrkogårdsnämnd</string>
     <string name="cemetery">Kyrkogård</string>
+    <string name="deceased">Avlidnes namn</string>
     <string name="desc">Beskrivning</string>
     <string name="model">Modell</string>
     <string name="material_and_color">Material och färg</string>
@@ -46,6 +47,4 @@
     <string name="logout">Logga ut</string>
     <string name="help">Hjälp</string>
     <string name="see_map_view">Se Kartvy</string>
-
-
 </resources>

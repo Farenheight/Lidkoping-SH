@@ -92,6 +92,25 @@
                 android:text="@string/dynamic"
                 android:textIsSelectable="true"
                 android:textSize="16sp" />
+
+			<!-- Avlidnes namn -->
+			
+            <TextView
+                android:id="@+id/deceasedHeader"
+                style="?android:attr/textAppearanceLarge"
+                android:text="@string/deceased"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/deceased"
+                style="?android:attr/textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill_horizontal"
+                android:text="@string/dynamic"
+                android:textIsSelectable="true"
+                android:textSize="16sp" />
 			
 			<!-- Stenmodell -->
 

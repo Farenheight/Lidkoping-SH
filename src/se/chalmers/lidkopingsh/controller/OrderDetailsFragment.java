@@ -284,6 +284,7 @@ public class OrderDetailsFragment extends Fragment {
 					toggleButton.setChecked(!isChecked);
 					RepeatSafeToast.show(getActivity(), getResources()
 							.getString(R.string.network_error_change_data));
+
 				}
 			}
 		});
@@ -397,6 +398,8 @@ public class OrderDetailsFragment extends Fragment {
 				.getCemeteryBoard());
 		((TextView) mRootView.findViewById(R.id.cemetery)).setText(mOrder
 				.getCemetary());
+		((TextView) mRootView.findViewById(R.id.deceased)).setText(mOrder
+				.getDeceased());
 
 		// Product info
 		StringBuilder desc = new StringBuilder();
