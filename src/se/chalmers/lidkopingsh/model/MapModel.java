@@ -169,8 +169,9 @@ public class MapModel implements IModel {
 				try {
 					Order order = getOrderById(o.getId());
 					if (order != null) {
-						order.sync(o);
-						changed.add(o);
+						Order newOrder = new Order(o);
+						order.sync(newOrder);
+						changed.add(newOrder);
 					}
 				} catch (NoSuchElementException e) {
 					Order order = new Order(o);
