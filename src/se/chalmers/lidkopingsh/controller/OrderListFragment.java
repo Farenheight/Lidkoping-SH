@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Filter.FilterListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -84,7 +85,7 @@ public class OrderListFragment extends ListFragment implements
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		
+
 		// Adds the header view to the list view
 		getListView().addHeaderView(
 				LayoutInflater.from(getActivity()).inflate(
@@ -96,7 +97,6 @@ public class OrderListFragment extends ListFragment implements
 		mOrderListObserver = new OrderListObserver();
 		mOrderAdapter.registerDataSetObserver(mOrderListObserver);
 		setListAdapter(mOrderAdapter);
-		
 
 		// Setup handlers for features in this fragment
 		mSortHandler = new SortHandler((Spinner) getView().findViewById(
@@ -111,7 +111,7 @@ public class OrderListFragment extends ListFragment implements
 			mSortHandler.restoreSort(savedInstanceState
 					.getInt(CURRENT_STATION_POS));
 
-			//Doesn't contain key if no order has been selected yet
+			// Doesn't contain key if no order has been selected yet
 			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
 				mActivatedOrder = Accessor.getModel(getActivity())
 						.getOrderById(
@@ -179,11 +179,22 @@ public class OrderListFragment extends ListFragment implements
 		 */
 		@Override
 		public void onChanged() {
-			// Null if no orders have been viewed.
-			if (mActivatedOrder != null) {
-				getListView().setItemChecked(
-						mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
-			}
+			mSearchHandler.search(new FilterListener() {
+				
+				@Override
+				public void onFilterComplete(int count) {
+					mSortHandler.sort();
+					// Null if no orders have been viewed.
+					if (mActivatedOrder != null) {
+						getListView().setItemChecked(
+								mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
+
+					}
+					Log.d("OrderListFragment", "orderAdapter filtering complete");
+				}
+			});
+			Log.d("OrderListFragment", "orderAdapter data changed");
+			
 		}
 	}
 
@@ -211,9 +222,7 @@ public class OrderListFragment extends ListFragment implements
 	public void finishedUpdate() {
 		mOrderAdapter
 				.updateOrders(Accessor.getModel(getActivity()).getOrders());
-		mSortHandler.refresh();
-		//mSearchHandler.restoreSearch(mSearchHandler.getCurrentSearchTerm());
-		Log.d("OrderListFragment", "Finsished update");
+		Log.d("OrderListFragment", "Finsished update, follows be onChanged?");
 	}
 
 	@Override

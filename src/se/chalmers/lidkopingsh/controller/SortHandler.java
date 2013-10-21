@@ -77,14 +77,12 @@ public class SortHandler implements OnItemSelectedListener {
 		sort();
 	}
 
-	// When the user chooses an item in the stations spinner, sort the order
-	// list accordingly
+	// When the user chooses an item in the stations spinner, set the current
+	// station and notify listeners that the data has changed which sorts
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int pos,
 			long id) {
 		mCurrentStation = (Station) parent.getItemAtPosition(pos);
-		mOrderAdapter.sort(new StationComparator<Order>(mCurrentStation),
-				mCurrentStation);
 		mOrderAdapter.notifyDataSetChanged();
 	}
 

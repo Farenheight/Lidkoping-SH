@@ -11,6 +11,7 @@ import java.util.Locale;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +70,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		dividerIndex = Accessor.getModel(mContext).getFirstUncompletedIndex(
 				mOrders, station);
 		currentSortStation = station;
-		notifyDataSetChanged();
+		Log.d("OrderAdapter", "sort finished");
 	}
 
 	@Override
@@ -169,6 +170,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	public void updateOrders(Collection<Order> collection) {
 		mOrders = new ArrayList<Order>(collection);
 		mOriginalObjects = new ArrayList<Order>(collection);
+		notifyDataSetChanged();
 	}
 
 	/**
@@ -230,9 +232,9 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 				FilterResults results) {
 			mOrders = (List<Order>) results.values;
 			if (results.count > 0) {
-				notifyDataSetChanged();
+				// notifyDataSetChanged();
 			} else {
-				notifyDataSetInvalidated();
+				// notifyDataSetInvalidated();
 			}
 		}
 	}
