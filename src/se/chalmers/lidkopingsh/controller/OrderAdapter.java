@@ -231,10 +231,8 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
 			mOrders = (List<Order>) results.values;
-			if (results.count > 0) {
-				// notifyDataSetChanged();
-			} else {
-				// notifyDataSetInvalidated();
+			if (results.count <= 0) {
+				notifyDataSetInvalidated();
 			}
 		}
 	}
