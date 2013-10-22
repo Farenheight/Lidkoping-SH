@@ -95,8 +95,7 @@ public class OrderDetailsFragment extends Fragment {
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
 		mNetworkWatcher = new NetworkWatcher();
-		Accessor.getServerConnector().addNetworkListener(
-				mNetworkWatcher);
+		Accessor.getServerConnector().addNetworkListener(mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = Accessor.getModel().getOrderById(
@@ -283,6 +282,7 @@ public class OrderDetailsFragment extends Fragment {
 							.getString(R.string.network_error_change_data));
 
 				}
+
 			}
 		});
 		return taskView;
@@ -298,25 +298,28 @@ public class OrderDetailsFragment extends Fragment {
 	}
 
 	/**
-	 * Attaches the PhotoView library to the order's drawing making it possible
-	 * to zoom and pan it smoothly
+	 * Initialize the drawing asynchronously with a library for handling zooming
+	 * and panning
 	 */
 	private void initDrawing() {
+		View loadingView = mRootView.findViewById(R.id.orderDrawingProgressBar);
 		if (!mOrder.getImages().isEmpty()) {
+			ImageView orderDrawing = (ImageView) mRootView
+					.findViewById(R.id.orderDrawing);
 
-			// Get image from internal storage
-			String imagePath = mOrder.getImages().get(0).getImagePath();
-			// Load Images
-			asyntaskImageLoader = new AsyntaskImageLoader();
-			asyntaskImageLoader.execute(imagePath);
+			String imageRelPath = mOrder.getImages().get(0).getImagePath();
+			String imageAbsPath = new File(getActivity().getFilesDir(),
+					imageRelPath).getAbsolutePath();
+
+			new ImageLoaderTask(imageAbsPath, orderDrawing, loadingView)
+					.execute((Object) null);
+
 		} else {
-			ProgressBar pBar = (ProgressBar) mRootView
-					.findViewById(R.id.orderDrawingProgressBar);
-			pBar.setVisibility(View.GONE);
+			loadingView.setVisibility(View.GONE);
 			TextView textView = (TextView) mRootView
 					.findViewById(R.id.no_images_found_text_view);
 			textView.setVisibility(View.VISIBLE);
-			Log.d("DEBUG", "Image not loaded, cannot find an image on path ");
+			Log.w("DEBUG", "No images in this order");
 		}
 	}
 
