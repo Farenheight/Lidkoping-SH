@@ -1,5 +1,6 @@
 package se.chalmers.lidkopingsh.controller;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -60,6 +61,8 @@ protected Bitmap doInBackground(Object... params) {
 @Override
 protected void onPostExecute(Bitmap bitmap) {
 	mImageView.setImageBitmap(bitmap);
+	PhotoViewAttacher pva = new PhotoViewAttacher(mImageView);
+	pva.setMaximumScale(8f);
 	mLoadingView.setVisibility(View.GONE);
 	mImageView.setVisibility(View.VISIBLE);
 
