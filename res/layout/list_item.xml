@@ -9,10 +9,11 @@
     android:paddingRight="20dp" >
 
     <TextView
-      android:id="@+id/id_name"
+        android:id="@+id/id_name"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
+        android:gravity="center_vertical"
         android:text="O.M."
         android:textColor="@color/list_item_text_color_selector"
         android:textSize="50sp"

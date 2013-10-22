@@ -222,7 +222,7 @@ public class OrderListFragment extends ListFragment implements
 	public void finishedUpdate() {
 		mOrderAdapter
 				.updateOrders(Accessor.getModel(getActivity()).getOrders());
-		Log.d("OrderListFragment", "Finsished update, follows be onChanged?");
+		Log.d("OrderListFragment", "Finsished update");
 	}
 
 	@Override
