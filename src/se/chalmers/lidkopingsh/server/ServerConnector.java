@@ -22,7 +22,7 @@ import android.util.Log;
  */
 public class ServerConnector implements Listener<OrderChangedEvent> {
 	/** Time in milliseconds, update from server interval. */
-	private final long UPDATE_INTERVAL = 100000;
+	private final long UPDATE_INTERVAL = 200000;
 
 	private final ServerHelper helper;
 	private final Timer timer;
@@ -132,6 +132,7 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 	 */
 	public void removeNetworkStatusListener(NetworkStatusListener listener) {
 		networkListeners.remove(listener);
+		
 	}
 
 	/**
