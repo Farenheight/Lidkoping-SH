@@ -1,5 +1,6 @@
 package se.chalmers.lidkopingsh.database;
 
+import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.database.DataContract.CustomerTable;
 import se.chalmers.lidkopingsh.database.DataContract.ImageTable;
 import se.chalmers.lidkopingsh.database.DataContract.OrderTable;
@@ -8,7 +9,6 @@ import se.chalmers.lidkopingsh.database.DataContract.ProductTypeTable;
 import se.chalmers.lidkopingsh.database.DataContract.StationTable;
 import se.chalmers.lidkopingsh.database.DataContract.StoneTable;
 import se.chalmers.lidkopingsh.database.DataContract.TaskTable;
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -118,11 +118,9 @@ class OrderDbHelper extends SQLiteOpenHelper {
 
 	/**
 	 * Create a helper object to create, open, and/or manage the database.
-	 * 
-	 * @param context to use to open or create the database
 	 */
-	public OrderDbHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	public OrderDbHelper() {
+		super(App.getContext(), DATABASE_NAME, null, DATABASE_VERSION);
 	}
 	
 	/**

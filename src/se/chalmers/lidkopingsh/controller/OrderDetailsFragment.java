@@ -34,7 +34,6 @@ import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 /**
@@ -96,11 +95,11 @@ public class OrderDetailsFragment extends Fragment {
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
 		mNetworkWatcher = new NetworkWatcher();
-		Accessor.getServerConnector(getActivity()).addNetworkListener(
+		Accessor.getServerConnector().addNetworkListener(
 				mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
-		mOrder = Accessor.getModel(this.getActivity()).getOrderById(
+		mOrder = Accessor.getModel().getOrderById(
 				getArguments().getInt(ORDER_ID));
 
 		mUse2Tabs = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -109,7 +108,7 @@ public class OrderDetailsFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-		Accessor.getServerConnector(getActivity()).removeNetworkStatusListener(
+		Accessor.getServerConnector().removeNetworkStatusListener(
 				mNetworkWatcher);
 		if (bitmap != null) {
 			bitmap.recycle();
@@ -169,8 +168,6 @@ public class OrderDetailsFragment extends Fragment {
 
 		@Override
 		public void authenticationFailed() {
-			// TODO Auto-generated method stub
-
 		}
 
 	}

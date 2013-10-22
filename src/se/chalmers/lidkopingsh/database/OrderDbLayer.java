@@ -5,7 +5,6 @@ import java.util.Collection;
 import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.MapModel;
 import se.chalmers.lidkopingsh.model.Order;
-import android.content.Context;
 
 /**
  * Handles communication between Model and Order database.
@@ -22,12 +21,9 @@ public class OrderDbLayer implements ILayer {
 
 	/**
 	 * Creates a layer for communication between model and Order database.
-	 * 
-	 * @param context
-	 *            to use to open or create the database
 	 */
-	public OrderDbLayer(Context context) {
-		db = new OrderDbStorage(context);
+	public OrderDbLayer() {
+		db = new OrderDbStorage();
 	}
 
 	@Override

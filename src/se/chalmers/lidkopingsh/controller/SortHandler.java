@@ -8,8 +8,8 @@ import se.chalmers.lidkopingsh.model.StationComparator;
 import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 /**
@@ -25,7 +25,7 @@ public class SortHandler implements OnItemSelectedListener {
 	private Station mCurrentStation;
 	private Context mContext;
 	private ArrayAdapter<Station> mStationsAdapter;
-
+ 
 	public SortHandler(Spinner mStationSpinner, OrderAdapter orderAdapter,
 			Context context) {
 		this.mStationSpinner = mStationSpinner;
@@ -42,7 +42,7 @@ public class SortHandler implements OnItemSelectedListener {
 		if (mContext != null) {
 			mStationsAdapter = new ArrayAdapter<Station>(mContext,
 					R.layout.spinner_white_text, (ArrayList<Station>) Accessor
-							.getModel(mContext).getStations());
+							.getModel().getStations());
 			mStationsAdapter
 					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		}
@@ -73,7 +73,7 @@ public class SortHandler implements OnItemSelectedListener {
 	 */
 	public void refresh() {
 		mStationsAdapter.clear();
-		mStationsAdapter.addAll(Accessor.getModel(mContext).getStations());
+		mStationsAdapter.addAll(Accessor.getModel().getStations());
 		sort();
 	}
 

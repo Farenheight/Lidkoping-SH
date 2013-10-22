@@ -24,6 +24,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
+import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.model.Image;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
@@ -72,7 +73,6 @@ public class ServerHelper {
 	private final String deviceId;
 
 	private HttpClient httpClient;
-	private final Context context;
 	private final String serverPath;
 	private SharedPreferences preferences;
 
@@ -86,15 +86,15 @@ public class ServerHelper {
 	 * @param context
 	 *            The context used for accessing local storage.
 	 */
-	public ServerHelper(Context context) {
-		deviceId = Secure.getString(context.getContentResolver(),
+	public ServerHelper() {
+		
+		deviceId = Secure.getString(App.getContext().getContentResolver(),
 				Secure.ANDROID_ID);
-		preferences = context.getSharedPreferences(
+		preferences = App.getContext().getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 
 		this.serverPath = preferences.getString(
 				ServerSettings.PREFERENCES_SERVER_PATH, null);
-		this.context = context;
 		try {
 			httpClient = new DefaultHttpClient();
 		} catch (Exception e) {
@@ -367,7 +367,7 @@ public class ServerHelper {
 				fileName = new URL(serverPath + PICTURES_FOLDER
 						+ i.getServerImagePath());
 				InputStream is = fileName.openStream();
-				OutputStream os = context.openFileOutput(i.getImagePath(),
+				OutputStream os = App.getContext().openFileOutput(i.getImagePath(),
 						Context.MODE_PRIVATE);
 
 				byte[] b = new byte[2048];
@@ -403,7 +403,7 @@ public class ServerHelper {
 		for (Order o : newOrderscopy) {
 			if (o.isRemoved()) {
 				for (Image i : o.getImages()) {
-					context.deleteFile(i.getImagePath());
+					App.getContext().deleteFile(i.getImagePath());
 				}
 				removedOrders.add(o);
 			}
@@ -468,7 +468,7 @@ public class ServerHelper {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
 						&& !newI.getImagePath().equals(oldI.getImagePath())) {
-					context.deleteFile(oldI.getImagePath());
+					App.getContext().deleteFile(oldI.getImagePath());
 					saveImage(newI);
 				}
 			}

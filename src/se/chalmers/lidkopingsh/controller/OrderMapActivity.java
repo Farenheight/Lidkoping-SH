@@ -65,7 +65,7 @@ public class OrderMapActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_root);
-		mModel = Accessor.getModel(this);
+		mModel = Accessor.getModel();
 		mMarkers = new ArrayList<Marker>();
 		setUpMapIfNeeded();
 	}

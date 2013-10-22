@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.nullwire.trace.ExceptionHandler;
 
@@ -49,7 +48,7 @@ public class MainActivity extends FragmentActivity implements
 		ExceptionHandler.register(this,
 				"http://simonbengtsson.se/lsh/stacktrace_script.php");
 		
-		Accessor.getModel(this); // Create model and load data from database.
+		Accessor.getModel(); // Create model and load data from database.
 		mSharedPreferences = getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
@@ -58,7 +57,7 @@ public class MainActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
-		Accessor.getServerConnector(this).addNetworkListener(this);
+		Accessor.getServerConnector().addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
@@ -80,7 +79,7 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		Accessor.getServerConnector(this).removeNetworkStatusListener(this);
+		Accessor.getServerConnector().removeNetworkStatusListener(this);
 		super.onDestroy();
 	}
 
@@ -118,7 +117,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onResume() {
 		super.onResume();
-		Accessor.getServerConnector(this).update(false);
+		Accessor.getServerConnector().update(false);
 	}
 
 	@Override
@@ -139,7 +138,7 @@ public class MainActivity extends FragmentActivity implements
 			return true;
 		case R.id.action_update:
 			item.setActionView(R.layout.progress_indicator);
-			Accessor.getServerConnector(this).update(false);
+			Accessor.getServerConnector().update(false);
 			return true;
 		case R.id.action_help:
 			Uri url = Uri.parse("http://simonbengtsson.se/userguide.pdf");
@@ -212,7 +211,7 @@ public class MainActivity extends FragmentActivity implements
 		Editor editor = getSharedPreferences(ServerSettings.PREFERENCES_NAME,
 				Context.MODE_PRIVATE).edit();
 		editor.clear().commit();
-		Accessor.getModel(this).clearAllOrders();
+		Accessor.getModel().clearAllOrders();
 		finish();
 	}
 }

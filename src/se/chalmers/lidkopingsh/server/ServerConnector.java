@@ -10,7 +10,6 @@ import se.chalmers.lidkopingsh.model.IModel;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.OrderChangedEvent;
 import se.chalmers.lidkopingsh.util.Listener;
-import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
@@ -42,8 +41,8 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 	 * @param model
 	 *            The model for retrieving updates.
 	 */
-	public ServerConnector(Context context, IModel model) {
-		helper = new ServerHelper(context);
+	public ServerConnector(IModel model) {
+		helper = new ServerHelper();
 		networkListeners = new ArrayList<NetworkStatusListener>();
 		orderListeners = new ArrayList<Listener<Collection<Order>>>();
 		this.model = model;

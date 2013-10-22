@@ -29,7 +29,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.od_root);
-		Accessor.getServerConnector(this).addNetworkListener(this);
+		Accessor.getServerConnector().addNetworkListener(this);
 
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -58,12 +58,12 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 	@Override
 	public void onResume() {
 		super.onResume();
-		Accessor.getServerConnector(this).update(false);
+		Accessor.getServerConnector().update(false);
 	}
 
 	@Override
 	protected void onDestroy() {
-		Accessor.getServerConnector(this).removeNetworkStatusListener(this);
+		Accessor.getServerConnector().removeNetworkStatusListener(this);
 		super.onDestroy();
 	}
 
@@ -87,7 +87,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 			return true;
 		case R.id.action_update:
 			item.setActionView(R.layout.progress_indicator);
-			Accessor.getServerConnector(this).update(false);
+			Accessor.getServerConnector().update(false);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

@@ -38,7 +38,6 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 
 	private ArrayFilter mFilter;
 	private LayoutInflater mInflater;
-	private Context mContext;
 	private int dividerIndex;
 	private Station currentSortStation;
 
@@ -52,7 +51,6 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mOrders = new ArrayList<Order>(orders);
-		mContext = context;
 		// First time the filter is run, save the original values in a new
 		// list and create a new model filter
 		mOriginalObjects = new ArrayList<Order>(orders);
@@ -67,7 +65,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 */
 	public void sort(Comparator<? super Order> comparator, Station station) {
 		Collections.sort(mOrders, comparator);
-		dividerIndex = Accessor.getModel(mContext).getFirstUncompletedIndex(
+		dividerIndex = Accessor.getModel().getFirstUncompletedIndex(
 				mOrders, station);
 		currentSortStation = station;
 		Log.d("OrderAdapter", "sort finished");
@@ -195,7 +193,6 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 			if (constraint == null || constraint.length() == 0) {
 				return new ArrayList<Order>(originalObjects);
 			} else {
-				constraint = constraint.toString();
 				ArrayList<Order> orderList = new ArrayList<Order>(
 						originalObjects);
 				final ArrayList<Order> newValues = new ArrayList<Order>();
@@ -211,11 +208,15 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		}
 
 		/**
-		 * Checks if an individual order passes the filter.
+		 * Checks if an individual order passes the filter. Matches the orders
+		 * id name against the constraint. The filter is case and dots
+		 * independent.
 		 * 
 		 * @param order
+		 *            The order to be matched
 		 * @param constraint
-		 * @return
+		 *            The string match against
+		 * @return If the order passes the filter
 		 */
 		private boolean passesFilter(Order order, String constraint) {
 			String idName = order.getIdName().toUpperCase(Locale.getDefault());

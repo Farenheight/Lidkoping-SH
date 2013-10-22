@@ -232,7 +232,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 			
 			// Send to server
 			try {
-				ApiResponse response = new ServerHelper(LoginActivity.this)
+				ApiResponse response = new ServerHelper()
 						.getApikey(mUserName, mPassword);
 				if (response != null) {
 					return response.isSuccess();

@@ -78,7 +78,7 @@ public class OrderListFragment extends ListFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Accessor.getServerConnector(getActivity()).addNetworkListener(this);
+		Accessor.getServerConnector().addNetworkListener(this);
 		return LayoutInflater.from(getActivity()).inflate(
 				R.layout.list_root_inner, null);
 	}
@@ -93,7 +93,7 @@ public class OrderListFragment extends ListFragment implements
 
 		// Setup list view and it's adapter
 		mOrderAdapter = new OrderAdapter(getActivity(), new ArrayList<Order>(
-				Accessor.getModel(getActivity()).getOrders()));
+				Accessor.getModel().getOrders()));
 		mOrderListObserver = new OrderListObserver();
 		mOrderAdapter.registerDataSetObserver(mOrderListObserver);
 		setListAdapter(mOrderAdapter);
@@ -113,7 +113,7 @@ public class OrderListFragment extends ListFragment implements
 
 			// Doesn't contain key if no order has been selected yet
 			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
-				mActivatedOrder = Accessor.getModel(getActivity())
+				mActivatedOrder = Accessor.getModel()
 						.getOrderById(
 								savedInstanceState.getInt(ACTIVATED_ORDER_ID));
 			}
@@ -125,7 +125,7 @@ public class OrderListFragment extends ListFragment implements
 		if (mOrderListObserver != null) {
 			mOrderAdapter.unregisterDataSetObserver(mOrderListObserver);
 		}
-		Accessor.getServerConnector(getActivity()).removeNetworkStatusListener(
+		Accessor.getServerConnector().removeNetworkStatusListener(
 				this);
 		super.onDestroy();
 	}
@@ -136,7 +136,7 @@ public class OrderListFragment extends ListFragment implements
 		super.onListItemClick(listView, view, position, id);
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mActivatedOrder = Accessor.getModel(getActivity()).getOrderById(
+		mActivatedOrder = Accessor.getModel().getOrderById(
 				mOrderAdapter.getItem(position - 1).getId());
 		mOrderSelectedCallbacks.onItemSelected(mActivatedOrder.getId());
 	}
@@ -221,7 +221,7 @@ public class OrderListFragment extends ListFragment implements
 	@Override
 	public void finishedUpdate() {
 		mOrderAdapter
-				.updateOrders(Accessor.getModel(getActivity()).getOrders());
+				.updateOrders(Accessor.getModel().getOrders());
 		Log.d("OrderListFragment", "Finsished update");
 	}
 

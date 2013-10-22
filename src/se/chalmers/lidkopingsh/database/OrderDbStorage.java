@@ -23,7 +23,6 @@ import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -80,13 +79,10 @@ public class OrderDbStorage {
 
 	/**
 	 * Create a Order database connection for querying, adding or updating Order
-	 * database content.
-	 * 
-	 * @param context
-	 *            to use to open or create the database
+	 * database content
 	 */
-	public OrderDbStorage(Context context) {
-		dbHelper = new OrderDbHelper(context);
+	public OrderDbStorage() {
+		dbHelper = new OrderDbHelper();
 		try {
 			db = dbHelper.getWritableDatabase();
 		} catch (SQLiteException e) {
