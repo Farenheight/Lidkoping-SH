@@ -1,8 +1,4 @@
 eclipse.preferences.version=1
 encoding//api/get_updates.php=UTF-8
-encoding//src/se/chalmers/lidkopingsh/controller/LoginActivity.java=UTF-8
-encoding//src/se/chalmers/lidkopingsh/controller/OrderListFragment.java=UTF-8
-encoding//src/se/chalmers/lidkopingsh/server/AsyncTaskGet.java=UTF-8
-encoding//src/se/chalmers/lidkopingsh/server/ServerHelper.java=UTF-8
 encoding//web_gui/formHandler.php=UTF-8
 encoding/<project>=UTF-8

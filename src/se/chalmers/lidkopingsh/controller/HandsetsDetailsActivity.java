@@ -1,14 +1,16 @@
 package se.chalmers.lidkopingsh.controller;
 
-import se.chalmers.lidkopingsh.server.NetworkStatusListener;
-import android.content.Intent;
+import java.io.File;
+
+import uk.co.senab.photoview.PhotoViewAttacher;
+
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 /**
  * This activity is only used on handset devices! It is representing a single
@@ -20,107 +22,63 @@ import android.view.MenuItem;
  * 
  * @author Simon Bengtsson
  */
-public class HandsetsDetailsActivity extends FragmentActivity implements
-		NetworkStatusListener {
-
-	private Menu mMenu;
+public class HandsetsDetailsActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.od_root);
-		Accessor.getServerConnector().addNetworkListener(this);
-
-		// Show the Up button in the action bar.
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-
-		// savedInstanceState is non-null when there is fragment state
-		// saved from previous configurations of this activity
-		// (e.g. when rotating the screen from portrait to landscape).
-		// In this case, the fragment will automatically be re-added
-		// to its container so we don't need to manually add it. If there isn't
-		// a saved fragment, create it below.
-		if (savedInstanceState == null) {
-			Bundle arguments = new Bundle();
-			// Send current order id
-			arguments.putInt(OrderDetailsFragment.ORDER_ID, getIntent()
-					.getIntExtra(OrderDetailsFragment.ORDER_ID, -1));
-			// Send if running on tabelt
-			arguments.putBoolean(MainActivity.IS_TABLET_SIZE, getIntent()
-					.getBooleanExtra(MainActivity.IS_TABLET_SIZE, false));
-			OrderDetailsFragment fragment = new OrderDetailsFragment();
-			fragment.setArguments(arguments);
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.tablet_hint_container, fragment).commit();
-		}
+		initDrawing();
 	}
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		Accessor.getServerConnector().update(false);
-	}
+	/**
+	 * Initialize the drawing asynchronously with a library for handling zooming
+	 * and panning
+	 */
+	private void initDrawing() {
+		ImageView orderDrawing = (ImageView) findViewById(R.id.orderDrawing);
 
-	@Override
-	protected void onDestroy() {
-		Accessor.getServerConnector().removeNetworkStatusListener(this);
-		super.onDestroy();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu items for use in the action bar
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.action_bar_details_activity, menu);
-		mMenu = menu;
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	// Called when a button in the action bar is clicked
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		// Home or Up button clicked.
-		case android.R.id.home:
-			// Navigates up one level in the application structure.
-			NavUtils.navigateUpTo(this, new Intent(this, MainActivity.class));
-			return true;
-		case R.id.action_update:
-			item.setActionView(R.layout.progress_indicator);
-			Accessor.getServerConnector().update(false);
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	@Override
-	public void startedUpdate() {
-		Log.d("HandsetDetailActivity", "Update started");
-		if (mMenu != null) {
-			MenuItem updateItem = mMenu.findItem(R.id.action_update);
-			updateItem.setActionView(R.layout.progress_indicator);
+		if (orderDrawing != null) {
+			orderDrawing.setImageBitmap(decodeBitmapFromPath("", 1000, 1000));
+			PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
+			pva.setMaximumScale(8f);
+			orderDrawing.setVisibility(View.VISIBLE);
 		}
 
 	}
 
-	@Override
-	public void finishedUpdate() {
-		if (mMenu != null) {
-			MenuItem updateItem = mMenu.findItem(R.id.action_update);
-			updateItem.setActionView(null);
-		}
-		Log.d("HandsetDetailActivity", "Update finished");
-	}
+	/**
+	 * Decodes a Bitmap from the specified file path that is going to be loaded
+	 * near the specified requested width and height.
+	 * 
+	 * @param imgPath
+	 *            The file path of the image to be displayed
+	 * @param reqWidth
+	 *            The requested width of the image
+	 * @param reqHeight
+	 *            The requested height of the image
+	 * @return The bitmap created from the path provided
+	 */
+	private Bitmap decodeBitmapFromPath(String imgPath, int reqWidth,
+			int reqHeight) {
 
-	@Override
-	public void networkProblem(String message) {
-		Log.d("HandsetDetailActivity", "Network error");
-	}
+		// First decode with inJustDecodeBounds=true to check dimensions
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		options.inScaled = true;
+		BitmapFactory.decodeResource(getResources(),
+				R.drawable.sample_order_middle);
 
-	@Override
-	public void authenticationFailed() {
-		// TODO Auto-generated method stub
-		
+		// Current images has to thin lines to scale well
+		// TODO: Increase contrast of image so scaling is possible
+		options.inSampleSize = 2;
+
+		// Decode bitmap with inSampleSize set
+		options.inJustDecodeBounds = false;
+
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+				R.drawable.sample_order_middle);
+
+		return bitmap;
 	}
 }
