@@ -6,7 +6,6 @@ import se.chalmers.lidkopingsh.model.IdNameFilter;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -112,6 +111,7 @@ public class OrderListFragment extends ListFragment implements
 						savedInstanceState.getInt(ACTIVATED_ORDER_ID));
 			}
 		}
+		
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class OrderListFragment extends ListFragment implements
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 
-		//
+		// Is null if no orders has been selected
 		if (mActivatedOrder != null) {
 			outState.putInt(ACTIVATED_ORDER_ID, mActivatedOrder.getId());
 		}
@@ -184,7 +184,7 @@ public class OrderListFragment extends ListFragment implements
 	@Override
 	public void finishedUpdate() {
 		// Update all data, sorting, searching when update finished
-		new UpdateOrderListTask().execute((Object) null);
+		updateOrders();
 	}
 
 	@Override
@@ -198,49 +198,35 @@ public class OrderListFragment extends ListFragment implements
 	// When the order list changed, this will be called
 	@Override
 	public void listDataChanged() {
-		new UpdateOrderListTask().execute((Object) null);
+		updateOrders();
 	}
 
 	/**
-	 * An task which will update the order list with the new orders
-	 * asynchronously when executed.
-	 * 
-	 * @author Simon Bengtsson
-	 * 
+	 * Updates the order list with the new orders (if any) plus resorts and
+	 * re-search.
 	 */
-	private class UpdateOrderListTask extends AsyncTask<Object, Object, Void> {
+	private void updateOrders() {
+		// Updates to new data
+		mOrderAdapter.updateOrders(Accessor.getModel().getOrders());
 
-		@Override
-		protected Void doInBackground(Object... params) {
+		// 1. Filter it
+		mOrderAdapter.filter(mSearchHandler.getCurrentSearchTerm().toString(),
+				new IdNameFilter());
 
-			// Updates to new data
-			mOrderAdapter.updateOrders(Accessor.getModel().getOrders());
-
-			// 1. Filter it
-			mOrderAdapter.filter(mSearchHandler.getCurrentSearchTerm()
-					.toString(), new IdNameFilter());
-
-			// No need to do something more if no results from the filtering
-			if (mOrderAdapter.getCount() != 0) {
-				// 2. Sort the orders (only the filtered ones if filtered)
-				mOrderAdapter.sort(mSortHandler.getCurrentStation());
-
-				// 3. Mark the correct order in the list view (if a order has
-				// been
-				// previously selected)
-				if (mActivatedOrder != null) {
-					getListView().setItemChecked(
-							mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
-				}
-			}
-			return null;
+		// No need to do something more if no results from the filtering
+		if (mOrderAdapter.getCount() != 0) {
+			// 2. Sort the orders (only the filtered ones if filtered)
+			mOrderAdapter.sort(mSortHandler.getCurrentStation());
 		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			Log.i("OrderListFragment", "Order list updated. First order is: "
-					+ mOrderAdapter.getItem(0).getIdName());
-			mOrderAdapter.notifyDataSetChanged();
+		// Mark the correct order in the list view (if a order has
+		// been
+		// previously selected)
+		if (mActivatedOrder != null) {
+			getListView().setItemChecked(
+					mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
 		}
+		mOrderAdapter.notifyDataSetChanged();
+		Log.i("OrderListFragment", "Order list updated.");
+		mSortHandler.refresh();
 	}
 }
