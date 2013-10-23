@@ -1,5 +1,7 @@
 package se.chalmers.lidkopingsh.controller;
 
+import java.lang.ref.WeakReference;
+
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,7 +21,7 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 	private final int REQUESTED_WIDTH_IMAGE = 500;
 	private final int REQUESTED_HEIGHT_IMAGE = 1000;
 	private String mImagePath;
-	private ImageView mImageView;
+	private WeakReference<ImageView> mWeakRefImageView;
 	private View mLoadingView;
 
 	/**
@@ -38,7 +40,7 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 	public ImageLoaderTask(String imagePath, ImageView imageView,
 			View loadingView) {
 		mImagePath = imagePath;
-		mImageView = imageView;
+		mWeakRefImageView = new WeakReference<ImageView>(imageView);
 		mLoadingView = loadingView;
 	}
 
@@ -60,12 +62,16 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 	 */
 	@Override
 	protected void onPostExecute(Bitmap bitmap) {
-		mImageView.setImageBitmap(bitmap);
-		PhotoViewAttacher pva = new PhotoViewAttacher(mImageView);
-		pva.setMaximumScale(8f);
-		mLoadingView.setVisibility(View.GONE);
-		mImageView.setVisibility(View.VISIBLE);
-
+        if (mWeakRefImageView != null && bitmap != null) {
+            final ImageView imageView = mWeakRefImageView.get();
+            if (imageView != null) {
+        		imageView.setImageBitmap(bitmap);
+        		PhotoViewAttacher pva = new PhotoViewAttacher(imageView);
+        		pva.setMaximumScale(8f);
+        		mLoadingView.setVisibility(View.GONE);
+        		imageView.setVisibility(View.VISIBLE);
+            }
+        }
 	}
 
 	/**
