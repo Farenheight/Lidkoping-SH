@@ -60,7 +60,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(ServerSettings.PREFERENCES_SERVER_PATH,
-				"http://lidkopingsh.kimkling.net/api/");
+				"https://lidkopingsh.kimkling.net/api/");
 		editor.commit();
 
 		// Set up the login form.

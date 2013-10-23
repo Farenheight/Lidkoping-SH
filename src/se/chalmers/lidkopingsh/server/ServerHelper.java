@@ -1,12 +1,20 @@
 package se.chalmers.lidkopingsh.server;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,15 +22,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthenticationException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
 
 import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.model.Image;
@@ -62,6 +68,9 @@ import com.google.gson.JsonSyntaxException;
  * 
  */
 public class ServerHelper {
+	/** Certificate file located in /assets/ folder. */
+	private static final String CERTIFICATE_FILENAME = "certificate.pem";
+	
 	private static final String LIDKOPINGSH_DEVICEID = "Lidkopingsh-Deviceid";
 	private static final String LIDKOPINGSH_PASSWORD = "Lidkopingsh-Password";
 	private static final String LIDKOPINGSH_USERNAME = "Lidkopingsh-Username";
@@ -72,7 +81,7 @@ public class ServerHelper {
 
 	private final String deviceId;
 
-	private HttpClient httpClient;
+	private final SSLContext sslContext;
 	private final String serverPath;
 	private SharedPreferences preferences;
 
@@ -87,7 +96,6 @@ public class ServerHelper {
 	 *            The context used for accessing local storage.
 	 */
 	public ServerHelper() {
-		
 		deviceId = Secure.getString(App.getContext().getContentResolver(),
 				Secure.ANDROID_ID);
 		preferences = App.getContext().getSharedPreferences(
@@ -95,11 +103,61 @@ public class ServerHelper {
 
 		this.serverPath = preferences.getString(
 				ServerSettings.PREFERENCES_SERVER_PATH, null);
+
+		// Initiate certificate and set SSL context.
+		sslContext = createSSLContext();
+	}
+
+	/**
+	 * Loads the certificate to trust the self-signed certificate on web server.
+	 * This is stored in SSL context, which must be used by the
+	 * {@link HttpsURLConnection}.
+	 * 
+	 * @return An SSL context to use in a {@link HttpsURLConnection}.
+	 */
+	private SSLContext createSSLContext() {
+		InputStream certInput = null;
 		try {
-			httpClient = new DefaultHttpClient();
-		} catch (Exception e) {
-			Log.e("server_layer",
-					"Error in HTTP Server Connection" + e.toString());
+			certInput = App.getContext().getAssets().open(CERTIFICATE_FILENAME);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		SSLContext context = null;
+		try {
+			CertificateFactory cf = CertificateFactory.getInstance("X.509");
+			Certificate ca = cf.generateCertificate(certInput);
+			Log.d("ServerHelper", "Loading certificate="
+					+ ((X509Certificate) ca).getSubjectDN());
+
+			// Create a KeyStore containing our trusted CAs
+			String keyStoreType = KeyStore.getDefaultType();
+			KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+			keyStore.load(null, null);
+			keyStore.setCertificateEntry("ca", ca);
+
+			// Create a TrustManager that trusts the CAs in our KeyStore
+			String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+			TrustManagerFactory tmf = TrustManagerFactory
+					.getInstance(tmfAlgorithm);
+			tmf.init(keyStore);
+
+			// Create an SSLContext that uses our TrustManager
+			context = SSLContext.getInstance("TLS");
+			context.init(null, tmf.getTrustManagers(), null);
+
+			return context;
+		} catch (IOException e) {
+			throw new IllegalStateException(
+					"Error while loading certificate from file.", e);
+		} catch (GeneralSecurityException e) {
+			throw new IllegalStateException(
+					"Error while loading certificate from file.", e);
+		} finally {
+			try {
+				certInput.close();
+			} catch (IOException e) {
+			}
 		}
 	}
 
@@ -136,17 +194,35 @@ public class ServerHelper {
 			Collection<? extends Header> headers) throws NetworkErrorException {
 		BufferedReader reader = null;
 		try {
-			HttpPost httpPost = new HttpPost(serverPath + action);
-			httpPost.setEntity(new StringEntity(data, HTTP.UTF_8));
-			httpPost.setHeader("Content-Type",
-					"application/x-www-form-urlencoded");
+			URL url = new URL(serverPath + action);
+			HttpsURLConnection urlConnection = (HttpsURLConnection) url
+					.openConnection();
+			
+			urlConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+			urlConnection.setRequestMethod("POST");
+			urlConnection.setUseCaches(false);
+			urlConnection.setDoInput(true);
+			urlConnection.setDoOutput(true);
+			// Headers
+			urlConnection.setRequestProperty("Accept-Charset", "UTF-8");
+			urlConnection.setRequestProperty("Content-Type",
+					"application/x-www-form-urlencoded; charset=utf-8");
 			for (Header h : headers) {
-				httpPost.setHeader(h);
+				urlConnection.setRequestProperty(h.getName(), h.getValue());
 			}
-			HttpResponse httpResponse = httpClient.execute(httpPost);
-			reader = new BufferedReader(new InputStreamReader(httpResponse
-					.getEntity().getContent()));
+
+			// Send request
+			DataOutputStream wr = new DataOutputStream(
+					urlConnection.getOutputStream());
+			wr.writeBytes(data);
+			wr.flush();
+			wr.close();
+
+			// Get response
+			InputStream in = urlConnection.getInputStream();
+			reader = new BufferedReader(new InputStreamReader(in));
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new NetworkErrorException(e);
 		}
 		return reader;
@@ -202,6 +278,7 @@ public class ServerHelper {
 		BufferedReader reader = sendHttpPostRequest("", "getApikey", headers);
 
 		ApiResponse response = convertResponseSend(reader);
+		Log.d("ServerHelper", "Response from getApiKey: " + response.message);
 
 		if (isResponseValid(response)) {
 			// Store in SharedPreferences
@@ -266,7 +343,13 @@ public class ServerHelper {
 	public ApiResponse sendUpdate(Order order) throws NetworkErrorException,
 			AuthenticationException {
 		Gson gsonOrder = new Gson();
-		String json = "data=" + gsonOrder.toJson(order);
+		String json = "";
+		try {
+			json = "data="
+					+ URLEncoder.encode(gsonOrder.toJson(order), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
 
 		ApiResponse response = convertResponseSend(reader);
@@ -341,14 +424,16 @@ public class ServerHelper {
 					"Invalid response from server. (response == null)");
 		}
 		if (!response.isSuccess()) {
+			Log.e("ServerHelper", "Error code: " + response.getErrorCode()
+					+ " Message: " + response.getMessage());
 			if (response.getErrorCode() >= 40 && response.getErrorCode() < 50) {
 				throw new AuthenticationException("(" + response.getErrorCode()
 						+ ") " + response.getMessage());
 			}
-			Log.e("ServerHelper", "Error code: " + response.getErrorCode()
-					+ " Message: " + response.getMessage());
 			return false;
 		}
+		
+		Log.d("ServerHelper", "Successful reponse from server.");
 		return true;
 	}
 
@@ -367,8 +452,8 @@ public class ServerHelper {
 				fileName = new URL(serverPath + PICTURES_FOLDER
 						+ i.getServerImagePath());
 				InputStream is = fileName.openStream();
-				OutputStream os = App.getContext().openFileOutput(i.getImagePath(),
-						Context.MODE_PRIVATE);
+				OutputStream os = App.getContext().openFileOutput(
+						i.getImagePath(), Context.MODE_PRIVATE);
 
 				byte[] b = new byte[2048];
 				int length;
