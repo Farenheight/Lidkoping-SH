@@ -307,8 +307,7 @@ public class OrderDetailsFragment extends Fragment {
 			// Get image from internal storage
 			String imagePath = mOrder.getImages().get(0).getImagePath();
 			// Load Images
-			asyntaskImageLoader = new AsyntaskImageLoader();
-			asyntaskImageLoader.execute(imagePath);
+			new AsyntaskImageLoader().execute(imagePath);
 		} else {
 			ProgressBar pBar = (ProgressBar) mRootView
 					.findViewById(R.id.orderDrawingProgressBar);

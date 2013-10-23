@@ -62,8 +62,10 @@ public class Product implements Listener<Task>, Syncable<Product> {
 		this.listeners = new ArrayList<Listener<OrderChangedEvent>>();
 		
 		this.tasks = new TaskList(new ArrayList<Task>());
-		for (Task t : tasks) {
-			this.tasks.add(new Task(t));
+		if(tasks != null) {
+			for (Task t : tasks) {
+				this.tasks.add(new Task(t));
+			}
 		}
 	}
 
