@@ -249,7 +249,7 @@ public class OrderDetailsFragment extends Fragment {
 							: Status.DONE);
 				} else {
 					toggleButton.setChecked(!isChecked);
-					RepeatSafeToast.show(getActivity(), getResources()
+					RepeatSafeToast.show(getResources()
 							.getString(R.string.network_error_change_data));
 
 				}
@@ -293,7 +293,6 @@ public class OrderDetailsFragment extends Fragment {
 			Log.w("DEBUG", "No images in this order");
 		}
 	}
-
 
 	/**
 	 * Adds info such as customer name, order number etc to rootView

@@ -2,6 +2,7 @@ package se.chalmers.lidkopingsh.controller;
 
 import org.apache.http.auth.AuthenticationException;
 
+import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import se.chalmers.lidkopingsh.server.ServerHelper;
 import se.chalmers.lidkopingsh.server.ServerHelper.ApiResponse;
@@ -56,7 +57,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 		setContentView(R.layout.activity_login);
 
 		// Saves server path
-		SharedPreferences preferences = getSharedPreferences(
+		SharedPreferences preferences = App.getContext().getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(ServerSettings.PREFERENCES_SERVER_PATH,
@@ -99,6 +100,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 					}
 				});
 	}
+
 	@Override
 	protected void onDestroy() {
 		if(mAuthTask != null){
@@ -215,7 +217,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 	@Override
 	public void networkProblem(String message) {
 		Log.e("LoginAct", "Could not connect to server");
-		RepeatSafeToast.show(LoginActivity.this, message);
+		RepeatSafeToast.show(message);
 	}
 
 	@Override

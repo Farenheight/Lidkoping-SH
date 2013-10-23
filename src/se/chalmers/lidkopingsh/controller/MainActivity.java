@@ -1,5 +1,6 @@
 package se.chalmers.lidkopingsh.controller;
 
+import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import se.chalmers.lidkopingsh.server.ServerSettings;
 import android.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.nullwire.trace.ExceptionHandler;
 
@@ -42,14 +44,15 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d("Main", "created");
 
 		// Register an exception handler that sends unhandled exceptions to
 		// http://simonbengtsson.se/lsh/stacktrace
-		ExceptionHandler.register(this,
-				"http://simonbengtsson.se/lsh/stacktrace_script.php");
+		//ExceptionHandler.register(this,
+			//	"http://simonbengtsson.se/lsh/stacktrace_script.php");
 		
 		Accessor.getModel(); // Create model and load data from database.
-		mSharedPreferences = getSharedPreferences(
+		mSharedPreferences = App.getContext().getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
 			Log.i("MainActivity", "Not logged, in. Staring login act");
@@ -79,7 +82,9 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
+		Log.d("Main", "destroyed");
 		Accessor.getServerConnector().removeNetworkStatusListener(this);
+		super.onStop();
 		super.onDestroy();
 	}
 
@@ -197,7 +202,7 @@ public class MainActivity extends FragmentActivity implements
 		Context context = getApplicationContext();
 		String text = getResources().getString(
 				R.string.network_error_no_internet);
-		RepeatSafeToast.show(context, text);
+		RepeatSafeToast.show(text);
 	}
 
 	@Override
@@ -208,7 +213,7 @@ public class MainActivity extends FragmentActivity implements
 
 	private void logout() {
 		startActivity(new Intent(this, LoginActivity.class));
-		Editor editor = getSharedPreferences(ServerSettings.PREFERENCES_NAME,
+		Editor editor = App.getContext().getSharedPreferences(ServerSettings.PREFERENCES_NAME,
 				Context.MODE_PRIVATE).edit();
 		editor.clear().commit();
 		Accessor.getModel().clearAllOrders();

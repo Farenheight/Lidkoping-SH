@@ -10,8 +10,11 @@ import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.server.ServerHelper;
+import se.chalmers.lidkopingsh.server.ServerSettings;
 import se.chalmers.lidkopingsh.server.ServerHelper.ApiResponse;
 import android.accounts.NetworkErrorException;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.test.AndroidTestCase;
 
 /**
@@ -27,7 +30,7 @@ public class ServerHelperTest extends AndroidTestCase{
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		dbStorage = new OrderDbStorage(this.getContext());
+		dbStorage = new OrderDbStorage();
 		dbStorage.clear(); 
 	}
 	
@@ -35,8 +38,17 @@ public class ServerHelperTest extends AndroidTestCase{
 	 * Tests if an update is properly achieved from the server
 	 */
 	public void testGetUpdate() {
-		ServerHelper serverLayer = new ServerHelper(this.getContext());
+		// Saves server path
+		SharedPreferences preferences = this.getContext().getSharedPreferences(
+				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(ServerSettings.PREFERENCES_SERVER_PATH,
+				"http://lidkopingsh.kimkling.net/api/");
+		editor.commit();
+		ServerHelper serverLayer = new ServerHelper();
 		try {
+			ApiResponse response = serverLayer.getApikey("dev", "dev");
+			assertTrue(response.isSuccess());
 			orders = serverLayer.getUpdates(true, new LinkedList<Order>());
 		} catch (AuthenticationException e) {
 			e.printStackTrace();
@@ -44,43 +56,6 @@ public class ServerHelperTest extends AndroidTestCase{
 			e.printStackTrace();
 		}
 		assertTrue(orders.size() != 0);
-	}
-	
-	/**
-	 * Checks if we can send an update to the server with success
-	 */
-	public void testSendUpdate() {
-		ServerHelper serverLayer = new ServerHelper(this.getContext());
-		try {
-			orders = serverLayer.getUpdates(true, new LinkedList<Order>());
-		} catch (AuthenticationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NetworkErrorException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		Order order = new Order(orders.get(0));
-		if (order.getProducts() != null) {
-			for (Product p : order.getProducts()) {
-				if (p.getTasks() != null) {
-					p.getTasks().get(0).setStatus(Status.NOT_DONE);
-				}
-			}
-		}
-		order.sync(order);
-		ApiResponse response = null;
-		try {
-			response = serverLayer.sendUpdate(order);
-		} catch (AuthenticationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NetworkErrorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		assertTrue(response.isSuccess());
 	}
 
 }
