@@ -10,15 +10,11 @@ import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
-import uk.co.senab.photoview.PhotoViewAttacher;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -48,39 +44,21 @@ public class OrderDetailsFragment extends Fragment {
 
 	/** Used as a key when sending the object between activities and fragments */
 	public static final String ORDER_ID = "item_id";
-
 	public static final String CURRENT_TAB_KEY = "current_tab_key";
-
 	private static final String DRAWING_TAB = "drawing tab";
-
 	private static final String DETAIL_TAB = "DETAILS tab";
-
 	private static final String TASK_TAB = "task_tab";
-
-	/**
-	 * Size of largest image width or height, of order drawing.
-	 */
-	private static final int MAX_IMAGE_SIZE = 1800;
 
 	/** The order displayed by this StoneDetailFragment */
 	private Order mOrder;
 
 	/** The root view that contains everything */
 	private View mRootView;
-
 	private TabHost mTabHost;
-
 	private boolean mUse2Tabs;
-
 	private List<ProgressBar> progressIndicators;
-
 	private List<ToggleButton> toggleButtons;
-
 	private NetworkWatcher mNetworkWatcher;
-
-	private Bitmap bitmap;
-
-	private AsyntaskImageLoader asyntaskImageLoader;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -95,8 +73,7 @@ public class OrderDetailsFragment extends Fragment {
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
 		mNetworkWatcher = new NetworkWatcher();
-		Accessor.getServerConnector().addNetworkListener(
-				mNetworkWatcher);
+		Accessor.getServerConnector().addNetworkListener(mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
 		mOrder = Accessor.getModel().getOrderById(
@@ -110,13 +87,6 @@ public class OrderDetailsFragment extends Fragment {
 	public void onDestroy() {
 		Accessor.getServerConnector().removeNetworkStatusListener(
 				mNetworkWatcher);
-		if (bitmap != null) {
-			bitmap.recycle();
-			Log.d("DEBUG", "bitmap data released");
-		}
-		if (asyntaskImageLoader != null) {
-			asyntaskImageLoader.cancel(true);
-		}
 		super.onDestroy();
 	}
 
@@ -279,10 +249,11 @@ public class OrderDetailsFragment extends Fragment {
 							: Status.DONE);
 				} else {
 					toggleButton.setChecked(!isChecked);
-					RepeatSafeToast.show(getActivity(), getResources()
+					RepeatSafeToast.show(getResources()
 							.getString(R.string.network_error_change_data));
 
 				}
+
 			}
 		});
 		return taskView;
@@ -298,80 +269,28 @@ public class OrderDetailsFragment extends Fragment {
 	}
 
 	/**
-	 * Attaches the PhotoView library to the order's drawing making it possible
-	 * to zoom and pan it smoothly
+	 * Initialize the drawing asynchronously with a library for handling zooming
+	 * and panning
 	 */
 	private void initDrawing() {
+		View loadingView = mRootView.findViewById(R.id.orderDrawingProgressBar);
 		if (!mOrder.getImages().isEmpty()) {
+			ImageView orderDrawing = (ImageView) mRootView
+					.findViewById(R.id.orderDrawing);
 
-			// Get image from internal storage
-			String imagePath = mOrder.getImages().get(0).getImagePath();
-			// Load Images
-			new AsyntaskImageLoader().execute(imagePath);
+			String imageRelPath = mOrder.getImages().get(0).getImagePath();
+			String imageAbsPath = new File(getActivity().getFilesDir(),
+					imageRelPath).getAbsolutePath();
+
+			new ImageLoaderTask(imageAbsPath, orderDrawing, loadingView)
+					.execute((Object) null);
+
 		} else {
-			ProgressBar pBar = (ProgressBar) mRootView
-					.findViewById(R.id.orderDrawingProgressBar);
-			pBar.setVisibility(View.GONE);
+			loadingView.setVisibility(View.GONE);
 			TextView textView = (TextView) mRootView
 					.findViewById(R.id.no_images_found_text_view);
 			textView.setVisibility(View.VISIBLE);
-			Log.d("DEBUG", "Image not loaded, cannot find an image on path ");
-		}
-	}
-
-	private class AsyntaskImageLoader extends AsyncTask<String, Void, Bitmap> {
-		@Override
-		protected Bitmap doInBackground(String... params) {
-			Bitmap result = null;
-			if (params.length == 0) {
-				return null;
-			}
-			String imagePath = params[0];
-			File file = new File(getActivity().getFilesDir(), imagePath);
-			String filename = file.getAbsolutePath();
-
-			while (file.exists() && result == null) {
-				result = BitmapFactory.decodeFile(filename);
-				Log.d("DEBUG", "Trying to load Image");
-			}
-
-			if (result != null) {
-				// Rescale the image if it is too big
-				int height = result.getHeight();
-				int width = result.getWidth();
-				if (width > MAX_IMAGE_SIZE) {
-					height *= (float) MAX_IMAGE_SIZE / width;
-					width = MAX_IMAGE_SIZE;
-				}
-				if (height > MAX_IMAGE_SIZE) {
-					width *= (float) MAX_IMAGE_SIZE / height;
-					height = MAX_IMAGE_SIZE;
-				}
-				result = Bitmap.createScaledBitmap(result, width, height, true);
-			}
-			return result;
-		}
-
-		@Override
-		protected void onPostExecute(Bitmap result) {
-			if (result != null) {
-				bitmap = result;
-				ProgressBar pBar = (ProgressBar) mRootView
-						.findViewById(R.id.orderDrawingProgressBar);
-				pBar.setVisibility(View.GONE);
-				ImageView orderDrawing = (ImageView) mRootView
-						.findViewById(R.id.orderDrawing);
-				orderDrawing.setVisibility(View.VISIBLE);
-				// Set drawable to view
-				BitmapDrawable drawable = new BitmapDrawable(getResources(),
-						bitmap);
-				orderDrawing.setImageDrawable(drawable);
-				// Attaches the library
-				PhotoViewAttacher pva = new PhotoViewAttacher(orderDrawing);
-				pva.setMaximumScale(8f);
-				Log.d("DEBUG", "Image loaded");
-			}
-			super.onPostExecute(result);
+			Log.w("DEBUG", "No images in this order");
 		}
 	}
 
