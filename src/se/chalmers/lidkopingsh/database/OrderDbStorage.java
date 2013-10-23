@@ -201,7 +201,7 @@ public class OrderDbStorage {
 
 		values.put(ImageTable.COLUMN_NAME_IMAGE_ID, i.getId());
 		values.put(ImageTable.COLUMN_NAME_ORDER_ID, orderId);
-		values.put(ImageTable.COLUMN_NAME_IMAGE, i.getImagePath());
+		values.put(ImageTable.COLUMN_NAME_IMAGE, i.getServerImagePath());
 
 		db.insert(ImageTable.TABLE_NAME, null, values);
 	}
