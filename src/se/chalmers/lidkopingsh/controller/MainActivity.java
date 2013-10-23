@@ -62,6 +62,7 @@ public class MainActivity extends FragmentActivity implements
 		}
 		Accessor.getServerConnector().addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
+		mTabletSize = true;
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
