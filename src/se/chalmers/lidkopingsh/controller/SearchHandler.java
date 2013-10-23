@@ -2,15 +2,12 @@ package se.chalmers.lidkopingsh.controller;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.EditText;
-import android.widget.Filter.FilterListener;
 
 public class SearchHandler implements TextWatcher {
 
 	private EditText mSearchField;
-	private OrderAdapter mOrderAdapter;
-	private CharSequence mCurrentSearchTerm;
+	private ListDataWatcher mListDataWatcher;
 
 	/**
 	 * A class that handles the search feature
@@ -23,23 +20,14 @@ public class SearchHandler implements TextWatcher {
 	 * 
 	 * @author Simon Bengtsson
 	 */
-	public SearchHandler(EditText searchField, OrderAdapter orderAdapter) {
+	public SearchHandler(EditText searchField, ListDataWatcher listDataWatcher) {
 		mSearchField = searchField;
-		mOrderAdapter = orderAdapter;
+		mListDataWatcher = listDataWatcher;
 		mSearchField.addTextChangedListener(this);
 	}
 
 	public void restoreSearch(CharSequence searchTerm) {
-		//mSearchField.setText(searchTerm);
-	}
-
-	/**
-	 * Filters the orders in the order list with it's saved saved search term
-	 */
-	public void search(FilterListener filterListener) {
-		mOrderAdapter.getFilter().filter(mCurrentSearchTerm);
-		mOrderAdapter.getFilter().filter(mCurrentSearchTerm, filterListener);
-		Log.d("SearchHandler", "Searched");
+		mSearchField.setText(searchTerm);
 	}
 
 	public CharSequence getCurrentSearchTerm() {
@@ -47,7 +35,6 @@ public class SearchHandler implements TextWatcher {
 	}
 
 	/* Text Watcher */
-
 	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count,
 			int after) {
@@ -60,8 +47,7 @@ public class SearchHandler implements TextWatcher {
 	@Override
 	public void onTextChanged(CharSequence currentText, int start, int before,
 			int count) {
-		mCurrentSearchTerm = currentText;
-		mOrderAdapter.notifyDataSetChanged();
+		mListDataWatcher.listDataChanged();
 	}
 
 	@Override
