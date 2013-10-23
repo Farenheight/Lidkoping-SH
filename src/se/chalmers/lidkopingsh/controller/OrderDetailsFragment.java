@@ -294,7 +294,6 @@ public class OrderDetailsFragment extends Fragment {
 		}
 	}
 
-
 	/**
 	 * Adds info such as customer name, order number etc to rootView
 	 * 

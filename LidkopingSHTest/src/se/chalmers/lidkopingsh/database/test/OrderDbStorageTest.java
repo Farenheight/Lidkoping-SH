@@ -20,7 +20,7 @@ public class OrderDbStorageTest extends AndroidTestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		dbStorage = new OrderDbStorage(this.getContext());
+		dbStorage = new OrderDbStorage();
 		dbStorage.clear();
 
 		super.setUp();
