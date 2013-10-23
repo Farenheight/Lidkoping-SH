@@ -3,6 +3,8 @@ package se.chalmers.lidkopingsh.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import se.chalmers.lidkopingsh.app.App;
+
 import android.content.Context;
 import android.widget.Toast;
 
@@ -24,19 +26,19 @@ public class RepeatSafeToast {
         return true;
     }
 
-    public static synchronized void show(Context context, int resId) {
+    public static synchronized void show(int resId) {
         if (isRecent(resId)) {
             return;
         }
-        Toast.makeText(context, resId, Toast.LENGTH_LONG).show();
+        Toast.makeText(App.getContext(), resId, Toast.LENGTH_LONG).show();
         lastShown.put(resId, System.currentTimeMillis());
     }
 
-    public static synchronized void show(Context context, String msg) {
+    public static synchronized void show(String msg) {
         if (isRecent(msg)) {
             return;
         }
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(App.getContext(), msg, Toast.LENGTH_LONG).show();
         lastShown.put(msg, System.currentTimeMillis());
     }
 }

@@ -249,7 +249,7 @@ public class OrderDetailsFragment extends Fragment {
 							: Status.DONE);
 				} else {
 					toggleButton.setChecked(!isChecked);
-					RepeatSafeToast.show(getActivity(), getResources()
+					RepeatSafeToast.show(getResources()
 							.getString(R.string.network_error_change_data));
 
 				}

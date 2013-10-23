@@ -163,5 +163,4 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 		}
 		return Bitmap.createScaledBitmap(bitmap, width, height, true);
 	}
-
 }
