@@ -47,9 +47,9 @@ public class MainActivity extends FragmentActivity implements
 
 		// Register an exception handler that sends unhandled exceptions to
 		// http://simonbengtsson.se/lsh/stacktrace
-		//ExceptionHandler.register(this,
-			//	"http://simonbengtsson.se/lsh/stacktrace_script.php");
-		
+		ExceptionHandler.register(this,
+				"http://simonbengtsson.se/lsh/stacktrace_script.php");
+
 		Accessor.getModel(); // Create model and load data from database.
 		mSharedPreferences = App.getContext().getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -199,7 +199,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void networkProblem(String message) {
 		Log.i("MainActivity", "Network error");
-		Context context = getApplicationContext();
 		String text = getResources().getString(
 				R.string.network_error_no_internet);
 		RepeatSafeToast.show(text);
@@ -213,8 +212,10 @@ public class MainActivity extends FragmentActivity implements
 
 	private void logout() {
 		startActivity(new Intent(this, LoginActivity.class));
-		Editor editor = App.getContext().getSharedPreferences(ServerSettings.PREFERENCES_NAME,
-				Context.MODE_PRIVATE).edit();
+		Editor editor = App
+				.getContext()
+				.getSharedPreferences(ServerSettings.PREFERENCES_NAME,
+						Context.MODE_PRIVATE).edit();
 		editor.clear().commit();
 		Accessor.getModel().clearAllOrders();
 		finish();

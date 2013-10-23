@@ -12,7 +12,6 @@ import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
