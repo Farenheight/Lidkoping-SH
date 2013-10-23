@@ -13,10 +13,20 @@ public class IdNameFilter implements Filter {
 	 */
 	@Override
 	public boolean passesFilter(Order order, String constraint) {
+		
+		// Null and empty string should match everything
+		if(constraint == null || constraint == "") {
+			return true;
+		}
+		
+		// Same case
 		String idName = order.getIdName().toUpperCase(Locale.getDefault());
 		String constr = constraint.toString().toUpperCase(Locale.getDefault());
-		idName = idName.replaceAll("\\.", ""); // Removes dots
-		constr = constr.replaceAll("\\.", ""); // Removes dots
+		
+		// Removes dots
+		idName = idName.replaceAll("\\.", "");
+		constr = constr.replaceAll("\\.", "");
+		
 		return idName.startsWith(constr);
 	}
 
