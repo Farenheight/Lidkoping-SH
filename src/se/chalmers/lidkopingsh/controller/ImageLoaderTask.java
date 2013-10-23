@@ -23,6 +23,7 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 	private String mImagePath;
 	private WeakReference<ImageView> mWeakRefImageView;
 	private View mLoadingView;
+	private final int MAX_IMAGE_SIZE = 1800;
 
 	/**
 	 * Creates a new Task that loads an image asynchronously and sets it to the
@@ -105,7 +106,10 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 
 		// Decode bitmap with inSampleSize set
 		options.inJustDecodeBounds = false;
-		return BitmapFactory.decodeFile(imgPath, options);
+		
+		Bitmap bitmap = BitmapFactory.decodeFile(imgPath, options);
+		
+		return reScaleIfToLarge(bitmap);
 	}
 
 	/**
@@ -144,6 +148,20 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 		}
 
 		return inSampleSize;
+	}
+	
+	private Bitmap reScaleIfToLarge(Bitmap bitmap) {
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		if (width > MAX_IMAGE_SIZE ) {
+			height *= (float) MAX_IMAGE_SIZE / width;
+			width = MAX_IMAGE_SIZE;
+		}
+		if (height > MAX_IMAGE_SIZE) {
+			width *= (float) MAX_IMAGE_SIZE / height;
+			height = MAX_IMAGE_SIZE;
+		}
+		return Bitmap.createScaledBitmap(bitmap, width, height, true);
 	}
 
 }
