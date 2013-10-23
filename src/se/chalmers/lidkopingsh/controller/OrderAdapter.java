@@ -4,41 +4,50 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
+import se.chalmers.lidkopingsh.model.Filter;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Station;
+import se.chalmers.lidkopingsh.model.StationComparator;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
 
-public class OrderAdapter extends BaseAdapter implements Filterable {
+/**
+ * Adapter for the orders list
+ * 
+ * @author Simon Bengtsson
+ * 
+ */
+public class OrderAdapter extends BaseAdapter {
 
 	/**
-	 * Contains the list of objects that represent the data of this
-	 * ArrayAdapter. The content of this list is referred to as "the array" in
-	 * the documentation.
-	 * 
-	 * @author Simon Bengtsson
+	 * Contains the current orders in the orders list.
 	 */
 	private List<Order> mOrders;
 
-	// A copy of the original mOrders list, initialized from and then used
-	// instead as soon as the mFilter ArrayFilter is used. mOrders will then
-	// only contain the filtered values.
-	private Collection<Order> mOriginalObjects;
+	/**
+	 * A copy of the original mOrders list. Restored to before re-sort and
+	 * re-filter.
+	 */
+	private Collection<Order> mOriginalOrders;
 
-	private ArrayFilter mFilter;
 	private LayoutInflater mInflater;
+
+	/**
+	 * The index of the order in the orderlist seperating sorted orders from not
+	 * sorted ones
+	 */
 	private int dividerIndex;
+
+	/**
+	 * The last station sorted against
+	 */
 	private Station currentSortStation;
 
 	/**
@@ -53,7 +62,7 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 		mOrders = new ArrayList<Order>(orders);
 		// First time the filter is run, save the original values in a new
 		// list and create a new model filter
-		mOriginalObjects = new ArrayList<Order>(orders);
+		mOriginalOrders = new ArrayList<Order>(orders);
 	}
 
 	/**
@@ -63,12 +72,11 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 *            The comparator used to sort the objects contained in this
 	 *            adapter.
 	 */
-	public void sort(Comparator<? super Order> comparator, Station station) {
-		Collections.sort(mOrders, comparator);
-		dividerIndex = Accessor.getModel().getFirstUncompletedIndex(
-				mOrders, station);
+	public void sort(Station station) {
+		Collections.sort(mOrders, new StationComparator<Order>(station));
+		dividerIndex = Accessor.getModel().getFirstUncompletedIndex(mOrders,
+				station);
 		currentSortStation = station;
-		Log.d("OrderAdapter", "sort finished");
 	}
 
 	@Override
@@ -142,14 +150,6 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 				+ order.getProgress() + "%");
 	}
 
-	@Override
-	public Filter getFilter() {
-		if (mFilter == null) {
-			mFilter = new ArrayFilter();
-		}
-		return mFilter;
-	}
-
 	/**
 	 * The index of the order.
 	 * 
@@ -167,73 +167,35 @@ public class OrderAdapter extends BaseAdapter implements Filterable {
 	 */
 	public void updateOrders(Collection<Order> collection) {
 		mOrders = new ArrayList<Order>(collection);
-		mOriginalObjects = new ArrayList<Order>(collection);
-		notifyDataSetChanged();
+		mOriginalOrders = new ArrayList<Order>(collection);
 	}
 
 	/**
-	 * A filter that mostly sends the filtering to be done to a ModelFilter.
+	 * Filter this adapters orders list to contain only the ones which matches
+	 * the current constraint.
+	 * 
+	 * @param constraint
+	 *            The constraint to filter the orders by
+	 * @param filter
+	 *            The filter that to decides which orders will pass
 	 */
-	private class ArrayFilter extends Filter {
+	public void filter(String constraint, Filter filter) {
+		// First reset the orders to a not filtered list
+		mOrders = new ArrayList<Order>(mOriginalOrders);
 
-		@Override
-		protected FilterResults performFiltering(CharSequence constraint) {
-			FilterResults results = new FilterResults();
-
-			Collection<Order> filteredOrders = getOrdersByFilter(constraint,
-					mOrders, mOriginalObjects);
-			results.values = filteredOrders;
-			results.count = filteredOrders.size();
-
-			return results;
+		// Don't filter constraint is null or of length 0
+		if (constraint == null || constraint.length() == 0) {
+			return;
 		}
 
-		private Collection<Order> getOrdersByFilter(CharSequence constraint,
-				Collection<Order> orders, Collection<Order> originalObjects) {
-			if (constraint == null || constraint.length() == 0) {
-				return new ArrayList<Order>(originalObjects);
-			} else {
-				ArrayList<Order> orderList = new ArrayList<Order>(
-						originalObjects);
-				final ArrayList<Order> newValues = new ArrayList<Order>();
-
-				for (Order order : orderList) {
-					if (passesFilter(order, constraint.toString())) {
-						newValues.add(order);
-					}
+		// Iterate over the orderlist and remove those not matching the
+		// constraint
+		else {
+			for (Iterator<Order> iterator = mOrders.iterator(); iterator
+					.hasNext();) {
+				if (!filter.passesFilter(iterator.next(), constraint)) {
+					iterator.remove();
 				}
-
-				return newValues;
-			}
-		}
-
-		/**
-		 * Checks if an individual order passes the filter. Matches the orders
-		 * id name against the constraint. The filter is case and dots
-		 * independent.
-		 * 
-		 * @param order
-		 *            The order to be matched
-		 * @param constraint
-		 *            The string match against
-		 * @return If the order passes the filter
-		 */
-		private boolean passesFilter(Order order, String constraint) {
-			String idName = order.getIdName().toUpperCase(Locale.getDefault());
-			String constr = constraint.toString().toUpperCase(
-					Locale.getDefault());
-			idName = idName.replaceAll("\\.", ""); // Removes dots
-			constr = constr.replaceAll("\\.", ""); // Removes dots
-			return idName.startsWith(constr);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		protected void publishResults(CharSequence constraint,
-				FilterResults results) {
-			mOrders = (List<Order>) results.values;
-			if (results.count <= 0) {
-				notifyDataSetInvalidated();
 			}
 		}
 	}
