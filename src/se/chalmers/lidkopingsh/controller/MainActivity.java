@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.nullwire.trace.ExceptionHandler;
 
@@ -43,6 +44,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d("Main", "created");
 
 		// Register an exception handler that sends unhandled exceptions to
 		// http://simonbengtsson.se/lsh/stacktrace
@@ -80,7 +82,9 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
+		Log.d("Main", "destroyed");
 		Accessor.getServerConnector().removeNetworkStatusListener(this);
+		super.onStop();
 		super.onDestroy();
 	}
 
