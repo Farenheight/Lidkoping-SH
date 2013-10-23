@@ -99,6 +99,13 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 					}
 				});
 	}
+	@Override
+	protected void onDestroy() {
+		if(mAuthTask != null){
+			mAuthTask.cancel(true);			
+		}
+		super.onDestroy();
+	}
 
 	// TODO: Provide settings in action overflow
 	@Override
