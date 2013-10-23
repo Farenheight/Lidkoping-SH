@@ -2,10 +2,10 @@ package se.chalmers.lidkopingsh.controller;
 
 import java.util.ArrayList;
 
+import se.chalmers.lidkopingsh.model.IdNameFilter;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.app.Activity;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Filter.FilterListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -30,7 +29,7 @@ import android.widget.Spinner;
  * 
  */
 public class OrderListFragment extends ListFragment implements
-		NetworkStatusListener {
+		NetworkStatusListener, ListDataWatcher {
 
 	/* Bundle keys for remembering state on screen orientation change etc */
 	private static final String ACTIVATED_ORDER_ID = "activated_position";
@@ -51,9 +50,6 @@ public class OrderListFragment extends ListFragment implements
 
 	/** Handler for the sort feature */
 	private SortHandler mSortHandler;
-
-	/** Gets notified when the OrderAdapters data changes */
-	private DataSetObserver mOrderListObserver;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -94,15 +90,13 @@ public class OrderListFragment extends ListFragment implements
 		// Setup list view and it's adapter
 		mOrderAdapter = new OrderAdapter(getActivity(), new ArrayList<Order>(
 				Accessor.getModel().getOrders()));
-		mOrderListObserver = new OrderListObserver();
-		mOrderAdapter.registerDataSetObserver(mOrderListObserver);
 		setListAdapter(mOrderAdapter);
 
 		// Setup handlers for features in this fragment
 		mSortHandler = new SortHandler((Spinner) getView().findViewById(
-				R.id.station_spinner), mOrderAdapter, getActivity());
+				R.id.station_spinner), getActivity(), this);
 		mSearchHandler = new SearchHandler((EditText) getView().findViewById(
-				R.id.search_field), mOrderAdapter);
+				R.id.search_field), this);
 
 		// Restore the previously serialized state on screen orientation change
 		if (savedInstanceState != null) {
@@ -113,20 +107,16 @@ public class OrderListFragment extends ListFragment implements
 
 			// Doesn't contain key if no order has been selected yet
 			if (savedInstanceState.containsKey(ACTIVATED_ORDER_ID)) {
-				mActivatedOrder = Accessor.getModel()
-						.getOrderById(
-								savedInstanceState.getInt(ACTIVATED_ORDER_ID));
+				mActivatedOrder = Accessor.getModel().getOrderById(
+						savedInstanceState.getInt(ACTIVATED_ORDER_ID));
 			}
 		}
+		
 	}
 
 	@Override
 	public void onDestroy() {
-		if (mOrderListObserver != null) {
-			mOrderAdapter.unregisterDataSetObserver(mOrderListObserver);
-		}
-		Accessor.getServerConnector().removeNetworkStatusListener(
-				this);
+		Accessor.getServerConnector().removeNetworkStatusListener(this);
 		super.onDestroy();
 	}
 
@@ -147,7 +137,7 @@ public class OrderListFragment extends ListFragment implements
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 
-		//
+		// Is null if no orders has been selected
 		if (mActivatedOrder != null) {
 			outState.putInt(ACTIVATED_ORDER_ID, mActivatedOrder.getId());
 		}
@@ -169,33 +159,6 @@ public class OrderListFragment extends ListFragment implements
 		getListView().setChoiceMode(
 				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
 						: ListView.CHOICE_MODE_NONE);
-	}
-
-	private class OrderListObserver extends DataSetObserver {
-
-		/**
-		 * When the order list's data has changed, reset the active order. Set
-		 * active order.
-		 */
-		@Override
-		public void onChanged() {
-			mSearchHandler.search(new FilterListener() {
-				
-				@Override
-				public void onFilterComplete(int count) {
-					mSortHandler.sort();
-					// Null if no orders have been viewed.
-					if (mActivatedOrder != null) {
-						getListView().setItemChecked(
-								mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
-
-					}
-					Log.d("OrderListFragment", "orderAdapter filtering complete");
-				}
-			});
-			Log.d("OrderListFragment", "orderAdapter data changed");
-			
-		}
 	}
 
 	/**
@@ -220,9 +183,8 @@ public class OrderListFragment extends ListFragment implements
 
 	@Override
 	public void finishedUpdate() {
-		mOrderAdapter
-				.updateOrders(Accessor.getModel().getOrders());
-		Log.d("OrderListFragment", "Finsished update");
+		// Update all data, sorting, searching when update finished
+		updateOrders();
 	}
 
 	@Override
@@ -231,5 +193,40 @@ public class OrderListFragment extends ListFragment implements
 
 	@Override
 	public void authenticationFailed() {
+	}
+
+	// When the order list changed, this will be called
+	@Override
+	public void listDataChanged() {
+		updateOrders();
+	}
+
+	/**
+	 * Updates the order list with the new orders (if any) plus resorts and
+	 * re-search.
+	 */
+	private void updateOrders() {
+		// Updates to new data
+		mOrderAdapter.updateOrders(Accessor.getModel().getOrders());
+
+		// 1. Filter it
+		mOrderAdapter.filter(mSearchHandler.getCurrentSearchTerm().toString(),
+				new IdNameFilter());
+
+		// No need to do something more if no results from the filtering
+		if (mOrderAdapter.getCount() != 0) {
+			// 2. Sort the orders (only the filtered ones if filtered)
+			mOrderAdapter.sort(mSortHandler.getCurrentStation());
+		}
+		// Mark the correct order in the list view (if a order has
+		// been
+		// previously selected)
+		if (mActivatedOrder != null) {
+			getListView().setItemChecked(
+					mOrderAdapter.indexOf(mActivatedOrder) + 1, true);
+		}
+		mOrderAdapter.notifyDataSetChanged();
+		Log.i("OrderListFragment", "Order list updated.");
+		mSortHandler.refresh();
 	}
 }
