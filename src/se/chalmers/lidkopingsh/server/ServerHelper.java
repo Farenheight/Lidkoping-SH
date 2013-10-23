@@ -70,7 +70,7 @@ import com.google.gson.JsonSyntaxException;
 public class ServerHelper {
 	/** Certificate file located in /assets/ folder. */
 	private static final String CERTIFICATE_FILENAME = "certificate.pem";
-	
+
 	private static final String LIDKOPINGSH_DEVICEID = "Lidkopingsh-Deviceid";
 	private static final String LIDKOPINGSH_PASSWORD = "Lidkopingsh-Password";
 	private static final String LIDKOPINGSH_USERNAME = "Lidkopingsh-Username";
@@ -197,7 +197,7 @@ public class ServerHelper {
 			URL url = new URL(serverPath + action);
 			HttpsURLConnection urlConnection = (HttpsURLConnection) url
 					.openConnection();
-			
+
 			urlConnection.setSSLSocketFactory(sslContext.getSocketFactory());
 			urlConnection.setRequestMethod("POST");
 			urlConnection.setUseCaches(false);
@@ -432,7 +432,7 @@ public class ServerHelper {
 			}
 			return false;
 		}
-		
+
 		Log.d("ServerHelper", "Successful reponse from server.");
 		return true;
 	}
@@ -445,13 +445,16 @@ public class ServerHelper {
 	 */
 	public void saveImage(Image i) {
 		if (i.getImagePath() != null) {
-			URL fileName;
+			URL url;
 			try {
 				// Download file from web server and save it on internal
 				// storage.
-				fileName = new URL(serverPath + PICTURES_FOLDER
+				url = new URL(serverPath + PICTURES_FOLDER
 						+ i.getServerImagePath());
-				InputStream is = fileName.openStream();
+				HttpsURLConnection connection = (HttpsURLConnection) url
+						.openConnection();
+				connection.setSSLSocketFactory(sslContext.getSocketFactory());
+				InputStream is = connection.getInputStream();
 				OutputStream os = App.getContext().openFileOutput(
 						i.getImagePath(), Context.MODE_PRIVATE);
 
