@@ -212,6 +212,7 @@ public class MainActivity extends FragmentActivity implements
 			text = getResources().getString(
 					R.string.network_error_no_internet);						
 		}
+		//TODO report error so we know when things doesn't work
 		RepeatSafeToast.show(text);
 	}
 

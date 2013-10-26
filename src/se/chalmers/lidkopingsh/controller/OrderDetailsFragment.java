@@ -4,20 +4,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
-import android.content.Context;
+import uk.co.senab.photoview.PhotoViewAttacher;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +64,16 @@ public class OrderDetailsFragment extends Fragment {
 	public OrderDetailsFragment() {
 	}
 
+	public ImageView getImageView(){
+		return (ImageView) mRootView.findViewById(R.id.orderDrawing);		
+	}
+	public View getProgressView(){
+		return mRootView.findViewById(R.id.orderDrawingProgressBar);
+	}
+	public View getErrorView(){
+		return mRootView.findViewById(R.id.no_images_found_text_view);		
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -273,25 +280,31 @@ public class OrderDetailsFragment extends Fragment {
 	 * and panning
 	 */
 	private void initDrawing() {
-		View loadingView = mRootView.findViewById(R.id.orderDrawingProgressBar);
 		if (!mOrder.getImages().isEmpty()) {
-			ImageView orderDrawing = (ImageView) mRootView
-					.findViewById(R.id.orderDrawing);
-
 			String imageRelPath = mOrder.getImages().get(0).getImagePath();
 			String imageAbsPath = new File(getActivity().getFilesDir(),
 					imageRelPath).getAbsolutePath();
 
-			new ImageLoaderTask(imageAbsPath, orderDrawing, loadingView)
-					.execute((Object) null);
-
-		} else {
-			loadingView.setVisibility(View.GONE);
-			TextView textView = (TextView) mRootView
-					.findViewById(R.id.no_images_found_text_view);
-			textView.setVisibility(View.VISIBLE);
-			Log.w("DEBUG", "No images in this order");
+			new ImageLoaderTask(this).execute(imageAbsPath);
+		}else{
+			showErrorText();
 		}
+	}
+	/**
+	 * Shows the error text when the image cannot be loaded
+	 */
+	public void showErrorText(){
+		getProgressView().setVisibility(View.GONE);
+		getErrorView().setVisibility(View.VISIBLE);
+	}
+	public void showImage(Bitmap bitmap){
+		ImageView imageView = getImageView();
+		imageView.setImageBitmap(bitmap);
+		PhotoViewAttacher pva = new PhotoViewAttacher(imageView);
+		pva.setMaximumScale(6f);
+		getProgressView().setVisibility(View.GONE);
+		imageView.setVisibility(View.VISIBLE);
+
 	}
 
 	/**

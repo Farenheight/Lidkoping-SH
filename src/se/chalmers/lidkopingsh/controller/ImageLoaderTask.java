@@ -16,13 +16,11 @@ import android.widget.ImageView;
  * @author Simon Bengtsson
  * 
  */
-public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
+public class ImageLoaderTask extends AsyncTask<String, Object, Bitmap> {
 
 	private final int REQUESTED_WIDTH_IMAGE = 500;
 	private final int REQUESTED_HEIGHT_IMAGE = 1000;
-	private String mImagePath;
-	private WeakReference<ImageView> mWeakRefImageView;
-	private View mLoadingView;
+	private WeakReference<OrderDetailsFragment> mOrderDetailsFragment;
 	private final int MAX_IMAGE_SIZE = 1800;
 
 	/**
@@ -38,11 +36,9 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 	 *            The {@link View} to hide and replace with the specified
 	 *            {@link ImageView} when the image is loaded
 	 */
-	public ImageLoaderTask(String imagePath, ImageView imageView,
-			View loadingView) {
-		mImagePath = imagePath;
-		mWeakRefImageView = new WeakReference<ImageView>(imageView);
-		mLoadingView = loadingView;
+	public ImageLoaderTask(OrderDetailsFragment orderDetailsFragment) {
+		mOrderDetailsFragment = new WeakReference<OrderDetailsFragment>(orderDetailsFragment);
+		
 	}
 
 	/**
@@ -51,8 +47,8 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Bitmap doInBackground(Object... params) {
-		return decodeBitmapFromPath(mImagePath, REQUESTED_WIDTH_IMAGE,
+	protected Bitmap doInBackground(String... params) {
+		return decodeBitmapFromPath(params[0], REQUESTED_WIDTH_IMAGE,
 				REQUESTED_HEIGHT_IMAGE);
 	}
 
@@ -63,15 +59,10 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 	 */
 	@Override
 	protected void onPostExecute(Bitmap bitmap) {
-        if (mWeakRefImageView != null && bitmap != null) {
-            final ImageView imageView = mWeakRefImageView.get();
-            if (imageView != null) {
-        		imageView.setImageBitmap(bitmap);
-        		PhotoViewAttacher pva = new PhotoViewAttacher(imageView);
-        		pva.setMaximumScale(6f);
-        		mLoadingView.setVisibility(View.GONE);
-        		imageView.setVisibility(View.VISIBLE);
-            }
+        if (bitmap != null) {
+            mOrderDetailsFragment.get().showImage(bitmap);
+        }else{//Error loading Image, doesn't find it on server
+        	mOrderDetailsFragment.get().showErrorText();
         }
 	}
 
@@ -109,16 +100,19 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 	}
 	
 	private Bitmap reScaleIfToLarge(Bitmap bitmap) {
-		int width = bitmap.getWidth();
-		int height = bitmap.getHeight();
-		if (width > MAX_IMAGE_SIZE ) {
-			height *= (float) MAX_IMAGE_SIZE / width;
-			width = MAX_IMAGE_SIZE;
+		if(bitmap != null){
+			int width = bitmap.getWidth();
+			int height = bitmap.getHeight();
+			if (width > MAX_IMAGE_SIZE ) {
+				height *= (float) MAX_IMAGE_SIZE / width;
+				width = MAX_IMAGE_SIZE;
+			}
+			if (height > MAX_IMAGE_SIZE) {
+				width *= (float) MAX_IMAGE_SIZE / height;
+				height = MAX_IMAGE_SIZE;
+			}			
+			return Bitmap.createScaledBitmap(bitmap, width, height, true);
 		}
-		if (height > MAX_IMAGE_SIZE) {
-			width *= (float) MAX_IMAGE_SIZE / height;
-			height = MAX_IMAGE_SIZE;
-		}
-		return Bitmap.createScaledBitmap(bitmap, width, height, true);
+		return null;
 	}
 }
