@@ -4,7 +4,7 @@ import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.util.Log;
 
-public class NetworkWatcher implements NetworkStatusListener {
+public abstract class NetworkWatcher implements NetworkStatusListener {
 
 	@Override
 	public void startedUpdate() {
@@ -29,6 +29,5 @@ public class NetworkWatcher implements NetworkStatusListener {
 	}
 
 	@Override
-	public void authenticationFailed() {
-	}
+	public abstract void authenticationFailed();
 }

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -157,23 +156,13 @@ public class MainActivity extends FragmentActivity implements
 			startActivity(intent);
 			return true;
 		case R.id.action_logout:
-			logout();
+			LoginActivity.logout(this);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	private void logout() {
-		startActivity(new Intent(App.getContext(), LoginActivity.class));
-		Editor editor = App
-				.getContext()
-				.getSharedPreferences(ServerSettings.PREFERENCES_NAME,
-						Context.MODE_PRIVATE).edit();
-		editor.clear().commit();
-		Accessor.getModel().clearAllOrders();
-	}
-
+	
 	private class NetworkWatcherChild extends NetworkWatcher {
 
 		@Override
@@ -198,7 +187,7 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public void authenticationFailed() {
-			logout();
+			LoginActivity.logout(MainActivity.this);
 		}
 	}
 

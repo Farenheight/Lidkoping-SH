@@ -115,5 +115,10 @@ public class HandsetsDetailsActivity extends FragmentActivity {
 			}
 			Log.d("HandsetDetailActivity", "Update finished");
 		}
+		
+		@Override
+		public void authenticationFailed() {
+			LoginActivity.logout(HandsetsDetailsActivity.this);
+		}
 	}
 }

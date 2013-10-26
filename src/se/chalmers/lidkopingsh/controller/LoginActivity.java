@@ -15,6 +15,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -290,5 +291,21 @@ public class LoginActivity extends Activity {
 			startActivity(new Intent(LoginActivity.this, MainActivity.class));
 			Log.i("DEBUG", "Login seccesful. MainActivity started");
 		}
+
+		@Override
+		public void authenticationFailed() {
+			// Not handled here
+		}
 	}
+	
+	public static void logout(Context context) {
+		context.startActivity(new Intent(App.getContext(), LoginActivity.class));
+		Editor editor = App
+				.getContext()
+				.getSharedPreferences(ServerSettings.PREFERENCES_NAME,
+						Context.MODE_PRIVATE).edit();
+		editor.clear().commit();
+		Accessor.getModel().clearAllOrders();
+	}
+
 }

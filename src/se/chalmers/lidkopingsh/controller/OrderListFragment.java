@@ -184,6 +184,11 @@ public class OrderListFragment extends ListFragment implements ListDataWatcher {
 		public void finishedUpdate() {
 			updateOrders();
 		}
+		
+		@Override
+		public void authenticationFailed() {
+			// Not handled here
+		}
 
 	}
 

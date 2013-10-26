@@ -134,6 +134,11 @@ public class OrderDetailsFragment extends Fragment {
 			taskContainer.removeAllViews();
 			initTasks();
 		}
+		
+		@Override
+		public void authenticationFailed() {
+			// Not handled here
+		}
 
 	}
 
