@@ -20,7 +20,8 @@ import android.util.Log;
  * @author Simon Bengtsson
  * 
  */
-public class ServerConnector implements Listener<OrderChangedEvent> {
+public class ServerConnector implements IServerConnector,
+		Listener<OrderChangedEvent> {
 	/** Time in milliseconds, update from server interval. */
 	private final long UPDATE_INTERVAL = 300000;
 
@@ -48,23 +49,12 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		this.model = model;
 	}
 
-	/**
-	 * Add listener for retrieving network statuses.
-	 * 
-	 * @param listener
-	 *            The network listener.
-	 */
+	@Override
 	public void addNetworkListener(NetworkStatusListener listener) {
 		networkListeners.add(listener);
 	}
 
-	/**
-	 * Add listener for retrieving when orders has been changed after a server
-	 * update.
-	 * 
-	 * @param listener
-	 *            The listener of orders
-	 */
+	@Override
 	public void addOrderChangedListener(Listener<Collection<Order>> listener) {
 		orderListeners.add(listener);
 	}
@@ -119,48 +109,25 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		}
 	}
 
-	/**
-	 * Remove listener for retrieving network statuses.
-	 * 
-	 * @param listener
-	 *            The network listener.
-	 */
+	@Override
 	public void removeNetworkStatusListener(NetworkStatusListener listener) {
 		networkListeners.remove(listener);
-		
+
 	}
 
-	/**
-	 * Remove listener for retrieving when orders has been changed after a
-	 * server update.
-	 * 
-	 * @param listener
-	 *            The order listener.
-	 */
+	@Override
 	public void removeOrderChangedListener(Listener<Collection<Order>> listener) {
 		orderListeners.remove(listener);
 	}
 
-	/**
-	 * Creates an AsyncTask that will send an update and then update the local
-	 * database
-	 * 
-	 * @param event
-	 *            The event which holds what has changed
-	 */
+	@Override
 	public void sendUpdate(OrderChangedEvent event) {
 		Log.d("ServerConnection",
 				"Sending update to server, via AsyncTaskSend. (updating data before send)");
 		new AsyncTaskSend(event, helper, this, model.getOrders()).execute();
 	}
 
-	/**
-	 * Updates the local database with data from server. Runs in a different
-	 * thread because of AsyncTask.
-	 * 
-	 * @param getAll
-	 *            True if everything should be fetched false otherwise
-	 */
+	@Override
 	public void update(boolean getAll) {
 		Log.d("ServerConnection",
 				"Getting update from server, via AsyncTaskGet.");

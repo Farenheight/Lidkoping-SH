@@ -7,6 +7,7 @@ import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.database.ILayer;
 import se.chalmers.lidkopingsh.database.OrderDbLayer;
 import se.chalmers.lidkopingsh.model.IModel;
+import se.chalmers.lidkopingsh.server.IServerConnector;
 import se.chalmers.lidkopingsh.server.ServerConnector;
 
 /**
@@ -54,8 +55,7 @@ class Accessor {
 	 * 
 	 * @return A connector that can connect to the server.
 	 */
-	public synchronized static ServerConnector getServerConnector() {
-		// TODO: Create interface for ServerConnector
+	public synchronized static IServerConnector getServerConnector() {
 		if (server == null) {
 			if (model == null) {
 				throw new IllegalStateException(
@@ -67,6 +67,7 @@ class Accessor {
 		}
 		return server;
 	}
+
 	public static boolean isNetworkAvailable() {
 		boolean haveConnectedWifi = false;
 		boolean haveConnectedMobile = false;
