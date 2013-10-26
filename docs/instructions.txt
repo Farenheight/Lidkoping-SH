@@ -1,0 +1,12 @@
+Install and run
+Locate the Lidkoping-SH.apk file in the /dist/ directory. Every release on github has an attached .apk file as well.
+
+Login
+Username (email): test
+Password: test
+
+Links
+
+Log of all exception thrown by all clients: http://simonbengtsson.se/lsh/stacktrace/
+
+Form for creating new orders on the server: http://lidkopingsh.kimkling.net/web_gui/form.php
