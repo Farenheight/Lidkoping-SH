@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -61,13 +62,14 @@ public class MainActivity extends FragmentActivity implements
 		}
 		Accessor.getServerConnector().addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
-		mTabletSize = true;
 		if (mTabletSize) {
+			setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
 					R.id.order_list)).setActivateOnItemClick(true);
 		} else {
 			setContentView(R.layout.list_root);
+			setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
 		Log.i("MainAct", "MainAct created and user is logged in.");
 	}
