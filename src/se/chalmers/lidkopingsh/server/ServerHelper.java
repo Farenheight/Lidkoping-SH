@@ -555,9 +555,11 @@ public class ServerHelper {
 		for (Image newI : newImages) {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
-						&& !newI.getImagePath().equals(oldI.getImagePath())) {
+						&& !newI.getServerImagePath().equals(oldI.getServerImagePath())) {
 					App.getContext().deleteFile(oldI.getImagePath());
 					saveImage(newI);
+				} else if (newI.getId() == oldI.getId()) {
+					break;
 				}
 			}
 		}

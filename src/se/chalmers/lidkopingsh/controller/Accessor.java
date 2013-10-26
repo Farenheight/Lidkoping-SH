@@ -1,5 +1,9 @@
 package se.chalmers.lidkopingsh.controller;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.database.ILayer;
 import se.chalmers.lidkopingsh.database.OrderDbLayer;
 import se.chalmers.lidkopingsh.model.IModel;
@@ -63,5 +67,22 @@ class Accessor {
 			server.update(true);
 		}
 		return server;
+	}
+	public static boolean isNetworkAvailable() {
+		boolean haveConnectedWifi = false;
+		boolean haveConnectedMobile = false;
+
+		ConnectivityManager cm = (ConnectivityManager) App.getContext()
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+		for (NetworkInfo ni : netInfo) {
+			if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+				if (ni.isConnected())
+					haveConnectedWifi = true;
+			if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+				if (ni.isConnected())
+					haveConnectedMobile = true;
+		}
+		return haveConnectedWifi || haveConnectedMobile;
 	}
 }

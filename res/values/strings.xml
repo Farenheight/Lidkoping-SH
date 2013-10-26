@@ -32,8 +32,8 @@
     <string name="dynamic_id_name">O.R.</string>
     <string name="searchHint">Sök</string>
     <string name="section_header">&lt;u>SECTION HEADER&lt;/u></string>
-    <string name="network_error_change_data">Kan inte ändra status, kolla internetuppkopplingen</string>
-    <string name="network_error_no_internet">Internetuppkoppling saknas, kolla internetuppkopplingen</string>
+    <string name="network_error_no_server">Kan inte kontakta server</string>
+    <string name="network_error_no_internet">Internetuppkoppling saknas.</string>
     <string name="no_images_found">Hittar ingen ritning för denna order :(</string>
 
     <string-array name="layers_array">
