@@ -47,8 +47,8 @@ public class MainActivity extends FragmentActivity implements
 
 		// Register an exception handler that sends unhandled exceptions to
 		// http://simonbengtsson.se/lsh/stacktrace
-		//ExceptionHandler.register(this,
-			//	"http://simonbengtsson.se/lsh/stacktrace_script.php");
+		ExceptionHandler.register(this,
+				"http://simonbengtsson.se/lsh/stacktrace_script.php");
 		
 		Accessor.getModel(); // Create model and load data from database.
 		mSharedPreferences = App.getContext().getSharedPreferences(
@@ -61,7 +61,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 		Accessor.getServerConnector().addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
-		mTabletSize = true;
 		if (mTabletSize) {
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
@@ -200,8 +199,14 @@ public class MainActivity extends FragmentActivity implements
 	public void networkProblem(String message) {
 		Log.i("MainActivity", "Network error");
 		Context context = getApplicationContext();
-		String text = getResources().getString(
-				R.string.network_error_no_internet);
+		String text = "";
+		if(Accessor.isNetworkAvailable()){
+			text = getResources().getString(
+					R.string.network_error_no_server);			
+		}else{
+			text = getResources().getString(
+					R.string.network_error_no_internet);						
+		}
 		RepeatSafeToast.show(text);
 	}
 

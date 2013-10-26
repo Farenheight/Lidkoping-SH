@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
@@ -242,7 +243,7 @@ public class OrderDetailsFragment extends Fragment {
 			@Override
 			public void onCheckedChanged(CompoundButton toggleButton,
 					boolean isChecked) {
-				if (isNetworkAvailable()) {
+				if (Accessor.isNetworkAvailable()) {
 					btn.setVisibility(View.GONE);
 					pBar.setVisibility(View.VISIBLE);
 					task.setStatus(task.getStatus() == Status.DONE ? Status.NOT_DONE
@@ -250,7 +251,7 @@ public class OrderDetailsFragment extends Fragment {
 				} else {
 					toggleButton.setChecked(!isChecked);
 					RepeatSafeToast.show(getResources()
-							.getString(R.string.network_error_change_data));
+							.getString(R.string.network_error_no_internet));
 
 				}
 
@@ -366,21 +367,5 @@ public class OrderDetailsFragment extends Fragment {
 		outState.putString(CURRENT_TAB_KEY, mTabHost.getCurrentTabTag());
 	}
 
-	private boolean isNetworkAvailable() {
-		boolean haveConnectedWifi = false;
-		boolean haveConnectedMobile = false;
-
-		ConnectivityManager cm = (ConnectivityManager) getActivity()
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-		for (NetworkInfo ni : netInfo) {
-			if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-				if (ni.isConnected())
-					haveConnectedWifi = true;
-			if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-				if (ni.isConnected())
-					haveConnectedMobile = true;
-		}
-		return haveConnectedWifi || haveConnectedMobile;
-	}
+	
 }
