@@ -1,0 +1,145 @@
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/default_margin"
+    android:background="@drawable/card_border_shape"
+    android:columnCount="1"
+    android:padding="30dp"
+    android:rowCount="5"
+    android:useDefaultMargins="true" >
+
+    <!-- Task Name -->
+
+    <TextView
+        android:id="@+id/task_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dynamic_id_name"
+        android:textSize="60sp" />
+
+    <TextView
+        android:id="@+id/orderNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/dynamic"
+        android:textSize="18sp" />
+
+    <!-- Gravplatsbeteckning -->
+
+    <TextView
+        android:id="@+id/cemetery_number_header"
+        style="?android:attr/textAppearanceLarge"
+        android:text="@string/cemetery_number"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/cemetery_number"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:text="@string/dynamic"
+        android:textIsSelectable="true"
+        android:textSize="16sp" />
+
+    <!-- Kyrkogårdsnämnd -->
+
+    <TextView
+        android:id="@+id/cemeteryBoardHeader"
+        style="?android:attr/textAppearanceLarge"
+        android:text="@string/cemetery_board"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/cemeteryBoard"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:text="@string/dynamic"
+        android:textIsSelectable="true"
+        android:textSize="16sp" />
+
+    <!-- Kyrkogård -->
+
+    <TextView
+        android:id="@+id/cemeteryHeader"
+        style="?android:attr/textAppearanceLarge"
+        android:text="@string/cemetery"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/cemetery"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:text="@string/dynamic"
+        android:textIsSelectable="true"
+        android:textSize="16sp" />
+
+    <!-- Avlidnes namn -->
+
+    <TextView
+        android:id="@+id/deceasedHeader"
+        style="?android:attr/textAppearanceLarge"
+        android:text="@string/deceased"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/deceased"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:text="@string/dynamic"
+        android:textIsSelectable="true"
+        android:textSize="16sp" />
+
+    <!-- Stenmodell -->
+
+    <TextView
+        android:id="@+id/stoneModelHeader"
+        style="?android:attr/textAppearanceLarge"
+        android:text="@string/stoneModel"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/stoneModel"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/dynamic"
+        android:textIsSelectable="true"
+        android:textSize="16sp" />
+
+    <!-- Ornament -->
+
+    <TextView
+        android:id="@+id/TextView10"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/ornament"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/ornament"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dynamic"
+        android:textIsSelectable="true"
+        android:textSize="16sp" />
+
+</GridLayout>
