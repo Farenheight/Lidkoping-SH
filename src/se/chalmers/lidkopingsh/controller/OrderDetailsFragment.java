@@ -87,6 +87,7 @@ public class OrderDetailsFragment extends Fragment {
 	public void onDestroy() {
 		Accessor.getServerConnector().removeNetworkStatusListener(
 				mNetworkWatcher);
+		mTabHost.setOnTabChangedListener(null);
 		super.onDestroy();
 	}
 
