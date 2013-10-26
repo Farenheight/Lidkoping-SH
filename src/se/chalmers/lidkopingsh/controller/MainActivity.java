@@ -1,14 +1,12 @@
 package se.chalmers.lidkopingsh.controller;
 
 import se.chalmers.lidkopingsh.app.App;
-import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import se.chalmers.lidkopingsh.server.ServerSettings;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,7 +30,7 @@ import com.nullwire.trace.ExceptionHandler;
  * 
  */
 public class MainActivity extends FragmentActivity implements
-		OrderListFragment.OrderSelectedCallbacks, NetworkStatusListener {
+		OrderListFragment.OrderSelectedCallbacks {
 	public static final String IS_TABLET_SIZE = "is_tablet_size";
 	private OrderDetailsFragment mCurrentOrderDetailsFragment;
 
@@ -40,6 +38,7 @@ public class MainActivity extends FragmentActivity implements
 	private boolean mTabletSize;
 	private SharedPreferences mSharedPreferences;
 	private Menu mMenu;
+	private NetworkWatcher mNetworkWatcher;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +49,6 @@ public class MainActivity extends FragmentActivity implements
 		// http://simonbengtsson.se/lsh/stacktrace
 		ExceptionHandler.register(this,
 				"http://simonbengtsson.se/lsh/stacktrace_script.php");
-
 		mSharedPreferences = App.getContext().getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
@@ -60,7 +58,7 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		}
 		Accessor.getModel(); // Create model and load data from database.
-		Accessor.getServerConnector().addNetworkListener(this);
+		Accessor.getServerConnector().addNetworkListener(new NetworkWatcherChild());
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
 			setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -86,7 +84,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onDestroy() {
 		Log.d("Main", "destroyed");
 		try {
-			Accessor.getServerConnector().removeNetworkStatusListener(this);
+			Accessor.getServerConnector().removeNetworkStatusListener(mNetworkWatcher);
 		} catch (IllegalStateException e) {
 		}
 		super.onStop();
@@ -156,31 +154,34 @@ public class MainActivity extends FragmentActivity implements
 			startActivity(intent);
 			return true;
 		case R.id.action_logout:
-			logout();
+			mNetworkWatcher.logout();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	@Override
-	public void startedUpdate() {
-		Log.i("MainActivity", "Update started");
-		// Is null when activity just started
-		if (mMenu != null) {
-			MenuItem updateItem = mMenu.findItem(R.id.action_update);
-			updateItem.setActionView(R.layout.progress_indicator);
+	
+	private class NetworkWatcherChild extends NetworkWatcher {
+		
+		@Override
+		public void startedUpdate() {
+			Log.i("MainActivity", "Update started");
+			// Is null when activity just started
+			if (mMenu != null) {
+				MenuItem updateItem = mMenu.findItem(R.id.action_update);
+				updateItem.setActionView(R.layout.progress_indicator);
+			}
 		}
-	}
 
-	@Override
-	public void finishedUpdate() {
-		// Is null when activity just started
-		if (mMenu != null) {
-			MenuItem updateItem = mMenu.findItem(R.id.action_update);
-			updateItem.setActionView(null);
+		@Override
+		public void finishedUpdate() {
+			// Is null when activity just started
+			if (mMenu != null) {
+				MenuItem updateItem = mMenu.findItem(R.id.action_update);
+				updateItem.setActionView(null);
+			}
+			Log.i("MainActivity", "Update finished");
 		}
-		Log.i("MainActivity", "Update finished");
 	}
 
 	/**
@@ -199,30 +200,5 @@ public class MainActivity extends FragmentActivity implements
 					}
 
 				}).setNegativeButton("Nej", null).show();
-	}
-
-	@Override
-	public void networkProblem(String message) {
-		Log.i("MainActivity", "Network error");
-		String text = getResources().getString(
-				R.string.network_error_no_internet);
-		RepeatSafeToast.show(text);
-	}
-
-	@Override
-	public void authenticationFailed() {
-		Log.d("MainAct", "Authunication failed");
-		logout();
-	}
-
-	private void logout() {
-		startActivity(new Intent(this, LoginActivity.class));
-		Editor editor = App
-				.getContext()
-				.getSharedPreferences(ServerSettings.PREFERENCES_NAME,
-						Context.MODE_PRIVATE).edit();
-		editor.clear().commit();
-		Accessor.getModel().clearAllOrders();
-		finish();
 	}
 }

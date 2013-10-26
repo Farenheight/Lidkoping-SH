@@ -9,14 +9,11 @@ import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
-import se.chalmers.lidkopingsh.server.NetworkStatusListener;
-import android.content.Context;
+import uk.co.senab.photoview.PhotoViewAttacher;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,12 +63,22 @@ public class OrderDetailsFragment extends Fragment {
 	public OrderDetailsFragment() {
 	}
 
+	public ImageView getImageView(){
+		return (ImageView) mRootView.findViewById(R.id.orderDrawing);		
+	}
+	public View getProgressView(){
+		return mRootView.findViewById(R.id.orderDrawingProgressBar);
+	}
+	public View getErrorView(){
+		return mRootView.findViewById(R.id.no_images_found_text_view);		
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
-		mNetworkWatcher = new NetworkWatcher();
+		mNetworkWatcher = new NetworkWatcherChild();
 		Accessor.getServerConnector().addNetworkListener(mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
@@ -114,12 +121,10 @@ public class OrderDetailsFragment extends Fragment {
 
 		return mRootView;
 	}
+	
+	
 
-	private class NetworkWatcher implements NetworkStatusListener {
-
-		@Override
-		public void startedUpdate() {
-		}
+	private class NetworkWatcherChild extends NetworkWatcher {
 
 		@Override
 		public void finishedUpdate() {
@@ -128,15 +133,6 @@ public class OrderDetailsFragment extends Fragment {
 					.findViewById(R.id.task_cont);
 			taskContainer.removeAllViews();
 			initTasks();
-		}
-
-		@Override
-		public void networkProblem(String message) {
-			// Do nothing here
-		}
-
-		@Override
-		public void authenticationFailed() {
 		}
 
 	}
@@ -241,7 +237,7 @@ public class OrderDetailsFragment extends Fragment {
 			@Override
 			public void onCheckedChanged(CompoundButton toggleButton,
 					boolean isChecked) {
-				if (isNetworkAvailable()) {
+				if (Accessor.isNetworkAvailable()) {
 					btn.setVisibility(View.GONE);
 					pBar.setVisibility(View.VISIBLE);
 					task.setStatus(task.getStatus() == Status.DONE ? Status.NOT_DONE
@@ -249,7 +245,7 @@ public class OrderDetailsFragment extends Fragment {
 				} else {
 					toggleButton.setChecked(!isChecked);
 					RepeatSafeToast.show(getResources()
-							.getString(R.string.network_error_change_data));
+							.getString(R.string.network_error_no_internet));
 
 				}
 
@@ -272,25 +268,31 @@ public class OrderDetailsFragment extends Fragment {
 	 * and panning
 	 */
 	private void initDrawing() {
-		View loadingView = mRootView.findViewById(R.id.orderDrawingProgressBar);
 		if (!mOrder.getImages().isEmpty()) {
-			ImageView orderDrawing = (ImageView) mRootView
-					.findViewById(R.id.orderDrawing);
-
 			String imageRelPath = mOrder.getImages().get(0).getImagePath();
 			String imageAbsPath = new File(getActivity().getFilesDir(),
 					imageRelPath).getAbsolutePath();
 
-			new ImageLoaderTask(imageAbsPath, orderDrawing, loadingView)
-					.execute((Object) null);
-
-		} else {
-			loadingView.setVisibility(View.GONE);
-			TextView textView = (TextView) mRootView
-					.findViewById(R.id.no_images_found_text_view);
-			textView.setVisibility(View.VISIBLE);
-			Log.w("DEBUG", "No images in this order");
+			new ImageLoaderTask(this).execute(imageAbsPath);
+		}else{
+			showErrorText();
 		}
+	}
+	/**
+	 * Shows the error text when the image cannot be loaded
+	 */
+	public void showErrorText(){
+		getProgressView().setVisibility(View.GONE);
+		getErrorView().setVisibility(View.VISIBLE);
+	}
+	public void showImage(Bitmap bitmap){
+		ImageView imageView = getImageView();
+		imageView.setImageBitmap(bitmap);
+		PhotoViewAttacher pva = new PhotoViewAttacher(imageView);
+		pva.setMaximumScale(6f);
+		getProgressView().setVisibility(View.GONE);
+		imageView.setVisibility(View.VISIBLE);
+
 	}
 
 	/**
@@ -365,21 +367,5 @@ public class OrderDetailsFragment extends Fragment {
 		outState.putString(CURRENT_TAB_KEY, mTabHost.getCurrentTabTag());
 	}
 
-	private boolean isNetworkAvailable() {
-		boolean haveConnectedWifi = false;
-		boolean haveConnectedMobile = false;
-
-		ConnectivityManager cm = (ConnectivityManager) getActivity()
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-		for (NetworkInfo ni : netInfo) {
-			if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-				if (ni.isConnected())
-					haveConnectedWifi = true;
-			if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-				if (ni.isConnected())
-					haveConnectedMobile = true;
-		}
-		return haveConnectedWifi || haveConnectedMobile;
-	}
+	
 }

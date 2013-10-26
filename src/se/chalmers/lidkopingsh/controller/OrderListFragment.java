@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import se.chalmers.lidkopingsh.model.IdNameFilter;
 import se.chalmers.lidkopingsh.model.Order;
-import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -28,8 +27,7 @@ import android.widget.Spinner;
  * @author Simon Bengtsson
  * 
  */
-public class OrderListFragment extends ListFragment implements
-		NetworkStatusListener, ListDataWatcher {
+public class OrderListFragment extends ListFragment implements ListDataWatcher {
 
 	/* Bundle keys for remembering state on screen orientation change etc */
 	private static final String ACTIVATED_ORDER_ID = "activated_position";
@@ -50,6 +48,8 @@ public class OrderListFragment extends ListFragment implements
 
 	/** Handler for the sort feature */
 	private SortHandler mSortHandler;
+	
+	private NetworkWatcher mNetworkWatcher;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -74,7 +74,8 @@ public class OrderListFragment extends ListFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Accessor.getServerConnector().addNetworkListener(this);
+		mNetworkWatcher = new NetworkWatcherChild();
+		Accessor.getServerConnector().addNetworkListener(mNetworkWatcher);
 		return LayoutInflater.from(getActivity()).inflate(
 				R.layout.list_root_inner, null);
 	}
@@ -116,7 +117,7 @@ public class OrderListFragment extends ListFragment implements
 
 	@Override
 	public void onDestroy() {
-		Accessor.getServerConnector().removeNetworkStatusListener(this);
+		Accessor.getServerConnector().removeNetworkStatusListener(mNetworkWatcher);
 		super.onDestroy();
 	}
 
@@ -176,23 +177,14 @@ public class OrderListFragment extends ListFragment implements
 		 */
 		public void onItemSelected(int orderId);
 	}
+	
+	private class NetworkWatcherChild extends NetworkWatcher {
 
-	@Override
-	public void startedUpdate() {
-	}
+		@Override
+		public void finishedUpdate() {
+			updateOrders();
+		}
 
-	@Override
-	public void finishedUpdate() {
-		// Update all data, sorting, searching when update finished
-		updateOrders();
-	}
-
-	@Override
-	public void networkProblem(String message) {
-	}
-
-	@Override
-	public void authenticationFailed() {
 	}
 
 	// When the order list changed, this will be called
