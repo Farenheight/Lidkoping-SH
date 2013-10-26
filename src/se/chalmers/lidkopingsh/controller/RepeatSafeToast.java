@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import se.chalmers.lidkopingsh.app.App;
-
-import android.content.Context;
 import android.widget.Toast;
 
 public class RepeatSafeToast {

@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -49,8 +50,6 @@ public class MainActivity extends FragmentActivity implements
 		// http://simonbengtsson.se/lsh/stacktrace
 		ExceptionHandler.register(this,
 				"http://simonbengtsson.se/lsh/stacktrace_script.php");
-		
-		Accessor.getModel(); // Create model and load data from database.
 		mSharedPreferences = App.getContext().getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
@@ -59,14 +58,17 @@ public class MainActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
+		Accessor.getModel(); // Create model and load data from database.
 		Accessor.getServerConnector().addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
+			setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
 					R.id.order_list)).setActivateOnItemClick(true);
 		} else {
 			setContentView(R.layout.list_root);
+			setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
 		Log.i("MainAct", "MainAct created and user is logged in.");
 	}
@@ -82,7 +84,10 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onDestroy() {
 		Log.d("Main", "destroyed");
-		Accessor.getServerConnector().removeNetworkStatusListener(this);
+		try {
+			Accessor.getServerConnector().removeNetworkStatusListener(this);
+		} catch (IllegalStateException e) {
+		}
 		super.onStop();
 		super.onDestroy();
 	}
@@ -218,8 +223,10 @@ public class MainActivity extends FragmentActivity implements
 
 	private void logout() {
 		startActivity(new Intent(this, LoginActivity.class));
-		Editor editor = App.getContext().getSharedPreferences(ServerSettings.PREFERENCES_NAME,
-				Context.MODE_PRIVATE).edit();
+		Editor editor = App
+				.getContext()
+				.getSharedPreferences(ServerSettings.PREFERENCES_NAME,
+						Context.MODE_PRIVATE).edit();
 		editor.clear().commit();
 		Accessor.getModel().clearAllOrders();
 		finish();

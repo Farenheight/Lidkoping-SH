@@ -23,7 +23,7 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 	private String mImagePath;
 	private WeakReference<ImageView> mWeakRefImageView;
 	private View mLoadingView;
-	private final int MAX_IMAGE_SIZE = 1500;
+	private final int MAX_IMAGE_SIZE = 1800;
 
 	/**
 	 * Creates a new Task that loads an image asynchronously and sets it to the
