@@ -2,7 +2,6 @@ package se.chalmers.lidkopingsh.controller;
 
 import java.lang.ref.WeakReference;
 
-import uk.co.senab.photoview.PhotoViewAttacher;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -37,8 +36,9 @@ public class ImageLoaderTask extends AsyncTask<String, Object, Bitmap> {
 	 *            {@link ImageView} when the image is loaded
 	 */
 	public ImageLoaderTask(OrderDetailsFragment orderDetailsFragment) {
-		mOrderDetailsFragment = new WeakReference<OrderDetailsFragment>(orderDetailsFragment);
-		
+		mOrderDetailsFragment = new WeakReference<OrderDetailsFragment>(
+				orderDetailsFragment);
+
 	}
 
 	/**
@@ -59,11 +59,13 @@ public class ImageLoaderTask extends AsyncTask<String, Object, Bitmap> {
 	 */
 	@Override
 	protected void onPostExecute(Bitmap bitmap) {
-        if (bitmap != null) {
-            mOrderDetailsFragment.get().showImage(bitmap);
-        }else{//Error loading Image, doesn't find it on server
-        	mOrderDetailsFragment.get().showErrorText();
-        }
+		if (mOrderDetailsFragment.get() != null) {
+			if (bitmap != null) {
+				mOrderDetailsFragment.get().showImage(bitmap);
+			} else {// Error loading Image, doesn't find it on server
+				mOrderDetailsFragment.get().showErrorText();
+			}
+		}
 	}
 
 	/**
@@ -93,24 +95,24 @@ public class ImageLoaderTask extends AsyncTask<String, Object, Bitmap> {
 
 		// Decode bitmap with inSampleSize set
 		options.inJustDecodeBounds = false;
-		
+
 		Bitmap bitmap = BitmapFactory.decodeFile(imgPath, options);
-		
+
 		return reScaleIfToLarge(bitmap);
 	}
-	
+
 	private Bitmap reScaleIfToLarge(Bitmap bitmap) {
-		if(bitmap != null){
+		if (bitmap != null) {
 			int width = bitmap.getWidth();
 			int height = bitmap.getHeight();
-			if (width > MAX_IMAGE_SIZE ) {
+			if (width > MAX_IMAGE_SIZE) {
 				height *= (float) MAX_IMAGE_SIZE / width;
 				width = MAX_IMAGE_SIZE;
 			}
 			if (height > MAX_IMAGE_SIZE) {
 				width *= (float) MAX_IMAGE_SIZE / height;
 				height = MAX_IMAGE_SIZE;
-			}			
+			}
 			return Bitmap.createScaledBitmap(bitmap, width, height, true);
 		}
 		return null;

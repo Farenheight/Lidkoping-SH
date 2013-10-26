@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -58,16 +59,17 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		}
 		Accessor.getModel(); // Create model and load data from database.
-		Accessor.getServerConnector().addNetworkListener(new NetworkWatcherChild());
+		mNetworkWatcher = new NetworkWatcherChild();
+		Accessor.getServerConnector().addNetworkListener(mNetworkWatcher);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
-			setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 			setContentView(R.layout.tablet_maincontainer);
 			((OrderListFragment) getSupportFragmentManager().findFragmentById(
 					R.id.order_list)).setActivateOnItemClick(true);
 		} else {
 			setContentView(R.layout.list_root);
-			setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
 		Log.i("MainAct", "MainAct created and user is logged in.");
 	}
@@ -84,7 +86,8 @@ public class MainActivity extends FragmentActivity implements
 	protected void onDestroy() {
 		Log.d("Main", "destroyed");
 		try {
-			Accessor.getServerConnector().removeNetworkStatusListener(mNetworkWatcher);
+			Accessor.getServerConnector().removeNetworkStatusListener(
+					mNetworkWatcher);
 		} catch (IllegalStateException e) {
 		}
 		super.onStop();
@@ -154,15 +157,25 @@ public class MainActivity extends FragmentActivity implements
 			startActivity(intent);
 			return true;
 		case R.id.action_logout:
-			mNetworkWatcher.logout();
+			logout();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
+	private void logout() {
+		startActivity(new Intent(App.getContext(), LoginActivity.class));
+		Editor editor = App
+				.getContext()
+				.getSharedPreferences(ServerSettings.PREFERENCES_NAME,
+						Context.MODE_PRIVATE).edit();
+		editor.clear().commit();
+		Accessor.getModel().clearAllOrders();
+	}
+
 	private class NetworkWatcherChild extends NetworkWatcher {
-		
+
 		@Override
 		public void startedUpdate() {
 			Log.i("MainActivity", "Update started");
@@ -181,6 +194,11 @@ public class MainActivity extends FragmentActivity implements
 				updateItem.setActionView(null);
 			}
 			Log.i("MainActivity", "Update finished");
+		}
+
+		@Override
+		public void authenticationFailed() {
+			logout();
 		}
 	}
 

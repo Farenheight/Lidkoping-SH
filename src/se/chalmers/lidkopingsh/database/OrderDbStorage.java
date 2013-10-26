@@ -141,7 +141,6 @@ public class OrderDbStorage {
 		db.endTransaction();
 	}
 	private void insertOrder(Order order) {
-		Log.d("Order_db_storage", "insert order " + order);
 		stationIds.addAll(getStationIds());
 		productTypeIds.addAll(getProductTypeIds());
 

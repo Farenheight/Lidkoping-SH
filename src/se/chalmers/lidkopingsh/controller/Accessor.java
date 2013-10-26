@@ -64,7 +64,6 @@ class Accessor {
 			server = new ServerConnector(model);
 			server.addOrderChangedListener(model);
 			model.addOrderChangedListener(server);
-			server.update(true);
 		}
 		return server;
 	}

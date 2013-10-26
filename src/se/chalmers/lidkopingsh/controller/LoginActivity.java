@@ -3,7 +3,6 @@ package se.chalmers.lidkopingsh.controller;
 import org.apache.http.auth.AuthenticationException;
 
 import se.chalmers.lidkopingsh.app.App;
-import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import se.chalmers.lidkopingsh.server.ServerHelper;
 import se.chalmers.lidkopingsh.server.ServerHelper.ApiResponse;
 import se.chalmers.lidkopingsh.server.ServerSettings;
@@ -35,7 +34,7 @@ import android.widget.TextView;
  * @author Simon Bengtsson
  * 
  */
-public class LoginActivity extends Activity implements NetworkStatusListener {
+public class LoginActivity extends Activity {
 
 	private static final String SERVER_WEB_API_URL = "https://lidkopingsh.kimkling.net/api/";
 
@@ -51,6 +50,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
+	private NetworkWatcherChild mNetworkWatcher;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -205,24 +205,12 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
 	}
-
-	@Override
-	public void startedUpdate() {
-		Log.e("LoginAct", "Started update - Should not update in loginAct");
-	}
-
-	@Override
-	public void finishedUpdate() {
-		Log.d("LoginAct", "Finished update - Should not happen in login act");
-	}
-
-	@Override
+	
 	public void networkProblem(String message) {
 		Log.e("LoginAct", "Could not connect to server");
 		RepeatSafeToast.show(message);
 	}
 
-	@Override
 	public void authenticationFailed() {
 		mUserNameView
 				.setError(getString(R.string.error_invalid_user_creadentials));
@@ -242,11 +230,11 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 			
 			// Send to server
 			try {
-				ApiResponse response = new ServerHelper()
-						.getApikey(mUserName, mPassword);
+				ApiResponse response = new ServerHelper().getApikey(mUserName, mPassword);
 				if (response != null) {
 					return response.isSuccess();
 				}
+
 			} catch (Exception e) {
 				exception = e;
 			}
@@ -257,7 +245,6 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 		@Override
 		protected void onPostExecute(final Boolean success) {
 			mAuthTask = null;
-			showProgress(false);
 
 			if (exception != null) {
 				if (exception instanceof AuthenticationException) {
@@ -273,8 +260,11 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 			}
 
 			if (success) {
-				startActivity(new Intent(LoginActivity.this, MainActivity.class));
-				Log.i("DEBUG", "Login seccesful. MainActivity started");
+				// On success, start getting update
+				mNetworkWatcher = new NetworkWatcherChild();
+				Accessor.getModel();
+				Accessor.getServerConnector().addNetworkListener(mNetworkWatcher);
+				Accessor.getServerConnector().update(true);
 			}
 		}
 
@@ -282,6 +272,23 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 		protected void onCancelled() {
 			mAuthTask = null;
 			showProgress(false);
+		}
+	}
+	
+	private class NetworkWatcherChild extends NetworkWatcher {
+
+		@Override
+		public void startedUpdate() {
+			TextView statusView = (TextView) LoginActivity.this
+					.findViewById(R.id.login_status_message);
+			statusView.setText("Hämtar data...");
+		}
+
+		@Override
+		public void finishedUpdate() {
+			Accessor.getServerConnector().removeNetworkStatusListener(this);
+			startActivity(new Intent(LoginActivity.this, MainActivity.class));
+			Log.i("DEBUG", "Login seccesful. MainActivity started");
 		}
 	}
 }

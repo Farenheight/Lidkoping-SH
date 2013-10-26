@@ -25,7 +25,7 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 	private final long UPDATE_INTERVAL = 300000;
 
 	private final ServerHelper helper;
-	private final Timer timer;
+	private Timer timer;
 	private final IModel model;
 
 	/** Listeners for network statuses, such as network problems etc. */
@@ -46,11 +46,6 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		networkListeners = new ArrayList<NetworkStatusListener>();
 		orderListeners = new ArrayList<Listener<Collection<Order>>>();
 		this.model = model;
-		update(true);
-
-		timer = new Timer();
-		timer.scheduleAtFixedRate(new UpdateTimerTask(), UPDATE_INTERVAL,
-				UPDATE_INTERVAL);
 	}
 
 	/**
@@ -170,6 +165,11 @@ public class ServerConnector implements Listener<OrderChangedEvent> {
 		Log.d("ServerConnection",
 				"Getting update from server, via AsyncTaskGet.");
 		new AsyncTaskGet(getAll, helper, this, model.getOrders()).execute();
+		if(timer == null) {
+			timer = new Timer();
+			timer.scheduleAtFixedRate(new UpdateTimerTask(), UPDATE_INTERVAL,
+					UPDATE_INTERVAL);
+		}
 	}
 
 	/**
