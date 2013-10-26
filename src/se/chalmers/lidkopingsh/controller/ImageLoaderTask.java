@@ -23,7 +23,7 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 	private String mImagePath;
 	private WeakReference<ImageView> mWeakRefImageView;
 	private View mLoadingView;
-	private final int MAX_IMAGE_SIZE = 1800;
+	private final int MAX_IMAGE_SIZE = 1500;
 
 	/**
 	 * Creates a new Task that loads an image asynchronously and sets it to the
@@ -68,7 +68,7 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
             if (imageView != null) {
         		imageView.setImageBitmap(bitmap);
         		PhotoViewAttacher pva = new PhotoViewAttacher(imageView);
-        		pva.setMaximumScale(8f);
+        		pva.setMaximumScale(6f);
         		mLoadingView.setVisibility(View.GONE);
         		imageView.setVisibility(View.VISIBLE);
             }
@@ -96,10 +96,6 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 		options.inScaled = true;
 		BitmapFactory.decodeFile(imgPath, options);
 
-		// Calculate inSampleSize
-		options.inSampleSize = calculateInSampleSize(options, reqWidth,
-				reqHeight);
-
 		// Current images has to thin lines to scale well
 		// TODO: Increase contrast of image so scaling is possible
 		options.inSampleSize = 1;
@@ -110,44 +106,6 @@ public class ImageLoaderTask extends AsyncTask<Object, Object, Bitmap> {
 		Bitmap bitmap = BitmapFactory.decodeFile(imgPath, options);
 		
 		return reScaleIfToLarge(bitmap);
-	}
-
-	/**
-	 * Calculates how much the image can be scaled, the inSampleSize. See
-	 * documentation of the public field inSample size in
-	 * {@link BitmapFactory.Options} for more info
-	 * 
-	 * @param options
-	 *            The bitmap options for the image
-	 * @param reqWidth
-	 *            The requested width
-	 * @param reqHeight
-	 *            The requested height
-	 * @return How much the image can be scaled, the inSampleSize.
-	 */
-	private int calculateInSampleSize(BitmapFactory.Options options,
-			int reqWidth, int reqHeight) {
-		// Raw height and width of image
-		final int height = options.outHeight;
-		final int width = options.outWidth;
-		int inSampleSize = 1;
-
-		if (height > reqHeight || width > reqWidth) {
-
-			// Calculate ratios of height and width to requested height and
-			// width
-			final int heightRatio = Math.round((float) height
-					/ (float) reqHeight);
-			final int widthRatio = Math.round((float) width / (float) reqWidth);
-
-			// Choose the smallest ratio as inSampleSize value, this will
-			// guarantee
-			// a final image with both dimensions larger than or equal to the
-			// requested height and width.
-			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-		}
-
-		return inSampleSize;
 	}
 	
 	private Bitmap reScaleIfToLarge(Bitmap bitmap) {
