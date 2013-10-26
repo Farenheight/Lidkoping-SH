@@ -7,7 +7,8 @@ function insertOrder() {
 }
 
 function updateOrder() {
-	$su = true; //TODO ?
+	$su = true; // Used to make it easier for
+				// future implementation of permissions.
 	$jsonData = getValidInput();
 	validateUpdateInput($jsonData);
 	prepareSql();
