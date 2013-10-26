@@ -51,7 +51,6 @@ public class MainActivity extends FragmentActivity implements
 		ExceptionHandler.register(this,
 				"http://simonbengtsson.se/lsh/stacktrace_script.php");
 
-		Accessor.getModel(); // Create model and load data from database.
 		mSharedPreferences = App.getContext().getSharedPreferences(
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		if (!isLoggedIn()) {
@@ -60,6 +59,7 @@ public class MainActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
+		Accessor.getModel(); // Create model and load data from database.
 		Accessor.getServerConnector().addNetworkListener(this);
 		mTabletSize = getResources().getBoolean(R.bool.isTablet);
 		if (mTabletSize) {
@@ -85,7 +85,10 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onDestroy() {
 		Log.d("Main", "destroyed");
-		Accessor.getServerConnector().removeNetworkStatusListener(this);
+		try {
+			Accessor.getServerConnector().removeNetworkStatusListener(this);
+		} catch (IllegalStateException e) {
+		}
 		super.onStop();
 		super.onDestroy();
 	}
