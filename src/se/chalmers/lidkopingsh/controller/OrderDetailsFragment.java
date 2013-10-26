@@ -4,17 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.chalmers.lidkopingsh.app.App;
 import se.chalmers.lidkopingsh.model.Order;
 import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
-import se.chalmers.lidkopingsh.server.NetworkStatusListener;
-import android.content.Context;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -72,7 +67,7 @@ public class OrderDetailsFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
-		mNetworkWatcher = new NetworkWatcher();
+		mNetworkWatcher = new NetworkWatcherChild();
 		Accessor.getServerConnector().addNetworkListener(mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
@@ -115,12 +110,10 @@ public class OrderDetailsFragment extends Fragment {
 
 		return mRootView;
 	}
+	
+	
 
-	private class NetworkWatcher implements NetworkStatusListener {
-
-		@Override
-		public void startedUpdate() {
-		}
+	private class NetworkWatcherChild extends NetworkWatcher {
 
 		@Override
 		public void finishedUpdate() {
@@ -129,15 +122,6 @@ public class OrderDetailsFragment extends Fragment {
 					.findViewById(R.id.task_cont);
 			taskContainer.removeAllViews();
 			initTasks();
-		}
-
-		@Override
-		public void networkProblem(String message) {
-			// Do nothing here
-		}
-
-		@Override
-		public void authenticationFailed() {
 		}
 
 	}
