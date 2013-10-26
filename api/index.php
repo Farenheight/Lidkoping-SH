@@ -2,6 +2,18 @@
 ini_set("display_errors", 1);
 $start = microtime(true);
 
+if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
+    if(!headers_sent()) {
+        header("Status: 301 Moved Permanently");
+        header(sprintf(
+            'Location: https://%s%s',
+            $_SERVER['HTTP_HOST'],
+            $_SERVER['REQUEST_URI']
+        ));
+        die();
+    }
+}
+
 header('Content-type: text/json; charset=utf-8');
 
 require_once 'output.php';

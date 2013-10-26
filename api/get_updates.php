@@ -16,7 +16,7 @@ function getUpdates(){
 		LEFT JOIN `stone` s ON s.stone_product_id = p.product_id
 		LEFT JOIN `task` t ON t.product_id = p.product_id
 		LEFT JOIN `station` st ON st.station_id = t.station_id
-		HAVING `archived`='0'";
+		";
 	
 	if(!empty($_POST['data'])){
 		$data_array = json_decode($data, true);
@@ -25,17 +25,23 @@ function getUpdates(){
 		
 		$size = sizeof($data_array);
 		if($size > 0){
-			$select .= " AND NOT(";
+			$ids = array();
+			$select .= " HAVING "; // NOT
 			for($i = 0; $i < $size; $i++){
+				$ids[] = $data_array[$i][0];
 				if($i > 0){
 					$select .= " OR ";
 				}
-				$select .= "((`time_last_update`=". $GLOBALS['con']->escape($data_array[$i][1]) .") 
-					AND (`order_table_id`=". $GLOBALS['con']->escape($data_array[$i][0]) ."))";
+				$select .= "(`order_table_id`=". $GLOBALS['con']->escape($data_array[$i][0]) ."
+					AND `time_last_update`!=". $GLOBALS['con']->escape($data_array[$i][1]) .")";
 			}
-			$select .= ")";
+			$select .= " OR (`order_table_id` NOT IN (". join(", ", $ids) . ") AND `cancelled`=0 AND `archived`=0)";
+		}else{
+			$select .= "HAVING `cancelled`=0 AND `archived`=0";
 		}
 		
+	}else{
+		$select .= "HAVING `cancelled`=0 AND `archived`=0";
 	}
 	
 	$select .= " ORDER BY order_table_id, p.product_id, t.sort_order";
