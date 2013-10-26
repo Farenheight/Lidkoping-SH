@@ -1,6 +1,5 @@
 package se.chalmers.lidkopingsh.controller;
 
-import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -21,17 +20,18 @@ import android.view.MenuItem;
  * 
  * @author Simon Bengtsson
  */
-public class HandsetsDetailsActivity extends FragmentActivity implements
-		NetworkStatusListener {
+public class HandsetsDetailsActivity extends FragmentActivity {
 
 	private Menu mMenu;
+	private NetworkWatcher mNetworkWatcher;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.od_root);
-		Accessor.getServerConnector().addNetworkListener(this);
+		mNetworkWatcher = new NetworkWatcherChild();
+		Accessor.getServerConnector().addNetworkListener(mNetworkWatcher);
 
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -65,7 +65,7 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		Accessor.getServerConnector().removeNetworkStatusListener(this);
+		Accessor.getServerConnector().removeNetworkStatusListener(mNetworkWatcher);
 		super.onDestroy();
 	}
 
@@ -96,33 +96,24 @@ public class HandsetsDetailsActivity extends FragmentActivity implements
 		}
 	}
 
-	@Override
-	public void startedUpdate() {
-		Log.d("HandsetDetailActivity", "Update started");
-		if (mMenu != null) {
-			MenuItem updateItem = mMenu.findItem(R.id.action_update);
-			updateItem.setActionView(R.layout.progress_indicator);
-		}
-
-	}
-
-	@Override
-	public void finishedUpdate() {
-		if (mMenu != null) {
-			MenuItem updateItem = mMenu.findItem(R.id.action_update);
-			updateItem.setActionView(null);
-		}
-		Log.d("HandsetDetailActivity", "Update finished");
-	}
-
-	@Override
-	public void networkProblem(String message) {
-		Log.d("HandsetDetailActivity", "Network error");
-	}
-
-	@Override
-	public void authenticationFailed() {
-		// TODO Auto-generated method stub
+	private class NetworkWatcherChild extends NetworkWatcher {
 		
+		@Override
+		public void startedUpdate() {
+			Log.d("HandsetDetailActivity", "Update started");
+			if (mMenu != null) {
+				MenuItem updateItem = mMenu.findItem(R.id.action_update);
+				updateItem.setActionView(R.layout.progress_indicator);
+			}
+		}
+
+		@Override
+		public void finishedUpdate() {
+			if (mMenu != null) {
+				MenuItem updateItem = mMenu.findItem(R.id.action_update);
+				updateItem.setActionView(null);
+			}
+			Log.d("HandsetDetailActivity", "Update finished");
+		}
 	}
 }

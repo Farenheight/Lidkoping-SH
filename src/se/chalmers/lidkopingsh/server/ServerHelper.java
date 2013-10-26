@@ -171,7 +171,7 @@ public class ServerHelper {
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
 	 */
-	private BufferedReader sendHttpPostRequest(String orderString, String action)
+	private String sendHttpPostRequest(String orderString, String action)
 			throws NetworkErrorException {
 		String apikey = preferences.getString(
 				ServerSettings.PREFERENCES_API_KEY, null);
@@ -190,7 +190,7 @@ public class ServerHelper {
 	 * @throws NetworkErrorException
 	 *             if server could not be accessed.
 	 */
-	private BufferedReader sendHttpPostRequest(String data, String action,
+	private String sendHttpPostRequest(String data, String action,
 			Collection<? extends Header> headers) throws NetworkErrorException {
 		BufferedReader reader = null;
 		try {
@@ -225,8 +225,22 @@ public class ServerHelper {
 			e.printStackTrace();
 			throw new NetworkErrorException(e);
 		}
-		return reader;
+		return convertStreamToString(reader);
 	}
+	
+
+
+    /**
+     * Get reader content as a string.
+     * 
+     * @param reader
+     *            The reader.
+     * @return The content of the reader.
+     */
+    private String convertStreamToString(Reader reader) {
+            Scanner s = new Scanner(reader).useDelimiter("\\A");
+            return s.hasNext() ? s.next() : "";
+    }
 
 	/**
 	 * Get the updated orders from the server.
@@ -240,10 +254,10 @@ public class ServerHelper {
 	 */
 	private List<Order> getUpdatedOrdersFromServer(String orderVerifiers)
 			throws NetworkErrorException, AuthenticationException {
-		BufferedReader reader = sendHttpPostRequest("data=" + orderVerifiers,
+		String json = sendHttpPostRequest("data=" + orderVerifiers,
 				"getUpdates");
 
-		ApiResponseGet response = convertResponseGet(reader);
+		ApiResponseGet response = convertResponseGet(json);
 
 		if (isResponseValid(response)) {
 			List<Order> ord = new LinkedList<Order>();
@@ -275,9 +289,9 @@ public class ServerHelper {
 		headers.add(new BasicHeader(LIDKOPINGSH_USERNAME, username));
 		headers.add(new BasicHeader(LIDKOPINGSH_PASSWORD, password));
 		headers.add(new BasicHeader(LIDKOPINGSH_DEVICEID, deviceId));
-		BufferedReader reader = sendHttpPostRequest("", "getApikey", headers);
+		String json = sendHttpPostRequest("", "getApikey", headers);
 
-		ApiResponse response = convertResponseSend(reader);
+		ApiResponse response = convertResponseSend(json);
 		Log.d("ServerHelper", "Response from getApiKey: " + response.message);
 
 		if (isResponseValid(response)) {
@@ -343,16 +357,16 @@ public class ServerHelper {
 	public ApiResponse sendUpdate(Order order) throws NetworkErrorException,
 			AuthenticationException {
 		Gson gsonOrder = new Gson();
-		String json = "";
+		String jsonInput = "";
 		try {
-			json = "data="
+			jsonInput = "data="
 					+ URLEncoder.encode(gsonOrder.toJson(order), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		BufferedReader reader = sendHttpPostRequest(json, "postOrder");
+		String jsonResponse = sendHttpPostRequest(jsonInput, "postOrder");
 
-		ApiResponse response = convertResponseSend(reader);
+		ApiResponse response = convertResponseSend(jsonResponse);
 
 		if (!isResponseValid(response)) {
 			order.sync(null); // Informing that no data has been able to
@@ -366,16 +380,15 @@ public class ServerHelper {
 	 * 
 	 * @throws JsonParseException
 	 */
-	private ApiResponseGet convertResponseGet(Reader reader)
+	private ApiResponseGet convertResponseGet(String json)
 			throws JsonSyntaxException, JsonIOException {
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(Product.class, new ProductDeserializer());
 		Gson gson = builder.create();
 		try {
-			return gson.fromJson(reader, ApiResponseGet.class);
+			return gson.fromJson(json, ApiResponseGet.class);
 		} catch (JsonParseException e) {
-			throw new JsonParseException("Error parsing JSON: "
-					+ convertStreamToString(reader), e);
+			throw new JsonParseException("Error parsing JSON: " + json, e);
 		}
 	}
 
@@ -384,26 +397,13 @@ public class ServerHelper {
 	 * 
 	 * @throws JsonParseException
 	 */
-	private ApiResponse convertResponseSend(Reader reader)
+	private ApiResponse convertResponseSend(String json)
 			throws JsonSyntaxException, JsonIOException {
 		try {
-			return new Gson().fromJson(reader, ApiResponse.class);
+			return new Gson().fromJson(json, ApiResponse.class);
 		} catch (JsonParseException e) {
-			throw new JsonParseException("Error parsing JSON: "
-					+ convertStreamToString(reader), e);
+			throw new JsonParseException("Error parsing JSON: " + json, e);
 		}
-	}
-
-	/**
-	 * Get reader content as a string.
-	 * 
-	 * @param reader
-	 *            The reader.
-	 * @return The content of the reader.
-	 */
-	private String convertStreamToString(Reader reader) {
-		Scanner s = new Scanner(reader).useDelimiter("\\A");
-		return s.hasNext() ? s.next() : "";
 	}
 
 	/**
@@ -555,9 +555,11 @@ public class ServerHelper {
 		for (Image newI : newImages) {
 			for (Image oldI : oldImages) {
 				if (newI.getId() == oldI.getId()
-						&& !newI.getImagePath().equals(oldI.getImagePath())) {
+						&& !newI.getServerImagePath().equals(oldI.getServerImagePath())) {
 					App.getContext().deleteFile(oldI.getImagePath());
 					saveImage(newI);
+				} else if (newI.getId() == oldI.getId()) {
+					break;
 				}
 			}
 		}

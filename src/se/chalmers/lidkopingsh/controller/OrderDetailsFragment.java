@@ -9,7 +9,6 @@ import se.chalmers.lidkopingsh.model.Product;
 import se.chalmers.lidkopingsh.model.Status;
 import se.chalmers.lidkopingsh.model.Stone;
 import se.chalmers.lidkopingsh.model.Task;
-import se.chalmers.lidkopingsh.server.NetworkStatusListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -79,7 +78,7 @@ public class OrderDetailsFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		progressIndicators = new ArrayList<ProgressBar>();
 		toggleButtons = new ArrayList<ToggleButton>();
-		mNetworkWatcher = new NetworkWatcher();
+		mNetworkWatcher = new NetworkWatcherChild();
 		Accessor.getServerConnector().addNetworkListener(mNetworkWatcher);
 
 		// Gets and saves the order matching the orderId passed to the fragment
@@ -122,12 +121,10 @@ public class OrderDetailsFragment extends Fragment {
 
 		return mRootView;
 	}
+	
+	
 
-	private class NetworkWatcher implements NetworkStatusListener {
-
-		@Override
-		public void startedUpdate() {
-		}
+	private class NetworkWatcherChild extends NetworkWatcher {
 
 		@Override
 		public void finishedUpdate() {
@@ -136,15 +133,6 @@ public class OrderDetailsFragment extends Fragment {
 					.findViewById(R.id.task_cont);
 			taskContainer.removeAllViews();
 			initTasks();
-		}
-
-		@Override
-		public void networkProblem(String message) {
-			// Do nothing here
-		}
-
-		@Override
-		public void authenticationFailed() {
 		}
 
 	}
