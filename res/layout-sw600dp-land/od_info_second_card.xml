@@ -27,6 +27,7 @@
         style="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        
         android:text="@string/dynamic"
         android:textIsSelectable="true"
         android:textSize="16sp" />
