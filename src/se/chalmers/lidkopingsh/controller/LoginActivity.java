@@ -37,6 +37,8 @@ import android.widget.TextView;
  */
 public class LoginActivity extends Activity implements NetworkStatusListener {
 
+	private static final String SERVER_WEB_API_URL = "https://lidkopingsh.kimkling.net/api/";
+
 	private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
@@ -61,7 +63,7 @@ public class LoginActivity extends Activity implements NetworkStatusListener {
 				ServerSettings.PREFERENCES_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(ServerSettings.PREFERENCES_SERVER_PATH,
-				"https://lidkopingsh.kimkling.net/api/");
+				SERVER_WEB_API_URL);
 		editor.commit();
 
 		// Set up the login form.
