@@ -2,7 +2,6 @@ package se.chalmers.lidkopingsh.controller;
 
 import java.lang.ref.WeakReference;
 
-import uk.co.senab.photoview.PhotoViewAttacher;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
